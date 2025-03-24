@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/hooks/useAuth';
+import Image from 'next/image';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -36,16 +37,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-900 to-blue-700">
-      <div className="max-w-md w-full px-6 py-8 bg-transparent">
-        <div className="flex justify-center mb-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-white mb-2">SUY SING</h1>
-            <p className="text-sm text-white/80">Bringing Success To Grocers</p>
-          </div>
+    <div className="min-h-screen flex flex-col items-center justify-center bg-cover bg-center" style={{ backgroundImage: 'url(/images/background-image.png)' }}>
+      <div className="max-w-4xl w-full px-6 py-8 bg-transparent">
+        <div className="flex flex-col items-center justify-center mb-10">
+          <Image 
+            src="/images/suysing.png" 
+            alt="Suy Sing Logo" 
+            width={300} 
+            height={300} 
+            className="object-contain mb-2"
+          />
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-10">
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
               <span className="block sm:inline">{error}</span>
@@ -53,7 +57,7 @@ export default function LoginPage() {
           )}
 
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="username" className="block  text-white mb-4">
               Username
             </label>
             <input
@@ -61,13 +65,13 @@ export default function LoginPage() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your username"
+              className="w-full p-5 bg-white"
+              
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-white mb-2">
+            <label htmlFor="password" className="block  text-white mb-4">
               Password
             </label>
             <input
@@ -75,8 +79,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded border-gray-300 focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter your password"
+              className="w-full p-5 bg-white"
             />
           </div>
 
@@ -84,7 +87,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 px-4 rounded transition duration-200 disabled:opacity-75"
+              className="w-full bg-orange-400 hover:bg-orange-500 text-white py-5 px-4 rounded transition duration-200 disabled:opacity-75"
             >
               {isLoading ? 'Logging in...' : 'Log In'}
             </button>
