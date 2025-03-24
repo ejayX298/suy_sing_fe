@@ -1,0 +1,112 @@
+import React from "react";
+
+interface DeliveryFormProps {
+  customerCode: string;
+  transactionType: string;
+  shipToAddress: string;
+  remarks: string;
+  onInputChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void;
+  onSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  onNext: () => void;
+}
+
+export default function DeliveryForm({
+  customerCode,
+  transactionType,
+  shipToAddress,
+  remarks,
+  onInputChange,
+  onSelectChange,
+  onNext,
+}: DeliveryFormProps) {
+  return (
+    <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
+      <div className="px-6 mt-6">
+        <h2 className="text-2xl font-bold text-black text-left">Deal Form</h2>
+      </div>
+      <div className="px-6 space-y-5 py-4 font-light">
+        <div>
+          <label
+            htmlFor="customerCode"
+            className="block text-sm  text-black mb-2"
+          >
+            Customer Code
+          </label>
+          <input
+            type="text"
+            id="customerCode"
+            name="customerCode"
+            value={customerCode}
+            className="w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none text-black "
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="transactionType"
+            className="block text-sm  text-black mb-2"
+          >
+            Transaction Type
+          </label>
+          <input
+            type="text"
+            id="transactionType"
+            name="transactionType"
+            value={transactionType}
+            className="w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none text-black "
+            readOnly
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="shipToAddress"
+            className="block text-sm  text-black mb-2"
+          >
+            Ship to Address
+          </label>
+          <select
+            id="shipToAddress"
+            name="shipToAddress"
+            value={shipToAddress}
+            onChange={onSelectChange}
+            className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black "
+          >
+            <option value="">Select address</option>
+            <option value="Don Antonio, Quezon City">
+              Don Antonio, Quezon City
+            </option>
+            <option value="Tondo, Manila">Tondo, Manila</option>
+            <option value="Poblacion, Makati">Poblacion, Makati</option>
+            <option value="Ortigas, Pasig">Ortigas, Pasig</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="remarks" className="block text-sm  text-black mb-2">
+            Remarks
+          </label>
+          <textarea
+            id="remarks"
+            name="remarks"
+            value={remarks}
+            onChange={onInputChange}
+            rows={4}
+            className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none text-black "
+          />
+        </div>
+      </div>
+      <div className="px-6 pb-10">
+        <button
+          onClick={onNext}
+          className="w-full bg-[#F78B1E] py-3 text-black rounded-md text-center"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+}
