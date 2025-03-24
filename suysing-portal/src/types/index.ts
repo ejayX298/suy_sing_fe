@@ -1,0 +1,63 @@
+
+// Booth Visit details
+export interface BoothVisit {
+  boothName: string;
+  boothCode: string;
+  date: string;
+  time: string;
+  count: number;
+}
+
+// Customer types
+export interface BoothVote {
+  color: string;
+  name: string;
+}
+
+export interface Customer {
+  id: number;
+  code: string;
+  name: string;
+  type: string;
+  store?: string;
+  timeSubmitted?: string;
+  totalVisited?: number;
+  totalBoothVisited?: number | string;
+  boothVisits?: BoothVisit[];
+  voteHistory?: BoothVote[];
+  boothHopping?: boolean | string;
+  boothVoting?: boolean | string;
+  souvenirClaiming?: boolean | string;
+}
+
+// Booth types
+export interface Booth {
+  id: number;
+  name: string;
+  code?: string;
+  color?: string;
+  rank?: number;
+  totalVotes?: number;
+  visitCount?: number;
+  lastVisit?: string;
+  status?: string;
+}
+
+// Souvenir types
+export interface Claim {
+  id: number;
+  code: string;
+  name: string;
+  type: string;
+  status: string;
+  item: string;
+  timeClaimed: string;
+}
+
+export interface Souvenir {
+  id: number;
+  name: string;
+  totalQuantity: number;
+  claimed: number;
+  remaining: number;
+}
