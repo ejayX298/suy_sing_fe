@@ -1,0 +1,119 @@
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+
+export default function BottomNavigation() {
+  const pathname = usePathname();
+  return (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
+      <Link
+        href="/"
+        className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
+          pathname === "/" ? "bg-[#0920B0] text-white" : ""
+        }`}
+      >
+        <div className="relative size-6">
+          <Image
+            src="/images/booths.png"
+            alt="Booths"
+            fill
+            style={{
+              objectFit: "contain",
+              filter: pathname === "/" ? "brightness(0) invert(1)" : "none",
+            }}
+          />
+        </div>
+        <span className="text-xs">Booths</span>
+      </Link>
+
+      <Link
+        href="/deal-form"
+        className={`flex flex-col items-center h-full justify-center  px-2  gap-1 ${
+          pathname === "/deal-form" ? "bg-[#0920B0] text-white" : ""
+        }`}
+      >
+        <div className="relative size-6">
+          <Image
+            src="/images/deal-form.png"
+            alt="Deal Form"
+            fill
+            style={{
+              objectFit: "contain",
+              filter:
+                pathname === "/deal-form" ? "brightness(0) invert(1)" : "none",
+            }}
+          />
+        </div>
+        <span className="text-xs">Deal Form</span>
+      </Link>
+
+      <Link href="/camera" className="flex flex-col items-center -mt-7">
+        <div className="bg-[#0920B0] rounded-full p-3 ">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="size-10 text-white"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+            />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+            />
+          </svg>
+        </div>
+      </Link>
+
+      <Link
+        href="/best-booth"
+        className={`flex flex-col items-center h-full justify-center px-1 gap-1 ${
+          pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
+        }`}
+      >
+        <div className="relative size-8">
+          <Image
+            src="/images/best-booth.svg"
+            alt="Best Booth"
+            fill
+            style={{
+              objectFit: "contain",
+              filter:
+                pathname === "/best-booth" ? "brightness(0) invert(1)" : "none",
+            }}
+          />
+        </div>
+        <span className="text-xs">Best Booth</span>
+      </Link>
+
+      <Link
+        href="/my-qr"
+        className={`flex flex-col items-center h-full justify-center  px-3 gap-1 ${
+          pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
+        }`}
+      >
+        <div className="relative size-6 ">
+          <Image
+            src="/images/my-qr.png"
+            alt="My QR"
+            fill
+            style={{
+              objectFit: "contain",
+              filter:
+                pathname === "/my-qr" ? "brightness(0) invert(1)" : "none",
+            }}
+          />
+        </div>
+        <span className="text-xs">My QR</span>
+      </Link>
+    </nav>
+  );
+}
