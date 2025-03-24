@@ -87,30 +87,32 @@ export default function CustomerActivitiesPage() {
 
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-2xl">
-        {/* Booth Hopping */}
-        <div className="border border-gray-400 p-4">
-          <h3 className="mb-2">Booth Hopping</h3>
-          <p className="text-3xl font-bold">{summary.boothHopping}</p>
+    <div className="space-y-4">
+      <div className="flex flex-col md:flex-row justify-between items-start">
+        {/* Summary boxes */}
+        <div className="flex flex-wrap gap-4">
+          {/* Booth Hopping */}
+          <div className="border border-gray-400 p-4 w-[200px]">
+            <h3 className="text-sm mb-2">Booth Hopping</h3>
+            <p className="text-3xl font-bold">{summary.boothHopping}</p>
+          </div>
+
+          {/* Booth Voting */}
+          <div className="border border-gray-400 p-4 w-[200px]">
+            <h3 className="text-sm mb-2">Booth Voting</h3>
+            <p className="text-3xl font-bold">{summary.boothVoting}</p>
+          </div>
+
+          {/* Souvenir Claiming */}
+          <div className="border border-gray-400 p-4 w-[200px]">
+            <h3 className="text-sm mb-2">Souvenir Claiming</h3>
+            <p className="text-3xl font-bold">{summary.souvenirClaiming}</p>
+          </div>
         </div>
 
-        {/* Booth Voting */}
-        <div className="border border-gray-400 p-4">
-          <h3 className=" mb-2">Booth Voting</h3>
-          <p className="text-3xl font-bold ">{summary.boothVoting}</p>
-        </div>
-
-        {/* Souvenir Claiming */}
-        <div className="border border-gray-400 p-4">
-          <h3 className=" mb-2">Souvenir Claiming</h3>
-          <p className="text-3xl font-bold">{summary.souvenirClaiming}</p>
-        </div>
-      </div>
-
-      <div>
-        <div className="p-4 flex justify-end items-center gap-2 border-b">
-          <button className="inline-flex items-center px-3 py-2  bg-blue-800 text-white text-sm">
+        {/* Filter and Search */}
+        <div className="flex items-center gap-2 self-end">
+          <button className="inline-flex items-center px-3 py-2.5 bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
@@ -120,17 +122,18 @@ export default function CustomerActivitiesPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search customer here..."
-              className="pl-4 pr-4 py-2 border w-72 focus:outline-none border-gray-400"
+              className="pl-4 pr-10 py-2 border w-72 focus:outline-none border-gray-400"
             />
             <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
         </div>
+      </div>
 
-        <div className="overflow-x-auto ">
-          <table className="w-full border-gray-400 border">
-            <thead>
-              <tr className="bg-blue-800 text-white">
-                <th className="table-header">Customer Name</th>
+      <div className="overflow-x-auto ">
+        <table className="w-full border-gray-400 border">
+          <thead>
+            <tr className="bg-blue-800 text-white">
+              <th className="table-header">Customer Name</th>
                 <th className="table-header">Total Booth Visited</th>
                 <th className="table-header">Booth Hopping</th>
                 <th className="table-header">Booth Voting</th>
@@ -171,6 +174,5 @@ export default function CustomerActivitiesPage() {
           />
         </div>
       </div>
-    </div>
   );
 }
