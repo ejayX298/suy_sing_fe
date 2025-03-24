@@ -2,26 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { 
-  FaUsers, 
-  FaStore, 
-  FaClipboardList, 
-  FaTrophy, 
   FaGift, 
   FaChevronDown, 
-  FaChevronUp 
+  FaChevronUp,
+  FaTrophy
 } from 'react-icons/fa';
 
 const SidebarLink = ({ 
   href, 
-  icon, 
   text, 
   isActive,
   onClick = () => {}
 }: {
   href: string;
-  icon: React.ReactNode;
   text: string;
   isActive: boolean;
   onClick?: () => void;
@@ -29,14 +25,13 @@ const SidebarLink = ({
   return (
     <Link 
       href={href}
-      className={`flex items-center px-4 py-3 text-sm transition-colors duration-200 ${
+      className={`flex items-center px-4 py-3 2xl:text-lg transition-colors duration-200 ${
         isActive 
-          ? 'bg-blue-800 text-white' 
+          ? ' text-white font-bold' 
           : 'text-blue-100 hover:bg-blue-800 hover:text-white'
       }`}
       onClick={onClick}
     >
-      <span className="mr-3">{icon}</span>
       <span>{text}</span>
     </Link>
   );
@@ -44,7 +39,6 @@ const SidebarLink = ({
 
 const DropdownMenu = ({ 
   title, 
-  icon, 
   children, 
   isOpen, 
   onToggle,
@@ -60,7 +54,7 @@ const DropdownMenu = ({
   return (
     <div>
       <button
-        className={`flex items-center justify-between w-full px-4 py-3 text-sm transition-colors duration-200 ${
+        className={`flex items-center gap-4 w-full px-4 py-3 2xl:text-lg transition-colors duration-200 ${
           isActive 
             ? 'bg-blue-800 text-white' 
             : 'text-blue-100 hover:bg-blue-800 hover:text-white'
@@ -68,14 +62,14 @@ const DropdownMenu = ({
         onClick={onToggle}
       >
         <div className="flex items-center">
-          <span className="mr-3">{icon}</span>
+
           <span>{title}</span>
         </div>
         <span>{isOpen ? <FaChevronUp /> : <FaChevronDown />}</span>
       </button>
       
       {isOpen && (
-        <div className="pl-4 bg-blue-900">
+        <div className="pl-2">
           {children}
         </div>
       )}
@@ -93,53 +87,49 @@ export default function Sidebar() {
   );
 
   return (
-    <div className="w-56 min-h-screen bg-blue-900 text-white flex flex-col">
-      <div className="p-4 border-b border-blue-800 flex items-center justify-center">
-        <div className="font-bold text-white text-xl">SUY SING</div>
-      </div>
-      
-      <div className="mt-2 text-white/70 text-xs px-4 py-2">
-        Customer Activities
-      </div>
-      
+    <div className="w-[245px] min-h-screen bg-[#0A20B1] text-white flex flex-col">
+      <div className="p-10 flex items-center justify-center">
+        <Image 
+          src="/images/suysing.png" 
+          alt="Suy Sing Logo" 
+          width={140} 
+          height={40} 
+          className="object-contain"
+        />
+      </div>      
       <nav className="flex-1">
         <SidebarLink 
-          href="/customer-activities" 
-          icon={<FaUsers />} 
+          href="/customer-activities"       
           text="Customer Activities" 
           isActive={pathname === '/customer-activities'} 
         />
-        
+     
         <SidebarLink 
           href="/booth-activities" 
-          icon={<FaStore />} 
           text="Booth Activities" 
           isActive={pathname === '/booth-activities'} 
         />
         
         <SidebarLink 
           href="/booth-hopping-report" 
-          icon={<FaClipboardList />} 
           text="Booth Hopping Report" 
           isActive={pathname === '/booth-hopping-report'} 
         />
         
         <DropdownMenu
           title="Best Booth"
-          icon={<FaTrophy />}
           isOpen={bestBoothOpen}
+          icon={<FaTrophy />}
           onToggle={() => setBestBoothOpen(!bestBoothOpen)}
           isActive={pathname?.includes('/best-booth') || false}
         >
           <SidebarLink 
             href="/best-booth/best-booth-report" 
-            icon={<span className="w-3">→</span>} 
             text="Best Booth Report" 
             isActive={pathname === '/best-booth/best-booth-report'} 
           />
           <SidebarLink 
             href="/best-booth/best-booth-winner-tally" 
-            icon={<span className="w-3">→</span>} 
             text="Best Booth Winner Tally" 
             isActive={pathname === '/best-booth/best-booth-winner-tally'} 
           />
@@ -154,13 +144,11 @@ export default function Sidebar() {
         >
           <SidebarLink 
             href="/souvenir/souvenir-claim" 
-            icon={<span className="w-3">→</span>} 
             text="Souvenir Claim" 
             isActive={pathname === '/souvenir/souvenir-claim'} 
           />
           <SidebarLink 
             href="/souvenir/souvenir-availability" 
-            icon={<span className="w-3">→</span>} 
             text="Souvenir Availability" 
             isActive={pathname === '/souvenir/souvenir-availability'} 
           />
