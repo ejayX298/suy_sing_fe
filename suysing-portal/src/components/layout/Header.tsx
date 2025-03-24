@@ -16,8 +16,8 @@ export default function Header({ title }: { title: string }) {
   };
 
   return (
-    <header className="bg-white shadow-sm h-16 flex items-center justify-between px-6">
-      <h1 className="text-xl font-medium ">{title}</h1>
+    <header className="h-20 flex items-center justify-between px-6 mt-4 mb-4">
+      <h1 className="text-3xl font-bold">{title}</h1>
       
       <div className="flex items-center space-x-4">
         <div className="relative">
