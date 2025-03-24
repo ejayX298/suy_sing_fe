@@ -24,3 +24,11 @@ body {
   color: var(--foreground);
   font-family: Roboto, sans-serif;
 }
+
+.table-cell {
+  @apply px-4 py-4 2xl:text-lg;
+}
+
+.table-header {
+  @apply px-4 py-2 text-left text-xs 2xl:text-base tracking-wider;
+}
