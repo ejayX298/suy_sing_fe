@@ -30,5 +30,5 @@ body {
 }
 
 .table-header {
-  @apply px-4 py-2 text-left text-xs 2xl:text-base tracking-wider;
+  @apply px-4 py-3 text-sm text-left tracking-wider;
 }
