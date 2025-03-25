@@ -315,3 +315,335 @@ export const bestBoothReportData = {
   }
 };
 
+export const bestBoothWinnerTallyData = {
+  getBooths: async () => {
+    return [
+      {
+        id: 1,
+        rank: 1,
+        name: 'Blue Product Display',
+        code: 'BOOTH001',
+        color: 'Blue Booth',
+        totalVotes: 145
+      },
+      {
+        id: 2,
+        rank: 2,
+        name: 'Red Innovation Zone',
+        code: 'BOOTH002',
+        color: 'Red Booth',
+        totalVotes: 120
+      },
+      {
+        id: 3,
+        rank: 3,
+        name: 'Orange Interactive Demo',
+        code: 'BOOTH003',
+        color: 'Orange Booth',
+        totalVotes: 98
+      },
+      {
+        id: 4,
+        rank: 4,
+        name: 'Blue Technology Corner',
+        code: 'BOOTH004',
+        color: 'Blue Booth',
+        totalVotes: 87
+      },
+      {
+        id: 5,
+        rank: 5,
+        name: 'Red Solutions Hub',
+        code: 'BOOTH005',
+        color: 'Red Booth',
+        totalVotes: 76
+      },
+      {
+        id: 6,
+        rank: 6,
+        name: 'Orange Experience Zone',
+        code: 'BOOTH006',
+        color: 'Orange Booth',
+        totalVotes: 65
+      },
+      {
+        id: 7,
+        rank: 7,
+        name: 'Blue Innovations',
+        code: 'BOOTH007',
+        color: 'Blue Booth',
+        totalVotes: 54
+      },
+      {
+        id: 8,
+        rank: 8,
+        name: 'Red Showcase',
+        code: 'BOOTH008',
+        color: 'Red Booth',
+        totalVotes: 43
+      },
+      {
+        id: 9,
+        rank: 9,
+        name: 'Orange Demonstrations',
+        code: 'BOOTH009',
+        color: 'Orange Booth',
+        totalVotes: 32
+      },
+      {
+        id: 10,
+        rank: 10,
+        name: 'Blue Solutions Center',
+        code: 'BOOTH010',
+        color: 'Blue Booth',
+        totalVotes: 21
+      }
+    ];
+  }
+};
+
+// Souvenir Claim Data
+export const souvenirClaimData = {
+  getClaims: async () => {
+    return [
+      {
+        id: 1,
+        code: 'CUST001',
+        name: 'John Doe',
+        type: 'Red',
+        status: 'Claimed',
+        item: 'Premium Gift Set',
+        timeClaimed: '2023-10-15 11:30 AM'
+      },
+      {
+        id: 2,
+        code: 'CUST002',
+        name: 'Jane Smith',
+        type: 'Green',
+        status: 'Claimed',
+        item: 'Event T-Shirt',
+        timeClaimed: '2023-10-15 12:45 PM'
+      },
+      {
+        id: 3,
+        code: 'CUST003',
+        name: 'Robert Johnson',
+        type: 'Red',
+        status: 'Pending',
+        item: 'Premium Gift Set',
+        timeClaimed: '2023-10-15 10:15 AM'
+      },
+      {
+        id: 4,
+        code: 'CUST004',
+        name: 'Sarah Williams',
+        type: 'Green',
+        status: 'On Hold',
+        item: 'Event T-Shirt',
+        timeClaimed: '2023-10-15 02:30 PM'
+      },
+      {
+        id: 5,
+        code: 'CUST005',
+        name: 'Michael Brown',
+        type: 'Red',
+        status: 'Claimed',
+        item: 'Premium Gift Set',
+        timeClaimed: '2023-10-15 04:00 PM'
+      },
+      {
+        id: 6,
+        code: 'CUST006',
+        name: 'Emily Jones',
+        type: 'Green',
+        status: 'Claimed',
+        item: 'Event Mug',
+        timeClaimed: '2023-10-15 01:00 PM'
+      },
+      {
+        id: 7,
+        code: 'CUST007',
+        name: 'David Wilson',
+        type: 'Red',
+        status: 'Pending',
+        item: 'Premium Gift Set',
+        timeClaimed: '2023-10-15 03:15 PM'
+      },
+      {
+        id: 8,
+        code: 'CUST008',
+        name: 'Lisa Anderson',
+        type: 'Green',
+        status: 'Claimed',
+        item: 'Event T-Shirt',
+        timeClaimed: '2023-10-15 11:00 AM'
+      },
+      {
+        id: 9,
+        code: 'CUST009',
+        name: 'Mark Thomas',
+        type: 'Red',
+        status: 'On Hold',
+        item: 'Premium Gift Set',
+        timeClaimed: '2023-10-15 12:30 PM'
+      },
+      {
+        id: 10,
+        code: 'CUST010',
+        name: 'Amy Walker',
+        type: 'Green',
+        status: 'Claimed',
+        item: 'Event Mug',
+        timeClaimed: '2023-10-15 02:00 PM'
+      }
+    ];
+  }
+};
+
+export const souvenirAvailabilityData = {
+  getSouvenirs: async () => {
+    return [
+      {
+        id: 1,
+        name: 'Premium Gift Set',
+        totalQuantity: 100,
+        claimed: 45,
+        remaining: 55
+      },
+      {
+        id: 2,
+        name: 'Event T-Shirt',
+        totalQuantity: 200,
+        claimed: 120,
+        remaining: 80
+      },
+      {
+        id: 3,
+        name: 'Event Mug',
+        totalQuantity: 150,
+        claimed: 75,
+        remaining: 75
+      },
+      {
+        id: 4,
+        name: 'Branded Notebook',
+        totalQuantity: 300,
+        claimed: 210,
+        remaining: 90
+      },
+      {
+        id: 5,
+        name: 'USB Flash Drive',
+        totalQuantity: 120,
+        claimed: 85,
+        remaining: 35
+      },
+      {
+        id: 6,
+        name: 'Event Cap',
+        totalQuantity: 180,
+        claimed: 110,
+        remaining: 70
+      },
+      {
+        id: 7,
+        name: 'Tote Bag',
+        totalQuantity: 250,
+        claimed: 180,
+        remaining: 70
+      },
+      {
+        id: 8,
+        name: 'Water Bottle',
+        totalQuantity: 220,
+        claimed: 140,
+        remaining: 80
+      }
+    ];
+  }
+};
+
+// Sample data for best booth report
+export const bestBoothReportDataOriginal = {
+  customers: [
+    { 
+      id: 1, 
+      code: 'STAC001', 
+      name: 'Stacey Cruz', 
+      type: 'Red', 
+      timeSubmitted: 'May 4, 2025 | 1:30 PM',
+      totalVisited: 75,
+      store: 'Stacey Grocery Store',
+      voteHistory: [
+        { color: 'Blue Booth', name: 'Century Tuna' },
+        { color: 'Orange Booth', name: 'Pepsi' },
+        { color: 'Red Booth', name: 'Jolly Claro' }
+      ]
+    },
+    { id: 2, code: 'ALDR002', name: 'Aldrin Tan', type: 'Red', timeSubmitted: 'May 4, 2025 | 1:35 PM' },
+    { id: 3, code: 'BRUN003', name: 'Bruno Perez', type: 'Red', timeSubmitted: 'May 4, 2025 | 1:36 PM' },
+    { id: 4, code: 'OMAR004', name: 'Omar Santiago', type: 'Red', timeSubmitted: 'May 4, 2025 | 1:52 PM' },
+    { id: 5, code: 'JOHN005', name: 'John Dela Cruz', type: 'Red', timeSubmitted: 'May 4, 2025 | 2:30 PM' },
+    { id: 6, code: 'MATT006', name: 'Matthew Paz', type: 'Green', timeSubmitted: 'May 4, 2025 | 2:30 PM' },
+    { id: 7, code: 'ROBE007', name: 'Robert Sebastian', type: 'Green', timeSubmitted: 'May 4, 2025 | 2:38 PM' },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', timeSubmitted: 'May 4, 2025 | 2:45 PM' }
+  ],
+  getCustomers: async () => {
+    return bestBoothReportDataOriginal.customers;
+  },
+  getCustomerById: async (id: number) => {
+    return bestBoothReportDataOriginal.customers.find(c => c.id === id);
+  }
+};
+
+export const bestBoothWinnerTallyDataOriginal = {
+  booths: [
+    { id: 1, rank: 1, name: 'Unilever', code: 'UNIL101', totalVotes: 350 },
+    { id: 2, rank: 2, name: 'Century Tuna', code: 'CENT102', totalVotes: 320 },
+    { id: 3, rank: 3, name: 'Pepsi', code: 'PEPS103', totalVotes: 318 },
+    { id: 4, rank: 4, name: 'Asian Brewery', code: 'ASBR104', totalVotes: 315 },
+    { id: 5, rank: 5, name: 'Jolly Claro', code: 'JOCL105', totalVotes: 300 },
+    { id: 6, rank: 6, name: 'Del Monte', code: 'DEMO106', totalVotes: 298 },
+    { id: 7, rank: 7, name: 'Colgate', code: 'COLG201', totalVotes: 285 },
+    { id: 8, rank: 8, name: 'Universal Robina', code: 'UNIR202', totalVotes: 273 },
+    { id: 9, rank: 9, name: 'NutriAsia', code: 'NUAS203', totalVotes: 265 },
+    { id: 10, rank: 10, name: 'Oishi', code: 'OSHI204', totalVotes: 256 }
+  ],
+  getBooths: async () => {
+    return bestBoothWinnerTallyDataOriginal.booths;
+  }
+};
+
+export const souvenirClaimDataOriginal = {
+  claims: [
+    { id: 1, code: 'STAC001', name: 'Stacey Cruz', type: 'Red', status: 'On Hold', item: '-', timeClaimed: '-' },
+    { id: 2, code: 'ALDR002', name: 'Aldrin Tan', type: 'Red', status: 'On Hold', item: '-', timeClaimed: '-' },
+    { id: 3, code: 'BRUN003', name: 'Bruno Perez', type: 'Red', status: 'Pending', item: '-', timeClaimed: '-' },
+    { id: 4, code: 'OMAR004', name: 'Omar Santiago', type: 'Red', status: 'Pending', item: '-', timeClaimed: '-' },
+    { id: 5, code: 'JOHN005', name: 'John Dela Cruz', type: 'Red', status: 'Claimed', item: 'Massage Gun', timeClaimed: 'May 4, 2025 | 2:30 PM' },
+    { id: 6, code: 'MATT006', name: 'Matthew Paz', type: 'Green', status: 'Claimed', item: 'Massage Gun', timeClaimed: 'May 4, 2025 | 2:30 PM' },
+    { id: 7, code: 'ROBE007', name: 'Robert Sebastian', type: 'Green', status: 'Claimed', item: 'Massage Gun', timeClaimed: 'May 4, 2025 | 2:38 PM' },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', status: 'Claimed', item: 'Massage Gun', timeClaimed: 'May 4, 2025 | 2:45 PM' }
+  ],
+  getClaims: async () => {
+    return souvenirClaimDataOriginal.claims;
+  }
+};
+
+export const souvenirAvailabilityDataOriginal = {
+  souvenirs: [
+    { id: 1, name: 'Jacket', totalQuantity: 1500, claimed: 500, remaining: 1000 },
+    { id: 2, name: 'Bag', totalQuantity: 1000, claimed: 300, remaining: 700 },
+    { id: 3, name: 'Massage Gun', totalQuantity: 1000, claimed: 300, remaining: 700 },
+    { id: 4, name: 'Suy Sing 5K Php GC', totalQuantity: 800, claimed: 100, remaining: 700 },
+    { id: 5, name: 'Suy Sing 3K Php GC', totalQuantity: 800, claimed: 100, remaining: 700 },
+    { id: 6, name: 'Alaska Grocery Package', totalQuantity: 500, claimed: 200, remaining: 300 },
+    { id: 7, name: 'Coke Grocery Package', totalQuantity: 500, claimed: 100, remaining: 400 },
+    { id: 8, name: 'Cooler', totalQuantity: 1200, claimed: 200, remaining: 1000 }
+  ],
+  getSouvenirs: async () => {
+    return souvenirAvailabilityDataOriginal.souvenirs;
+  }
+};
+
+
