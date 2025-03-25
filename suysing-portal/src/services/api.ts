@@ -182,3 +182,136 @@ export const boothHoppingReportData = {
   }
 };
 
+export const bestBoothReportData = {
+  getCustomers: async () => {
+    return [
+      {
+        id: 1,
+        code: 'CUST001',
+        name: 'John Doe',
+        type: 'Red',
+        store: 'ABC Store',
+        timeSubmitted: '2023-10-15 10:30 AM',
+        totalVisited: 5,
+        voteHistory: [
+          { color: 'Blue Booth', name: 'Blue Product Display' },
+          { color: 'Red Booth', name: 'Red Innovation Zone' }
+        ]
+      },
+      {
+        id: 2,
+        code: 'CUST002',
+        name: 'Jane Smith',
+        type: 'Green',
+        store: 'XYZ Shop',
+        timeSubmitted: '2023-10-15 11:45 AM',
+        totalVisited: 3,
+        voteHistory: [
+          { color: 'Orange Booth', name: 'Orange Interactive Demo' }
+        ]
+      },
+      {
+        id: 3,
+        code: 'CUST003',
+        name: 'Robert Johnson',
+        type: 'Red',
+        store: 'Main Center',
+        timeSubmitted: '2023-10-15 09:15 AM',
+        totalVisited: 7,
+        voteHistory: [
+          { color: 'Blue Booth', name: 'Blue Product Display' }
+        ]
+      },
+      {
+        id: 4,
+        code: 'CUST004',
+        name: 'Sarah Williams',
+        type: 'Green',
+        store: 'City Market',
+        timeSubmitted: '2023-10-15 01:30 PM',
+        totalVisited: 4,
+        voteHistory: [
+          { color: 'Red Booth', name: 'Red Innovation Zone' }
+        ]
+      },
+      {
+        id: 5,
+        code: 'CUST005',
+        name: 'Michael Brown',
+        type: 'Red',
+        store: 'Downtown Store',
+        timeSubmitted: '2023-10-15 03:00 PM',
+        totalVisited: 6,
+        voteHistory: [
+          { color: 'Orange Booth', name: 'Orange Interactive Demo' }
+        ]
+      },
+      {
+        id: 6,
+        code: 'CUST006',
+        name: 'Emily Jones',
+        type: 'Green',
+        store: 'Corner Shop',
+        timeSubmitted: '2023-10-15 12:00 PM',
+        totalVisited: 2,
+        voteHistory: [
+          { color: 'Red Booth', name: 'Red Innovation Zone' }
+        ]
+      },
+      {
+        id: 7,
+        code: 'CUST007',
+        name: 'David Wilson',
+        type: 'Red',
+        store: 'Central Market',
+        timeSubmitted: '2023-10-15 02:15 PM',
+        totalVisited: 5,
+        voteHistory: [
+          { color: 'Blue Booth', name: 'Blue Product Display' }
+        ]
+      },
+      {
+        id: 8,
+        code: 'CUST008',
+        name: 'Lisa Anderson',
+        type: 'Green',
+        store: 'East Side Shop',
+        timeSubmitted: '2023-10-15 10:00 AM',
+        totalVisited: 3,
+        voteHistory: [
+          { color: 'Orange Booth', name: 'Orange Interactive Demo' },
+          { color: 'Blue Booth', name: 'Blue Product Display' }
+        ]
+      },
+      {
+        id: 9,
+        code: 'CUST009',
+        name: 'Mark Thomas',
+        type: 'Red',
+        store: 'West Center',
+        timeSubmitted: '2023-10-15 11:30 AM',
+        totalVisited: 4,
+        voteHistory: [
+          { color: 'Blue Booth', name: 'Blue Product Display' }
+        ]
+      },
+      {
+        id: 10,
+        code: 'CUST010',
+        name: 'Amy Walker',
+        type: 'Green',
+        store: 'North Plaza',
+        timeSubmitted: '2023-10-15 01:00 PM',
+        totalVisited: 5,
+        voteHistory: [
+          { color: 'Red Booth', name: 'Red Innovation Zone' }
+        ]
+      }
+    ];
+  },
+  getCustomerById: async (id: number) => {
+    const customers = await bestBoothReportData.getCustomers();
+    return customers.find(customer => customer.id === id) || null;
+  }
+};
+
