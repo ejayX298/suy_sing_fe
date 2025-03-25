@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #ffffff;
+    --foreground: #3A3A3A;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Roboto, sans-serif;
+}
+
+.table-cell {
+  @apply px-4 py-4 2xl:text-lg;
+}
+
+.table-header {
+  @apply px-4 py-2 text-left text-xs 2xl:text-base tracking-wider;
+}
