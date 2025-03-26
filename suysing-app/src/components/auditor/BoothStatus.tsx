@@ -7,7 +7,7 @@ interface BoothStatusProps {
   visitedCount: number;
   totalBooths: number;
   onViewUnvisited: () => void;
-  onClaimSouvenir: () => void;
+  onVoteBooth: () => void;
   onClose: () => void;
 }
 
@@ -16,11 +16,11 @@ export default function BoothStatus({
   visitedCount,
   totalBooths,
   onViewUnvisited,
-  onClaimSouvenir,
+  onVoteBooth,
   onClose,
 }: BoothStatusProps) {
   return (
-    <div className="rounded-lg bg-white p-6 shadow-lg text-center">
+    <div className="rounded-lg border-2 mx-auto max-w-xl border-[#F78B1E] bg-white p-6 shadow-lg text-center">
       <div className="mb-6">
         {isComplete ? (
           <>
@@ -40,16 +40,16 @@ export default function BoothStatus({
               <Image
                 src="/images/booth.svg"
                 alt="Incomplete"
-                width={80}
-                height={80}
+                width={100}
+                height={100}
                 className="mx-auto"
               />
             </div>
-            <h2 className="text-xl font-semibold">Incomplete Visited Booths</h2>
-            <p className="text-gray-600 mt-2">
+            <h2 className="text-3xl font-bold">Incomplete <span className="sm:block">Booth Hopping</span></h2>
+            <p className="mt-2">
               This customer has visited {visitedCount} out of {totalBooths} booths.
             </p>
-            <p className="text-gray-600 mt-1">
+            <p className="mt-1">
               Please visit all {totalBooths} booths to claim souvenir.
             </p>
           </>
@@ -57,19 +57,27 @@ export default function BoothStatus({
       </div>
      
       <button
-        onClick={isComplete ? onClaimSouvenir : onViewUnvisited}
-        className="w-full rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600"
+        onClick={onViewUnvisited}
+        className="w-full rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
       >
-        {isComplete ? "Claim Souvenir" : "View Unvisited Booth"}
+        View Unvisited Booth
       </button>
       
       {!isComplete && (
-        <button
-          onClick={onClose}
-          className="w-full mt-3 rounded-lg border border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-100"
-        >
-          Close
-        </button>
+        <>
+          <button
+            onClick={onVoteBooth}
+            className="w-full mt-3 rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
+          >
+            Override
+          </button>
+          <button
+            onClick={onClose}
+            className="w-full mt-3 rounded-lg border border-[#F78B1E] px-4 py-3 text-[#F78B1E] font-semibold hover:bg-gray-100"
+          >
+            Close
+          </button>
+        </>
       )}
     </div>
   );
