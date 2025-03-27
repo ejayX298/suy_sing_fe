@@ -5,11 +5,11 @@ import Image from "next/image";
 import { useState } from "react";
 
 interface BoothsListProps {
-  onContinue: () => void;
+  onBack: () => void;
 }
 
 export default function BoothsList({
-  onContinue,
+  onBack,
 }: BoothsListProps) {
   // Track which booth images failed to load
   const [failedImages, setFailedImages] = useState<{[key: string]: boolean}>({});
@@ -39,10 +39,33 @@ export default function BoothsList({
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-lg">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div className="flex flex-col h-full">
+      <div className="p-4 flex items-center border-b">
+        <button
+          onClick={onBack}
+          className="flex items-center text-gray-600 hover:text-gray-800"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 mr-1"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
+          </svg>
+          <span>Back</span>
+        </button>
+      </div>
+      <div className="flex-1 p-4 overflow-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* Regular Zone */}
-        <div className="border border-gray-300 rounded-lg overflow-hidden">
+        <div className="border border-gray-300 bg-white p-2 rounded-lg overflow-hidden">
           <div className="bg-[#0920B0] text-white py-2 px-3 flex justify-between items-center">
             <div>Regular Zone</div>
             <div className="text-sm">{regularBooths.filter(b => b.visited).length}/{regularBooths.length}</div>
@@ -86,7 +109,7 @@ export default function BoothsList({
         </div>
 
         {/* Double Zone */}
-        <div className="border border-gray-300 rounded-lg overflow-hidden">
+        <div className="border border-gray-300 bg-white p-2 rounded-lg overflow-hidden">
           <div className="bg-[#0920B0] text-white py-2 px-3 flex justify-between items-center">
             <div>Double Zone</div>
             <div className="text-sm">{doubleBooths.filter(b => b.visited).length}/{doubleBooths.length}</div>
@@ -129,13 +152,7 @@ export default function BoothsList({
           </div>
         </div>
       </div>
-
-      <button
-        onClick={onContinue}
-        className="w-full bg-orange-500 text-white py-3 rounded-lg mt-6 font-medium hover:bg-orange-600"
-      >
-        Continue
-      </button>
+      </div>
     </div>
   );
 }
