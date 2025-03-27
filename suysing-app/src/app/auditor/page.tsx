@@ -6,7 +6,6 @@ import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import BoothStatus from "@/components/auditor/BoothStatus";
 import BoothsList from "@/components/auditor/BoothsList";
-import UnvisitedBooths from "@/components/auditor/UnvisitedBooths";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
 import BoothGrid from "@/components/best-booth/BoothGrid";
 import VoteSummary from "@/components/best-booth/VoteSummary";
@@ -35,10 +34,9 @@ function AuditorPageContent() {
   } | null>(null);
   const [currentStep, setCurrentStep] = useState<
     | "scan"
-    | "confirm-customer"
     | "booth-status"
     | "booths-list"
-    | "unvisited-booths"
+  
     | "vote-modal"
     | "vote-intro"
     | "vote-blue"
@@ -51,17 +49,13 @@ function AuditorPageContent() {
   >("scan");
   
   // Get booth data from context
-  const { visitedCount, totalBooths, booths, handleToggleBooth } = useBooths();
+  const { visitedCount, totalBooths } = useBooths();
   
   // Get best booth voting context (only accessing what we need)
   const { resetVotes } = useBestBooth();
   
-  // Filtered booths for the current customer
-  const [unvisitedBooths, setUnvisitedBooths] = useState<
-    { name: string; code: string; checked?: boolean }[]
-  >([]);
   const [isBoothComplete, setIsBoothComplete] = useState(false);
-
+  
   useEffect(() => {
  
     if (currentStep === "scan" && !showManualCodeModal) {
@@ -97,41 +91,14 @@ function AuditorPageContent() {
     
     setCustomerData(mockCustomerData);
     
-    // All possible booths for this customer
-    const allBooths = [
-      { name: "Alaska Milk Corporation", code: "ALA01" },
-      { name: "Champion", code: "CHA01" },
-      { name: "RC Cola", code: "RC01" },
-      { name: "CDO", code: "CDO01" },
-      { name: "Nestle", code: "NES02" },
-      { name: "Colgate", code: "COL02" },
-      { name: "Nature's Spring", code: "NSP01" },
-      { name: "SPAM", code: "SPA02" },
-      { name: "P&G", code: "PG01" },
-      { name: "Baygon", code: "BAY01" },
-      { name: "Ding Dong", code: "DIN01" },
-      { name: "Ginebra San Miguel", code: "GIN01" },
-      { name: "Hapee", code: "HAP01" },
-      { name: "Rebisco", code: "REB01" },
-    ];
-    
-    // Get the list of already visited booths from the context
-    const visitedBoothNames = booths.filter(booth => booth.visited).map(booth => booth.name);
-    
-    // Filter out booths that are already marked as visited in the context
-    const remainingBooths = allBooths.filter(booth => !visitedBoothNames.includes(booth.name));
-    
     // Determine if booth visits are complete
     const isComplete = visitedCount === totalBooths;
     setIsBoothComplete(isComplete);
     
-    // Set unvisited booths
-    setUnvisitedBooths(remainingBooths);
+    // Go directly to booth status
+    setCurrentStep("booth-status");
     
-    // Go to the confirmation step first instead of directly to booth status
-    setCurrentStep("confirm-customer");
-    
-  }, [visitedCount, totalBooths, booths]);
+  }, [visitedCount, totalBooths]);
 
   const captureAndScanQRCode = useCallback(() => {
     if (!scanning || currentStep !== "scan") return;
@@ -206,47 +173,8 @@ function AuditorPageContent() {
     setManualCode("");
   };
 
-  const handleBoothToggle = (name: string, isVisited: boolean) => {
-    // Update the booths list in the UI only (don't update context yet)
-    setUnvisitedBooths(prevBooths => 
-      prevBooths.map(booth => 
-        booth.name === name ? { ...booth, checked: isVisited } : booth
-      )
-    );
-    
-    // We don't update the actual booth visited state in context until Submit is clicked
-    // This ensures booths stay in the list until submission
-  };
 
-  const handleBoothSelectionSubmit = () => {
-    // Count how many booths are checked
-    const checkedBooths = unvisitedBooths.filter(booth => booth.checked);
-    
-    // If all booths are checked, proceed to voting
-    const allBooths = checkedBooths.length === unvisitedBooths.length;
-    
-    if (allBooths) {
-      // Update all booths in the context
-      checkedBooths.forEach(booth => {
-        if (booth.checked) {
-          handleToggleBooth(booth.name, true);
-        }
-      });
-      
-      // Proceed to voting
-      setCurrentStep("vote-modal");
-    } else {
-      // Update only the checked booths in the context
-      checkedBooths.forEach(booth => {
-        if (booth.checked) {
-          handleToggleBooth(booth.name, true);
-        }
-      });
-      
-      // Go back to booth status to show progress
-      setCurrentStep("booth-status");
-    }
-  };
+
 
   const handleVoteStart = () => {
     // Reset votes when starting a new voting session
@@ -289,27 +217,10 @@ function AuditorPageContent() {
       setCurrentStep("scan");
       setScanning(true);
       setCustomerData(null);
-      setUnvisitedBooths([]);
     }, 3000);
   };
 
-  const handleConfirmCustomer = () => {
-    // If all booths are visited, go straight to voting
-    if (isBoothComplete) {
-      setCurrentStep("vote-modal");
-    } else {
-      // Otherwise go to booth status
-      setCurrentStep("booth-status");
-    }
-  };
 
-  const handleCancelCustomer = () => {
-    // Reset and go back to scanning
-    setCustomerData(null);
-    setUnvisitedBooths([]);
-    setCurrentStep("scan");
-    setScanning(true);
-  };
 
   const videoConstraints = {
     facingMode: "environment",
@@ -382,42 +293,7 @@ function AuditorPageContent() {
           </div>
         )}
 
-        {currentStep === "confirm-customer" && customerData && (
-          <div className="rounded-lg bg-white p-6 text-center shadow-lg">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
-                <Image
-                  src="/images/question-mark.svg"
-                  alt="Confirm"
-                  width={32}
-                  height={32}
-                />
-              </div>
-            </div>
-            <h2 className="text-xl font-semibold mb-2">Confirm Customer</h2>
-            <div className="mb-6">
-              <p>Customer Code: <span className="font-semibold">{customerData.code}</span></p>
-              <p>Customer Name: <span className="font-semibold">{customerData.name}</span></p>
-            </div>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to proceed? You can click &quot;Proceed&quot; to continue or &quot;Cancel&quot; to go back.
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={handleConfirmCustomer}
-                className="w-full rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600"
-              >
-                Proceed
-              </button>
-              <button
-                onClick={handleCancelCustomer}
-                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-700 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
+
 
         {currentStep === "booth-status" && customerData && (
           <BoothStatus
@@ -425,7 +301,7 @@ function AuditorPageContent() {
             visitedCount={visitedCount}
             totalBooths={totalBooths}
             onViewUnvisited={() => setCurrentStep("booths-list")}
-            onClaimSouvenir={() => setCurrentStep("souvenir")}
+            onVoteBooth={() => setCurrentStep("vote-modal")}
             onClose={() => {
               // Reset customer data and return to scanning
               setCustomerData(null);
@@ -437,24 +313,12 @@ function AuditorPageContent() {
 
         {currentStep === "booths-list" && customerData && (
           <BoothsList
-
-            onContinue={() => setCurrentStep("unvisited-booths")}
+            onBack={() => setCurrentStep("booth-status")}
           />
         )}
 
-        {currentStep === "unvisited-booths" && customerData && (
-          <UnvisitedBooths
-            customerCode={customerData.code}
-            customerName={customerData.name}
-            booths={unvisitedBooths.map(booth => ({
-              name: booth.name,
-              code: booth.code,
-              checked: booth.checked || false
-            }))}
-            onComplete={handleBoothSelectionSubmit}
-            onBoothToggle={handleBoothToggle}
-          />
-        )}
+
+
 
         {currentStep === "vote-modal" && customerData && (
           <VoteBestBoothModal
