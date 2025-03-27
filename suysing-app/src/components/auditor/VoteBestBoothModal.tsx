@@ -16,10 +16,10 @@ export default function VoteBestBoothModal({
     <div className="bg-white p-6 rounded-lg shadow-md text-center">
       <div className="mb-4">
         <Image
-          src="/images/award-icon.svg"
+          src="/images/bestbooth.svg"
           alt="Vote for Best Booth"
-          width={64}
-          height={64}
+          width={100}
+          height={100}
           className="mx-auto"
         />
       </div>
