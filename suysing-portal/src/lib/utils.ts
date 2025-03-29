@@ -93,7 +93,9 @@ export const validateTokenResponse = (error : any) => {
   if(error?.status == 401){
     if(error?.response?.data?.code == "token_not_valid"){
       if (typeof window !== 'undefined') {
+        // remove local storage auth and force reload
         localStorage.removeItem('auth');
+        window.location.assign(window.location.origin + window.location.pathname);
       }
     }
   }
