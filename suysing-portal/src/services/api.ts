@@ -1,25 +1,55 @@
+import httpClient from './base/httpClient';
+import axios from 'axios';
 
 // Mock authentication service
 export const authService = {
   login: async (username: string, password: string) => {
     if (username && password) {
       // Mock successful login response
-      return {
-        success: true,
-        token: 'mock-jwt-token',
-        user: {
-          id: 1,
-          name: 'John Doe',
-          username,
-          role: 'admin'
+      // return {
+      //   success: true,
+      //   token: 'mock-jwt-token',
+      //   user: {
+      //     id: 1,
+      //     name: 'John Doe',
+      //     username,
+      //     role: 'admin'
+      //   }
+      // };
+
+      try{
+        const response = await httpClient().post('/admin/login/', {
+          email: username,
+          password: password
+        });
+
+        return {
+          success: true,
+          message: response?.data?.message,
+          data : response?.data?.data || []
+        };
+
+      } catch (error) {
+        console.log(error)
+        if (axios.isAxiosError(error)) {
+          const errResp = error.response;
+          return {
+            success: false,
+            message: errResp?.data?.message || 'Error! Please try again later'
+          };
+
+        } else {
+           // Mock failed login
+          return {
+            success: false,
+            message: 'Unable to process your request. Please try again later.'
+          };
         }
-      };
+      }
+     
+      
     }
-    // Mock failed login
-    return {
-      success: false,
-      message: 'Invalid username or password'
-    };
+   
   },
   logout: async () => {
     // Clear any stored authentication data
@@ -119,11 +149,72 @@ export const customerActivitiesData = {
       type: 'Green'
     }
   ],
-  getCustomers: async () => {
-    return customerActivitiesData.customers;
+  getCustomers: async (token : string, filterParams : any) => {
+
+    try{
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/customer-activities/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        totalBoothVisited : customer.total_booth_visited,
+        boothHopping : customer.is_booth_hopping,
+        boothVoting : customer.is_booth_voting,
+        souvenirClaiming : customer.is_souvenir_claim,
+        type : customer.customer_type,
+      }));
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      return {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+     
+    }
+
+    // Mock response
+    // return customerActivitiesData.customers;
   },
-  getSummary: async () => {
-    return customerActivitiesData.summary;
+  getSummary: async (token : string) => {
+    
+    try{
+      const response = await httpClient(token).get('/admin/customer-activities/dashboard-count/', {});
+
+      const response_data = response?.data?.data || []
+      
+      return {
+        boothHopping: response_data?.booth_hopping || 0,
+        boothVoting: response_data?.booth_voting || 0,
+        souvenirClaiming : response_data?.souvenir_claim || 0,
+      };
+
+    } catch (error) {
+
+      return {
+        boothHopping: 0,
+        boothVoting: 0,
+        souvenirClaiming : 0,
+      };
+
+    }
+    // Mock response
+    // return customerActivitiesData.summary;
   }
 };
 
