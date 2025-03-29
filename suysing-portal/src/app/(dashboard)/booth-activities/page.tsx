@@ -5,50 +5,79 @@ import { FaSearch, FaFilter, FaEye } from 'react-icons/fa';
 import { boothActivitiesData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Booth } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function BoothActivitiesPage() {
+  const { token } = useAuth();
   const [booths, setBooths] = useState<Booth[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredBooths, setFilteredBooths] = useState<Booth[]>([]);
   const itemsPerPage = 8;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+
+  const fetchData = async () => {
+    try {
+      const boothsData = await boothActivitiesData.getBooths(token, filterParams);
+      
+      setBooths(boothsData.results);
+      setFilteredBooths(boothsData.results);
+
+      setCurrentPage(boothsData.current_page)
+      setTotalPages(boothsData.total_pages)
+      
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const boothsData = await boothActivitiesData.getBooths();
-        
-        setBooths(boothsData);
-        setFilteredBooths(boothsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filterParams]);
 
-  useEffect(() => {
-    const results = booths.filter(booth =>
-      booth.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // useEffect(() => {
+  //   const results = booths.filter(booth =>
+  //     booth.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
     
-    setFilteredBooths(results);
-    setCurrentPage(1);
-  }, [searchQuery, booths]);
+  //   setFilteredBooths(results);
+  //   setCurrentPage(1);
+  // }, [searchQuery, booths]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredBooths.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredBooths.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages1 = Math.ceil(filteredBooths.length / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredBooths;
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+  const handleSearchQuery = (query : any) => {
+    const search_val = query.target.value
+    setSearchQuery(search_val)
+  }
+
+  
+  useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+  
+  }, [searchQuery]);
+
 
   // Status color mapping
   const getStatusColor = (status: string | undefined): string => {
@@ -78,7 +107,7 @@ export default function BoothActivitiesPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQuery}
               placeholder="Search booth name..."
               className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
