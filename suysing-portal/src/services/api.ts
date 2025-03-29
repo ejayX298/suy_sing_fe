@@ -294,16 +294,11 @@ export const boothHoppingReportData = {
 
     try{
 
-      console.log('filter params')
-      console.log(filterParams)
       const {page, perpage, query} = filterParams
   
       const response = await httpClient(token).get(`/admin/booth-hopping-report/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
       
       const response_data = response?.data?.data || []
-
-      console.log('response_data')
-      console.log(response_data)
 
       const total_pages = response_data?.total_pages || 0
       const current_page = response_data?.current_page || 1
@@ -344,8 +339,63 @@ export const boothHoppingReportData = {
     // Mock response
     // return boothHoppingReportData.customers;
   },
-  getCustomerById: async (id: number) => {
-    return boothHoppingReportData.customers.find(c => c.id === id);
+  getCustomerById: async (id: number, token : string, filterParams : any) => {
+
+    try{
+      const {page, perpage, query} = filterParams
+      
+      const response = await httpClient(token).get(`/admin/booth-hopping-report/details/?customer_id=${id}&page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.booth_hopping_history?.total_pages || 0
+      const current_page = response_data?.booth_hopping_history?.current_page || 1
+
+      const mapBoothHistory = response_data.booth_hopping_history.booths.map(booth => ({
+        boothName : booth.booth_name,
+        boothCode : booth.booth_code,
+        date : booth.date_of_visit,
+        time : booth.time_of_visit,
+        count : booth.booth_count,
+      }));
+
+      const mapResponse = {
+        id : response_data.customer.id,
+        code : response_data.customer.code,
+        name: response_data.customer.full_name,
+        type: response_data.customer.customer_type,
+        totalVisited: response_data.customer.total_booth_visited,
+        store: response_data.customer.store_name,
+        boothVisits : mapBoothHistory
+      };
+      
+    
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    // Mock response
+    // return boothHoppingReportData.customers.find(c => c.id === id);
   }
 };
 
