@@ -1,5 +1,6 @@
-import httpClient from './base/httpClient';
+import httpClient,  from './base/httpClient';
 import axios from 'axios';
+import { validateTokenResponse } from '@/lib/utils';
 
 // Mock authentication service
 export const authService = {
@@ -205,12 +206,21 @@ export const customerActivitiesData = {
       };
 
     } catch (error) {
-
-      return {
+      
+      const default_err_response = {
         boothHopping: 0,
         boothVoting: 0,
         souvenirClaiming : 0,
-      };
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
 
     }
     // Mock response
