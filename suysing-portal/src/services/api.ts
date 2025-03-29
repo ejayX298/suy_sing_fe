@@ -248,8 +248,52 @@ export const boothActivitiesData = {
     { id: 7, name: 'Argentina', status: 'Closed Early' },
     { id: 8, name: 'PurefoNds', status: 'Closed Early' }
   ],
-  getBooths: async () => {
-    return boothActivitiesData.booths;
+  getBooths: async (token : string, filterParams : any) => {
+    
+    try{
+      
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/booth-activities/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.booths.map(booth => ({
+        id : booth.id,
+        name : booth.name,
+        status : booth.pretty_status,
+      }));
+      
+    
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    // Mock response
+    // return boothActivitiesData.booths;
   }
 };
 
