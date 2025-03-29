@@ -74,17 +74,21 @@ export default function CustomerBoothHoppingDetail({ params }: { params: { id: s
   const handleSearchQuery = (query : any) => {
     const search_val = query.target.value
     setSearchQuery(search_val)
+  }
 
+  useEffect(() => {
     // set delay 2 seconds
     const delaySetSearch = setTimeout(() => {
       // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query : search_val})
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
     }, 2000);
     
     //clears the timeout of the previous value of delaySetSearch
     //clears the timeout on re render
     return () => clearTimeout(delaySetSearch)
-  }
+    
+  }, [searchQuery]);
+
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {
