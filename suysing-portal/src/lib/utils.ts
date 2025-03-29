@@ -84,3 +84,19 @@ export const formatTime = (date: Date | string) => {
     hour12: true
   });
 };
+
+
+
+// Function to check the response if token is invalid or expired and clear the auth in localStorage
+export const validateTokenResponse = (error : any) => {
+
+  if(error?.status == 401){
+    if(error?.response?.data?.code == "token_not_valid"){
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth');
+      }
+    }
+  }
+
+  return;
+};
