@@ -5,51 +5,80 @@ import { FaSearch, FaFilter } from 'react-icons/fa';
 import { bestBoothReportData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Customer } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function BestBoothReportPage() {
+  const { token } = useAuth();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const itemsPerPage = 8;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+
+  const fetchData = async () => {
+    try {
+      const customersData = await bestBoothReportData.getCustomers(token, filterParams);
+      
+      setCustomers(customersData.results);
+      setFilteredCustomers(customersData.results);
+
+      setCurrentPage(customersData.current_page)
+      setTotalPages(customersData.total_pages)
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const customersData = await bestBoothReportData.getCustomers();
-        
-        setCustomers(customersData);
-        setFilteredCustomers(customersData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filterParams]);
 
-  useEffect(() => {
-    const results = customers.filter(customer =>
-      customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      customer.code.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // useEffect(() => {
+  //   const results = customers.filter(customer =>
+  //     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     customer.code.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
     
-    setFilteredCustomers(results);
-    setCurrentPage(1);
-  }, [searchQuery, customers]);
+  //   setFilteredCustomers(results);
+  //   setCurrentPage(1);
+  // }, [searchQuery, customers]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
+  // const totalPages1 = Math.ceil(filteredCustomers.length / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredCustomers
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+  const handleSearchQuery = (query : any) => {
+    const search_val = query.target.value
+    setSearchQuery(search_val)
+  }
+
+
+   useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+    
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+    
+  }, [searchQuery]);
+
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {
@@ -75,7 +104,7 @@ export default function BestBoothReportPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQuery}
               placeholder="Search customer here..."
               className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
