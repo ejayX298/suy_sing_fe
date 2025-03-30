@@ -6,28 +6,30 @@ import { FaArrowLeft } from 'react-icons/fa';
 import { bestBoothReportData } from '@/services/api';
 import QRCode from 'react-qr-code';
 import { Customer, BoothVote } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function CustomerBoothReportDetail({ params }: { params: { id: string } }) {
+  const { token } = useAuth();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  
+  const fetchData = async () => {
+    try {
+      const customerId = parseInt(params.id);
+      const customerData = await bestBoothReportData.getCustomerById(customerId, token);
+      
+      if (customerData.results.length != 0) {
+        setCustomer(customerData.results);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const customerId = parseInt(params.id);
-        const customerData = await bestBoothReportData.getCustomerById(customerId);
-        
-        if (customerData) {
-          setCustomer(customerData);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
   }, [params.id]);
 
