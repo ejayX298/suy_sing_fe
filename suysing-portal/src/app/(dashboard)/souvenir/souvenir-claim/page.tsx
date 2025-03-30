@@ -5,51 +5,76 @@ import { FaSearch, FaFilter } from 'react-icons/fa';
 import { souvenirClaimData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Claim } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function SouvenirClaimPage() {
+  const { token } = useAuth();
   const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredClaims, setFilteredClaims] = useState<Claim[]>([]);
   const itemsPerPage = 8;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+
+  const fetchData = async () => {
+    try {
+      const claimsData = await souvenirClaimData.getClaims(token, filterParams);
+      
+      setClaims(claimsData.results);
+      setFilteredClaims(claimsData.results);
+
+      setCurrentPage(claimsData.current_page);
+      setTotalPages(claimsData.total_pages);
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const claimsData = await souvenirClaimData.getClaims();
-        
-        setClaims(claimsData);
-        setFilteredClaims(claimsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filterParams]);
 
-  useEffect(() => {
-    const results = claims.filter(claim =>
-      claim.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      claim.code.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // useEffect(() => {
+  //   const results = claims.filter(claim =>
+  //     claim.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     claim.code.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
     
-    setFilteredClaims(results);
-    setCurrentPage(1);
-  }, [searchQuery, claims]);
+  //   setFilteredClaims(results);
+  //   setCurrentPage(1);
+  // }, [searchQuery, claims]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredClaims.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredClaims.slice(indexOfFirstItem, indexOfLastItem);
+  // const totalPages1 = Math.ceil(filteredClaims.length / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredClaims;
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+
+
+  useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+    
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+    
+  }, [searchQuery]);
 
   // Status color mapping
   const getStatusColor = (status: string) => {
