@@ -85,6 +85,15 @@ export const getInitialBooths = (): Booth[] => {
       height: 180,
     },
 
+    {
+      id: "coca-cola",
+      name: "Coca-Cola",
+      image: "/images/coca-cola.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
     // Main booth grid
     {
       id: "spam",
@@ -102,10 +111,96 @@ export const getInitialBooths = (): Booth[] => {
       width: 100,
       height: 100,
     },
+
+    {
+      id: "oishi",
+      name: "Oishi",
+      image: "/images/oishi-red.png",
+      visited: false,
+      width: 150,
+      height: 150,
+    },
+
+    {id: "nabati",
+      name: "Nabati",
+      image: "/images/nabati.png",
+      visited: false,
+      width: 150,
+      height: 150,
+    },
+
+    {id: "green-cross",
+      name: "Green Cross",
+      image: "/images/green-cross.jpg",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
+    {
+      id: "alaska",
+      name: "Alaska",
+      image: "/images/alaska.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
+    {
+      id: "mondelez",
+      name: "Mondelz",
+      image: "/images/mondelez.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
+    {
+      id: "sanmiguel",
+      name: "San Miguel",
+      image: "/images/san-miguel.jpg",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+    {
+      id: "unilever",
+      name: "Unilever",
+      image: "/images/unilever.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
+    {
+      id: "century",
+      name: "Century",
+      image: "/images/century.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
     {
       id: "universal-robina",
       name: "Universal Robina",
       image: "/images/universal-robina.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+
+    {
+      id: "champion",
+      name: "Champion",
+      image: "/images/champion.png",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
+    {
+      id: "delmonte",
+      name: "Del Monte",
+      image: "/images/delmonte.png",
       visited: false,
       width: 100,
       height: 100,
@@ -243,7 +338,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "emperador",
       name: "EMPERADOR",
-      image: "/images/emperador.png",
+      image: "/images/emperador.jpg",
       visited: false,
       width: 160,
       height: 160,
@@ -259,10 +354,18 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "nestle",
       name: "Nestlé",
-      image: "/images/nescafe.png",
+      image: "/images/nestle.png",
       visited: false,
       width: 110,
       height: 110,
+    },
+    {
+      id: "p&g",
+      name: "P&G",
+      image: "/images/p&g.jpeg",
+      visited: false,
+      width: 100,
+      height: 100,
     },
     {
       id: "monde-nissin",
