@@ -475,21 +475,19 @@ export const bestBoothReportData = {
 
     } catch (error) {
 
-      console.log(error)
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
 
-      // const default_err_response = {
-      //   total_pages : 0,
-      //   current_page : 1,
-      //   results : []
-      // }
-      // if (axios.isAxiosError(error)) {
-
-      //   validateTokenResponse(error)
+        validateTokenResponse(error)
         
-      //   return default_err_response
-      // }else{
-      //   return default_err_response
-      // }
+        return default_err_response
+      }else{
+        return default_err_response
+      }
 
     }
 
@@ -676,7 +674,58 @@ export const bestBoothReportData = {
 };
 
 export const bestBoothWinnerTallyData = {
-  getBooths: async () => {
+
+  getBooths : async (token : string, filterParams : any) => {
+    try{
+
+      const {page, perpage, query, color_code} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/best-booth/winner-tally/?page=${page}&perpage=${perpage}&color_code=${color_code}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.booths.map(booth => ({
+        id : booth.id,
+        rank : booth.rank_no,
+        code : booth.code,
+        name : booth.name,
+        color : booth.pretty_color_code,
+        totalVotes : booth.total_no_of_votes
+      }));
+
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const booths = await bestBoothWinnerTallyData.getBoothsMock();
+    // return booths;
+  }, 
+  getBoothsMock: async () => {
     return [
       {
         id: 1,
