@@ -17,7 +17,7 @@ export default function BestBoothWinnerTallyPage() {
   const [filteredBooths, setFilteredBooths] = useState<Booth[]>([]);
   const [activeTab, setActiveTab] = useState('Blue Booth');
   const itemsPerPage = 10;
-  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 1, 'query' : '', color_code: 'blue'});
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : '', color_code: 'blue'});
 
   const fetchData = async () => {
     try {
