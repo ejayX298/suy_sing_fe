@@ -1,6 +1,7 @@
 import httpClient,  from './base/httpClient';
 import axios from 'axios';
 import { validateTokenResponse } from '@/lib/utils';
+import { getComponentTypeModule } from 'next/dist/server/lib/app-dir-module';
 
 // Mock authentication service
 export const authService = {
@@ -444,7 +445,60 @@ export const boothHoppingReportData = {
 };
 
 export const bestBoothReportData = {
-  getCustomers: async () => {
+  getCustomers : async (token : string, filterParams : any) => {
+
+    try{
+
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/best-booth/report/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        type : customer.pretty_customer_type,
+        timeSubmitted : customer.time_submitted
+      }));
+      
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      console.log(error)
+
+      // const default_err_response = {
+      //   total_pages : 0,
+      //   current_page : 1,
+      //   results : []
+      // }
+      // if (axios.isAxiosError(error)) {
+
+      //   validateTokenResponse(error)
+        
+      //   return default_err_response
+      // }else{
+      //   return default_err_response
+      // }
+
+    }
+
+
+    //Mock response
+    // const customers = await bestBoothReportData.getCustomersMock();
+    // return customers;
+  },
+  getCustomersMock: async () => {
     return [
       {
         id: 1,
@@ -570,9 +624,54 @@ export const bestBoothReportData = {
       }
     ];
   },
-  getCustomerById: async (id: number) => {
-    const customers = await bestBoothReportData.getCustomers();
-    return customers.find(customer => customer.id === id) || null;
+  getCustomerById: async (id: number, token: string) => {
+
+    try{
+      
+      const response = await httpClient(token).get(`/admin/best-booth/report/get-by-id/?customer_id=${id}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const mapBoothVoteHistory = response_data.customer.booth_vote_history.map(boothVote => ({
+        color : boothVote.pretty_booth_color_code,
+        name : boothVote.booth_name,
+      }));
+
+      const mapResponse = {
+        id : response_data.customer.id,
+        code : response_data.customer.code,
+        name: response_data.customer.full_name,
+        type: response_data.customer.pretty_customer_type,
+        totalVisited: response_data.customer.total_booth_visited,
+        store: response_data.customer.store_name,
+        voteHistory : mapBoothVoteHistory
+      };
+      
+    
+      return {
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+
+    // Mock response
+    // const customers = await bestBoothReportData.getCustomersMock();
+    // return customers.find(customer => customer.id === id) || null;
   }
 };
 
