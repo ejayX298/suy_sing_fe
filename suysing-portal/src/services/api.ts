@@ -817,8 +817,7 @@ export const souvenirClaimData = {
   getClaims : async (token : string, filterParams : any) => {
     
     try{
-      console.log('filter params')
-      console.log(filterParams)
+
       const {page, perpage, query} = filterParams
   
       const response = await httpClient(token).get(`/admin/souvenir/claim/?page=${page}&perpage=${perpage}&query=${query}`, {});
@@ -846,7 +845,6 @@ export const souvenirClaimData = {
 
     } catch (error) {
 
-      
       const default_err_response = {
         total_pages : 0,
         current_page : 1,
@@ -965,7 +963,58 @@ export const souvenirClaimData = {
 };
 
 export const souvenirAvailabilityData = {
-  getSouvenirs: async () => {
+
+  getSouvenirs : async (token : string, filterParams : any) => {
+    
+    try{
+      
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.souvenirs.map(souvenir => ({
+        id : souvenir.id,
+        name: souvenir.name,
+        totalQuantity: souvenir.qty,
+        claimed: souvenir.claimed,
+        remaining: souvenir.remaining
+      }));
+
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const souvenirs = await souvenirAvailabilityData.getSouvenirsMock();
+    // return souvenirs;
+  },
+  
+  getSouvenirsMock: async () => {
     return [
       {
         id: 1,
