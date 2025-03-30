@@ -813,7 +813,62 @@ export const bestBoothWinnerTallyData = {
 
 // Souvenir Claim Data
 export const souvenirClaimData = {
-  getClaims: async () => {
+
+  getClaims : async (token : string, filterParams : any) => {
+    
+    try{
+      console.log('filter params')
+      console.log(filterParams)
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/souvenir/claim/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        type : customer.customer_type,
+        status : customer.pretty_claim_status,
+        item : customer.item_claimed,
+        timeClaimed : customer.time_claimed,
+      }));
+
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const claims = await souvenirClaimData.getClaimsMock();
+    // return claims;
+  },
+  
+  getClaimsMock: async () => {
     return [
       {
         id: 1,
