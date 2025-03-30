@@ -5,50 +5,77 @@ import { FaSearch, FaFilter, FaEdit, FaPlus } from 'react-icons/fa';
 import { souvenirAvailabilityData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Souvenir } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function SouvenirAvailabilityPage() {
+  const { token } = useAuth();
   const [souvenirs, setSouvenirs] = useState<Souvenir[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredSouvenirs, setFilteredSouvenirs] = useState<Souvenir[]>([]);
   const itemsPerPage = 8;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+
+  const fetchData = async () => {
+    try {
+      const souvenirsData = await souvenirAvailabilityData.getSouvenirs(token, filterParams);
+      
+      setSouvenirs(souvenirsData.results);
+      setFilteredSouvenirs(souvenirsData.results);
+      
+      setCurrentPage(souvenirsData.current_page)
+      setTotalPages(souvenirsData.total_pages)
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const souvenirsData = await souvenirAvailabilityData.getSouvenirs();
-        
-        setSouvenirs(souvenirsData);
-        setFilteredSouvenirs(souvenirsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filterParams]);
 
-  useEffect(() => {
-    const results = souvenirs.filter(souvenir =>
-      souvenir.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // useEffect(() => {
+  //   const results = souvenirs.filter(souvenir =>
+  //     souvenir.name.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
     
-    setFilteredSouvenirs(results);
-    setCurrentPage(1);
-  }, [searchQuery, souvenirs]);
+  //   setFilteredSouvenirs(results);
+  //   setCurrentPage(1);
+  // }, [searchQuery, souvenirs]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredSouvenirs.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredSouvenirs.slice(indexOfFirstItem, indexOfLastItem);
+  // const totalPages = Math.ceil(filteredSouvenirs.length / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredSouvenirs;
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+  const handleSearchQuery = (query : any) => {
+    const search_val = query.target.value
+    setSearchQuery(search_val)
+  }
+
+
+   useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+    
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+    
+  }, [searchQuery]);
 
   return (
     <div className="space-y-6">
@@ -68,7 +95,7 @@ export default function SouvenirAvailabilityPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQuery}
               placeholder="Search souvenir here..."
               className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
