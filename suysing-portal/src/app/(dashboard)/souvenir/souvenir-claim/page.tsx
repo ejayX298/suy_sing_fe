@@ -55,13 +55,13 @@ export default function SouvenirClaimPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Claimed':
-        return 'bg-green-500 text-white';
+        return 'bg-[#2EE84A] text-black';
       case 'Pending':
-        return 'bg-yellow-500 text-white';
+        return 'bg-[#FFE944] text-black';
       case 'On Hold':
-        return 'bg-red-500 text-white';
+        return 'bg-[#FF5A44] text-black';
       default:
-        return 'bg-gray-500 text-white';
+        return 'bg-gray-400 text-black';
     }
   };
 
@@ -80,7 +80,7 @@ export default function SouvenirClaimPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="py-4 flex justify-end gap-4 items-center ">
+        <div className="py-4 flex justify-end gap-4 items-center">
           <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
@@ -125,7 +125,7 @@ export default function SouvenirClaimPage() {
                     <td className="px-4 py-3">{claim.name}</td>
                     <td className={`px-4 py-3 ${getCustomerTypeColor(claim.type)}`}>{claim.type}</td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(claim.status)}`}>
+                      <span className={`px-3 py-2  ${getStatusColor(claim.status)}`}>
                         {claim.status}
                       </span>
                     </td>
