@@ -5,11 +5,13 @@ import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
 import { BestBoothProvider, useBestBooth } from "@/context/BestBoothContext";
 import BoothGrid from "@/components/best-booth/BoothGrid";
 import VoteSummary from "@/components/best-booth/VoteSummary";
-import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
+import ThankYouScreen from "@/components/auditor/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
+import { useRouter } from "next/navigation";
 
-function BestBoothContent() {
+function AuditorBoothVoteContent() {
+  const router = useRouter();
   const [step, setStep] = useState<
     "intro" | "blue" | "orange" | "red" | "summary" | "thankyou"
   >("intro");
@@ -28,9 +30,9 @@ function BestBoothContent() {
     } else if (step === "summary") {
       setStep("thankyou");
     } else {
-      // Reset and go back to intro
+      // For auditor flow, redirect to souvenir selection after thank you
       resetVotes();
-      setStep("intro");
+      router.push("/auditor/souvenir-selection");
     }
   };
 
@@ -136,7 +138,7 @@ function BestBoothContent() {
           </>
         );
       case "summary":
-        return <VoteSummary onSubmit={handleContinue} onCancel={() => setStep("intro")} />;
+        return <VoteSummary onSubmit={handleContinue} onCancel={() => setStep("intro")}/>;
       case "thankyou":
         return <ThankYouScreen onContinue={handleContinue} />;
       default:
@@ -145,16 +147,16 @@ function BestBoothContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen ">
+    <div className="flex flex-col min-h-screen">
       <div className="flex-1 pb-16">{renderStepContent()}</div>
     </div>
   );
 }
 
-export default function BestBoothPage() {
+export default function AuditorBoothVotePage() {
   return (
     <BestBoothProvider>
-      <BestBoothContent />
+      <AuditorBoothVoteContent />
     </BestBoothProvider>
   );
 }

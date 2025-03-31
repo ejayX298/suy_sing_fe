@@ -42,7 +42,7 @@ export default function BoothGrid({ booths, color }: BoothGridProps) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-3 px-4 pb-4 max-w-md mx-auto">
+    <div className="grid grid-cols-3 gap-3 px-4 pb-4 max-w-xl sm:max-w-3xl mx-auto">
       {booths.map((booth) => (
         <BoothCard
           key={booth.logo}

@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface BoothStatusProps {
   isComplete: boolean;
   visitedCount: number;
   totalBooths: number;
   onViewUnvisited: () => void;
-  onVoteBooth: () => void;
   onClose: () => void;
 }
 
@@ -16,9 +16,9 @@ export default function BoothStatus({
   visitedCount,
   totalBooths,
   onViewUnvisited,
-  onVoteBooth,
   onClose,
 }: BoothStatusProps) {
+  const router = useRouter();
   return (
     <div className="rounded-lg border-2 mx-auto max-w-xl border-[#F78B1E] bg-white p-6 shadow-lg text-center">
       <div className="mb-6">
@@ -66,7 +66,7 @@ export default function BoothStatus({
       {!isComplete && (
         <>
           <button
-            onClick={onVoteBooth}
+            onClick={() => router.push('/auditor/booth-vote')}
             className="w-full mt-3 rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
           >
             Override

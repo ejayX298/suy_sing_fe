@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64px" height="64px" viewBox="0 0 64 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Success Icon</title>
+    <g id="Success-Icon" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <circle id="Background" fill="#4CAF50" cx="32" cy="32" r="32"></circle>
+        <path d="M26.5,40.5 L18.5,32.5 C17.7,31.7 16.4,31.7 15.6,32.5 C14.8,33.3 14.8,34.6 15.6,35.4 L25.1,44.9 C25.9,45.7 27.2,45.7 28,44.9 L48.4,24.5 C49.2,23.7 49.2,22.4 48.4,21.6 C47.6,20.8 46.3,20.8 45.5,21.6 L26.5,40.5 Z" id="Check" fill="#FFFFFF" fill-rule="nonzero"></path>
+    </g>
+</svg>
