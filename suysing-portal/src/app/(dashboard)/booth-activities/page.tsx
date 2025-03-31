@@ -97,9 +97,9 @@ export default function BoothActivitiesPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white shadow-sm rounded-md">
-        <div className="p-4 flex justify-between items-center border-b">
-          <button className="inline-flex items-center px-3 py-1 border border-blue-600 text-blue-600 rounded-md text-sm">
+      <div>
+        <div className="py-4 flex justify-end items-center gap-4">
+          <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
@@ -109,18 +109,18 @@ export default function BoothActivitiesPage() {
               value={searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search booth name..."
-              className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
             />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-7`00" />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border border-gray-400">
             <thead>
-              <tr className="bg-blue-600 text-white">
-                <th className="px-4 py-2 text-left">Booth Name</th>
-                <th className="px-4 py-2 text-left">Status</th>
+              <tr className="bg-blue-800 text-white">
+                <th className="table-header">Booth Name</th>
+                <th className="table-header">Status</th>
                 <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>
@@ -150,7 +150,7 @@ export default function BoothActivitiesPage() {
           </table>
         </div>
 
-        <div className="p-4 border-t">
+        <div className="p-4">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

@@ -104,9 +104,9 @@ export default function SouvenirClaimPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white shadow-sm rounded-md">
-        <div className="p-4 flex justify-between items-center border-b">
-          <button className="inline-flex items-center px-3 py-1 border border-blue-600 text-blue-600 rounded-md text-sm">
+      <div>
+        <div className="py-4 flex justify-end gap-4 items-center ">
+          <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
@@ -116,22 +116,22 @@ export default function SouvenirClaimPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search customer here..."
-              className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
             />
-            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full border border-gray-400">
             <thead>
-              <tr className="bg-blue-600 text-white">
-                <th className="px-4 py-2 text-left">Customer Code</th>
-                <th className="px-4 py-2 text-left">Customer Name</th>
-                <th className="px-4 py-2 text-left">Customer Type</th>
-                <th className="px-4 py-2 text-left">Status</th>
-                <th className="px-4 py-2 text-left">Item</th>
-                <th className="px-4 py-2 text-left">Time Claimed</th>
+              <tr className="bg-blue-800 text-white">
+                <th className="table-header">Customer Code</th>
+                <th className="table-header">Customer Name</th>
+                <th className="table-header">Customer Type</th>
+                <th className="table-header">Status</th>
+                <th className="table-header">Item</th>
+                <th className="table-header">Time Claimed</th>
               </tr>
             </thead>
             <tbody>
@@ -163,7 +163,7 @@ export default function SouvenirClaimPage() {
           </table>
         </div>
 
-        <div className="p-4 border-t">
+        <div className="p-4">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
