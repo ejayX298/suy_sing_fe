@@ -136,7 +136,7 @@ function BestBoothContent() {
           </>
         );
       case "summary":
-        return <VoteSummary onSubmit={handleContinue} />;
+        return <VoteSummary onSubmit={handleContinue} onCancel={() => setStep("intro")} />;
       case "thankyou":
         return <ThankYouScreen onContinue={handleContinue} />;
       default:
