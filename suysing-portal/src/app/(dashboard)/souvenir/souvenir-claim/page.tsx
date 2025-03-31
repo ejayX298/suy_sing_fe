@@ -8,7 +8,6 @@ import { Claim } from '@/types';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { MdModeEditOutline } from "react-icons/md";
 import Swal from 'sweetalert2'
-import { Claim } from '@/types';
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
