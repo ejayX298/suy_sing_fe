@@ -126,6 +126,7 @@ export const useAuth = create<AuthState>((set) => {
       
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth');
+        localStorage.removeItem('is_force_logout');
       }
     }
   };
