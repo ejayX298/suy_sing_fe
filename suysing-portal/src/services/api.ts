@@ -296,7 +296,47 @@ export const boothActivitiesData = {
 
     // Mock response
     // return boothActivitiesData.booths;
-  }
+  },
+
+  updateBooth: async (token: string, post_data: any) => {
+    
+    const {booth_id, booth_status} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/booth-activities/update/', {
+        booth_id: booth_id,
+        status: booth_status
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
+  },
+
 };
 
 export const boothHoppingReportData = {
