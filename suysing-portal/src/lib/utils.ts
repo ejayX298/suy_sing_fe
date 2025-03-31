@@ -97,11 +97,13 @@ export const validateTokenResponse = (error : any) => {
         
         const is_force_logout = localStorage.getItem('is_force_logout');
 
+        localStorage.setItem('is_force_logout', 'true');
+
         // force reload in initial force logout saving
         if(is_force_logout != 'true'){
           window.location.assign(window.location.origin + window.location.pathname);
         }
-        localStorage.setItem('is_force_logout', 'true');
+        
         // remove local storage auth and force reload
         // localStorage.removeItem('auth');
         // window.location.assign(window.location.origin + window.location.pathname);
