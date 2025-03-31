@@ -7,6 +7,7 @@ import Pagination from '@/components/ui/Pagination';
 import { Booth } from '@/types';
 import { useAuth } from '@/lib/hooks/useAuth';
 import QRCode from 'react-qr-code';
+import Swal from 'sweetalert2'
 
 export default function BoothActivitiesPage() {
   const { token } = useAuth();
@@ -53,7 +54,7 @@ export default function BoothActivitiesPage() {
   // }, [searchQuery, booths]);
 
   // Calculate pagination
-  const totalPages1 = Math.ceil(filteredBooths.length / itemsPerPage);
+  // const totalPages1 = Math.ceil(filteredBooths.length / itemsPerPage);
   // const indexOfLastItem = currentPage * itemsPerPage;
   // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredBooths;
@@ -98,6 +99,94 @@ export default function BoothActivitiesPage() {
         return 'text-gray-500';
     }
   };
+
+
+  const handleSubmitBooth = async () => {
+    // Here you would typically update the booth status via API
+    // console.log(`Updating booth ${selectedBooth.id} status to ${boothStatus}`);
+    // Update local state
+    // const updatedBooths = booths.map(booth => 
+    //   booth.id === selectedBooth.id ? {...booth, status: boothStatus} : booth
+    // );
+    // setBooths(updatedBooths);
+    // setFilteredBooths(updatedBooths.filter(booth =>
+    //   booth.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // ));
+
+    if (!selectedBooth) return;
+
+    let booth_status = 0;
+    if(boothStatus == "Closed Early"){
+      booth_status = 1;
+    }
+
+    let confirmAction = await confirmMessage(`Are you sure you want to update this booth?`);
+
+    if(confirmAction.isConfirmed){
+
+        try{
+
+          // Update booth status
+          const boothUpdated = {
+            booth_id : selectedBooth.id,
+            booth_status : booth_status,
+          }
+
+          const boothUpdatedData = await boothActivitiesData.updateBooth(token, boothUpdated);
+          
+          if(boothUpdatedData.success){
+            showMessage("1" , boothUpdatedData.message)
+            setfilterParams({ ...filterParams})
+          }else{
+            showMessage("0" , boothUpdatedData.message)  
+          }
+          
+        } catch (error) {
+          // console.error('Error fetching data:', error);
+          showMessage("0" , "Error updating booth.")   
+        } finally {
+          setIsLoading(false);
+        }
+
+        setShowModal(false);
+
+    }
+  }
+
+
+  const confirmMessage = async (message: string)  => {
+    
+      const result = await Swal.fire({
+        title: 'Confirm',
+        text: message,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#193cb8",
+      })
+
+      return result;
+  }
+
+  const showMessage = (status: string, message : string)  => {
+    
+      let iconType: "success" | "error";
+      let titleType: "Success" | "Error";
+
+      if(status == "1"){
+        iconType = "success";
+        titleType = "Success";
+      }else{
+        iconType = "error";
+        titleType = "Error";
+      }
+
+      Swal.fire({
+        title: titleType,
+        text: message,
+        icon: iconType,
+        confirmButtonColor: "#193cb8"
+      })
+  }
 
   return (
     <div className="space-y-6">
@@ -200,19 +289,7 @@ export default function BoothActivitiesPage() {
             </div>
             
             <button 
-              onClick={() => {
-                // Here you would typically update the booth status via API
-                console.log(`Updating booth ${selectedBooth.id} status to ${boothStatus}`);
-                // Update local state
-                const updatedBooths = booths.map(booth => 
-                  booth.id === selectedBooth.id ? {...booth, status: boothStatus} : booth
-                );
-                setBooths(updatedBooths);
-                setFilteredBooths(updatedBooths.filter(booth =>
-                  booth.name.toLowerCase().includes(searchQuery.toLowerCase())
-                ));
-                setShowModal(false);
-              }}
+              onClick={handleSubmitBooth}
               className="w-full bg-blue-800 text-white py-2 px-4 hover:bg-blue-700 transition-colors"
             >
               Submit
