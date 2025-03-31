@@ -1053,6 +1053,46 @@ export const souvenirAvailabilityData = {
       }
    
   },
+
+
+  updateSouvenir: async (token: string, post_data: any) => {
+    
+    const {souvenir_id, souvenir_qty} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/souvenir/update/', {
+        souvenir_id: souvenir_id,
+        qty: souvenir_qty
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
+  },
   
   getSouvenirsMock: async () => {
     return [
