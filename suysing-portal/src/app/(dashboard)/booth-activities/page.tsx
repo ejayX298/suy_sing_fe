@@ -5,6 +5,7 @@ import { FaSearch, FaFilter, FaEye } from 'react-icons/fa';
 import { boothActivitiesData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Booth } from '@/types';
+import QRCode from 'react-qr-code';
 
 export default function BoothActivitiesPage() {
   const [booths, setBooths] = useState<Booth[]>([]);
@@ -12,6 +13,9 @@ export default function BoothActivitiesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredBooths, setFilteredBooths] = useState<Booth[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
+  const [boothStatus, setBoothStatus] = useState<string>('Open');
   const itemsPerPage = 8;
 
   useEffect(() => {
@@ -110,7 +114,14 @@ export default function BoothActivitiesPage() {
                     <td className="px-4 py-3">{booth.name}</td>
                     <td className={`px-4 py-3 ${getStatusColor(booth.status)}`}>{booth.status}</td>
                     <td className="px-4 py-3 text-center">
-                      <button className="text-blue-600 hover:text-blue-800">
+                      <button 
+                        className="text-blue-600 hover:text-blue-800"
+                        onClick={() => {
+                          setSelectedBooth(booth);
+                          setBoothStatus(booth.status || 'Open');
+                          setShowModal(true);
+                        }}
+                      >
                         <FaEye />
                       </button>
                     </td>
@@ -129,6 +140,57 @@ export default function BoothActivitiesPage() {
           />
         </div>
       </div>
+
+      {/* Booth QR Code Modal */}
+      {showModal && selectedBooth && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+            <div className="flex justify-center items-center mb-4">
+              <h2 className="text-4xl font-bold text-center">{selectedBooth.name}</h2>
+            </div>
+            
+            <div className="flex justify-center my-6">
+              <QRCode 
+                value={`https://suysing.com/booth/${selectedBooth.id}`} 
+                size={290} 
+                fgColor="#0A20B1"
+                
+              />
+            </div>
+            
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-2">Booth Status</label>
+              <select
+                value={boothStatus}
+                onChange={(e) => setBoothStatus(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Open">Open</option>
+                <option value="Closed Early">Closed Early</option>
+              </select>
+            </div>
+            
+            <button 
+              onClick={() => {
+                // Here you would typically update the booth status via API
+                console.log(`Updating booth ${selectedBooth.id} status to ${boothStatus}`);
+                // Update local state
+                const updatedBooths = booths.map(booth => 
+                  booth.id === selectedBooth.id ? {...booth, status: boothStatus} : booth
+                );
+                setBooths(updatedBooths);
+                setFilteredBooths(updatedBooths.filter(booth =>
+                  booth.name.toLowerCase().includes(searchQuery.toLowerCase())
+                ));
+                setShowModal(false);
+              }}
+              className="w-full bg-blue-800 text-white py-2 px-4 hover:bg-blue-700 transition-colors"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
