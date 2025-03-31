@@ -128,12 +128,12 @@ export default function SouvenirAvailabilityPage() {
         <div className="py-4 flex justify-end gap-4 items-center border-b">
           <div className="flex items-center space-x-2"> 
             <button 
-              className="inline-flex items-center px-3 py-3 bg-blue-700 text-white text-sm"
+              className="inline-flex items-center px-3 py-3 bg-blue-800 text-white text-sm"
               onClick={() => setShowAddModal(true)}
             >
               <FaPlus className="mr-2" /> Add Souvenir
             </button>
-            <button className="inline-flex items-center px-3 py-3 border bg-blue-700 text-white text-sm">
+            <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
             </button>
           </div>
@@ -146,14 +146,14 @@ export default function SouvenirAvailabilityPage() {
               placeholder="Search souvenir here..."
               className="pl-4 py-2 border w-64 focus:outline-none border-gray-400 focus:ring focus:ring-blue-500"
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-700" />
+            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
           </div>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full border border-gray-400">
             <thead>
-              <tr className="bg-blue-700 text-white">
+              <tr className="bg-blue-800 text-white">
                 <th className="px-4 py-2 text-left">Souvenir Name</th>
                 <th className="px-4 py-2 text-left">Total Quantity</th>
                 <th className="px-4 py-2 text-left">Claimed</th>
@@ -239,7 +239,7 @@ export default function SouvenirAvailabilityPage() {
                   Cancel
                 </button>
                 <button
-                  className="px-6 py-2 bg-blue-700 text-white"
+                  className="px-6 py-2 bg-blue-800 text-white"
                   onClick={handleAddSouvenir}
                 >
                   Submit
@@ -288,7 +288,7 @@ export default function SouvenirAvailabilityPage() {
                   Cancel
                 </button>
                 <button
-                  className="px-6 py-2 bg-blue-700 text-white"
+                  className="px-6 py-2 bg-blue-800 text-white"
                   onClick={handleEditSouvenir}
                 >
                   Update
