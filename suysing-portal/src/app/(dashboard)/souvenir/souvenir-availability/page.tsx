@@ -192,7 +192,7 @@ export default function SouvenirAvailabilityPage() {
         
       } catch (error) {
         // console.error('Error fetching data:', error);
-        showMessage("0" , "Error adding souvenir.")   
+        showMessage("0" , "Error updating souvenir.")   
       } finally {
         setIsLoading(false);
       }
