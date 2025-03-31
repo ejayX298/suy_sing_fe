@@ -22,19 +22,19 @@ export default function BoothCard({ logo, name, color, selected = false, onClick
 
   return (
     <div 
-      className={`flex flex-col items-center mb-4 rounded-lg overflow-hidden cursor-pointer border border-[#F78B1E] ${borderClasses}`}
+      className={`flex flex-col items-center mb-2 rounded-lg overflow-hidden cursor-pointer border border-[#F78B1E] ${borderClasses}`}
       onClick={onClick}
     >
-      <div className="bg-white p-2 w-full flex justify-center items-center h-[90px]">
+      <div className="bg-white w-full flex justify-center items-center h-32 sm:h-52">
         <Image 
           src={`/images/${logo}.png`} 
           alt={name} 
           width={80} 
           height={50}
-          className="object-contain max-h-[70px]"
+          className="object-contain sm:w-32"
         />
       </div>
-      <div className={`w-full text-center py-2 font-bold text-[17px] ${colorClasses[color]}`}>
+      <div className={`w-full text-center py-3 font-bold text-lg ${colorClasses[color]}`}>
         {name}
       </div>
     </div>

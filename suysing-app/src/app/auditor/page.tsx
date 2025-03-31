@@ -7,14 +7,9 @@ import jsQR from "jsqr";
 import BoothStatus from "@/components/auditor/BoothStatus";
 import BoothsList from "@/components/auditor/BoothsList";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
-import BoothGrid from "@/components/best-booth/BoothGrid";
-import VoteSummary from "@/components/best-booth/VoteSummary";
-import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
 import VoteBestBoothModal from "@/components/auditor/VoteBestBoothModal";
 import { useBooths } from "@/context/BoothsContext";
-import { BestBoothProvider, useBestBooth } from "@/context/BestBoothContext";
-import IntroScreen from "@/components/best-booth/IntroScreen";
-import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
+import { useRouter } from "next/navigation";
 
 function AuditorPageContent() {
   // Camera and scanning states
@@ -36,14 +31,7 @@ function AuditorPageContent() {
     | "scan"
     | "booth-status"
     | "booths-list"
-  
     | "vote-modal"
-    | "vote-intro"
-    | "vote-blue"
-    | "vote-orange" 
-    | "vote-red"
-    | "vote-summary"
-    | "thank-you"
     | "souvenir"
     | "success"
   >("scan");
@@ -51,8 +39,8 @@ function AuditorPageContent() {
   // Get booth data from context
   const { visitedCount, totalBooths } = useBooths();
   
-  // Get best booth voting context (only accessing what we need)
-  const { resetVotes } = useBestBooth();
+  // Initialize router for navigation
+  const router = useRouter();
   
   const [isBoothComplete, setIsBoothComplete] = useState(false);
   
@@ -79,7 +67,6 @@ function AuditorPageContent() {
     };
   }, [currentStep, showManualCodeModal]);
 
-  // Wrap handleScan in useCallback
   const handleScan = useCallback(async (data: string) => {
     const customerCode = data.trim();
     
@@ -91,11 +78,9 @@ function AuditorPageContent() {
     
     setCustomerData(mockCustomerData);
     
-    // Determine if booth visits are complete
     const isComplete = visitedCount === totalBooths;
     setIsBoothComplete(isComplete);
     
-    // Go directly to booth status
     setCurrentStep("booth-status");
     
   }, [visitedCount, totalBooths]);
@@ -173,42 +158,8 @@ function AuditorPageContent() {
     setManualCode("");
   };
 
-
-
-
   const handleVoteStart = () => {
-    // Reset votes when starting a new voting session
-    resetVotes();
-    setCurrentStep("vote-intro");
-  };
-
-  // Handle voting flow steps
-  const handleVotingStepContinue = () => {
-    if (currentStep === "vote-intro") {
-      setCurrentStep("vote-blue");
-    } else if (currentStep === "vote-blue") {
-      setCurrentStep("vote-orange");
-    } else if (currentStep === "vote-orange") {
-      setCurrentStep("vote-red");
-    } else if (currentStep === "vote-red") {
-      setCurrentStep("vote-summary");
-    } else if (currentStep === "vote-summary") {
-      setCurrentStep("thank-you");
-    } else if (currentStep === "thank-you") {
-      setCurrentStep("souvenir");
-    }
-  };
-
-  // Mark customer as voted when completing the voting process
-  const handleVoteComplete = () => {
-    if (customerData) {
-      // Update the customer data to reflect that they have voted
-      setCustomerData({
-        ...customerData,
-        hasVoted: true,
-      });
-      setCurrentStep("thank-you");
-    }
+    router.push("/auditor/booth-vote");
   };
 
   const handleSouvenirSelect = () => {
@@ -301,9 +252,7 @@ function AuditorPageContent() {
             visitedCount={visitedCount}
             totalBooths={totalBooths}
             onViewUnvisited={() => setCurrentStep("booths-list")}
-            onVoteBooth={() => setCurrentStep("vote-modal")}
             onClose={() => {
-              // Reset customer data and return to scanning
               setCustomerData(null);
               setCurrentStep("scan");
               setScanning(true);
@@ -327,70 +276,11 @@ function AuditorPageContent() {
           />
         )}
 
-        {currentStep === "vote-intro" && (
-          <IntroScreen onContinue={handleVotingStepContinue} />
-        )}
-
-        {currentStep === "vote-blue" && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-center">Select Best Blue Booth</h2>
-            <BoothGrid
-              booths={blueBooths}
-              color="blue"
-            />
-            <button
-              onClick={handleVotingStepContinue}
-              className="w-full rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600"
-            >
-              Continue
-            </button>
-          </div>
-        )}
-
-        {currentStep === "vote-orange" && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-center">Select Best Orange Booth</h2>
-            <BoothGrid
-              booths={orangeBooths}
-              color="orange"
-            />
-            <button
-              onClick={handleVotingStepContinue}
-              className="w-full rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600"
-            >
-              Continue
-            </button>
-          </div>
-        )}
-
-        {currentStep === "vote-red" && (
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold text-center">Select Best Red Booth</h2>
-            <BoothGrid
-              booths={redBooths}
-              color="red"
-            />
-            <button
-              onClick={handleVotingStepContinue}
-              className="w-full rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600"
-            >
-              Continue
-            </button>
-          </div>
-        )}
-
-        {currentStep === "vote-summary" && (
-          <VoteSummary onSubmit={handleVoteComplete} />
-        )}
-
-        {currentStep === "thank-you" && (
-          <ThankYouScreen onContinue={handleVotingStepContinue} />
-        )}
-
         {currentStep === "souvenir" && (
           <SouvenirSelection
             onSelect={handleSouvenirSelect}
             onCancel={() => setCurrentStep("scan")}
+            onContinue={() => setCurrentStep("success")}
           />
         )}
 
@@ -459,9 +349,5 @@ function AuditorPageContent() {
 }
 
 export default function AuditorPage() {
-  return (
-    <BestBoothProvider>
-      <AuditorPageContent />
-    </BestBoothProvider>
-  );
+  return <AuditorPageContent />;
 }

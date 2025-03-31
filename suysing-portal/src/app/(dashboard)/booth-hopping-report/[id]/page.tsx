@@ -163,7 +163,7 @@ export default function CustomerBoothHoppingDetail({ params }: { params: { id: s
           </div>
           
           <div className="flex-shrink-0">
-            <QRCode value={customer.code} size={128} />
+            <QRCode value={customer.code} size={128} fgColor="#0A20B1" />
           </div>
         </div>
       </div>
