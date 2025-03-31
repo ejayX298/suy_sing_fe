@@ -871,7 +871,7 @@ export const souvenirClaimData = {
         id : customer.id,
         code : customer.code,
         name : customer.full_name,
-        type : customer.customer_type,
+        type : customer.pretty_customer_type,
         status : customer.pretty_claim_status,
         item : customer.item_claimed,
         timeClaimed : customer.time_claimed,
@@ -905,6 +905,45 @@ export const souvenirClaimData = {
     //Mock response
     // const claims = await souvenirClaimData.getClaimsMock();
     // return claims;
+  },
+
+  updateCustomerStatus: async (token: string, post_data: any) => {
+    
+    const {customer_id, customer_status} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/souvenir/update-customer-status/', {
+        customer_id: customer_id,
+        customer_status: customer_status
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
   },
   
   getClaimsMock: async () => {
