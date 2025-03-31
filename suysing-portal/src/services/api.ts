@@ -57,6 +57,7 @@ export const authService = {
     // Clear any stored authentication data
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth');
+      localStorage.removeItem('is_force_logout');
     }
     return { success: true };
   }
