@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaPlus } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaPlus, FaLeaf } from 'react-icons/fa';
 import { MdModeEditOutline } from "react-icons/md";
 import { souvenirAvailabilityData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Souvenir } from '@/types';
 import { useAuth } from '@/lib/hooks/useAuth';
+import Swal from 'sweetalert2'
 
 export default function SouvenirAvailabilityPage() {
   const { token } = useAuth();
@@ -84,7 +85,7 @@ export default function SouvenirAvailabilityPage() {
   }, [searchQuery]);
 
   
-  const handleAddSouvenir = () => {
+  const handleAddSouvenir = async () => {
     // Validate inputs
     if (!newSouvenirName.trim() || !newSouvenirQuantity.trim()) {
       alert('Please fill in all fields');
@@ -98,21 +99,51 @@ export default function SouvenirAvailabilityPage() {
     }
 
     // Create new souvenir object
-    const newSouvenir: Souvenir = {
-      id: souvenirs.length + 1, // Simple ID generation for demo
-      name: newSouvenirName,
-      totalQuantity: quantity,
-      claimed: 0,
-      remaining: quantity
-    };
+    // const newSouvenir: Souvenir = {
+    //   id: souvenirs.length + 1, // Simple ID generation for demo
+    //   name: newSouvenirName,
+    //   totalQuantity: quantity,
+    //   claimed: 0,
+    //   remaining: quantity
+    // };
 
     // Add to souvenirs list
-    setSouvenirs([...souvenirs, newSouvenir]);
-    
-    // Reset form and close modal
-    setNewSouvenirName('');
-    setNewSouvenirQuantity('');
-    setShowAddModal(false);
+    // setSouvenirs([...souvenirs, newSouvenir]);
+
+    let confirmAction = await confirmMessage(`Are you sure you want to add ${newSouvenirName}?`);
+
+    if(confirmAction.isConfirmed){
+
+        // Add souvenir
+        const newSouvenir = {
+          name: newSouvenirName,
+          totalQuantity: quantity,
+        };
+
+        try {
+          const souvenirsData = await souvenirAvailabilityData.addSouvenir(token, newSouvenir);
+          
+          if(souvenirsData.success){
+            showMessage("1" , souvenirsData.message)
+            setfilterParams({ ...filterParams, page: 1, query : ''})
+          }else{
+            showMessage("0" , souvenirsData.message)  
+          }
+          
+        } catch (error) {
+          // console.error('Error fetching data:', error);
+          showMessage("0" , "Error in adding souvenir.")   
+        } finally {
+          setIsLoading(false);
+        }
+        
+        // Reset form and close modal
+        setNewSouvenirName('');
+        setNewSouvenirQuantity('');
+        setShowAddModal(false);
+        
+    }
+   
   };
 
   const handleEditSouvenir = () => {
@@ -149,6 +180,43 @@ export default function SouvenirAvailabilityPage() {
     setNewSouvenirQuantity(souvenir.totalQuantity.toString());
     setShowEditModal(true);
   };
+
+
+  const confirmMessage = async (message: string)  => {
+    
+      const result = await Swal.fire({
+        title: 'Confirm',
+        text: message,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonColor: "#193cb8",
+      })
+
+      return result;
+  }
+
+  const showMessage = (status: string, message : string)  => {
+    
+      let iconType: "success" | "error";
+      let titleType: "Success" | "Error";
+
+      if(status == "1"){
+        iconType = "success";
+        titleType = "Success";
+      }else{
+        iconType = "error";
+        titleType = "Error";
+      }
+
+      Swal.fire({
+        title: titleType,
+        text: message,
+        icon: iconType,
+        confirmButtonColor: "#193cb8"
+      })
+  }
+
+
 
   return (
     <div className="space-y-6">
