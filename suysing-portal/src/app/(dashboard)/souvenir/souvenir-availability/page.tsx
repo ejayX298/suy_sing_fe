@@ -132,7 +132,7 @@ export default function SouvenirAvailabilityPage() {
           
         } catch (error) {
           // console.error('Error fetching data:', error);
-          showMessage("0" , "Error in adding souvenir.")   
+          showMessage("0" , "Error adding souvenir.")   
         } finally {
           setIsLoading(false);
         }
@@ -146,7 +146,7 @@ export default function SouvenirAvailabilityPage() {
    
   };
 
-  const handleEditSouvenir = () => {
+  const handleEditSouvenir = async () => {
     if (!selectedSouvenir) return;
     
     // Validate input
@@ -157,22 +157,53 @@ export default function SouvenirAvailabilityPage() {
     }
 
     // Update the souvenir
-    const updatedSouvenirs = souvenirs.map(souvenir => {
-      if (souvenir.id === selectedSouvenir.id) {
-        const claimed = souvenir.claimed;
-        return {
-          ...souvenir,
-          totalQuantity: quantity,
-          remaining: quantity - claimed
-        };
-      }
-      return souvenir;
-    });
+    // const updatedSouvenirs = souvenirs.map(souvenir => {
+    //   if (souvenir.id === selectedSouvenir.id) {
+    //     const claimed = souvenir.claimed;
+    //     return {
+    //       ...souvenir,
+    //       totalQuantity: quantity,
+    //       remaining: quantity - claimed
+    //     };
+    //   }
+    //   return souvenir;
+    // });
 
-    setSouvenirs(updatedSouvenirs);
-    setShowEditModal(false);
-    setSelectedSouvenir(null);
-    setNewSouvenirQuantity('');
+    let confirmAction = await confirmMessage(`Are you sure you want to update this souvenir?`);
+
+    if(confirmAction.isConfirmed){
+
+      try {
+        
+        // Update souvenir
+        const updatedSouvenir = {
+          souvenir_id : selectedSouvenir.id,
+          souvenir_qty : quantity
+        }
+
+        const souvenirsData = await souvenirAvailabilityData.updateSouvenir(token, updatedSouvenir);
+        
+        if(souvenirsData.success){
+          showMessage("1" , souvenirsData.message)
+          setfilterParams({ ...filterParams, page : 1, query : ''})
+        }else{
+          showMessage("0" , souvenirsData.message)  
+        }
+        
+      } catch (error) {
+        // console.error('Error fetching data:', error);
+        showMessage("0" , "Error adding souvenir.")   
+      } finally {
+        setIsLoading(false);
+      }
+      
+      // setSouvenirs(updatedSouvenirs);
+      setShowEditModal(false);
+      setSelectedSouvenir(null);
+      setNewSouvenirQuantity('');
+    }
+
+    
   };
 
   const openEditModal = (souvenir: Souvenir) => {
@@ -368,7 +399,7 @@ export default function SouvenirAvailabilityPage() {
                 <input
                   type="number"
                   className="w-full px-2 py-4 border border-gray-400"
-                  value={newSouvenirQuantity}
+                  // value={newSouvenirQuantity}
                   onChange={(e) => setNewSouvenirQuantity(e.target.value)}
                 />
               </div>
