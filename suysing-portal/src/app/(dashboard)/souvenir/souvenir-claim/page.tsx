@@ -6,6 +6,9 @@ import { souvenirClaimData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Claim } from '@/types';
 import { useAuth } from '@/lib/hooks/useAuth';
+import { MdModeEditOutline } from "react-icons/md";
+import Swal from 'sweetalert2'
+import { Claim } from '@/types';
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
@@ -15,8 +18,11 @@ export default function SouvenirClaimPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredClaims, setFilteredClaims] = useState<Claim[]>([]);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<Claim | null>(null);
   const itemsPerPage = 8;
   const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+  const [customerStatus, setCustomerStatus] = useState<string>('Pending');
 
   const fetchData = async () => {
     try {
@@ -83,14 +89,14 @@ export default function SouvenirClaimPage() {
         return 'bg-[#2EE84A] text-black';
       case 'Pending':
         return 'bg-[#FFE944] text-black';
-      case 'On Hold':
+      case 'On hold':
         return 'bg-[#FF5A44] text-black';
       default:
         return 'bg-gray-400 text-black';
     }
   };
 
-  // Customer type color mapping
+  // Customer tye color mapping
   const getCustomerTypeColor = (type: string) => {
     switch (type) {
       case 'Red':
@@ -101,6 +107,90 @@ export default function SouvenirClaimPage() {
         return 'text-gray-500';
     }
   };
+
+  const openEditModal = (claim: Claim) => {
+    setSelectedCustomer(claim);
+    setCustomerStatus(claim.status || 'Pending');
+    setShowEditModal(true);
+  };
+
+  const handleEditCustomerStatus = async () => {
+
+    if (!selectedCustomer) return;
+
+    let customer_status = 0;
+    if(customerStatus == "On hold"){
+      customer_status = 2;
+    }
+
+
+    let confirmAction = await confirmMessage(`Are you sure you want to update this customer?`);
+
+    if(confirmAction.isConfirmed){
+
+      try {
+        
+        // Update customer status
+        const customerUpdate = {
+          customer_id : selectedCustomer.id,
+          customer_status : customer_status,
+        }
+
+        const souvenirsData = await souvenirClaimData.updateCustomerStatus(token, customerUpdate);
+        
+        if(souvenirsData.success){
+          showMessage("1" , souvenirsData.message)
+          setfilterParams({ ...filterParams, page : 1, query : ''})
+        }else{
+          showMessage("0" , souvenirsData.message)  
+        }
+        
+      } catch (error) {
+        // console.error('Error fetching data:', error);
+        showMessage("0" , "Error updating customer.")   
+      } finally {
+        setIsLoading(false);
+      }
+      
+      setShowEditModal(false);
+      setSelectedCustomer(null);
+    }
+
+  }
+
+  const confirmMessage = async (message: string)  => {
+    
+    const result = await Swal.fire({
+      title: 'Confirm',
+      text: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#193cb8",
+    })
+
+    return result;
+}
+
+const showMessage = (status: string, message : string)  => {
+  
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#193cb8"
+    })
+}
 
   return (
     <div className="space-y-6">
@@ -132,6 +222,7 @@ export default function SouvenirClaimPage() {
                 <th className="table-header">Status</th>
                 <th className="table-header">Item</th>
                 <th className="table-header">Time Claimed</th>
+                <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -156,6 +247,16 @@ export default function SouvenirClaimPage() {
                     </td>
                     <td className="px-4 py-3">{claim.item}</td>
                     <td className="px-4 py-3">{claim.timeClaimed}</td>
+                    <td className="px-4 py-3 text-center">
+                      {claim.status != "Claimed" && (
+                        <button 
+                          className="text-blue-600 hover:text-blue-800"
+                          onClick={() => openEditModal(claim)}
+                        >
+                          <MdModeEditOutline/>
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))
               )}
@@ -171,6 +272,57 @@ export default function SouvenirClaimPage() {
           />
         </div>
       </div>
+
+      {/* Edit Customer status Modal */}
+      {showEditModal && selectedCustomer && (
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-2xl">
+            <div className="px-6 py-4">
+              <h2 className="text-[34px] font-bold">Edit Customer Status</h2>
+            </div>
+            <div className="border-t border-gray-400 px-6 py-5 space-y-5">
+              <div>
+                <label className="block 0 mb-2">Customer Name</label>
+                <input
+                  type="text"
+                  className="w-full px-2 py-4 border bg-gray-200"
+                  value={selectedCustomer.name}
+                  disabled
+                />
+              </div>
+              <div>
+                <label className="block 0 mb-2">Status</label>
+                <select
+                  value={customerStatus}
+                  onChange={(e) => setCustomerStatus(e.target.value)}
+                  className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="On hold">On hold</option>
+                  <option value="Pending">Pending</option>
+                </select>
+              </div>
+              <div className="flex justify-end space-x-2 mt-6 mb-6">
+                <button
+                  className="px-6 py-2 border border-blue-700 text-blue-700"
+                  onClick={() => {
+                    setShowEditModal(false);
+                    setSelectedCustomer(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="px-6 py-2 bg-blue-800 text-white"
+                  onClick={handleEditCustomerStatus}
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
