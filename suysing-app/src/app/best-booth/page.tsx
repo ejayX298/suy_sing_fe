@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
+import React, { useState, useEffect } from "react";
+// import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
 import { BestBoothProvider, useBestBooth } from "@/context/BestBoothContext";
 import BoothGrid from "@/components/best-booth/BoothGrid";
 import VoteSummary from "@/components/best-booth/VoteSummary";
 import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
+import { bestBooth } from '@/services/api';
+import Swal from 'sweetalert2'
 
 function BestBoothContent() {
   const [step, setStep] = useState<
@@ -15,9 +17,87 @@ function BestBoothContent() {
   >("intro");
   const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
     useBestBooth();
-  console.log('blueBooths')
-  console.log(blueBooths)
-  const handleContinue = () => {
+
+  const [blueBooths, setBlueBooths] = useState([]);
+  const [orangeBooths, setOrangeBooths] = useState([]);
+  const [redBooths, setRedBooths] = useState([]);
+
+
+  const fetchData = async () => {
+    try {
+      const getBooth = await bestBooth.getBoothList();
+      
+      if(getBooth.success){
+        setBlueBooths(getBooth.results.blue_booths)
+        setOrangeBooths(getBooth.results.orange_booths)
+        setRedBooths(getBooth.results.red_booths)
+      }
+    
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+
+
+  const handleSubmitBoothVoting = async () => {
+    const blue_booth_id = blueBoothVote?.id || ''
+    const orange_booth_id = orangeBoothVote?.id || ''
+    const red_booth_id = redBoothVote?.id || ''
+    console.log(blue_booth_id + ' ' + orange_booth_id + ' ' + red_booth_id) 
+
+    const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
+    
+    try {
+      const submitVote = await bestBooth.submitBoothVoting(post_data);
+      
+      if(submitVote.success){
+        return true;
+      }else{
+        showMessage("0" , submitVote.message)  
+        return false;
+      }
+    
+    } catch (error) {
+      showMessage("0" , "Unable to process your request. Please try again later.")   
+      return false;
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E"
+    })
+}
+
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+  
+  
+  const handleContinue = async () => {
     if (step === "intro") {
       setStep("blue");
     } else if (step === "blue") {
@@ -27,7 +107,12 @@ function BestBoothContent() {
     } else if (step === "red") {
       setStep("summary");
     } else if (step === "summary") {
-      setStep("thankyou");
+
+      const submitVoteResult = await handleSubmitBoothVoting()
+      if(submitVoteResult){
+        setStep("thankyou");
+      }
+      
     } else {
       // Reset and go back to intro
       resetVotes();
