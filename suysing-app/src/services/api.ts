@@ -27,6 +27,7 @@ export const customerQr = {
         
         if (typeof window !== 'undefined') {
           localStorage.setItem('customer_info', JSON.stringify(mapResponse));
+          localStorage.setItem('hash_code', hash_code);
         }
       }
       
