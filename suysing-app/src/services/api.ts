@@ -24,7 +24,6 @@ export const customerQr = {
       }
 
       if(response_data){
-        
         if (typeof window !== 'undefined') {
           localStorage.setItem('customer_info', JSON.stringify(mapResponse));
           localStorage.setItem('hash_code', hash_code);
@@ -33,6 +32,7 @@ export const customerQr = {
       
 
       return {
+        success : true,
         results : mapResponse
       }
     
@@ -40,6 +40,7 @@ export const customerQr = {
     } catch (error) {
 
       const default_err_response = {
+        success : false,
         results : []
       }
       if (axios.isAxiosError(error)) {
@@ -55,4 +56,101 @@ export const customerQr = {
  
 }
 
+
+
+export const bestBooth = {
+ 
+  getBoothList: async () => {
+
+    try{
+      
+      const hash_code = localStorage.getItem('hash_code');
+
+      const customer_info = localStorage.getItem('customer_info');
+      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+      const session_id = customerInfoParsed?.session_id || ''
+  
+      const response = await httpClient(session_id).get(`/customer/voting/booth/list/`, {});
+      
+      const response_data = response?.data?.data || []
+      
+      const mapResponse = {
+        blue_booths: response_data?.blue_booths || [],
+        orange_booths: response_data?.orange_booths || [],
+        red_booths: response_data?.red_booths || [],
+      }
+      
+      return {
+        success : true,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        success : false,
+        results : {
+          blue_booths : [],
+          orange_booths: [],
+          red_booths: []
+        }
+      }
+      if (axios.isAxiosError(error)) {
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
+    }
+
+  },
+
+  submitBoothVoting: async (post_data : any) => {
+
+    try{
+      
+      const hash_code = localStorage.getItem('hash_code');
+
+      const customer_info = localStorage.getItem('customer_info');
+      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+      const session_id = customerInfoParsed?.session_id || ''
+      const customer_id = customerInfoParsed?.id || ''
+  
+      const response = await httpClient(session_id).post(`/customer/voting/booth/submit/`, {
+        customer_id : customer_id,
+        booth_ids: JSON.stringify(post_data)
+      });
+      
+      const response_data = response?.data?.data || []
+      
+      return {
+        success : true,
+        results : []
+      }
+    
+
+    } catch (error) {
+    
+      if (axios.isAxiosError(error)) {
+        
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+        
+      }else{
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+     
+    }
+
+  },
+ 
+}
 
