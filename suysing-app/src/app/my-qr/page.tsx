@@ -8,15 +8,14 @@ import { customerQr } from '@/services/api';
 
 export default function MyQrPage() {
   const searchParams = useSearchParams();
-  const customer_hash_code = searchParams.get("cc"); 
+  const customer_hash_code = searchParams.get("cc");
 
   const [customerData, setCustomerData] = useState({});
   const [customerFound, setCustomerFound] = useState(false);
   
- 
+  
   const fetchData = async () => {
     try {
-      const hash_code = localStorage.getItem('hash_code');
 
       const customerResult = await customerQr.getCustomer(customer_hash_code);
       
@@ -33,7 +32,9 @@ export default function MyQrPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    if(customer_hash_code){
+      fetchData();
+    }
   }, []);
 
   
