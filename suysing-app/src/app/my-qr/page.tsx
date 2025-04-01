@@ -3,18 +3,47 @@
 import Image from "next/image";
 import { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
+import { useSearchParams } from "next/navigation";
+import { customerQr } from '@/services/api';
 
 export default function MyQrPage() {
-  const [customerCode, setCustomerCode] = useState<string>('');
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc"); 
+
+  const [customerData, setCustomerData] = useState({});
+  const [customerFound, setCustomerFound] = useState(false);
   
+ 
+  const fetchData = async () => {
+    try {
+      const customerResult = await customerQr.getCustomer(customer_hash_code);
+      
+      if(customerResult.results.length != 0){
+        setCustomerData(customerResult.results);
+        setCustomerFound(true)
+      }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const code = localStorage.getItem('customerCode') || 'SUY-SING-2025';
-    setCustomerCode(code);
+    fetchData();
   }, []);
+
+  
+  if(!customerFound){
+    return null;
+  }
+
 
   return (
     <div className="flex min-h-screen flex-col items-center pt-10 pb-20 px-10">
       {/* Epic Journey Image */}
+      {/* {JSON.stringify(customerData)} */}
       <div className="relative w-full h-40 mb-2 sm:h-56">
         <Image
           src="/images/epic-journey.png"
@@ -25,17 +54,20 @@ export default function MyQrPage() {
         />
       </div>
 
-
-      <div className="p-6 w-full max-w-3xl">
-        <div className="flex flex-col items-center mb-4">
-          <div className="bg-white p-6 rounded-md shadow-sm mb-4 border-2 border-[#F78B1E]">
-            <p className="text-center text-lg font-semibold mb-2">My QR Code</p>
-            <QRCode value={customerCode} size={256}/>
-            <p className="text-center text-sm mt-2">Customer Code: <span className="font-semibold text-lg">{customerCode}</span></p>
-            <p className="text-center text-2xl mt-1">Juan Dela Cruz</p>
-          </div>
-        </div>
-      </div>
+    {customerFound && (
+       <div className="p-6 w-full max-w-3xl">
+       <div className="flex flex-col items-center mb-4">
+         <div className="bg-white p-6 rounded-md shadow-sm mb-4 border-2 border-[#F78B1E]">
+           <p className="text-center text-lg font-semibold mb-2">My QR Code</p>
+           <QRCode value={customerData.code} size={256}/>
+           <p className="text-center text-sm mt-2">Customer Code: <span className="font-semibold text-lg">{customerData.code}</span></p>
+           <p className="text-center text-2xl mt-1">{customerData.full_name}</p>
+         </div>
+       </div>
+     </div>
+    )};
+     
+      
     </div>
   );
 }
