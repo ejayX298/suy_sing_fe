@@ -15,7 +15,8 @@ function BestBoothContent() {
   >("intro");
   const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
     useBestBooth();
-
+  console.log('blueBooths')
+  console.log(blueBooths)
   const handleContinue = () => {
     if (step === "intro") {
       setStep("blue");
