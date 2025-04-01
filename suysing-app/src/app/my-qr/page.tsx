@@ -16,9 +16,11 @@ export default function MyQrPage() {
  
   const fetchData = async () => {
     try {
+      const hash_code = localStorage.getItem('hash_code');
+
       const customerResult = await customerQr.getCustomer(customer_hash_code);
       
-      if(customerResult.results.length != 0){
+      if(customerResult.success){
         setCustomerData(customerResult.results);
         setCustomerFound(true)
       }
