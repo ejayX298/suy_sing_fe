@@ -63,10 +63,15 @@ export const bestBooth = {
   getBoothList: async () => {
 
     try{
-      
-      const hash_code = localStorage.getItem('hash_code');
 
-      const customer_info = localStorage.getItem('customer_info');
+      let hash_code:any = ''
+      let customer_info:any = {}
+      
+      if (typeof window !== 'undefined') {
+         hash_code = localStorage.getItem('hash_code');
+         customer_info = localStorage.getItem('customer_info');
+      }
+    
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
       const session_id = customerInfoParsed?.session_id || ''
   
