@@ -9,9 +9,18 @@ import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
 import { bestBooth } from '@/services/api';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { useSearchParams } from "next/navigation";
 
 function BestBoothContent() {
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
+  
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
   const [step, setStep] = useState<
     "intro" | "blue" | "orange" | "red" | "summary" | "thankyou"
   >("intro");
@@ -44,10 +53,9 @@ function BestBoothContent() {
 
 
   const handleSubmitBoothVoting = async () => {
-    const blue_booth_id = blueBoothVote?.id || ''
-    const orange_booth_id = orangeBoothVote?.id || ''
-    const red_booth_id = redBoothVote?.id || ''
-    console.log(blue_booth_id + ' ' + orange_booth_id + ' ' + red_booth_id) 
+    const blue_booth_id = blueBoothVote?.id || '';
+    const orange_booth_id = orangeBoothVote?.id || '';
+    const red_booth_id = redBoothVote?.id || '';
 
     const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
     
@@ -93,7 +101,12 @@ function BestBoothContent() {
 
 
   useEffect(() => {
-    fetchData();
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        fetchData();
+      }
+      
+    }
   }, []);
   
   
