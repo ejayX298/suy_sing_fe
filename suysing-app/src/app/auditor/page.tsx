@@ -4,6 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
+import BoothHoppingComplete from "@/components/auditor/BoothHoppingComplete";
+import MissingCard from "@/components/auditor/MissingCard";
 import BoothStatus from "@/components/auditor/BoothStatus";
 import BoothsList from "@/components/auditor/BoothsList";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
