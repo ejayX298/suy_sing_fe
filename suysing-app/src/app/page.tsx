@@ -75,18 +75,18 @@ export default function Home() {
         />
 
         {/* Booths Grid */}
-        <TransformWrapper initialScale={0.9} minScale={0.3} maxScale={3} panning={{disabled: false}}>
+        <TransformWrapper initialScale={1} minScale={0.3} maxScale={3} initialPositionX={50} initialPositionY={0} centerOnInit={true}>
           <TransformComponent wrapperStyle={{ width: '100vw', height: 'calc(100vh - 80px)', overflow: 'hidden' }}>
             <div className="relative w-full min-w-[1200px] h-full flex items-center justify-center px-2 py-4">
               <div className="flex w-full h-[900px] justify-center">
                 {/* Tent Area */}
-                <div className="border-2 border-dashed border-blue-800 rounded bg-white p-2 w-[250px] h-[400px] inline-flex items-center justify-center self-center mr-8">
+                <div className="border-2 border-dashed border-blue-800 rounded bg-white p-2 w-[300px] h-[650px] inline-flex items-center justify-center self-center mr-8">
                   <div className="text-black font-bold text-lg text-center">TENT AREA</div>
                 </div>
                 
                 <div className="flex-1 h-full flex flex-col justify-start items-center py-2">
                 {/* Dining Area */}
-                <div className="border-2 border-white bg-white mb-6 p-2 w-full max-w-[700px] h-[120px] flex items-center justify-center">
+                <div className="border-2 border-white bg-white mb-6 p-2 w-full max-w-[700px] h-[170px] flex items-center justify-center">
                   <div className="text-black font-bold text-lg">DINING AREA</div>
                 </div>
                 
@@ -100,20 +100,20 @@ export default function Home() {
                       <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
                     </div>
                     <div className=" w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "wellmade")} />
                     </div>
                     
                     {/* 4th-5th combined */}
                     <div className="w-[163px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "cdo")} />
                     </div>
                     
                     {/* 6th-8th are single */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "selecta")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "mega")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
                       <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
@@ -128,17 +128,17 @@ export default function Home() {
                   <div className="flex gap-0.5">
                     {/* 9th-11th combined */}
                     <div className="w-[249px] h-[80px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "pride")} />
                     </div>
                     
                     {/* 12th is single */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "regen")} />
                     </div>
                     
                     {/* combined */}
                     <div className="w-[163px] h-[80px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "silver-swan")} />
                     </div>
                   </div>
                   
@@ -154,7 +154,7 @@ export default function Home() {
                       <RenderBooth booth={booths.find((b) => b.id === "baygon")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "baygon")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "wings")} />
                     </div>
                     
                     {/*two squares */}
@@ -184,7 +184,7 @@ export default function Home() {
                     {/* First booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "modess")} />
                       </div>
                       <div className="">
                         <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
@@ -193,42 +193,42 @@ export default function Home() {
                         <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
                       </div>
                       <div className=" col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "pmftc")} />
                       </div>
                     </div>
                     
                     {/* Second booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "kojie-san")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "keratin")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "ginebra")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "happy")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "ginebra")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "silka")} />
                       </div>
                       <div className="col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "ginebra")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "ajinomoto")} />
                       </div>
                     </div>
                     
                     {/* Third booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "oishi")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "oishi-white")} />
                       </div>
                       <div className="row-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "nabati")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "asia-brewery")} />
                       </div>
                       <div className="">
                         <RenderBooth booth={booths.find((b) => b.id === "nabati")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "spam")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "sanit01")} />
                       </div>
                       <div className="">
                         <RenderBooth booth={booths.find((b) => b.id === "green-cross")} />
@@ -251,7 +251,7 @@ export default function Home() {
                         <RenderBooth booth={booths.find((b) => b.id === "emperador")} />
                       </div>
                       <div className="col-span-2 row-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "p&g")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "nutraria")} />
                       </div>
                       
                     </div>
@@ -269,10 +269,10 @@ export default function Home() {
                     {/* Ninth booth - INTER04/ECOSS04 (2x3 grid) */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "monde-nissin")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "bioderm")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nutriasia")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "alaska")} />
                       </div>
                       <div className="">
                         <RenderBooth booth={booths.find((b) => b.id === "champion")} />
@@ -281,7 +281,7 @@ export default function Home() {
                         <RenderBooth booth={booths.find((b) => b.id === "pepsi")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nutriasia")} />
+                        <RenderBooth booth={booths.find((b) => b.id === "rc-cola")} />
                       </div>
                     </div>
                   </div>
@@ -290,18 +290,17 @@ export default function Home() {
                 {/* Bottom Section */}  
                 <div className="flex justify-center mb-5 mt-4 w-full">
                   <div className="flex gap-15 w-full">
-                    {/* Bottom row - manually defined for consistent alignment with middle section */}
                     <div className="w-[164px] h-[251px] bg-white">
                       <RenderBooth booth={booths.find((b) => b.id === "coca-cola")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "universal-robina")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "universal-robina-red")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
                       <RenderBooth booth={booths.find((b) => b.id === "mondelez")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "sanmiguel")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "san-miguel")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
                       <RenderBooth booth={booths.find((b) => b.id === "unilever")} />
@@ -310,7 +309,7 @@ export default function Home() {
                       <RenderBooth booth={booths.find((b) => b.id === "century")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "colgate")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "palmolive")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
                       <RenderBooth booth={booths.find((b) => b.id === "champion")} />
@@ -323,23 +322,31 @@ export default function Home() {
                 
                 {/* Entrance/Exit, CRs Section */}
                 <div className="flex justify-center pr-56 gap-[275px] w-full mt-5">
-                  <div className="bg-gray-300 w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-gray-500">ENTRANCE / EXIT</div>
-                  <div className="bg-gray-300 w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-gray-500">ENTRANCE / EXIT</div>
-                  <div className="bg-gray-300 w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-gray-500">ENTRANCE / EXIT</div>
+                  <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <span className="ml-2">ENTRANCE / EXIT</span>
+                  </div>
+                  <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <span className="ml-2">ENTRANCE / EXIT</span>
+                  </div>
+                  <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <span className="ml-2">ENTRANCE / EXIT</span>
+                  </div>
                 </div>
                 
                 <div className="flex justify-center gap-[210px] pr-[230px] mt-1 w-full">
-                  <div className="bg-gray-300 w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-gray-500">
-                    <span className="mr-2">MEN&apos;S CR</span>
-                    <div className="w-5 h-5">🚹</div>
+                  <div className="bg-[#3399FF] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
+                    <Image src="/images/main-hall/men.svg" alt="Men's CR" width={13} height={32} />
+                    <span className="ml-2">MEN&apos;S CR</span>
                   </div>
-                  <div className="bg-gray-300 w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-gray-500">
-                    <span className="mr-2">WOMEN&apos;S CR</span>
-                    <div className="w-5 h-5">🚺</div>
+                  <div className="bg-[#FF66CC] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
+                    <Image src="/images/main-hall/woman.svg" alt="Women's CR" width={16} height={32} />
+                    <span className="ml-2">WOMEN&apos;S CR</span>
                   </div>
                 </div>
                 
-               
                 {/* <div className="absolute left-4 top-[120px] w-[120px]">
                   <div className="bg-[#FFFFFF] border-2 border-dashed border-[#FF3838] p-1 rounded h-full flex flex-col justify-start items-center">
                     <div className="w-full text-center bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full -mt-4 py-0.5 mb-2 font-bold text-[12px] flex items-center justify-center">
