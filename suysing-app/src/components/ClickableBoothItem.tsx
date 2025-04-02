@@ -14,6 +14,14 @@ export default function ClickableBoothItem({
 }: ClickableBoothItemProps) {
   const [isVisited, setIsVisited] = useState(false);
 
+  const hasExtension = /\.(png|jpg|jpeg|gif|webp)$/i.test(logo);
+  
+  const imageSrc = logo.startsWith('/') 
+    ? logo
+    : hasExtension 
+      ? `/images/main-hall/${logo}`
+      : `/images/main-hall/${logo}.png`;
+
   const handleClick = () => {
     setIsVisited(!isVisited);
     if (onToggle) {
@@ -31,10 +39,11 @@ export default function ClickableBoothItem({
       <div className="flex items-center">
         <div className="w-24 h-8 relative mr-4 shrink-0">
           <Image
-            src={`/images/${logo}.png`}
+            src={imageSrc}
             alt={`${name} logo`}
             fill
-            style={{ objectFit: "contain" }}
+            objectFit="contain"
+            unoptimized
           />
         </div>
         <span
