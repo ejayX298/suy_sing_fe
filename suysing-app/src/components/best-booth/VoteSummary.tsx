@@ -43,7 +43,7 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50 ">
-    <div className="px-4 py-10 bg-white w-full max-w-lg rounded-lg shadow-md border-2 border-[#F78B1E]">
+    <div className="px-4 py-10 bg-white w-full max-w-sm mb-16 rounded-lg shadow-md border-2 border-[#F78B1E]">
       <div className="flex items-center justify-center mb-2">
         <Image src="/images/star.svg" alt="Star" width={60} height={60} />
       </div>
