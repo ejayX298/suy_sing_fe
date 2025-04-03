@@ -15,6 +15,7 @@ interface BoothGridProps {
 }
 
 export default function BoothGrid({ booths, color }: BoothGridProps) {
+  
   const {
     blueBoothVote,
     orangeBoothVote,
@@ -47,9 +48,7 @@ export default function BoothGrid({ booths, color }: BoothGridProps) {
         <BoothCard
           key={booth.logo}
           logo={booth.logo}
-          name={booth.name}
           color={color}
-          selected={selectedBooth?.logo === booth.logo}
           onClick={() => handleVote(booth)}
         />
       ))}

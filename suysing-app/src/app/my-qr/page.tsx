@@ -1,6 +1,17 @@
+'use client';
+
 import Image from "next/image";
+import { useState, useEffect } from 'react';
+import QRCode from 'react-qr-code';
 
 export default function MyQrPage() {
+  const [customerCode, setCustomerCode] = useState<string>('');
+  
+  useEffect(() => {
+    const code = localStorage.getItem('customerCode') || 'SUY-SING-2025';
+    setCustomerCode(code);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col items-center pt-10 pb-20 px-10">
       {/* Epic Journey Image */}
@@ -14,11 +25,14 @@ export default function MyQrPage() {
         />
       </div>
 
-      {/* QR Code Card */}
+
       <div className="p-6 w-full max-w-3xl">
-        <div className="flex justify-center mb-4">
-          <div className="relative w-80 h-96 sm:w-96 sm:h-[28rem]">
-            <Image src="/images/qr-code.png" alt="QR Code" fill priority />
+        <div className="flex flex-col items-center mb-4">
+          <div className="bg-white p-6 rounded-md shadow-sm mb-4 border-2 border-[#F78B1E]">
+            <p className="text-center text-lg font-semibold mb-2">My QR Code</p>
+            <QRCode value={customerCode} size={256}/>
+            <p className="text-center text-sm mt-2">Customer Code: <span className="font-semibold text-lg">{customerCode}</span></p>
+            <p className="text-center text-2xl mt-1">Juan Dela Cruz</p>
           </div>
         </div>
       </div>
