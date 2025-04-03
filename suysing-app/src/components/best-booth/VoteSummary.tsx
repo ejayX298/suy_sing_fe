@@ -26,13 +26,6 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
         </div>
       );
 
-    const bgColor =
-      color === "border-blue-600"
-        ? "bg-blue-600"
-        : color === "border-orange-500"
-        ? "bg-orange-500"
-        : "bg-red-600";
-
     return (
       <div className={`rounded-lg overflow-hidden border-2  ${color}`}>
        <div className="bg-white w-full flex justify-center items-center h-[119px] sm:h-32">
@@ -43,9 +36,6 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
             height={50}
             className="object-contain sm:w-32"
           />
-        </div>
-        <div className={`${bgColor} text-white text-center py-1`}>
-          {vote.name}
         </div>
       </div>
     );
