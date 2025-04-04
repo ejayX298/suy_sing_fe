@@ -7,59 +7,88 @@ import { boothHoppingReportData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import QRCode from 'react-qr-code';
 import { Customer, BoothVisit } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 
 
 export default function CustomerBoothHoppingDetail({ params }: { params: { id: string } }) {
+  const { token } = useAuth();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredVisits, setFilteredVisits] = useState<BoothVisit[]>([]);
   const router = useRouter();
   const itemsPerPage = 10;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const customerId = parseInt(params.id);
-        const customerData = await boothHoppingReportData.getCustomerById(customerId);
-        
-        if (customerData) {
-          setCustomer(customerData);
-          setFilteredVisits(customerData.boothVisits || []);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
 
-    fetchData();
-  }, [params.id]);
-
-  useEffect(() => {
-    if (customer?.boothVisits) {
-      const results = customer.boothVisits.filter((visit: BoothVisit) =>
-        visit.boothName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        visit.boothCode.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+  const fetchData = async () => {
+    try {
+      const customerId = parseInt(params.id);
+      const customerData = await boothHoppingReportData.getCustomerById(customerId, token, filterParams);
       
-      setFilteredVisits(results);
-      setCurrentPage(1);
+      if (customerData.results.length != 0) {
+        setCustomer(customerData.results);
+        setFilteredVisits(customerData.results.boothVisits || []);
+
+        setCurrentPage(customerData.current_page)
+        setTotalPages(customerData.total_pages)
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }, [searchQuery, customer]);
+  };
+
+
+  useEffect(() => {
+    fetchData();
+  }, [filterParams, params.id]);
+
+  // useEffect(() => {
+  //   if (customer?.boothVisits) {
+  //     const results = customer.boothVisits.filter((visit: BoothVisit) =>
+  //       visit.boothName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //       visit.boothCode.toLowerCase().includes(searchQuery.toLowerCase())
+  //     );
+      
+  //     setFilteredVisits(results);
+  //     setCurrentPage(1);
+  //   }
+  // }, [searchQuery, customer]);
 
   // Calculate pagination
-  const totalPages = Math.ceil((filteredVisits?.length || 0) / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredVisits.slice(indexOfFirstItem, indexOfLastItem);
+  // const totalPages1 = Math.ceil((filteredVisits?.length || 0) / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredVisits
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+  const handleSearchQuery = (query : any) => {
+    const search_val = query.target.value
+    setSearchQuery(search_val)
+  }
+
+  useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+    
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+    
+  }, [searchQuery]);
+
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {
@@ -149,7 +178,7 @@ export default function CustomerBoothHoppingDetail({ params }: { params: { id: s
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQuery}
               placeholder="Find booth name here..."
               className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />

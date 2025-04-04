@@ -1,30 +1,63 @@
+import httpClient,  from './base/httpClient';
+import axios from 'axios';
+import { validateTokenResponse } from '@/lib/utils';
+import { getComponentTypeModule } from 'next/dist/server/lib/app-dir-module';
 
 // Mock authentication service
 export const authService = {
   login: async (username: string, password: string) => {
     if (username && password) {
       // Mock successful login response
-      return {
-        success: true,
-        token: 'mock-jwt-token',
-        user: {
-          id: 1,
-          name: 'John Doe',
-          username,
-          role: 'admin'
+      // return {
+      //   success: true,
+      //   token: 'mock-jwt-token',
+      //   user: {
+      //     id: 1,
+      //     name: 'John Doe',
+      //     username,
+      //     role: 'admin'
+      //   }
+      // };
+
+      try{
+        const response = await httpClient().post('/admin/login/', {
+          email: username,
+          password: password
+        });
+
+        return {
+          success: true,
+          message: response?.data?.message,
+          data : response?.data?.data || []
+        };
+
+      } catch (error) {
+        console.log(error)
+        if (axios.isAxiosError(error)) {
+          const errResp = error.response;
+          return {
+            success: false,
+            message: errResp?.data?.message || 'Error! Please try again later'
+          };
+
+        } else {
+           // Mock failed login
+          return {
+            success: false,
+            message: 'Unable to process your request. Please try again later.'
+          };
         }
-      };
+      }
+     
+      
     }
-    // Mock failed login
-    return {
-      success: false,
-      message: 'Invalid username or password'
-    };
+   
   },
   logout: async () => {
     // Clear any stored authentication data
     if (typeof window !== 'undefined') {
       localStorage.removeItem('auth');
+      localStorage.removeItem('is_force_logout');
     }
     return { success: true };
   }
@@ -119,11 +152,89 @@ export const customerActivitiesData = {
       type: 'Green'
     }
   ],
-  getCustomers: async () => {
-    return customerActivitiesData.customers;
+  getCustomers: async (token : string, filterParams : any) => {
+
+    try{
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/customer-activities/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        totalBoothVisited : customer.total_booth_visited,
+        boothHopping : customer.is_booth_hopping,
+        boothVoting : customer.is_booth_voting,
+        souvenirClaiming : customer.is_souvenir_claim,
+        type : customer.customer_type,
+      }));
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
+    }
+
+    // Mock response
+    // return customerActivitiesData.customers;
   },
-  getSummary: async () => {
-    return customerActivitiesData.summary;
+  getSummary: async (token : string) => {
+    
+    try{
+      const response = await httpClient(token).get('/admin/customer-activities/dashboard-count/', {});
+
+      const response_data = response?.data?.data || []
+      
+      return {
+        boothHopping: response_data?.booth_hopping || 0,
+        boothVoting: response_data?.booth_voting || 0,
+        souvenirClaiming : response_data?.souvenir_claim || 0,
+      };
+
+    } catch (error) {
+      
+      const default_err_response = {
+        boothHopping: 0,
+        boothVoting: 0,
+        souvenirClaiming : 0,
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
+
+    }
+    // Mock response
+    // return customerActivitiesData.summary;
   }
 };
 
@@ -139,9 +250,93 @@ export const boothActivitiesData = {
     { id: 7, name: 'Argentina', status: 'Closed Early' },
     { id: 8, name: 'PurefoNds', status: 'Closed Early' }
   ],
-  getBooths: async () => {
-    return boothActivitiesData.booths;
-  }
+  getBooths: async (token : string, filterParams : any) => {
+    
+    try{
+      
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/booth-activities/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.booths.map(booth => ({
+        id : booth.id,
+        name : booth.name,
+        status : booth.pretty_status,
+      }));
+      
+    
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    // Mock response
+    // return boothActivitiesData.booths;
+  },
+
+  updateBooth: async (token: string, post_data: any) => {
+    
+    const {booth_id, booth_status} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/booth-activities/update/', {
+        booth_id: booth_id,
+        status: booth_status
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
+  },
+
 };
 
 export const boothHoppingReportData = {
@@ -172,18 +367,177 @@ export const boothHoppingReportData = {
     { id: 5, code: 'JOHN005', name: 'John Dela Cruz', type: 'Red', totalVisited: 77 },
     { id: 6, code: 'MATT006', name: 'Matthew Paz', type: 'Green', totalVisited: 33 },
     { id: 7, code: 'ROBE007', name: 'Robert Sebastian', type: 'Green', totalVisited: 45 },
-    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 }
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 }, 
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+    { id: 8, code: 'ANDR008', name: 'Andrew Philip', type: 'Green', totalVisited: 12 },
+
   ],
-  getCustomers: async () => {
-    return boothHoppingReportData.customers;
+  getCustomers: async (token : string, filterParams : any) => {
+
+    try{
+
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/booth-hopping-report/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        type : customer.pretty_customer_type,
+        totalVisited : customer.total_booth_visited,
+      }));
+      
+    
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    // Mock response
+    // return boothHoppingReportData.customers;
   },
-  getCustomerById: async (id: number) => {
-    return boothHoppingReportData.customers.find(c => c.id === id);
+  getCustomerById: async (id: number, token : string, filterParams : any) => {
+
+    try{
+      const {page, perpage, query} = filterParams
+      
+      const response = await httpClient(token).get(`/admin/booth-hopping-report/details/?customer_id=${id}&page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.booth_hopping_history?.total_pages || 0
+      const current_page = response_data?.booth_hopping_history?.current_page || 1
+
+      const mapBoothHistory = response_data.booth_hopping_history.booths.map(booth => ({
+        boothName : booth.booth_name,
+        boothCode : booth.booth_code,
+        date : booth.date_of_visit,
+        time : booth.time_of_visit,
+        count : booth.booth_count,
+      }));
+
+      const mapResponse = {
+        id : response_data.customer.id,
+        code : response_data.customer.code,
+        name: response_data.customer.full_name,
+        type: response_data.customer.customer_type,
+        totalVisited: response_data.customer.total_booth_visited,
+        store: response_data.customer.store_name,
+        boothVisits : mapBoothHistory
+      };
+      
+    
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    // Mock response
+    // return boothHoppingReportData.customers.find(c => c.id === id);
   }
 };
 
 export const bestBoothReportData = {
-  getCustomers: async () => {
+  getCustomers : async (token : string, filterParams : any) => {
+
+    try{
+
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/best-booth/report/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        type : customer.pretty_customer_type,
+        timeSubmitted : customer.time_submitted
+      }));
+      
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+
+    //Mock response
+    // const customers = await bestBoothReportData.getCustomersMock();
+    // return customers;
+  },
+  getCustomersMock: async () => {
     return [
       {
         id: 1,
@@ -309,14 +663,110 @@ export const bestBoothReportData = {
       }
     ];
   },
-  getCustomerById: async (id: number) => {
-    const customers = await bestBoothReportData.getCustomers();
-    return customers.find(customer => customer.id === id) || null;
+  getCustomerById: async (id: number, token: string) => {
+
+    try{
+      
+      const response = await httpClient(token).get(`/admin/best-booth/report/get-by-id/?customer_id=${id}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const mapBoothVoteHistory = response_data.customer.booth_vote_history.map(boothVote => ({
+        color : boothVote.pretty_booth_color_code,
+        name : boothVote.booth_name,
+      }));
+
+      const mapResponse = {
+        id : response_data.customer.id,
+        code : response_data.customer.code,
+        name: response_data.customer.full_name,
+        type: response_data.customer.pretty_customer_type,
+        totalVisited: response_data.customer.total_booth_visited,
+        store: response_data.customer.store_name,
+        voteHistory : mapBoothVoteHistory
+      };
+      
+    
+      return {
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+      
+      const default_err_response = {
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+
+    // Mock response
+    // const customers = await bestBoothReportData.getCustomersMock();
+    // return customers.find(customer => customer.id === id) || null;
   }
 };
 
 export const bestBoothWinnerTallyData = {
-  getBooths: async () => {
+
+  getBooths : async (token : string, filterParams : any) => {
+    try{
+
+      const {page, perpage, query, color_code} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/best-booth/winner-tally/?page=${page}&perpage=${perpage}&color_code=${color_code}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.booths.map(booth => ({
+        id : booth.id,
+        rank : booth.rank_no,
+        code : booth.code,
+        name : booth.name,
+        color : booth.pretty_color_code,
+        totalVotes : booth.total_no_of_votes
+      }));
+
+      
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const booths = await bestBoothWinnerTallyData.getBoothsMock();
+    // return booths;
+  }, 
+  getBoothsMock: async () => {
     return [
       {
         id: 1,
@@ -404,7 +854,99 @@ export const bestBoothWinnerTallyData = {
 
 // Souvenir Claim Data
 export const souvenirClaimData = {
-  getClaims: async () => {
+
+  getClaims : async (token : string, filterParams : any) => {
+    
+    try{
+
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/souvenir/claim/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.customers.map(customer => ({
+        id : customer.id,
+        code : customer.code,
+        name : customer.full_name,
+        type : customer.pretty_customer_type,
+        status : customer.pretty_claim_status,
+        item : customer.item_claimed,
+        timeClaimed : customer.time_claimed,
+      }));
+
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const claims = await souvenirClaimData.getClaimsMock();
+    // return claims;
+  },
+
+  updateCustomerStatus: async (token: string, post_data: any) => {
+    
+    const {customer_id, customer_status} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/souvenir/update-customer-status/', {
+        customer_id: customer_id,
+        customer_status: customer_status
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
+  },
+  
+  getClaimsMock: async () => {
     return [
       {
         id: 1,
@@ -501,7 +1043,137 @@ export const souvenirClaimData = {
 };
 
 export const souvenirAvailabilityData = {
-  getSouvenirs: async () => {
+
+  getSouvenirs : async (token : string, filterParams : any) => {
+    
+    try{
+      
+      const {page, perpage, query} = filterParams
+  
+      const response = await httpClient(token).get(`/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const total_pages = response_data?.total_pages || 0
+      const current_page = response_data?.current_page || 1
+      const mapResponse = response_data.souvenirs.map(souvenir => ({
+        id : souvenir.id,
+        name: souvenir.name,
+        totalQuantity: souvenir.qty,
+        claimed: souvenir.claimed,
+        remaining: souvenir.remaining
+      }));
+
+      return {
+        total_pages : total_pages,
+        current_page : current_page,
+        results : mapResponse
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        total_pages : 0,
+        current_page : 1,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+
+    }
+
+    //Mock response
+    // const souvenirs = await souvenirAvailabilityData.getSouvenirsMock();
+    // return souvenirs;
+  },
+
+  addSouvenir: async (token: string, post_data: any) => {
+    
+      const {name, totalQuantity} = post_data
+
+      try{
+        const response = await httpClient(token).post('/admin/souvenir/add/', {
+          name: name,
+          qty: totalQuantity
+        });
+
+        return {
+          success: true,
+          message: response?.data?.message,
+          data : response?.data?.data || []
+        };
+
+      } catch (error) {
+        
+        if (axios.isAxiosError(error)) {
+
+          validateTokenResponse(error)
+
+          const errResp = error.response;
+          return {
+            success: false,
+            message: errResp?.data?.message || 'Error! Please try again later'
+          };
+
+        } else {
+           
+          return {
+            success: false,
+            message: 'Unable to process your request. Please try again later.'
+          };
+        }
+      }
+   
+  },
+
+
+  updateSouvenir: async (token: string, post_data: any) => {
+    
+    const {souvenir_id, souvenir_qty} = post_data
+
+    try{
+      const response = await httpClient(token).put('/admin/souvenir/update/', {
+        souvenir_id: souvenir_id,
+        qty: souvenir_qty
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data : response?.data?.data || []
+      };
+
+    } catch (error) {
+      
+      if (axios.isAxiosError(error)) {
+
+        validateTokenResponse(error)
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+
+      } else {
+         
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+    }
+ 
+  },
+  
+  getSouvenirsMock: async () => {
     return [
       {
         id: 1,

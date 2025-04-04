@@ -77,7 +77,7 @@ export const useAuth = create<AuthState>((set) => {
           // Store auth data in localStorage
           if (typeof window !== 'undefined') {
             localStorage.setItem('auth', JSON.stringify({
-              token: response.token,
+              token: response.data.access_token,
               user: response.user
             }));
           }
@@ -85,7 +85,7 @@ export const useAuth = create<AuthState>((set) => {
           set({
             isAuthenticated: true,
             user: response.user,
-            token: response.token,
+            token: response.data.access_token,
             isLoading: false
           });
           
@@ -126,6 +126,7 @@ export const useAuth = create<AuthState>((set) => {
       
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth');
+        localStorage.removeItem('is_force_logout');
       }
     }
   };
