@@ -4,6 +4,30 @@ import type { NextRequest } from 'next/server';
 // This middleware function runs on every request
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function middleware(request: NextRequest) {
+
+  const { pathname } = request.nextUrl;
+
+
+  const isPublicPath = pathname === '/login' || 
+                      pathname.startsWith('/_next') || 
+                      pathname.startsWith('/api') || 
+                      pathname.startsWith('/images') || 
+                      pathname === '/favicon.ico';
+
+                      
+  const authToken = request.cookies.get('auth')?.value;
+  const isAuthenticated = !!authToken;
+
+  if (!isPublicPath && !isAuthenticated) {
+    const url = new URL('/login', request.url);
+    return NextResponse.redirect(url);
+  }
+
+  if (isAuthenticated && pathname === '/login') {
+    const url = new URL('/customer-activities', request.url);
+    return NextResponse.redirect(url);
+  }
+
   return NextResponse.next();
 }
 
