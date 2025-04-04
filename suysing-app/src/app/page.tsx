@@ -75,7 +75,7 @@ export default function Home() {
         />
 
         {/* Booths Grid */}
-        <TransformWrapper initialScale={1} minScale={0.3} maxScale={3} initialPositionX={50} initialPositionY={0} centerOnInit={true}>
+        <TransformWrapper initialScale={1} minScale={0.3} maxScale={5} initialPositionX={50} initialPositionY={0} centerOnInit={true}>
           <TransformComponent wrapperStyle={{ width: '100vw', height: 'calc(100vh - 80px)', overflow: 'hidden' }}>
             <div className="relative w-full min-w-[1200px] h-full flex items-center justify-center px-2 py-4">
               <div className="flex w-full h-[900px] justify-center">
@@ -86,12 +86,38 @@ export default function Home() {
                 
                 <div className="flex-1 h-full flex flex-col justify-start items-center py-2">
                 {/* Dining Area */}
-                <div className="border-2 border-white bg-white mb-6 p-2 w-full max-w-[700px] h-[170px] flex items-center justify-center">
-                  <div className="text-black font-bold text-lg">DINING AREA</div>
+                <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[400px] flex flex-col items-center justify-between">
+                  <div className="flex w-full justify-center gap-20">
+                    {[...Array(9)].map((_, tableIndex) => (
+                      <div key={`dining-table-${tableIndex}`} className="relative">
+                        {/* Table */}
+                        <div className="w-[50px] h-[120px] bg-transparent border border-gray-300 relative">
+                          {/* Chairs - Left Side */}
+                          {[...Array(4)].map((_, chairIndex) => (
+                            <div 
+                              key={`left-chair-${tableIndex}-${chairIndex}`} 
+                              className="absolute -left-[12px] w-[10px] h-[18px] border border-gray-300"
+                              style={{ top: `${chairIndex * 30 + 5}px` }}
+                            ></div>
+                          ))}
+                          
+                          {/* Chairs - Right Side */}
+                          {[...Array(4)].map((_, chairIndex) => (
+                            <div 
+                              key={`right-chair-${tableIndex}-${chairIndex}`} 
+                              className="absolute -right-[12px] w-[10px] h-[18px] border border-gray-300"
+                              style={{ top: `${chairIndex * 30 + 5}px` }}
+                            ></div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="text-white font-bold text-3xl mt-6">DINING AREA</div>
                 </div>
                 
                 {/* Top Row */}
-                <div className="flex mb-2 justify-center w-full">
+                <div className="flex mb-2 justify-center w-full mt-12">
                   <div className="flex gap-0.5">
                     <div className="w-[80px] h-[80px] ">
                       <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
@@ -122,7 +148,7 @@ export default function Home() {
                   
                   {/* DINING ENT label */}
                   <div className="flex flex-col items-center mx-2 -mt-5">
-                    <div className="bg-gray-300 w-[60px] h-[20px] flex items-center justify-center text-[8px] font-bold border border-gray-500 mb-1">DINING ENT</div>
+                    <div className="w-[150px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">DINING ENT</div>
                   </div>
                   
                   <div className="flex gap-0.5">
@@ -144,8 +170,7 @@ export default function Home() {
                   
                   {/* DINING ENT label */}
                   <div className="flex flex-col items-center mx-2 -mt-5">
-                    <div className="bg-gray-300 w-[60px] h-[20px] flex items-center justify-center text-[8px] font-bold border border-gray-500 mb-1">DINING ENT</div>
-                    <div className="w-[60px] h-[15px]"></div>
+                    <div className="w-[150px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">DINING ENT</div>
                   </div>
                   
                   <div className="flex gap-0.5">
@@ -352,7 +377,7 @@ export default function Home() {
                     <div className="w-full text-center bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full -mt-4 py-0.5 mb-2 font-bold text-[12px] flex items-center justify-center">
                       Double Zone
                       <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-3 h-3">
-                        <span className="font-bold text-[8px] leading-none">i</span>
+                        <span className="font-bold text-lg leading-none">i</span>
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-1 w-full">
