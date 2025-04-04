@@ -5,52 +5,92 @@ import { FaSearch, FaFilter } from 'react-icons/fa';
 import { bestBoothWinnerTallyData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Booth } from '@/types';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function BestBoothWinnerTallyPage() {
+  const { token } = useAuth();
   const [booths, setBooths] = useState<Booth[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const [filteredBooths, setFilteredBooths] = useState<Booth[]>([]);
   const [activeTab, setActiveTab] = useState('Blue Booth');
   const itemsPerPage = 10;
+  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : '', color_code: 'blue'});
+
+  const fetchData = async () => {
+    try {
+      const boothsData = await bestBoothWinnerTallyData.getBooths(token, filterParams);
+      
+      setBooths(boothsData?.results);
+      setFilteredBooths(boothsData?.results);
+
+      setCurrentPage(boothsData.current_page);
+      setTotalPages(boothsData.total_pages);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const boothsData = await bestBoothWinnerTallyData.getBooths();
-        
-        setBooths(boothsData);
-        setFilteredBooths(boothsData);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     fetchData();
-  }, []);
+  }, [filterParams]);
 
-  useEffect(() => {
-    const results = booths.filter(booth =>
-      booth.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booth.code?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  // useEffect(() => {
+  //   const results = booths.filter(booth =>
+  //     booth.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  //     booth.code.toLowerCase().includes(searchQuery.toLowerCase())
+  //   );
     
-    setFilteredBooths(results);
-    setCurrentPage(1);
-  }, [searchQuery, booths]);
+  //   setFilteredBooths(results);
+  //   setCurrentPage(1);
+  // }, [searchQuery, booths]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredBooths.length / itemsPerPage);
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredBooths.slice(indexOfFirstItem, indexOfLastItem);
+  // const totalPages1 = Math.ceil(filteredBooths.length / itemsPerPage);
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredBooths
 
   const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+    // setCurrentPage(pageNumber);
+    setfilterParams({ ...filterParams, page: pageNumber })
   };
+
+  const handleSearchQuery = (query : any) => {
+    const search_val = query.target.value
+    setSearchQuery(search_val)
+  }
+
+  const handleSetActiveTab = (booth_name : any) => {
+    let booth_value = 'blue'
+    
+    if(booth_name == 'Red Booth'){
+      booth_value = 'red'
+    }else if(booth_name == 'Orange Booth'){
+      booth_value = 'orange'
+    }
+    setActiveTab(booth_name)
+    setfilterParams({ ...filterParams, page: 1, color_code : booth_value})
+  }
+
+  useEffect(() => {
+    // set delay 2 seconds
+    const delaySetSearch = setTimeout(() => {
+      // it will get the latest value after two seconds of no keyboard activity
+      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+    }, 2000);
+    
+    //clears the timeout of the previous value of delaySetSearch
+    //clears the timeout on re render
+    return () => clearTimeout(delaySetSearch)
+    
+  }, [searchQuery]);
+
 
   return (
     <div className="space-y-6">
@@ -63,7 +103,7 @@ export default function BestBoothWinnerTallyPage() {
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
               }`}
-              onClick={() => setActiveTab('Blue Booth')}
+              onClick={() => handleSetActiveTab('Blue Booth')}
             >
               Blue Booth
             </button>
@@ -73,7 +113,7 @@ export default function BestBoothWinnerTallyPage() {
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
               }`}
-              onClick={() => setActiveTab('Orange Booth')}
+              onClick={() => handleSetActiveTab('Orange Booth')}
             >
               Orange Booth
             </button>
@@ -83,7 +123,7 @@ export default function BestBoothWinnerTallyPage() {
                   ? 'text-blue-600 border-b-2 border-blue-600' 
                   : 'text-gray-500 hover:text-gray-700'
               }`}
-              onClick={() => setActiveTab('Red Booth')}
+              onClick={() => handleSetActiveTab('Red Booth')}
             >
               Red Booth
             </button>
@@ -97,7 +137,7 @@ export default function BestBoothWinnerTallyPage() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchQuery}
               placeholder="Search booth here..."
               className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
             />

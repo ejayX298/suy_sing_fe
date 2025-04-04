@@ -5,13 +5,14 @@ import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import Header from '@/components/layout/Header';
 import { useAuth } from '@/lib/hooks/useAuth';
+import Swal from 'sweetalert2'
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -37,8 +38,29 @@ export default function DashboardLayout({
     }
   };
 
+
+  const checkForceLogout = () => {
+    const is_force_logout = localStorage.getItem('is_force_logout');
+
+    if(is_force_logout == 'true'){
+      return Swal.fire({
+        text: 'Session expired',
+        icon: "error",
+        confirmButtonColor: "#193cb8"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // call logout
+          logout();
+        }
+      });
+    }
+
+    return false;
+  }
+
   // Check authentication
   useEffect(() => {
+    checkForceLogout()
     if (!isAuthenticated) {
       router.push('/login');
     }
@@ -46,6 +68,7 @@ export default function DashboardLayout({
 
   // If not authenticated, don't render dashboard
   if (!isAuthenticated) {
+    document.cookie = `auth=; path=/;`;
     return null;
   }
 
