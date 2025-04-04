@@ -68,6 +68,7 @@ export default function DashboardLayout({
 
   // If not authenticated, don't render dashboard
   if (!isAuthenticated) {
+    document.cookie = `auth=; path=/;`;
     return null;
   }
 

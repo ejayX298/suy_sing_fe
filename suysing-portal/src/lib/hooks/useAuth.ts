@@ -80,6 +80,8 @@ export const useAuth = create<AuthState>((set) => {
               token: response.data.access_token,
               user: response.user
             }));
+
+            document.cookie = `auth=${localStorage.getItem("auth")}; path=/;`;
           }
           
           set({
@@ -127,6 +129,7 @@ export const useAuth = create<AuthState>((set) => {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('auth');
         localStorage.removeItem('is_force_logout');
+        document.cookie = `auth=; path=/;`;
       }
     }
   };
