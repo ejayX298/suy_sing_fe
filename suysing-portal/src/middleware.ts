@@ -13,6 +13,7 @@ export function middleware(request: NextRequest) {
                       pathname.startsWith('/images') || 
                       pathname === '/favicon.ico';
 
+                      
   const authToken = request.cookies.get('auth')?.value;
   const isAuthenticated = !!authToken;
 
