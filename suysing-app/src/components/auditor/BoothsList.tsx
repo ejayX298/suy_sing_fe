@@ -2,31 +2,64 @@
 
 import { useBooths } from "@/context/BoothsContext";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { auditorService } from '@/services/api';
 
 interface BoothsListProps {
   onBack: () => void;
+  customerId : number
 }
 
 export default function BoothsList({
   onBack,
+  customerId,
 }: BoothsListProps) {
   // Track which booth images failed to load
   const [failedImages, setFailedImages] = useState<{[key: string]: boolean}>({});
+  const [regularBooths, setRegularBooths] = useState([]);
+  const [doubleBooths, setDoubleBooths] = useState([]);
   
   // Get booth data from context
   const { booths } = useBooths();
 
   // Filter booths by their type/zone
-  const regularBooths = booths.filter(
-    (booth) =>
-      booth.id?.startsWith("regular-") ||
-      (!booth.id?.includes("double") && !booth.isDoubleZone)
-  );
+  // const regularBooths = booths.filter(
+  //   (booth) =>
+  //     booth.id?.startsWith("regular-") ||
+  //     (!booth.id?.includes("double") && !booth.isDoubleZone)
+  // );
 
-  const doubleBooths = booths.filter(
-    (booth) => booth.isDoubleZone || booth.id?.includes("double")
-  );
+  // const doubleBooths = booths.filter(
+  //   (booth) => booth.isDoubleZone || booth.id?.includes("double")
+  // );
+
+  const get_unvisited_booth_list = async () => {
+    try {
+
+      const boothResult = await auditorService.getUnvisitedBoothlist(customerId);
+      
+      if(boothResult.success){
+
+        const regularBoothsMap = boothResult.results.filter(
+          (booth) =>
+            booth.is_double_zone == 0
+        );
+
+        const doubleBoothsMap = boothResult.results.filter(
+          (booth) =>
+            booth.is_double_zone == 1
+        );
+
+        setRegularBooths(regularBoothsMap)
+        setDoubleBooths(doubleBoothsMap)
+      }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
 
   // Get initials for placeholders
   const getInitials = (name: string) => {
@@ -37,6 +70,13 @@ export default function BoothsList({
       .toUpperCase()
       .substring(0, 2);
   };
+
+
+  useEffect(() => {
+    if(customerId){
+      get_unvisited_booth_list()
+    }
+  }, []);
 
   return (
     <div className="flex flex-col h-full">
