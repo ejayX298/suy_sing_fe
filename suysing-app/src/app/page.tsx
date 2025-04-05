@@ -75,8 +75,21 @@ export default function Home() {
         />
 
         {/* Booths Grid */}
-        <TransformWrapper initialScale={1} minScale={0.3} maxScale={5} initialPositionX={50} initialPositionY={0} centerOnInit={true}>
-          <TransformComponent wrapperStyle={{ width: '100vw', height: 'calc(100vh - 80px)', overflow: 'hidden' }}>
+        <div className="relative w-full h-[calc(100vh-80px)] overflow-hidden">
+          <TransformWrapper
+            initialScale={1}
+            minScale={0.5}
+            maxScale={1.5}
+            centerOnInit={true}
+            limitToBounds={false}
+            wheel={{ disabled: false, step: 0.05 }}
+            pinch={{ disabled: false, step: 5 }}
+            doubleClick={{ disabled: false, mode: "reset" }}
+          >
+            <TransformComponent
+              wrapperStyle={{ width: '100%', height: '100%', overflow: 'visible' }}
+              contentStyle={{ minHeight: '1100px', padding: '20px 0 200px 0' }}
+            >
             <div className="relative w-full min-w-[1200px] h-full flex items-center justify-center px-2 py-4">
               <div className="flex w-full h-[900px] justify-center">
                 {/* Tent Area */}
@@ -423,11 +436,12 @@ export default function Home() {
                     </div>
                   </div>
                 </div> */}
-                </div>
-              </div>
-            </div>
-          </TransformComponent>
-        </TransformWrapper>
+                      </div>
+                    </div>
+                  </div>
+                </TransformComponent>
+          </TransformWrapper>
+        </div>
       </main>
     </div>
   );
