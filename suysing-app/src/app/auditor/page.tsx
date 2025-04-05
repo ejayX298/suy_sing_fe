@@ -11,7 +11,9 @@ import BoothsList from "@/components/auditor/BoothsList";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
 import VoteBestBoothModal from "@/components/auditor/VoteBestBoothModal";
 import { useBooths } from "@/context/BoothsContext";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { auditorService } from '@/services/api';
+import Swal from 'sweetalert2';
 
 function AuditorPageContent() {
   // Camera and scanning states
@@ -22,12 +24,19 @@ function AuditorPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
+  const searchParams = useSearchParams();
+  const auditor_hash_code = searchParams.get("cc");
+  const [auditorAccess, setAuditorAccess] = useState(false);
 
   // Customer and flow state
   const [customerData, setCustomerData] = useState<{
+    id: number;
     code: string;
     name: string;
-    hasVoted?: boolean;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
   } | null>(null);
   const [currentStep, setCurrentStep] = useState<
     | "scan"
@@ -45,11 +54,51 @@ function AuditorPageContent() {
   const router = useRouter();
   
   const [isBoothComplete, setIsBoothComplete] = useState(false);
+
+  const check_auditor_access = async () => {
+    try {
+
+      const customerResult = await auditorService.checkAccess(auditor_hash_code);
+      
+      if(customerResult.success){
+        setAuditorAccess(true)
+      }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setAuditorAccess(false)
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+  const checkCustomerRecord = async (customer_code : string) => {
+    try {
+
+      const customerResult = await auditorService.checkCustomerRecord(auditor_hash_code, customer_code);
+      
+      if(customerResult.success){
+        return customerResult.results
+      }else{
+        showMessage('0', customerResult.message)
+        return false;
+      }
+    
+    } catch (error) {
+      showMessage('0', 'Unable to process your request')
+      return false;
+      
+    }
+
+  };
+
+  
   
   useEffect(() => {
- 
-    if (currentStep === "scan" && !showManualCodeModal) {
-   
+    check_auditor_access()
+    
+    if (currentStep === "scan" && !showManualCodeModal && auditorAccess) {
+      
       if (typeof navigator !== "undefined" && navigator.mediaDevices) {
         navigator.mediaDevices
           .getUserMedia({ video: { facingMode: "environment" } })
@@ -62,30 +111,62 @@ function AuditorPageContent() {
             setHasPermission(false);
           });
       }
-    }
+
+      // clear audit info in initial auditor page
+      localStorage.removeItem("audit_info");
+
 
     return () => {
       setScanning(false);
     };
-  }, [currentStep, showManualCodeModal]);
+
+  }
+   
+  }, [currentStep, showManualCodeModal, auditorAccess]);
 
   const handleScan = useCallback(async (data: string) => {
     const customerCode = data.trim();
+    const customerRecord = await checkCustomerRecord(customerCode);
     
-    const mockCustomerData = {
-      code: customerCode || "JUAN02",
-      name: "Juan Dela Cruz",
-      hasVoted: false, 
-    };
+    if(customerRecord){
+      const mapCustomerData = {
+        id: customerRecord.id,
+        code: customerRecord.code,
+        name: customerRecord.full_name,
+        hasVoted: customerRecord.is_done_voting,
+        isDoneVisit: customerRecord.is_done_visit,
+        totalBooths: customerRecord.total_booths,
+        totalBoothVisited: customerRecord.total_booth_visited,
+      };
+      
+      setCustomerData(mapCustomerData);
+      
+      const isComplete = customerRecord.is_done_visit == 1 ? true : false;
+      
+      setIsBoothComplete(isComplete);
+
+      let stored_hash_code: any = ""
+      if (typeof window !== 'undefined') {
+        stored_hash_code = localStorage.getItem('audit_hash_code');
+      }
+      
+      if(customerRecord.is_done_souvenir_claim == 1){
+        showMessage('1', `Customer code: ${customerRecord.code} is already done with the souvenir claiming`)
+      }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 0){
+        // redirect to booth vote
+        router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
+      }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 1){
+        // redirect to souvenir selection
+        router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
+      }else{
+        // Redirect to booth status for booth visit
+        setCurrentStep("booth-status");
+      }
+      
+      
+    }
     
-    setCustomerData(mockCustomerData);
-    
-    const isComplete = visitedCount === totalBooths;
-    setIsBoothComplete(isComplete);
-    
-    setCurrentStep("booth-status");
-    
-  }, [visitedCount, totalBooths]);
+  }, [customerData?.totalBoothVisited, customerData?.totalBooths]);
 
   const captureAndScanQRCode = useCallback(() => {
     if (!scanning || currentStep !== "scan") return;
@@ -143,7 +224,7 @@ function AuditorPageContent() {
     if (!manualCode.trim()) {
       return;
     }
-    
+
     // Process the manual code
     handleScan(manualCode);
     setShowManualCodeModal(false);
@@ -173,6 +254,26 @@ function AuditorPageContent() {
     }, 3000);
   };
 
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E"
+    })
+ }
 
 
   const videoConstraints = {
@@ -180,6 +281,11 @@ function AuditorPageContent() {
     width: { ideal: 1280 },
     height: { ideal: 720 },
   };
+
+  // If not auditorAccess, don't render dashboard
+  if (!auditorAccess) {
+    return null;
+  }
 
   return (
     <main className="flex min-h-screen flex-col items-center px-6 py-32">
@@ -250,9 +356,10 @@ function AuditorPageContent() {
 
         {currentStep === "booth-status" && customerData && (
           <BoothStatus
+            customerId={customerData?.id}
             isComplete={isBoothComplete}
-            visitedCount={visitedCount}
-            totalBooths={totalBooths}
+            visitedCount={customerData?.totalBoothVisited || 0}
+            totalBooths={customerData?.totalBooths || 0}
             onViewUnvisited={() => setCurrentStep("booths-list")}
             onClose={() => {
               setCustomerData(null);
@@ -264,6 +371,7 @@ function AuditorPageContent() {
 
         {currentStep === "booths-list" && customerData && (
           <BoothsList
+            customerId={customerData?.id}
             onBack={() => setCurrentStep("booth-status")}
           />
         )}
