@@ -10,25 +10,30 @@ interface Souvenir {
 }
 
 interface SouvenirSelectionProps {
+  souvenirData : Souvenir[];
   onSelect: (souvenir: Souvenir) => void;
   onCancel: () => void;
-  onContinue: () => void;
+  onContinue: (souvenir: Souvenir) => void;
 }
 
-const SOUVENIRS: Souvenir[] = [
-  { id: "1", name: "Jisulife", image: "/images/souvenir/jisu.png" },
-  { id: "2", name: "Bag", image: "/images/souvenir/bag.png" },
-  { id: "3", name: "Massage Gun", image: "/images/souvenir/massage_gun.png" },
-  { id: "4", name: "Travel Organizer", image: "/images/souvenir/travel_organizer.png" },
-  { id: "5", name: "Suy Sing GC", image: "/images/souvenir/massage_gun.png" },
-];
+// const SOUVENIRS: Souvenir[] = [
+//   { id: "1", name: "Jisulife", image: "/images/souvenir/jisu.png" },
+//   { id: "2", name: "Bag", image: "/images/souvenir/bag.png" },
+//   { id: "3", name: "Massage Gun", image: "/images/souvenir/massage_gun.png" },
+//   { id: "4", name: "Travel Organizer", image: "/images/souvenir/travel_organizer.png" },
+//   { id: "5", name: "Suy Sing GC", image: "/images/souvenir/massage_gun.png" },
+// ];
+
+
 
 export default function SouvenirSelection({
+  souvenirData,
   onSelect,
   onCancel,
   onContinue,
 }: SouvenirSelectionProps) {
   const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(null);
+  const SOUVENIRS = souvenirData;
 
   const handleSouvenirSelect = (souvenir: Souvenir) => {
     setSelectedSouvenir(souvenir);
@@ -39,7 +44,7 @@ export default function SouvenirSelection({
     // Only call onSelect when Proceed is clicked and a souvenir is selected
     if (selectedSouvenir) {
       onSelect(selectedSouvenir);
-      onContinue();
+      onContinue(selectedSouvenir);
     }
   };
 
