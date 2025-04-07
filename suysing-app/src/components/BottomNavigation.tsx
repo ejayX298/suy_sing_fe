@@ -68,7 +68,7 @@ export default function BottomNavigation() {
         <span className="text-xs">Deal Form</span>
       </Link>
 
-      <Link href="/camera" className="flex flex-col items-center -mt-7">
+      <Link href={concatUrl("/camera")} className="flex flex-col items-center -mt-7">
         <div className="bg-[#0920B0] rounded-full p-3 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
