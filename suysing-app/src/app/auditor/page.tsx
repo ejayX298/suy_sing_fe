@@ -282,7 +282,7 @@ function AuditorPageContent() {
     height: { ideal: 720 },
   };
 
-  // If not auditorAccess, don't render dashboard
+  // If not auditorAccess, don't render auditor page
   if (!auditorAccess) {
     return null;
   }
