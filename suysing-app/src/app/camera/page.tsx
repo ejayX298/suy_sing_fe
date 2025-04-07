@@ -8,6 +8,7 @@ import BoothsProgress from "@/components/BoothsProgress";
 import { useBooths } from "@/context/BoothsContext";
 import { boothVisitService } from '@/services/api';
 import Swal from 'sweetalert2';
+import { useSearchParams } from "next/navigation";
 
 export default function CameraPage() {
   const webcamRef = useRef<Webcam>(null);
@@ -28,31 +29,49 @@ export default function CameraPage() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
+  const [isRender, setIsRender] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
+
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
 
   // Get booth data from context
-  const { booths, visitedCount, totalBooths, handleVisitBooth } = useBooths();
+  // const { booths, visitedCount, totalBooths, handleVisitBooth } = useBooths();
 
   useEffect(() => {
-    getCustomerRecord()
-    
-    // Check if we're in a browser environment
-    if (typeof navigator !== "undefined" && navigator.mediaDevices) {
-      // Request camera permission
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: "environment" } })
-        .then(() => {
-          setHasPermission(true);
-        })
-        .catch((err) => {
-          console.error("Camera permission error:", err);
-          setError("Camera permission denied. Please enable camera access.");
-          setHasPermission(false);
-        });
-    }
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
 
-    return () => {
-      setScanning(false);
-    };
+        // Fetch customer record
+        getCustomerRecord()
+
+        // Check if we're in a browser environment
+        if (typeof navigator !== "undefined" && navigator.mediaDevices) {
+          // Request camera permission
+          navigator.mediaDevices
+            .getUserMedia({ video: { facingMode: "environment" } })
+            .then(() => {
+              setHasPermission(true);
+            })
+            .catch((err) => {
+              console.error("Camera permission error:", err);
+              setError("Camera permission denied. Please enable camera access.");
+              setHasPermission(false);
+            });
+        }
+
+        return () => {
+          setScanning(false);
+        };
+
+      }
+    }
+  
   }, []);
 
   const processQRCode = React.useCallback(
@@ -102,7 +121,7 @@ export default function CameraPage() {
       // Refresh customerData
       getCustomerRecord()
     },
-    [booths, handleVisitBooth, customerData?.totalBoothVisited]
+    [customerData?.totalBoothVisited]
   );
 
   const captureAndScanQRCode = React.useCallback(() => {
@@ -325,8 +344,8 @@ export default function CameraPage() {
     });
   }
 
-  // Dont render page if customerData is empty
-  if(!customerData){
+  // Dont render page if customer data is empty or no customer record
+  if(!isRender){
     return null;
   }
 
