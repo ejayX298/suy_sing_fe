@@ -30,6 +30,7 @@ function BestBoothContent() {
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
   const [redBooths, setRedBooths] = useState([]);
+  const [isRender, setIsRender] = useState(false);
 
 
   const fetchData = async () => {
@@ -103,6 +104,7 @@ function BestBoothContent() {
   useEffect(() => {
     if(customer_hash_code && stored_hash_code){
       if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
         fetchData();
       }
       
@@ -245,7 +247,9 @@ function BestBoothContent() {
 
   return (
     <div className="flex flex-col min-h-screen ">
-      <div className="flex-1 pb-16">{renderStepContent()}</div>
+      {isRender && (
+        <div className="flex-1 pb-16">{renderStepContent()}</div>
+      )}
     </div>
   );
 }
