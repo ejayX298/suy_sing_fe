@@ -207,7 +207,6 @@ export default function BoothActivitiesPage() {
             <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-7`00" />
           </div>
         </div>
-
         <div className="overflow-x-auto">
           <table className="w-full border border-gray-400">
             <thead>
@@ -269,7 +268,7 @@ export default function BoothActivitiesPage() {
             
             <div className="flex justify-center my-6">
               <QRCode 
-                value={`https://suysing.com/booth/${selectedBooth.id}`} 
+                value={`${selectedBooth.code}`} 
                 size={290} 
                 fgColor="#0A20B1"
                 
