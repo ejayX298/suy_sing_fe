@@ -68,7 +68,7 @@ export default function MyQrPage() {
          </div>
        </div>
      </div>
-    )};
+    )}
      
       
     </div>
