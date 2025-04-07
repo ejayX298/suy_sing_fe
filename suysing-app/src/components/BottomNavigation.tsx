@@ -1,4 +1,5 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -6,6 +7,7 @@ import { TemplateString } from "../../node_modules/next/dist/lib/metadata/types/
 
 export default function BottomNavigation() {
   const pathname = usePathname();
+  const [hashCode, setHashCode] = useState("");
 
   let stored_hash_code: any = ""
   if (typeof window !== 'undefined') {
@@ -13,8 +15,15 @@ export default function BottomNavigation() {
   }
 
   const concatUrl = (urlString : string) =>{
-    return `${urlString}/?cc=${stored_hash_code}`
+    return `${urlString}/?cc=${hashCode}`
   }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      stored_hash_code = localStorage.getItem('hash_code');
+      setHashCode(stored_hash_code);
+    }
+  }, []);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
