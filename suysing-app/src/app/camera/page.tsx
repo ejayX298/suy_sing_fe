@@ -66,7 +66,7 @@ export default function CameraPage() {
         }
 
         return () => {
-          setScanning(false);
+          setScanning(true);
         };
 
       }
