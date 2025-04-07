@@ -11,6 +11,7 @@ import BoothsProgress from "@/components/BoothsProgress";
 import { bestBooth } from '@/services/api';
 import Swal from 'sweetalert2';
 import { useSearchParams } from "next/navigation";
+import { boothVisitService } from '@/services/api';
 
 function BestBoothContent() {
   const searchParams = useSearchParams();
@@ -31,6 +32,15 @@ function BestBoothContent() {
   const [orangeBooths, setOrangeBooths] = useState([]);
   const [redBooths, setRedBooths] = useState([]);
   const [isRender, setIsRender] = useState(false);
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
 
 
   const fetchData = async () => {
@@ -79,6 +89,39 @@ function BestBoothContent() {
   };
 
 
+  const getCustomerRecord = async () => {
+    try {
+      const customerResult = await boothVisitService.getCustomerRecord();
+      
+      if(customerResult.success){
+
+        const mapCustomerData = {
+          id: customerResult.results?.id,
+          code: customerResult.results?.code,
+          name: customerResult.results?.full_name,
+          hasVoted: customerResult.results?.is_done_voting,
+          isDoneVisit: customerResult.results?.is_done_visit,
+          totalBooths: customerResult.results?.total_booths,
+          totalBoothVisited: customerResult.results?.total_booth_visited,
+        };
+        
+        setCustomerData(mapCustomerData);
+      
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+
+
   const showMessage = (status: string, message : string)  => {
     
     let iconType: "success" | "error";
@@ -106,6 +149,7 @@ function BestBoothContent() {
       if(customer_hash_code == stored_hash_code){
         setIsRender(true)
         fetchData();
+        getCustomerRecord();
       }
       
     }
@@ -150,8 +194,8 @@ function BestBoothContent() {
     return (
       <div className="px-4 py-3 text-white">
         <BoothsProgress
-          visited={10}
-          total={80}
+          visited={customerData?.totalBoothVisited || 0}
+          total={customerData?.totalBooths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
 
