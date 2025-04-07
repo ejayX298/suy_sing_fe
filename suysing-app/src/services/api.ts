@@ -544,4 +544,94 @@ export const auditorService = {
   
 
 }
+
+
+export const boothVisitService = {
+
+
+  getCustomerRecord: async () => {
+
+    const customer_info = localStorage.getItem('customer_info');
+    const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
+    const customer_id = customerInfoParsed?.id || ''
+    try{
+      const response = await httpClient(api_key).get(`/customer/get_details/?customer_id=${customer_id}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      return {
+        success : true,
+        message : "success",
+        results : response_data
+      }
+    
+
+    } catch (error) {
+
+      const errResp = error.response;
+      
+      if (axios.isAxiosError(error)) {
+        
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+      }else{
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+     
+    }
+  },
+  
+
+  submitBoothVisit: async (post_data : any) => {
+
+    try{
+      
+      const customer_info = localStorage.getItem('customer_info');
+      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+      const session_id = customerInfoParsed?.session_id || ''
+      const customer_id = customerInfoParsed?.id || ''
+  
+      const response = await httpClient(session_id).post(`/customer/booth/submit/`, {
+        customer_id : customer_id,
+        booth_codes: JSON.stringify(post_data)
+      });
+      
+      const response_data = response?.data?.data || []
+      
+      return {
+        success : true,
+        results : response_data
+      }
+    
+
+    } catch (error) {
+    
+      if (axios.isAxiosError(error)) {
+        
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+        
+      }else{
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+     
+    }
+
+  },
+
+}
+
+
  
