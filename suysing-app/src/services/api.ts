@@ -25,6 +25,16 @@ export const customerQr = {
 
       if(response_data){
         if (typeof window !== 'undefined') {
+
+          const stored_hash_code = localStorage.getItem('hash_code');
+          
+          // Reload page on initial saving data for refreshing of bottom navigation urls
+          if(!stored_hash_code){
+            localStorage.setItem('customer_info', JSON.stringify(mapResponse));
+            localStorage.setItem('hash_code', hash_code);
+            window.location.href = `/my-qr/?cc=${hash_code}`
+          }
+
           localStorage.setItem('customer_info', JSON.stringify(mapResponse));
           localStorage.setItem('hash_code', hash_code);
         }
