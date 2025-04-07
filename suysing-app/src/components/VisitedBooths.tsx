@@ -14,7 +14,8 @@ export default function VisitedBooths({
   clickable = false,
   onBoothToggle,
 }: VisitedBoothsProps) {
-  const visitedBooths = booths.filter((booth) => booth.visited);
+  // const visitedBooths = booths.filter((booth) => booth.visited);
+  const visitedBooths = booths
 
   if (visitedBooths.length === 0) {
     return null;
