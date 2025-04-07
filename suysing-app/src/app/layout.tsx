@@ -28,7 +28,6 @@ export default function RootLayout({
             src="/images/background-image.png"
             alt="Background"
             fill
-            objectFit="cover"
             priority
           />
         </div>
