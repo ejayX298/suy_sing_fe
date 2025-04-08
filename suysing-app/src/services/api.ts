@@ -89,10 +89,28 @@ export const bestBooth = {
       
       const response_data = response?.data?.data || []
       
+      const mapBlueBooths = response_data.blue_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
+      const mapOrangeBooths = response_data.orange_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
+      const mapRedBooths = response_data.red_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
       const mapResponse = {
-        blue_booths: response_data?.blue_booths || [],
-        orange_booths: response_data?.orange_booths || [],
-        red_booths: response_data?.red_booths || [],
+        blue_booths: mapBlueBooths || [],
+        orange_booths: mapOrangeBooths || [],
+        red_booths: mapRedBooths || [],
       }
       
       return {
@@ -383,10 +401,28 @@ export const auditorService = {
       
       const response_data = response?.data?.data || []
       
+      const mapBlueBooths = response_data.blue_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
+      const mapOrangeBooths = response_data.orange_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
+      const mapRedBooths = response_data.red_booths.map(booth => ({
+        boothCode: booth.code,
+        image: '/images/booths/' + booth.code + '.png',
+        ...booth
+      }));
+
       const mapResponse = {
-        blue_booths: response_data?.blue_booths || [],
-        orange_booths: response_data?.orange_booths || [],
-        red_booths: response_data?.red_booths || [],
+        blue_booths: mapBlueBooths || [],
+        orange_booths: mapOrangeBooths || [],
+        red_booths: mapRedBooths || [],
       }
       
       return {
