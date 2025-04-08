@@ -3,6 +3,8 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
+import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
+import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -102,90 +104,38 @@ export default function Home() {
                     <div className="text-white font-bold text-xl text-center">GAMING HUB & CUSTOMER LOUNGE AREA</div>
                   </div>
                   
+                  {/* Test*/}
+                  <TestDoubleZone />
+                  
                   {/* Double Zone Section */}
-                  <div className="px-4 py-2">
-                    <div className="border-2 border-dashed border-red-500 p-4 rounded-md mb-4">
-                      <div className="flex justify-center mb-2">
-                        <div className="bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full py-1 px-4 font-bold text-sm flex items-center justify-center">
-                          Double Zone
-                          <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4">
-                            <span className="font-bold text-xs leading-none">i</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
-                        Locate the Double Zone Booths in the Tent and scan any 22 booths within this area.
-                      </div>
-                    
-                      {/* Row 1 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row1-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 2 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row2-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 3 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row3-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 4 - 4 boxes, centered */}
-                      <div className="flex justify-center gap-4">
-                        {[...Array(4)].map((_, i) => (
-                          <div 
-                            key={`double-row4-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <DoubleZoneDisplay />
                   
                   {/* Additional Boxes/Booths Below */}
                   <div className="px-4 py-4 grid grid-cols-4 gap-3">
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">REBISCO</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SUYPA CORP</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LAMOIYAN</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">MONDELEZ</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">REBISCO</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SUYPA CORP</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LAMOIYAN</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">MONDELEZ</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">FEEDING</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">MILO/NIDO</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">PHILUSA</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">PERFETTI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">FEEDING</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">MILO/NIDO</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">PHILUSA</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">PERFETTI</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">UNILAB/OTC</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">SEALANT</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">UNILAB/OTC</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">SEALANT</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">VASELINE</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-3 row-span-2">SUY SING BOOTH</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">VASELINE</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-3 row-span-2">SUY SING BOOTH</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">JOYRIDE</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LIFEBUOY</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">JOYRIDE</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LIFEBUOY</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LESLEI</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SOFISKI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LESLEI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SOFISKI</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SWEETS</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">UNI ELEMENTS</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SWEETS</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">UNI ELEMENTS</div>
                   </div>
                 </div>
                 
