@@ -17,6 +17,7 @@ export default function CameraPage() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessModalDouble, setShowSuccessModalDouble] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
@@ -106,12 +107,21 @@ export default function CameraPage() {
           setSuccessMessage(
             "You've stamped your first booth. Visit and scan all the other booths to complete this section."
           );
-        } else {
+          setShowSuccessModal(true);
+        }else if(boothVisitResult.is_double_zone === 1){
+          setShowSuccessModalDouble(true)
+          setSuccessMessage(
+            "Each booth visited will be counted as double."
+          );
+        } 
+        else {
           setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
+          setShowSuccessModal(true);
         }
 
        
-        setShowSuccessModal(true);
+
+      
         setScanning(false);
       } else {
         // QR code not recognized - just continue scanning
@@ -178,6 +188,7 @@ export default function CameraPage() {
 
   const handleProceed = () => {
     setShowSuccessModal(false);
+    setShowSuccessModalDouble(false);
     setScanning(true);
   };
 
@@ -222,7 +233,12 @@ export default function CameraPage() {
         setSuccessMessage(
           "You've stamped your first booth. Visit and scan all the other booths to complete this section."
         );
-      } else {
+      } else if(boothVisitResult.is_double_zone === 1){
+        setShowSuccessModalDouble(true)
+        setSuccessMessage(
+          "Each booth visited will be counted as double."
+        );
+      }  else {
         setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
       }
 
@@ -255,13 +271,16 @@ export default function CameraPage() {
       if(submitVote.success){
     
         let booth_name = ''
+        let is_double_zone = 0
         if(submitVote.results.length > 0){
           booth_name = submitVote?.results[0].booth?.name || ''
+          is_double_zone = submitVote?.results[0].booth?.is_double_zone || ''
         }
 
         return {
           success : true,
-          booth_name : booth_name
+          booth_name : booth_name,
+          is_double_zone : is_double_zone
         };
 
       }else{
@@ -465,6 +484,38 @@ export default function CameraPage() {
           </div>
         </div>
       )}
+
+
+       {/* Success Modal for Double zone */}
+       {showSuccessModalDouble && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/double-star.svg"
+                  alt="Success"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <p className="mb-6 text-[#343434] text-[20px]">
+                <span className="font-bold">Welcome to the Double Zone! </span>
+              </p>
+              <p className="mb-6 text-[#343434] text-[20px]">
+                {successMessage}
+              </p>
+              <button
+                onClick={handleProceed}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }
