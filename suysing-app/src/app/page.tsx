@@ -453,26 +453,26 @@ export default function Home() {
                 {/* Entrance/Exit, CRs Section */}
                 <div className="flex justify-center pr-56 gap-[275px] w-full mt-5">
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                 </div>
                 
                 <div className="flex justify-center gap-[210px] pr-[230px] mt-1 w-full">
                   <div className="bg-[#3399FF] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                    <Image src="/images/main-hall/men.svg" alt="Men's CR" width={13} height={32} />
+                    <Image src="/images/booths/men.svg" alt="Men's CR" width={13} height={32} />
                     <span className="ml-2">MEN&apos;S CR</span>
                   </div>
                   <div className="bg-[#FF66CC] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                    <Image src="/images/main-hall/woman.svg" alt="Women's CR" width={16} height={32} />
+                    <Image src="/images/booths/woman.svg" alt="Women's CR" width={16} height={32} />
                     <span className="ml-2">WOMEN&apos;S CR</span>
                   </div>
                 </div>
