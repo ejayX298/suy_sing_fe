@@ -5,8 +5,23 @@ export interface BoothZoneItem {
   name: string;
   logo: string;
   visited: boolean;
-  
+  position?: number;
 }
+
+// List of double zone booth codes
+export const doubleZoneBoothCodes = [
+  "WLFOO01", "GENTL02", "ASTHU02", "HDRFO01", "PERFE02", 
+  "MANIL05", "LINKA02", "MCKEN11", "LOREN02", "SYMPL01", 
+  "QUANT06", "SEVIL02", "SLORD02", "GARDE01", "HUANS01", 
+  "MONTO02", "GOLDL02", "COLUM03", "ECCOF01", "FONTE01", 
+  "IMSMA01", "MINGF01", "DELFI02", "SYSUI02", "CALAB01", 
+  "UNIVE10", "FEDER01", "Gcash", "YALETRAK PHILIPPINES INCORPORATED", 
+  "METROBANK (MERCHANT ACQUIRING)", "FAIR N SQUARE EMPORIUM INC.", 
+  "SYMBO01", "PAYMONGO", "COLOSPEC ENTERPRISE CORPORATION", 
+  "MEDIC01", "PNB", "GUTHRIE-JENSEN CONSULTANTS, INC.", 
+  "UNION BANK OF THE PHILIPPINES", "JAM GOLDEN FORTUNE MARKETING", 
+  "EQUALYNX NETWORK CO."
+];
 
 export const regularZoneBooths: BoothZoneItem[] = [
   { name: "Alaska Corporation", logo: "alaska", visited: false },
@@ -16,13 +31,13 @@ export const regularZoneBooths: BoothZoneItem[] = [
   { name: "NutriAsia", logo: "nutriasia", visited: false },
 ];
 
-export const x2ZoneBooths: BoothZoneItem[] = [
-  { name: "Alaska Corporation", logo: "alaska", visited: false },
-  { name: "Champion", logo: "champion", visited: false },
-  { name: "Del Monte", logo: "delmonte", visited: false },
-  { name: "Pepsi", logo: "pepsi", visited: false },
-  { name: "NutriAsia", logo: "nutriasia", visited: false },
-];
+// Double zone booths array with 22 empty slots that will be filled when scanned
+export const x2ZoneBooths: BoothZoneItem[] = Array(22).fill(null).map((_, index) => ({
+  name: "",
+  logo: "",
+  visited: false,
+  position: index
+}));
 
 export const visitedBooths: BoothZoneItem[] = [
   { name: "Alaska Corporation", logo: "alaska", visited: true },
@@ -31,6 +46,8 @@ export const visitedBooths: BoothZoneItem[] = [
   { name: "Pepsi", logo: "pepsi", visited: true },
   { name: "NutriAsia", logo: "nutriasia", visited: true },
 ];
+
+
 
 export const getInitialBooths = (): Booth[] => {
   return [
@@ -307,7 +324,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "NUTRI0607",  
       name: "Nutraria",
-      image: "/images/booths/NUTRI0607.png",
+      image: "/images/booths/NUTRI07.png",
       boothCode: "NUTRI0607",
       visited: false,
       width: 100,
@@ -417,7 +434,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "PEPSI01",
       name: "Pepsi",
-      image: "/images/booths/PEPSI01.jpg",
+      image: "/images/booths/PEPSI02.jpg",
       boothCode: "PEPSI01",
       visited: false,
       width: 100,
@@ -433,9 +450,9 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
     },
 
-    {id: "THEPU01&MAGNO01",
+    {id: "THEPU01",
       name: "San Miguel",
-      image: "/images/booths/THEPU01&MAGNO01.jpg",
+      image: "/images/booths/THEPU01.jpg",
       boothCode: "THEPU01&MAGNO01",
       visited: false,
       width: 100,
@@ -453,7 +470,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "UNIVE01-red",
       name: "Universal Robina",
-      image: "/images/booths/UNIVE01-red.jpg",
+      image: "/images/booths/UNIVE01.jpg",
       boothCode: "UNIVE01-red",
       visited: false,
       width: 100,
