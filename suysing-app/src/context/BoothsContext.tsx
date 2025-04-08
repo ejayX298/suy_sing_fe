@@ -9,11 +9,11 @@ import React, {
 } from "react";
 import { getInitialBooths } from "@/data/booths";
 
-// Define the booth type based on what's used in both pages
 export interface Booth {
   id?: string;
   name: string;
   image?: string;
+  boothCode: string;
   logo?: string;
   visited: boolean;
   width?: number;
@@ -39,10 +39,9 @@ export function BoothsProvider({ children }: { children: ReactNode }) {
   // Initialize state with empty array
   const [booths, setBooths] = useState<Booth[]>([]);
 
-  // Initialize booths on mount and when data changes
   useEffect(() => {
     setBooths(getInitialBooths());
-  }, []); // Empty dependency array means this runs once on mount
+  }, []); 
 
   // Calculate counts
   const visitedCount = booths.filter((booth) => booth.visited).length;
@@ -88,7 +87,6 @@ export function BoothsProvider({ children }: { children: ReactNode }) {
   );
 }
 
-// Custom hook for using the context
 export function useBooths() {
   const context = useContext(BoothsContext);
   if (context === undefined) {
