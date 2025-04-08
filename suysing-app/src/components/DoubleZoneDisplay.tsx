@@ -5,13 +5,11 @@ import Image from "next/image";
 import { useBooths } from "@/context/BoothsContext";
 
 export default function DoubleZoneDisplay() {
-  const { doubleZoneVisitedCount } = useBooths();
-
   return (
-    <div className="px-4 py-2">
-      <div className="border-2 border-dashed border-red-500 p-4 rounded-md mb-4">
+    <div className="px-6 py-4">
+      <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
         <div className="flex justify-center mb-2">
-          <div className="bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full py-1 px-4 font-bold text-sm flex items-center justify-center">
+          <div className="bg-[#B6E056] -mt-9 text-[#0920B0] border-[#0920B0] border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
             Double Zone
             <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4">
               <span className="font-bold text-xs leading-none">i</span>
@@ -22,9 +20,6 @@ export default function DoubleZoneDisplay() {
         <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
           Locate the Double Zone Booths in the Tent and scan any 22 booths
           within this area.
-          <div className="font-bold mt-1">
-            {doubleZoneVisitedCount} / 22 Booths Scanned
-          </div>
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
