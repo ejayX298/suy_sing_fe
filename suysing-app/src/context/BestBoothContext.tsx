@@ -1,28 +1,30 @@
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode } from "react";
-
-export interface BoothVote {
-  name: string;
-  logo: string;
-}
+import { ColorBooth } from "@/data/colorBooths";
 
 interface BestBoothContextType {
-  blueBoothVote: BoothVote | null;
-  orangeBoothVote: BoothVote | null;
-  redBoothVote: BoothVote | null;
-  setBlueBoothVote: (booth: BoothVote | null) => void;
-  setOrangeBoothVote: (booth: BoothVote | null) => void;
-  setRedBoothVote: (booth: BoothVote | null) => void;
+  blueBoothVote: ColorBooth | null;
+  orangeBoothVote: ColorBooth | null;
+  redBoothVote: ColorBooth | null;
+  setBlueBoothVote: (booth: ColorBooth | null) => void;
+  setOrangeBoothVote: (booth: ColorBooth | null) => void;
+  setRedBoothVote: (booth: ColorBooth | null) => void;
   resetVotes: () => void;
 }
 
-const BestBoothContext = createContext<BestBoothContextType | undefined>(undefined);
+const BestBoothContext = createContext<BestBoothContextType | undefined>(
+  undefined
+);
 
-export const BestBoothProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [blueBoothVote, setBlueBoothVote] = useState<BoothVote | null>(null);
-  const [orangeBoothVote, setOrangeBoothVote] = useState<BoothVote | null>(null);
-  const [redBoothVote, setRedBoothVote] = useState<BoothVote | null>(null);
+export const BestBoothProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [blueBoothVote, setBlueBoothVote] = useState<ColorBooth | null>(null);
+  const [orangeBoothVote, setOrangeBoothVote] = useState<ColorBooth | null>(
+    null
+  );
+  const [redBoothVote, setRedBoothVote] = useState<ColorBooth | null>(null);
 
   const resetVotes = () => {
     setBlueBoothVote(null);
