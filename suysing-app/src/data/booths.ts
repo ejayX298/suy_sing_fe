@@ -31,7 +31,6 @@ export const regularZoneBooths: BoothZoneItem[] = [
   { name: "NutriAsia", logo: "nutriasia", visited: false },
 ];
 
-// Double zone booths array with 22 empty slots that will be filled when scanned
 export const x2ZoneBooths: BoothZoneItem[] = Array(22).fill(null).map((_, index) => ({
   name: "",
   logo: "",

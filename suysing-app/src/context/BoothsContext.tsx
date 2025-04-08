@@ -35,6 +35,8 @@ interface BoothsContextType {
 
 const BoothsContext = createContext<BoothsContextType | undefined>(undefined);
 
+const LOCAL_STORAGE_KEY = "visitedBoothIds";
+
 export function BoothsProvider({ children }: { children: ReactNode }) {
   const [booths, setBooths] = useState<Booth[]>([]);
   const [doubleZoneBooths, setDoubleZoneBooths] = useState<Booth[]>(
@@ -42,15 +44,42 @@ export function BoothsProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
+    const storedVisitedIds = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
+    ) as string[];
+
     const initialBooths = getInitialBooths();
 
     const updatedBooths = initialBooths.map((booth) => ({
       ...booth,
       isDoubleZone: doubleZoneBoothCodes.includes(booth.boothCode),
+      visited: storedVisitedIds.includes(booth.id ?? ""),
     }));
 
+    const visitedDoubleZone = updatedBooths.filter(
+      (b) => b.visited && b.isDoubleZone
+    );
+
+    const filledDoubleZone = Array(22).fill(null);
+    visitedDoubleZone.forEach((booth, idx) => {
+      if (idx < 22) {
+        filledDoubleZone[idx] = {
+          ...booth,
+          doubleZonePosition: idx,
+        };
+      }
+    });
+
+    setDoubleZoneBooths(filledDoubleZone);
     setBooths(updatedBooths);
   }, []);
+
+  useEffect(() => {
+    const visitedIds = booths
+      .filter((booth) => booth.visited)
+      .map((booth) => booth.id);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(visitedIds));
+  }, [booths]);
 
   const visitedCount = booths.filter((booth) => booth.visited).length;
   const totalBooths = booths.length;
