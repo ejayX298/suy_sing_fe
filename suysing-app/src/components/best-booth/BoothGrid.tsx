@@ -3,19 +3,14 @@
 import React from "react";
 import BoothCard from "./BoothCard";
 import { useBestBooth } from "@/context/BestBoothContext";
-
-interface Booth {
-  name: string;
-  logo: string;
-}
+import { ColorBooth } from "@/data/colorBooths";
 
 interface BoothGridProps {
-  booths: Booth[];
+  booths: ColorBooth[];
   color: "blue" | "orange" | "red";
 }
 
 export default function BoothGrid({ booths, color }: BoothGridProps) {
-  
   const {
     blueBoothVote,
     orangeBoothVote,
@@ -32,13 +27,13 @@ export default function BoothGrid({ booths, color }: BoothGridProps) {
       ? orangeBoothVote
       : redBoothVote;
 
-  const handleVote = (booth: Booth) => {
+  const handleVote = (booth: ColorBooth) => {
     if (color === "blue") {
-      setBlueBoothVote(selectedBooth?.logo === booth.logo ? null : booth);
+      setBlueBoothVote(selectedBooth?.id === booth.id ? null : booth);
     } else if (color === "orange") {
-      setOrangeBoothVote(selectedBooth?.logo === booth.logo ? null : booth);
+      setOrangeBoothVote(selectedBooth?.id === booth.id ? null : booth);
     } else {
-      setRedBoothVote(selectedBooth?.logo === booth.logo ? null : booth);
+      setRedBoothVote(selectedBooth?.id === booth.id ? null : booth);
     }
   };
 
@@ -46,10 +41,11 @@ export default function BoothGrid({ booths, color }: BoothGridProps) {
     <div className="grid grid-cols-3 gap-3 px-4 pb-4 max-w-xl sm:max-w-3xl mx-auto">
       {booths.map((booth) => (
         <BoothCard
-          key={booth.logo}
-          logo={booth.logo}
+          key={booth.id}
+          booth={booth}
           color={color}
           onClick={() => handleVote(booth)}
+          isSelected={selectedBooth?.id === booth.id}
         />
       ))}
     </div>
