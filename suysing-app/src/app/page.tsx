@@ -3,6 +3,8 @@
 import React, { useEffect } from "react";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
+import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
+import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -25,7 +27,7 @@ export default function Home() {
       <div key={booth.id} className="h-full ">
         <button
           onClick={() => booth.id && handleVisitBooth(booth.id)}
-          className={`block w-full h-full relative aspect-square bg-white border border-blue-800 rounded ${
+          className={`block w-full h-full relative aspect-square bg-white border-blue-800 border-2 ${
             booth.visited ? "border-2 border-red-500 " : ""
           }`}
         >
@@ -37,7 +39,7 @@ export default function Home() {
           >
             <Image
               src={booth.image || "/images/placeholder.png"}
-              alt={booth.name}
+              alt={booth.boothCode}
               width={booth.width || 100}
               height={booth.height || 100}
               style={{
@@ -102,90 +104,38 @@ export default function Home() {
                     <div className="text-white font-bold text-xl text-center">GAMING HUB & CUSTOMER LOUNGE AREA</div>
                   </div>
                   
+                  {/* Test*/}
+                  <TestDoubleZone />
+                  
                   {/* Double Zone Section */}
-                  <div className="px-4 py-2">
-                    <div className="border-2 border-dashed border-red-500 p-4 rounded-md mb-4">
-                      <div className="flex justify-center mb-2">
-                        <div className="bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full py-1 px-4 font-bold text-sm flex items-center justify-center">
-                          Double Zone
-                          <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4">
-                            <span className="font-bold text-xs leading-none">i</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
-                        Locate the Double Zone Booths in the Tent and scan any 22 booths within this area.
-                      </div>
-                    
-                      {/* Row 1 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row1-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 2 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row2-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 3 - 6 boxes */}
-                      <div className="flex justify-center gap-4 mb-4">
-                        {[...Array(6)].map((_, i) => (
-                          <div 
-                            key={`double-row3-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                      
-                      {/* Row 4 - 4 boxes, centered */}
-                      <div className="flex justify-center gap-4">
-                        {[...Array(4)].map((_, i) => (
-                          <div 
-                            key={`double-row4-${i}`}
-                            className="border border-blue-800 rounded-md aspect-square w-[60px] h-[60px]"
-                          ></div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
+                  <DoubleZoneDisplay />
                   
                   {/* Additional Boxes/Booths Below */}
                   <div className="px-4 py-4 grid grid-cols-4 gap-3">
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">REBISCO</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SUYPA CORP</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LAMOIYAN</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">MONDELEZ</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">REBISCO</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SUYPA CORP</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LAMOIYAN</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">MONDELEZ</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">FEEDING</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">MILO/NIDO</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">PHILUSA</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">PERFETTI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">FEEDING</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">MILO/NIDO</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">PHILUSA</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">PERFETTI</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">UNILAB/OTC</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">SEALANT</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">UNILAB/OTC</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-2">SEALANT</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">VASELINE</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold col-span-3 row-span-2">SUY SING BOOTH</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">VASELINE</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold col-span-3 row-span-2">SUY SING BOOTH</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">JOYRIDE</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LIFEBUOY</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">JOYRIDE</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LIFEBUOY</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">LESLEI</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SOFISKI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">LESLEI</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SOFISKI</div>
                     
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">SWEETS</div>
-                    <div className="border border-blue-800 rounded-md h-[40px] flex items-center justify-center text-xs font-semibold">UNI ELEMENTS</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">SWEETS</div>
+                    <div className="border-2 border-blue-800 h-[40px] flex items-center justify-center text-xs font-semibold">UNI ELEMENTS</div>
                   </div>
                 </div>
                 
@@ -225,29 +175,29 @@ export default function Home() {
                 <div className="flex mb-2 justify-center w-full mt-12">
                   <div className="flex gap-0.5">
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "empty")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.id === "empty")} />
                     </div>
                     <div className=" w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "wellmade")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "WELLM01")} />
                     </div>
                     
                     {/* 4th-5th combined */}
                     <div className="w-[163px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "cdo")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "FOODS01")} />
                     </div>
                     
                     {/* 6th-8th are single */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "selecta")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "RFMCO01")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "mega")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "MEGAP01")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "rebisco")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "REPUB03")} />
                     </div>
                   </div>
                   
@@ -259,17 +209,17 @@ export default function Home() {
                   <div className="flex gap-0.5">
                     {/* 9th-11th combined */}
                     <div className="w-[249px] h-[80px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "pride")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "ACSCH01")} />
                     </div>
                     
                     {/* 12th is single */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "regen")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "REGEN01")} />
                     </div>
                     
                     {/* combined */}
                     <div className="w-[163px] h-[80px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "silver-swan")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "FIRST05")} />
                     </div>
                   </div>
                   
@@ -281,29 +231,29 @@ export default function Home() {
                   <div className="flex gap-0.5">
                     {/* Two single squares */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "baygon")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "MONHE01")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "wings")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "GENTL01")} />
                     </div>
                     
                     {/*two squares */}
                     <div className="w-[163px] h-[80px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "maling")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "FEDER01")} />
                     </div>
                     
                     {/* single grid */}
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "natures-spring")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "PHILI11")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "natures-spring")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "natures-spring")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                     </div>
                     <div className="w-[80px] h-[80px] ">
-                      <RenderBooth booth={booths.find((b) => b.id === "ginebra")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "GINEB01")} />
                     </div>
                   </div>
                 </div>
@@ -314,104 +264,104 @@ export default function Home() {
                     {/* First booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "modess")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "JNTLC01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                       </div>
                       <div className=" col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "pmftc")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "PMFTC01")} />
                       </div>
                     </div>
                     
                     {/* Second booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "kojie-san")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "MAGIS01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "keratin")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "SKINT01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "happy")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "GARDE01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "silka")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "COSME01")} />
                       </div>
                       <div className="col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "ajinomoto")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "AJINO01")} />
                       </div>
                     </div>
                     
                     {/* Third booth */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "oishi-white")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "LIWAY01_2")} />
                       </div>
                       <div className="row-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "asia-brewery")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "ABSOL01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "nabati")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "NABAT01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "sanit01")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "SANIT01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "green-cross")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "GREEN01")} />
                       </div>
                     </div>
                     
                     {/* Fourth booth - Nestle (single) */}
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "nestle")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "NESTL01")} />
                     </div>
                     
                     {/* Fifth booth - P&G (single) */}
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "p&g")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "PROCT06")} />
                     </div>
                     
                     {/* Sixth booth - Emperador/Century (2x3 grid) */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="col-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "emperador")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "EMPER01")} />
                       </div>
                       <div className="col-span-2 row-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "nutraria")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "NUTRI0607")} />
                       </div>
                       
                     </div>
                     
                     {/* Seventh booth - Monde Nissin (single) */}
                     <div className="w-[164px] h-[251px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "monde-nissin")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "MONDE01")} />
                     </div>
                     
                     {/* Eighth booth - Alaska (single) */}
                     <div className="w-[164px] h-[251px]">
-                      <RenderBooth booth={booths.find((b) => b.id === "alaska")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "ALASK01")} />
                     </div>
                     
                     {/* Ninth booth - INTER04/ECOSS04 (2x3 grid) */}
                     <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "bioderm")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "INTER04")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "alaska")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "champion")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "empty")} />
                       </div>
                       <div className="row-span-2">
-                        <RenderBooth booth={booths.find((b) => b.id === "pepsi")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "PEPSI01")} />
                       </div>
                       <div className="">
-                        <RenderBooth booth={booths.find((b) => b.id === "rc-cola")} />
+                        <RenderBooth booth={booths.find((b) => b.boothCode === "ARCRE01")} />
                       </div>
                     </div>
                   </div>
@@ -421,31 +371,31 @@ export default function Home() {
                 <div className="flex justify-center mb-5 mt-4 w-full">
                   <div className="flex gap-15 w-full">
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "coca-cola")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "COCAC01")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "universal-robina-red")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "UNIVE01-red")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "mondelez")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "MONDE03")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "san-miguel")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "THEPU01&MAGNO01")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "unilever")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "UNILE01")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "century")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "CENTU03")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "palmolive")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "COLGA01")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "champion")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "PEERL01")} />
                     </div>
                     <div className="w-[164px] h-[251px] bg-white">
-                      <RenderBooth booth={booths.find((b) => b.id === "delmonte")} />
+                      <RenderBooth booth={booths.find((b) => b.boothCode === "DELMO01")} />
                     </div>
                   </div>
                 </div>
@@ -453,26 +403,26 @@ export default function Home() {
                 {/* Entrance/Exit, CRs Section */}
                 <div className="flex justify-center pr-56 gap-[275px] w-full mt-5">
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                   <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                    <Image src="/images/main-hall/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
+                    <Image src="/images/booths/arrow.svg" alt="Entrance/Exit" width={49} height={24} />
                     <span className="ml-2">ENTRANCE / EXIT</span>
                   </div>
                 </div>
                 
                 <div className="flex justify-center gap-[210px] pr-[230px] mt-1 w-full">
                   <div className="bg-[#3399FF] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                    <Image src="/images/main-hall/men.svg" alt="Men's CR" width={13} height={32} />
+                    <Image src="/images/booths/men.svg" alt="Men's CR" width={13} height={32} />
                     <span className="ml-2">MEN&apos;S CR</span>
                   </div>
                   <div className="bg-[#FF66CC] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                    <Image src="/images/main-hall/woman.svg" alt="Women's CR" width={16} height={32} />
+                    <Image src="/images/booths/woman.svg" alt="Women's CR" width={16} height={32} />
                     <span className="ml-2">WOMEN&apos;S CR</span>
                   </div>
                 </div>
