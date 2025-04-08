@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import { getInitialBooths } from "@/data/booths";
+import { getInitialBooths, doubleZoneBoothCodes } from "@/data/booths";
 
 export interface Booth {
   id?: string;
@@ -27,39 +27,76 @@ interface BoothsContextType {
   setBooths: React.Dispatch<React.SetStateAction<Booth[]>>;
   visitedCount: number;
   totalBooths: number;
+  doubleZoneBooths: Booth[];
+  doubleZoneVisitedCount: number;
   handleVisitBooth: (id: string) => void;
   handleToggleBooth: (name: string, isVisited: boolean) => void;
 }
 
-// Create the context with a default empty value
 const BoothsContext = createContext<BoothsContextType | undefined>(undefined);
 
-// Provider component
 export function BoothsProvider({ children }: { children: ReactNode }) {
-  // Initialize state with empty array
   const [booths, setBooths] = useState<Booth[]>([]);
+  const [doubleZoneBooths, setDoubleZoneBooths] = useState<Booth[]>(
+    Array(22).fill(null)
+  );
 
   useEffect(() => {
-    setBooths(getInitialBooths());
-  }, []); 
+    const initialBooths = getInitialBooths();
 
-  // Calculate counts
+    const updatedBooths = initialBooths.map((booth) => ({
+      ...booth,
+      isDoubleZone: doubleZoneBoothCodes.includes(booth.boothCode),
+    }));
+
+    setBooths(updatedBooths);
+  }, []);
+
   const visitedCount = booths.filter((booth) => booth.visited).length;
   const totalBooths = booths.length;
+  const doubleZoneVisitedCount = doubleZoneBooths.filter(
+    (booth) => booth !== null
+  ).length;
 
-  // Function to handle visiting a booth (by id)
   const handleVisitBooth = (id: string) => {
     setBooths((prevBooths) => {
-      return prevBooths.map((booth) => {
+      const scannedBooth = prevBooths.find((booth) => booth.id === id);
+
+      const updatedBooths = prevBooths.map((booth) => {
         if (booth.id === id) {
           return { ...booth, visited: true };
         }
         return booth;
       });
+
+      if (scannedBooth && scannedBooth.isDoubleZone) {
+        const alreadyInDoubleZone = doubleZoneBooths.some(
+          (booth) => booth !== null && booth.id === scannedBooth.id
+        );
+
+        if (!alreadyInDoubleZone) {
+          const emptySlotIndex = doubleZoneBooths.findIndex(
+            (booth) => booth === null
+          );
+
+          if (emptySlotIndex !== -1) {
+            const updatedDoubleZoneBooths = [...doubleZoneBooths];
+
+            updatedDoubleZoneBooths[emptySlotIndex] = {
+              ...scannedBooth,
+              visited: true,
+              doubleZonePosition: emptySlotIndex,
+            };
+
+            setDoubleZoneBooths(updatedDoubleZoneBooths);
+          }
+        }
+      }
+
+      return updatedBooths;
     });
   };
 
-  // Function to toggle booth visited state (by name)
   const handleToggleBooth = (name: string, isVisited: boolean) => {
     setBooths((prevBooths) => {
       return prevBooths.map((booth) => {
@@ -78,6 +115,8 @@ export function BoothsProvider({ children }: { children: ReactNode }) {
         setBooths,
         visitedCount,
         totalBooths,
+        doubleZoneBooths,
+        doubleZoneVisitedCount,
         handleVisitBooth,
         handleToggleBooth,
       }}
