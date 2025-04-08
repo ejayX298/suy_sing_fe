@@ -743,7 +743,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "PHILU01",
       name: "philusa",
-      image: "/images/booths/PHILU01.png",
+      image: "/images/booths/PHILU01.jpg",
       boothCode: "PHILU01",
       visited: false,
       width: 100,
