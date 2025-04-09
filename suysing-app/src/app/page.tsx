@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
 import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
@@ -8,10 +8,12 @@ import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import InstructionModal from "@/components/homepage/InstructionModal";
 
 export default function Home() {
   const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
     useBooths();
+  const [showInstructionModal, setShowInstructionModal] = useState(true);
 
   useEffect(() => {
     if (booths.length === 0) {
@@ -66,6 +68,12 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
+      {/* Instruction Modal */}
+      <InstructionModal 
+        isOpen={showInstructionModal} 
+        onClose={() => setShowInstructionModal(false)} 
+      />
+      
       <main className="flex-1 px-0 py-0 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
