@@ -21,6 +21,7 @@ export interface Booth {
   isDoubleZone?: boolean;
   doubleZonePosition?: number;
   overrideAspect?: boolean;
+  overrideSize?: boolean;
 }
 
 interface BoothsContextType {
