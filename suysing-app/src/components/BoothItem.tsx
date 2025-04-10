@@ -12,7 +12,7 @@ export default function BoothItem({ name, image, boothCode }: BoothItemProps) {
       <div className="w-18 h-12 relative mr-4 shrink-0">
         <Image src={image} alt={boothCode} fill  />
       </div>
-      <span className="text-gray-800 font-medium">{name}</span>
+      <span className="font-medium">{name}</span>
     </div>
   );
 }
