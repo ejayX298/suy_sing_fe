@@ -264,6 +264,7 @@ export const boothActivitiesData = {
       const current_page = response_data?.current_page || 1
       const mapResponse = response_data.booths.map(booth => ({
         id : booth.id,
+        code : booth.code,
         name : booth.name,
         status : booth.pretty_status,
       }));
