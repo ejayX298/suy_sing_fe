@@ -35,7 +35,7 @@ export const blueBooths: ColorBooth[] = [
   {
     id: "THEPU01",
     name: "The Pure Group",
-    image: "/images/booths/THEPU01.jpg",
+    image: "/images/booths/THEPU01.png",
     boothCode: "THEPU01",
     width: 100,
     height: 100,
@@ -51,7 +51,7 @@ export const blueBooths: ColorBooth[] = [
   {
     id: "PROCT06",
     name: "Procter & Gamble",
-    image: "/images/booths/PROCT06.jpeg",
+    image: "/images/booths/PROCT06.png",
     boothCode: "PROCT06",
     width: 100,
     height: 100,
@@ -59,7 +59,7 @@ export const blueBooths: ColorBooth[] = [
   {
     id: "UNIVE01",
     name: "Universal Robina Corporation",
-    image: "/images/booths/UNIVE01.jpg",
+    image: "/images/booths/UNIVE01.png",
     boothCode: "UNIVE01",
     width: 100,
     height: 100,
@@ -115,7 +115,7 @@ export const blueBooths: ColorBooth[] = [
   {
     id: "PEPSI02",
     name: "Pepsi",
-    image: "/images/booths/PEPSI02.jpg",
+    image: "/images/booths/PEPSI02.png",
     boothCode: "PEPSI02",
     width: 100,
     height: 100,
@@ -126,7 +126,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "MEGAP01",
     name: "Mega Prime",
-    image: "/images/booths/MEGAP01.jpg",
+    image: "/images/booths/MEGAP01.png",
     boothCode: "MEGAP01",
     width: 100,
     height: 100,
@@ -134,7 +134,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "ACSCH01",
     name: "pride",
-    image: "/images/booths/ACSCH01.jpg",
+    image: "/images/booths/ACSCH01.png",
     boothCode: "ACSCH01",
     width: 100,
     height: 100,
@@ -166,7 +166,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "GREEN01",
     name: "Green Cross",
-    image: "/images/booths/GREEN01.jpg",
+    image: "/images/booths/GREEN01.png",
     boothCode: "GREEN01",
     width: 100,
     height: 100,
@@ -182,7 +182,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "GENTL01",
     name: "Wings",
-    image: "/images/booths/GENTL01.jpg",
+    image: "/images/booths/GENTL01.png",
     boothCode: "GENTL01",
     width: 100,
     height: 100,
@@ -222,7 +222,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "EMPER01",
     name: "Emperador",
-    image: "/images/booths/EMPER01.jpg",
+    image: "/images/booths/EMPER01.png",
     boothCode: "EMPER01",
     width: 100,
     height: 100,
@@ -230,7 +230,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "GINEB01",
     name: "Ginebra",
-    image: "/images/booths/GINEB01.jpg",
+    image: "/images/booths/GINEB01.png",
     boothCode: "GINEB01",
     width: 100,
     height: 100,
@@ -270,7 +270,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "JNTLC01",
     name: "Modess",
-    image: "/images/booths/JNTLC01.jpg",
+    image: "/images/booths/JNTLC01.png",
     boothCode: "JNTLC01",
     width: 100,
     height: 100,
@@ -294,7 +294,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "FEDER01",
     name: "Maling",
-    image: "/images/booths/FEDER01.jpg",
+    image: "/images/booths/FEDER01.png",
     boothCode: "FEDER01",
     width: 100,
     height: 100,
@@ -350,7 +350,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "PHILI11",
     name: "Nature's spring",
-    image: "/images/booths/PHILI11.jpg",
+    image: "/images/booths/PHILI11.png",
     boothCode: "PHILI11",
     width: 100,
     height: 100,
@@ -358,7 +358,7 @@ export const orangeBooths: ColorBooth[] = [
   {
     id: "FIBER02",
     name: "Happy",
-    image: "/images/booths/FIBER02.jpg",
+    image: "/images/booths/FIBER02.png",
     boothCode: "FIBER02",
     width: 100,
     height: 100,
@@ -377,7 +377,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "UNIEL01",
     name: "Keratin",
-    image: "/images/booths/UNIEL01.jpg",
+    image: "/images/booths/UNIEL01.png",
     boothCode: "UNIEL01",
     width: 100,
     height: 100,
@@ -385,7 +385,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "SUYEN02",
     name: "Bench",
-    image: "/images/booths/SUYEN02.jpg",
+    image: "/images/booths/SUYEN02.png",
     boothCode: "SUYEN02",
     width: 100,
     height: 100,
@@ -417,7 +417,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "ASTHU02",
     name: "Cricket",
-    image: "/images/booths/ASTHU02.jpg",
+    image: "/images/booths/ASTHU02.png",
     boothCode: "ASTHU02",
     width: 100,
     height: 100,
@@ -433,7 +433,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "SEANL01",
     name: "Seanland",
-    image: "/images/booths/SEANL01.jpg",
+    image: "/images/booths/SEANL01.png",
     boothCode: "SEANL01",
     width: 100,
     height: 100,
@@ -473,7 +473,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "PERFE02",
     name: "Perfection",
-    image: "/images/booths/PERFE02.jpg",
+    image: "/images/booths/PERFE02.png",
     boothCode: "PERFE02",
     width: 100,
     height: 100,
@@ -481,7 +481,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "PHILU01",
     name: "Philusa",
-    image: "/images/booths/PHILU01.jpg",
+    image: "/images/booths/PHILU01.png",
     boothCode: "PHILU01",
     width: 100,
     height: 100,
@@ -513,7 +513,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "MCKEN11",
     name: "Nivea",
-    image: "/images/booths/MCKEN11.jpg",
+    image: "/images/booths/MCKEN11.png",
     boothCode: "MCKEN11",
     width: 100,
     height: 100,
@@ -529,7 +529,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "SYMPL01",
     name: "Symply gorgeous",
-    image: "/images/booths/SYMPL01.jpg",
+    image: "/images/booths/SYMPL01.png",
     boothCode: "SYMPL01",
     width: 100,
     height: 100,
@@ -545,7 +545,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "SEVIL02",
     name: "Seville",
-    image: "/images/booths/SEVIL02.jpg",
+    image: "/images/booths/SEVIL02.png",
     boothCode: "SEVIL02",
     width: 100,
     height: 100,
@@ -585,7 +585,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "MONTO02",
     name: "Alfonso",
-    image: "/images/booths/MONTO02.jpg",
+    image: "/images/booths/MONTO02.png",
     boothCode: "MONTO02",
     width: 100,
     height: 100,
@@ -609,7 +609,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "SCPGA01",
     name: "Perla",
-    image: "/images/booths/SCPGA01.jpg",
+    image: "/images/booths/SCPGA01.png",
     boothCode: "SCPGA01",
     width: 100,
     height: 100,
@@ -617,7 +617,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "COLUM03",
     name: "Columbia",
-    image: "/images/booths/COLUM03.jpg",
+    image: "/images/booths/COLUM03.png",
     boothCode: "COLUM03",
     width: 100,
     height: 100,
@@ -665,7 +665,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "DELFI02",
     name: "Goya",
-    image: "/images/booths/DELFI02.jpg",
+    image: "/images/booths/DELFI02.png",
     boothCode: "DELFI02",
     width: 100,
     height: 100,
@@ -697,7 +697,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "CALAB01",
     name: "Calabarzon",
-    image: "/images/booths/CALAB01.jpg",
+    image: "/images/booths/CALAB01.png",
     boothCode: "CALAB01",
     width: 100,
     height: 100,
@@ -713,7 +713,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "UNIVE10",
     name: "Universal Products",
-    image: "/images/booths/UNIVE10.jpg",
+    image: "/images/booths/UNIVE10.png",
     boothCode: "UNIVE10",
     width: 100,
     height: 100,
@@ -721,7 +721,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "FEDER01",
     name: "Maling",
-    image: "/images/booths/FEDER01.jpg",
+    image: "/images/booths/FEDER01.png",
     boothCode: "FEDER01",
     width: 100,
     height: 100,

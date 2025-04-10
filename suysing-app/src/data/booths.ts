@@ -73,7 +73,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "FIBER02",
       name: "Happy",
-      image: "/images/booths/FIBER02.jpg",
+      image: "/images/booths/FIBER02.png",
       boothCode: "FIBER02",
       visited: false,
       width: 100,
@@ -93,7 +93,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "GENTL01",
       name: "Wings",
-      image: "/images/booths/GENTL01.jpg",
+      image: "/images/booths/GENTL01.png",
       boothCode: "GENTL01",
       visited: false,
       width: 100,
@@ -102,7 +102,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "GINEB01",
       name: "Ginebra",
-      image: "/images/booths/GINEB01.jpg",
+      image: "/images/booths/GINEB01.png",
       boothCode: "GINEB01",
       visited: false,
       width: 100,
@@ -112,7 +112,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "GREEN01",
       name: "Green Cross",
-      image: "/images/booths/GREEN01.jpg",
+      image: "/images/booths/GREEN01.png",
       boothCode: "GREEN01",
       visited: false,
       width: 100,
@@ -159,7 +159,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "MEGAP01",
       name: "MEGA SARDINES",
-      image: "/images/booths/MEGAP01.jpg",
+      image: "/images/booths/MEGAP01.png",
       boothCode: "MEGAP01",
       visited: false,
       width: 100,
@@ -188,7 +188,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "PHILI11",
       name: "NATURE'S SPRING",
-      image: "/images/booths/PHILI11.jpg",
+      image: "/images/booths/PHILI11.png",
       boothCode: "PHILI11",
       visited: false,
       width: 100,
@@ -251,7 +251,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "ACSCH01",
       name: "Pride",
-      image: "/images/booths/ACSCH01.jpg",
+      image: "/images/booths/ACSCH01.png",
       boothCode: "ACSCH01",
       visited: false,
       width: 100,
@@ -278,7 +278,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "EMPER01",
       name: "Emperador",
-      image: "/images/booths/EMPER01.jpg",
+      image: "/images/booths/EMPER01.png",
       boothCode: "EMPER01",
       visited: false,
       width: 100,
@@ -287,7 +287,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "FEDER01",  
       name: "Maling",
-      image: "/images/booths/FEDER01.jpg",
+      image: "/images/booths/FEDER01.png",
       boothCode: "FEDER01",
       visited: false,
       width: 120,
@@ -314,7 +314,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "JNTLC01",  
       name: "Modess",
-      image: "/images/booths/JNTLC01.jpg",
+      image: "/images/booths/JNTLC01.png",
       boothCode: "JNTLC01",
       visited: false,
       width: 100,
@@ -433,7 +433,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "PEPSI01",
       name: "Pepsi",
-      image: "/images/booths/PEPSI02.jpg",
+      image: "/images/booths/PEPSI02.png",
       boothCode: "PEPSI01",
       visited: false,
       width: 100,
@@ -442,7 +442,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "PROCT06",
       name: "P&G",
-      image: "/images/booths/PROCT06.jpeg",
+      image: "/images/booths/PROCT06.png",
       boothCode: "PROCT06",
       visited: false,
       width: 100,
@@ -451,8 +451,8 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "THEPU01",
       name: "San Miguel",
-      image: "/images/booths/THEPU01.jpg",
-      boothCode: "THEPU01&MAGNO01",
+      image: "/images/booths/THEPU01.png",
+      boothCode: "THEPU01",
       visited: false,
       width: 100,
       height: 100,
@@ -467,10 +467,10 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
     },
 
-    {id: "UNIVE01-red",
+    {id: "UNIVE01",
       name: "Universal Robina",
-      image: "/images/booths/UNIVE01.jpg",
-      boothCode: "UNIVE01-red",
+      image: "/images/booths/UNIVE01.png",
+      boothCode: "UNIVE01",
       visited: false,
       width: 100,
       height: 100,
@@ -496,7 +496,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "COLUM03",
       name: "Columbias",
-      image: "/images/booths/COLUM03.jpg",
+      image: "/images/booths/COLUM03.png",
       boothCode: "COLUM03",
       visited: false,
       width: 100,
@@ -504,7 +504,7 @@ export const getInitialBooths = (): Booth[] => {
     },
     {id: "DELFI02",
       name: "Goya",
-      image: "/images/booths/DELFI02.jpg",
+      image: "/images/booths/DELFI02.png",
       boothCode: "DELFI02",
       visited: false,
       width: 100,
@@ -512,7 +512,7 @@ export const getInitialBooths = (): Booth[] => {
     },
     {id: "FAIRN01",
       name: "Fairnsquare",
-      image: "/images/booths/FAIRN01.jpg",
+      image: "/images/booths/FAIRN01.png",
       boothCode: "FAIRN01",
       visited: false,
       width: 100,
@@ -693,7 +693,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "METRO01",
       name: "metrobank",
-      image: "/images/booths/METRO01.jpg",
+      image: "/images/booths/METRO01.png",
       boothCode: "METRO01",
       visited: false,
       width: 100,
@@ -721,7 +721,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "MONTO02",
       name: "alfonso",
-      image: "/images/booths/MONTO02.jpg",
+      image: "/images/booths/MONTO02.png",
       boothCode: "MONTO02",
       visited: false,
       width: 100,
@@ -749,7 +749,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "PHILU01",
       name: "philusa",
-      image: "/images/booths/PHILU01.jpg",
+      image: "/images/booths/PHILU01.png",
       boothCode: "PHILU01",
       visited: false,
       width: 100,
@@ -787,7 +787,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "SCPGA01",
       name: "scpga",
-      image: "/images/booths/SCPGA01.jpg",
+      image: "/images/booths/SCPGA01.png",
       boothCode: "SCPGA01",
       visited: false,
       width: 100,
@@ -797,7 +797,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "SEVIL02",
       name: "sevilla",
-      image: "/images/booths/SEVIL02.jpg",
+      image: "/images/booths/SEVIL02.png",
       boothCode: "SEVIL02",
       visited: false,
       width: 100,
@@ -806,7 +806,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "SUYEN02",
       name: "bench",
-      image: "/images/booths/SUYEN02.jpg",
+      image: "/images/booths/SUYEN02.png",
       boothCode: "SUYEN02",
       visited: false,
       width: 100,
@@ -835,7 +835,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "SYMPL01",
       name: "symply gorgeous",
-      image: "/images/booths/SYMPL01.jpg",
+      image: "/images/booths/SYMPL01.png",
       boothCode: "SYMPL01",
       visited: false,
       width: 100,
@@ -863,7 +863,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "Unicharm",
       name: "Unicharm",
-      image: "/images/booths/Unicharm.jpg",
+      image: "/images/booths/Unicharm.png",
       boothCode: "",
       visited: false,
       width: 100,
@@ -872,7 +872,7 @@ export const getInitialBooths = (): Booth[] => {
 
     {id: "UNIEL01",
       name: "uni keratin",
-      image: "/images/booths/UNIEL01.jpg",
+      image: "/images/booths/UNIEL01.png",
       boothCode: "UNIEL01",
       visited: false,
       width: 100,

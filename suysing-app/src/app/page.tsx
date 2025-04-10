@@ -919,7 +919,7 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
-                                (b) => b.boothCode === "UNIVE01-red"
+                                (b) => b.boothCode === "UNIVE01"
                               )}
                             />
                           </div>
@@ -937,7 +937,7 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
-                                (b) => b.boothCode === "THEPU01&MAGNO01"
+                                (b) => b.boothCode === "THEPU01"
                               )}
                             />
                           </div>
