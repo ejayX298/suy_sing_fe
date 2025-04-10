@@ -7,7 +7,7 @@ export default function httpClient(api_key : string) {
     headers: {
       'Content-Type': 'multipart/form-data',
       Accept: 'application/json',
-      'X-API-KEY':`${api_key}`,
+      // 'X-API-KEY':`${api_key}`,
     },
   });
 
