@@ -71,6 +71,7 @@ export default function BoothsVisitedPage() {
 
         const mapRegularBooths = regularBoothsMap.map(booth => ({
           image: '/images/booths/' + booth.code + '.png',
+          boothCode : booth.code,
           ...booth
         }));
         
@@ -82,6 +83,7 @@ export default function BoothsVisitedPage() {
 
         const mapDoubleZoneBooths = doubleBoothsMap.map(booth => ({
           image: '/images/booths/' + booth.code + '.png',
+          boothCode : booth.code,
           ...booth
         }));
 
@@ -106,6 +108,7 @@ export default function BoothsVisitedPage() {
 
         const mapVisitedList = visited_list.map(booth => ({
           image: '/images/booths/' + booth.code + '.png',
+          boothCode : booth.code,
           ...booth
         }));
 
