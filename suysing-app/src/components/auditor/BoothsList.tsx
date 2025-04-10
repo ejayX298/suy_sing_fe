@@ -50,7 +50,7 @@ export default function BoothsList({
             booth.is_double_zone == 1
         );
         
-        console.log(regularBoothsMap);
+        
         setRegularBooths(regularBoothsMap)
         setDoubleBooths(doubleBoothsMap)
       }
