@@ -1,9 +1,9 @@
 import BoothItem from "./BoothItem";
-import ClickableBoothItem from "./ClickableBoothItem";
 
 export interface Booth {
   name: string;
-  logo: string;
+  image: string;
+  boothCode: string;
   visited: boolean;
 }
 
@@ -11,23 +11,9 @@ interface BoothZoneProps {
   title: string;
   booths: Booth[];
   progress: string;
-  clickable?: boolean;
-  onBoothToggle?: (name: string, isVisited: boolean) => void;
 }
 
-export default function BoothZone({
-  title,
-  booths,
-  progress,
-  clickable = false,
-  onBoothToggle,
-}: BoothZoneProps) {
-  const handleBoothToggle = (name: string, isVisited: boolean) => {
-    if (onBoothToggle) {
-      onBoothToggle(name, isVisited);
-    }
-  };
-
+export default function BoothZone({ title, booths, progress }: BoothZoneProps) {
   return (
     <div className="bg-white mb-6 rounded-[10px] border border-[#7D7D7D]">
       <div className="p-4">
@@ -41,28 +27,16 @@ export default function BoothZone({
               Unvisited Booth
             </h3>
           </div>
-          {!clickable &&
-            booths
-              .filter((booth) => !booth.visited)
-              .map((booth) => (
-                <BoothItem
-                  key={booth.name}
-                  name={booth.name}
-                  logo={booth.logo}
-               
-                />
-              ))}
-          {clickable &&
-            booths
-              .filter((booth) => !booth.visited)
-              .map((booth) => (
-                <ClickableBoothItem
-                  key={booth.name}
-                  name={booth.name}
-                  logo={booth.logo}
-                  onToggle={handleBoothToggle}
-                />
-              ))}
+          {booths
+            .filter((booth) => !booth.visited)
+            .map((booth) => (
+              <BoothItem
+                key={booth.name}
+                boothCode={booth.boothCode}
+                name={booth.name}
+                image={booth.image}
+              />
+            ))}
         </div>
       </div>
     </div>

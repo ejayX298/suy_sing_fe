@@ -9,7 +9,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function BoothsVisitedPage() {
   // Use the global booth state from context
-  const { booths, handleToggleBooth, visitedCount, totalBooths } = useBooths();
+  const { booths, visitedCount, totalBooths } = useBooths();
   const [isRender, setIsRender] = useState(false);
   const [regularBooths, setRegularBooths] = useState([]);
   const [doubleBooths, setDoubleBooths] = useState([]);
@@ -32,18 +32,13 @@ export default function BoothsVisitedPage() {
     stored_hash_code = localStorage.getItem('hash_code');
   }
 
-  // Map booths to ensure they conform to the BoothZone.Booth interface
   const mapToBoothZoneFormat = (booth: ContextBooth): BoothZoneBooth => ({
     name: booth.name,
-    logo:
-      booth.logo ||
-      (booth.image
-        ? booth.image.split("/").pop()?.replace(".png", "") || "default"
-        : "default"),
+    boothCode: booth.boothCode,
+    image: booth.image || "/default-booth-image.jpg",
     visited: booth.visited,
   });
 
-  // // Filter and transform booths by their type/zone
   // const regularBooths = booths
   //   .filter(
   //     (booth) =>
@@ -60,15 +55,6 @@ export default function BoothsVisitedPage() {
   //   .filter((booth) => booth.visited)
   //   .map(mapToBoothZoneFormat);
 
-  // Handle booth toggling through the context
-  const handleBoothToggle = (
-    zone: "regular" | "x2" | "visited",
-    name: string,
-    isVisited: boolean
-  ) => {
-    // Use the context's handleToggleBooth function
-    handleToggleBooth(name, isVisited);
-  };
 
   
   const get_unvisited_booth_list = async () => {
@@ -183,9 +169,6 @@ export default function BoothsVisitedPage() {
           progress={`${regularBooths.filter((b) => b.visited).length}/${
             regularBooths.length
           }`}
-          onBoothToggle={(name, isVisited) =>
-            handleBoothToggle("regular", name, isVisited)
-          }
         />
       
         <BoothZone
@@ -194,17 +177,9 @@ export default function BoothsVisitedPage() {
           progress={`${doubleBooths.filter((b) => b.visited).length}/${
             doubleBooths.length
           }`}
-          onBoothToggle={(name, isVisited) =>
-            handleBoothToggle("x2", name, isVisited)
-          }
         />
 
-        <VisitedBooths
-          booths={visitedBooths}
-          onBoothToggle={(name, isVisited) =>
-            handleBoothToggle("visited", name, isVisited)
-          }
-        />
+        <VisitedBooths booths={visitedBooths} />
       </main>
     </div>
   );

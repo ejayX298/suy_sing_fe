@@ -16,13 +16,19 @@ export default function BoothCard({ booth, color, isSelected, onClick }: BoothCa
     orange: "border-[#F78B1E]",
     red: "border-[#F71E1E]",
   };
+  const ringClasses = {
+    blue: "ring-[#0A20B1]",
+    orange: "ring-[#F78B1E]",
+    red: "ring-[#F71E1E]",
+  };
 
   return (
     <div
-      className={`flex flex-col items-center mb-2 rounded-lg overflow-hidden cursor-pointer border-2  ${isSelected 
-          ? `border-4 ${borderClasses[color]}` 
-          : `border-2 ${borderClasses[color]}`
-        }`}
+    className={`
+      flex flex-col items-center mb-2 rounded-lg overflow-hidden cursor-pointer
+      border-2 ${borderClasses[color]}
+      ${isSelected ? `ring-4 ${ringClasses[color]}` : ""}
+    `}
       onClick={onClick}
     >
       <div className="bg-white w-full flex justify-center items-center h-32 sm:h-52">

@@ -7,10 +7,10 @@ import { useBooths } from "@/context/BoothsContext";
 export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { totalVisitCount: number, boothData : any }) {
 
   return (
-    <div className="px-4 py-2">
-      <div className="border-2 border-dashed border-red-500 p-4 rounded-md mb-4">
+    <div className="px-6 py-4">
+      <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
         <div className="flex justify-center mb-2">
-          <div className="bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full py-1 px-4 font-bold text-sm flex items-center justify-center">
+          <div className="bg-[#B6E056] -mt-9 text-[#0920B0] border-[#0920B0] border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
             Double Zone
             <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4">
               <span className="font-bold text-xs leading-none">i</span>
