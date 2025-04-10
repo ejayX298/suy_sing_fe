@@ -25,14 +25,17 @@ export default function Home() {
   const RenderBooth = ({ booth }: { booth: BoothType | undefined }) => {
     if (!booth) return null;
 
+    const aspectClass = booth.overrideAspect ? "border-none object-cover overflow-hidden" : "aspect-square";
+
     return (
-      <div key={booth.id} className="h-full ">
+      <div key={booth.id} className="h-full">
         <button
-          onClick={() => booth.id && handleVisitBooth(booth.id)}
-          className={`block w-full h-full relative aspect-square bg-white border-blue-800 border-[3px] rounded ${
-            booth.visited ? "border-2 border-red-500 " : ""
-          }`}
-        >
+        onClick={() => booth.id && handleVisitBooth(booth.id)}
+        className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
+          ${aspectClass}
+          ${booth.visited ? "border-2 border-red-500" : ""}
+        `}
+      >
           <div
             className={`w-full h-full flex items-center justify-center p-1 
               ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
@@ -140,7 +143,7 @@ export default function Home() {
                           <div className="border-2 border-blue-800 mr-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
                               booth={booths.find(
-                                (b) => b.boothCode === "SUYEN CORP"
+                                (b) => b.boothCode === "SUYEN02"
                               )}
                             />
                           </div>
@@ -228,7 +231,7 @@ export default function Home() {
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
                               booth={booths.find(
-                                (b) => b.boothCode === "UNI ELEMENTS"
+                                (b) => b.boothCode === "UNIEL01"
                               )}
                             />
                           </div>
@@ -240,7 +243,7 @@ export default function Home() {
                           <div className="border-2 border-blue-800 ml-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
                               booth={booths.find(
-                                (b) => b.boothCode === "LAMOIYAN"
+                                (b) => b.boothCode === "LAMOI01"
                               )}
                             />
                           </div>
