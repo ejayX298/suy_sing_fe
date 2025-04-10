@@ -49,7 +49,8 @@ export default function BoothsList({
           (booth) =>
             booth.is_double_zone == 1
         );
-
+        
+        console.log(regularBoothsMap);
         setRegularBooths(regularBoothsMap)
         setDoubleBooths(doubleBoothsMap)
       }
@@ -114,8 +115,8 @@ export default function BoothsList({
                     {!failedImages[imageKey] ? (
                       <div className="w-24 h-8 relative mr-2 shrink-0">
                         <Image
-                          src={`/images/${booth.logo || booth.image?.split('/').pop()?.split('.')[0] || 'default'}.png`}
-                          alt={booth.name}
+                          src={`/images/booths/${booth.logo || booth.image?.split('/').pop()?.split('.')[0] || 'default'}.png`}
+                          alt={booth.logo}
                           fill
                           style={{ objectFit: "contain" }}
                           onError={() => {
@@ -160,8 +161,8 @@ export default function BoothsList({
                     {!failedImages[imageKey] ? (
                       <div className="w-24 h-8 relative mr-2 shrink-0 ">
                         <Image
-                          src={`/images/${booth.logo || booth.image?.split('/').pop()?.split('.')[0] || 'default'}.png`}
-                          alt={booth.name}
+                          src={`/images/booths/${booth.logo || booth.image?.split('/').pop()?.split('.')[0] || 'default'}.png`}
+                          alt={booth.logo}
                           fill
                           style={{ objectFit: "contain" }}
                           onError={() => {
