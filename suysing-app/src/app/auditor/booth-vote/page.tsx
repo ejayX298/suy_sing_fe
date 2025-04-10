@@ -1,14 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
-import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
+import React, { useState, useEffect } from "react";
+// import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
 import { BestBoothProvider, useBestBooth } from "@/context/BestBoothContext";
 import BoothGrid from "@/components/best-booth/BoothGrid";
 import VoteSummary from "@/components/best-booth/VoteSummary";
 import ThankYouScreen from "@/components/auditor/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { auditorService } from '@/services/api';
+import Swal from 'sweetalert2';
 
 function AuditorBoothVoteContent() {
   const router = useRouter();
@@ -18,7 +20,68 @@ function AuditorBoothVoteContent() {
   const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
     useBestBooth();
 
-  const handleContinue = () => {
+  const [blueBooths, setBlueBooths] = useState([]);
+  const [orangeBooths, setOrangeBooths] = useState([]);
+  const [redBooths, setRedBooths] = useState([]);
+  const [auditData, setAuditData] = useState([]);
+
+  const searchParams = useSearchParams();
+  const auditor_hash_code = searchParams.get("cc");
+
+  let stored_hash_code: any = ""
+  let stored_auditInfo: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('audit_hash_code');
+    stored_auditInfo = localStorage.getItem('audit_info');
+  }
+  const auditInforParsed = stored_auditInfo ? JSON.parse(stored_auditInfo) : [];
+  
+
+  const fetchData = async () => {
+    try {
+      const getBooth = await auditorService.getBoothList();
+      
+      if(getBooth.success){
+        setBlueBooths(getBooth.results.blue_booths)
+        setOrangeBooths(getBooth.results.orange_booths)
+        setRedBooths(getBooth.results.red_booths)
+      }
+    
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+
+  const handleSubmitBoothVoting = async () => {
+    const blue_booth_id = blueBoothVote?.id || '';
+    const orange_booth_id = orangeBoothVote?.id || '';
+    const red_booth_id = redBoothVote?.id || '';
+
+    const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
+    
+    try {
+      const submitVote = await auditorService.submitBoothVoting(post_data);
+      
+      if(submitVote.success){
+        return true;
+      }else{
+        showMessage("0" , submitVote.message)  
+        return false;
+      }
+    
+    } catch (error) {
+      showMessage("0" , "Unable to process your request. Please try again later.")   
+      return false;
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+  const handleContinue = async () => {
     if (step === "intro") {
       setStep("blue");
     } else if (step === "blue") {
@@ -28,14 +91,58 @@ function AuditorBoothVoteContent() {
     } else if (step === "red") {
       setStep("summary");
     } else if (step === "summary") {
-      setStep("thankyou");
+
+      const submitVoteResult = await handleSubmitBoothVoting()
+      if(submitVoteResult){
+        setStep("thankyou");
+      }
+      
     } else {
+
       // For auditor flow, redirect to souvenir selection after thank you
       resetVotes();
-      router.push("/auditor/souvenir-selection");
+      router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
     }
   };
 
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E"
+    })
+  }
+
+
+  useEffect(() => {
+    
+    if(!stored_auditInfo){
+      router.push(`/auditor/?cc=${stored_hash_code}`);
+    }
+    
+    if(auditor_hash_code && stored_hash_code){
+      if(auditor_hash_code == stored_hash_code){
+        setAuditData(auditInforParsed)
+        fetchData();
+      }
+      
+    }
+  }, []);
+  
   const getStepHeader = () => {
     if (step === "summary" || step === "thankyou") {
       return null;
@@ -51,8 +158,8 @@ function AuditorBoothVoteContent() {
     return (
       <div className="px-4 py-3 text-white">
         <BoothsProgress
-          visited={10}
-          total={80}
+          visited={auditData?.total_booth_visited || 0}
+          total={auditData?.total_booths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
 

@@ -5,6 +5,7 @@ interface BoothItemProps {
   image: string;
   boothCode: string;
 }
+
 export default function BoothItem({ name, image, boothCode }: BoothItemProps) {
   return (
     <div className="flex items-center p-3 border-b border-[#7D7D7D] bg-white last:border-b-0">

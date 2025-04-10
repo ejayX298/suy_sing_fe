@@ -6,6 +6,9 @@ import jsQR from "jsqr";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
 import { useBooths } from "@/context/BoothsContext";
+import { boothVisitService } from '@/services/api';
+import Swal from 'sweetalert2';
+import { useSearchParams } from "next/navigation";
 
 export default function CameraPage() {
   const webcamRef = useRef<Webcam>(null);
@@ -14,72 +17,121 @@ export default function CameraPage() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showSuccessModalDouble, setShowSuccessModalDouble] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
+  const [isRender, setIsRender] = useState(false);
+  
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
+
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
 
   // Get booth data from context
-  const { booths, visitedCount, totalBooths, handleVisitBooth } = useBooths();
+  // const { booths, visitedCount, totalBooths, handleVisitBooth } = useBooths();
 
   useEffect(() => {
-    // Check if we're in a browser environment
-    if (typeof navigator !== "undefined" && navigator.mediaDevices) {
-      // Request camera permission
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: "environment" } })
-        .then(() => {
-          setHasPermission(true);
-        })
-        .catch((err) => {
-          console.error("Camera permission error:", err);
-          setError("Camera permission denied. Please enable camera access.");
-          setHasPermission(false);
-        });
-    }
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
 
-    return () => {
-      setScanning(false);
-    };
+        // Fetch customer record
+        getCustomerRecord()
+
+        // Check if we're in a browser environment
+        if (typeof navigator !== "undefined" && navigator.mediaDevices) {
+          // Request camera permission
+          navigator.mediaDevices
+            .getUserMedia({ video: { facingMode: "environment" } })
+            .then(() => {
+              setHasPermission(true);
+            })
+            .catch((err) => {
+              console.error("Camera permission error:", err);
+              setError("Camera permission denied. Please enable camera access.");
+              setHasPermission(false);
+            });
+        }
+
+        return () => {
+          setScanning(true);
+        };
+
+      }
+    }
+  
   }, []);
 
   const processQRCode = React.useCallback(
-    (data: string) => {
+    async (data: string) => {
+
       // Check if the QR code data is a valid booth ID
       // Format could be "booth:id123" or just "id123"
-      const boothId = data.includes("booth:") ? data.split("booth:")[1] : data;
+      // const boothId = data.includes("booth:") ? data.split("booth:")[1] : data;
+
+      // call api for booth visit
+      const boothVisitResult = await submitBoothVisit(data.trim())
 
       // Find booth with this ID
-      const booth = booths.find((b) => b.id === boothId);
+      // const booth = booths.find((b) => b.id === boothId);
 
-      if (booth) {
+      if (boothVisitResult.success) {
+        
         // Check if booth is already visited
-        if (booth.visited) {
-          setSuccessMessage(
-            "You've already scanned this booth. Please find another booth to scan."
-          );
-          setShowSuccessModal(true);
-          return;
-        }
+        // if (booth.visited) {
+        //   setSuccessMessage(
+        //     "You've already scanned this booth. Please find another booth to scan."
+        //   );
+        //   setShowSuccessModal(true);
+        //   return;
+        // }
 
         // Mark booth as visited
-        handleVisitBooth(boothId);
+        // handleVisitBooth(boothId);
 
         // Set message - first booth visited or another one
-        if (visitedCount === 0) {
+        if (customerData?.totalBoothVisited === 0) {
           setSuccessMessage(
             "You've stamped your first booth. Visit and scan all the other booths to complete this section."
           );
-        } else {
-          setSuccessMessage(`You've stamped the ${booth.name} booth.`);
+          setShowSuccessModal(true);
+        }else if(boothVisitResult.is_double_zone === 1){
+          setShowSuccessModalDouble(true)
+          setSuccessMessage(
+            "Each booth visited will be counted as double."
+          );
+        } 
+        else {
+          setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
+          setShowSuccessModal(true);
         }
 
-        setShowSuccessModal(true);
+       
+
+      
+        setScanning(false);
       } else {
         // QR code not recognized - just continue scanning
-        setScanning(true);
+        setScanning(false);
       }
+
+      // Refresh customerData
+      getCustomerRecord()
     },
-    [booths, handleVisitBooth, visitedCount]
+    [customerData?.totalBoothVisited]
   );
 
   const captureAndScanQRCode = React.useCallback(() => {
@@ -113,9 +165,9 @@ export default function CameraPage() {
 
           if (qrCode) {
             setScanning(false);
-
             // Process the QR code data
             processQRCode(qrCode.data);
+            return;
           }
         } catch (error) {
           console.error("QR processing error:", error);
@@ -136,6 +188,7 @@ export default function CameraPage() {
 
   const handleProceed = () => {
     setShowSuccessModal(false);
+    setShowSuccessModalDouble(false);
     setScanning(true);
   };
 
@@ -149,45 +202,57 @@ export default function CameraPage() {
     setManualCode("");
   };
 
-  const handleManualCodeSubmit = (e: React.FormEvent) => {
+  const handleManualCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!manualCode.trim()) {
       return;
     }
 
+    // call api for booth visit
+    const boothVisitResult = await submitBoothVisit(manualCode.trim())
     // Find booth with this ID
-    const booth = booths.find((b) => b.id === manualCode.trim());
+    // const booth = booths.find((b) => b.id === manualCode.trim());
 
-    if (booth) {
-      // Check if booth is already visited
-      if (booth.visited) {
-        setSuccessMessage(
-          "You've already scanned this booth. Please find another booth to scan."
-        );
-        setShowSuccessModal(true);
-        setShowManualCodeModal(false);
-        return;
-      }
+    if (boothVisitResult.success) {
+
+      // if (visited) {
+      //   setSuccessMessage(
+      //     "You've already scanned this booth. Please find another booth to scan."
+      //   );
+      //   setShowSuccessModal(true);
+      //   setShowManualCodeModal(false);
+      //   return;
+      // }
 
       // Mark booth as visited
-      handleVisitBooth(manualCode.trim());
+      // handleVisitBooth(manualCode.trim());
 
       // Set message - first booth visited or another one
-      if (visitedCount === 0) {
+      if (customerData?.totalBoothVisited === 0) {
         setSuccessMessage(
           "You've stamped your first booth. Visit and scan all the other booths to complete this section."
         );
-      } else {
-        setSuccessMessage(`You've stamped the ${booth.name} booth.`);
+      } else if(boothVisitResult.is_double_zone === 1){
+        setShowSuccessModalDouble(true)
+        setSuccessMessage(
+          "Each booth visited will be counted as double."
+        );
+      }  else {
+        setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
       }
 
       setShowSuccessModal(true);
       setShowManualCodeModal(false);
+
     } else {
       // Invalid code - close the modal without proceeding
       closeManualCodeModal();
     }
+
+     // Refresh customerData
+     getCustomerRecord()
+
   };
 
   const videoConstraints = {
@@ -196,13 +261,120 @@ export default function CameraPage() {
     height: { ideal: 720 },
   };
 
+
+  const submitBoothVisit = async (data: string) => {
+
+    let post_data = [data];
+    try {
+      const submitVote = await boothVisitService.submitBoothVisit(post_data);
+      
+      if(submitVote.success){
+    
+        let booth_name = ''
+        let is_double_zone = 0
+        if(submitVote.results.length > 0){
+          booth_name = submitVote?.results[0].booth?.name || ''
+          is_double_zone = submitVote?.results[0].booth?.is_double_zone || ''
+        }
+
+        return {
+          success : true,
+          booth_name : booth_name,
+          is_double_zone : is_double_zone
+        };
+
+      }else{
+        setShowManualCodeModal(false);
+        showMessage("0" , submitVote.message)  
+
+        return {
+          success : false
+        };
+      }
+    
+    } catch (error) {
+      setShowManualCodeModal(false);
+      showMessage("0" , "Unable to process your request. Please try again later.")   
+
+      return {
+          success : false
+      };
+    }
+    
+  };
+
+  const getCustomerRecord = async () => {
+    try {
+      const customerResult = await boothVisitService.getCustomerRecord();
+      
+      if(customerResult.success){
+
+        const mapCustomerData = {
+          id: customerResult.results?.id,
+          code: customerResult.results?.code,
+          name: customerResult.results?.full_name,
+          hasVoted: customerResult.results?.is_done_voting,
+          isDoneVisit: customerResult.results?.is_done_visit,
+          totalBooths: customerResult.results?.total_booths,
+          totalBoothVisited: customerResult.results?.total_booth_visited,
+        };
+        
+        setCustomerData(mapCustomerData);
+      
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E",
+      allowOutsideClick: false // disable outside click fot the close modal
+    }).then((result : any) => {
+      if (result.isConfirmed) {
+        // set the scanning to true
+        setScanning(true);
+      }
+    });
+  }
+
+  // Dont render page if customer data is empty or no customer record
+  if(!isRender){
+    return null;
+  }
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-12 pb-28 flex flex-col">
       {/* Booths Progress Counter */}
       <div className="mb-6">
         <BoothsProgress
-          visited={visitedCount}
-          total={totalBooths}
+          visited={customerData?.totalBoothVisited || 0}
+          total={customerData?.totalBooths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
       </div>
@@ -312,6 +484,38 @@ export default function CameraPage() {
           </div>
         </div>
       )}
+
+
+       {/* Success Modal for Double zone */}
+       {showSuccessModalDouble && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/double-star.svg"
+                  alt="Success"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <p className="mb-6 text-[#343434] text-[20px]">
+                <span className="font-bold">Welcome to the Double Zone! </span>
+              </p>
+              <p className="mb-6 text-[#343434] text-[20px]">
+                {successMessage}
+              </p>
+              <button
+                onClick={handleProceed}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
     </div>
   );
 }

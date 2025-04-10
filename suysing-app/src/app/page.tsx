@@ -8,18 +8,201 @@ import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
+import { boothVisitService } from '@/services/api';
+import { useSearchParams } from "next/navigation";
 import InstructionModal from "@/components/homepage/InstructionModal";
+
+export interface Booth {
+  id?: string;
+  name: string;
+  image?: string;
+  boothCode: string;
+  logo?: string;
+  visited: boolean;
+  width?: number;
+  height?: number;
+  isDoubleZone?: boolean;
+  doubleZonePosition?: number;
+}
+
 
 export default function Home() {
   const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
     useBooths();
   const [showInstructionModal, setShowInstructionModal] = useState(true);
 
+  const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
+  const [totalVisitCount, setTotalVisitCount] = useState(0);
+  const [doubleZoneBooths, setDoubleZoneBooths] = useState<Booth[]>(
+    Array(22).fill('')
+  );
+  const [remapBooth, setRemapBooth] = useState<Booth[]>([]);
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
+  const [isRender, setIsRender] = useState(false);
+
+
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
+  
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
+
+  const getCustomerRecord = async () => {
+    try {
+      const customerResult = await boothVisitService.getCustomerRecord();
+      
+      if(customerResult.success){
+
+        const mapCustomerData = {
+          id: customerResult.results?.id,
+          code: customerResult.results?.code,
+          name: customerResult.results?.full_name,
+          hasVoted: customerResult.results?.is_done_voting,
+          isDoneVisit: customerResult.results?.is_done_visit,
+          totalBooths: customerResult.results?.total_booths,
+          totalBoothVisited: customerResult.results?.total_booth_visited,
+        };
+        
+        setCustomerData(mapCustomerData);
+      
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+  
+
+  const get_visited_booth_list = async () => {
+    try {
+
+      const boothResult = await boothVisitService.getVisitedBoothlist();
+      if(boothResult.success){
+
+        const doubleBoothsMap = boothResult.results.booths.filter(
+          (booth) =>
+            booth.is_double_zone == 1
+        );
+
+        const regularBoothsMap = boothResult.results.booths.filter(
+          (booth) =>
+            booth.is_double_zone == 0
+        );
+
+        mapRegularBooths(regularBoothsMap)
+        mapDoubleZone(doubleBoothsMap)
+      }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const updateCount = () => {
+    setTotalVisitCount((prevTotalVisitCount) => {
+      return prevTotalVisitCount + 1;  // Increment by 1 based on the previous value
+    });
+  }
+
+  const mapRegularBooths = (regularBooths : any) => {
+    
+    const remapBooth  = booths?.map(boothDefault => 
+      {
+        const findVisited = regularBooths.find(
+          (regularBooth) => regularBooth.code === boothDefault.boothCode
+        );
+
+        return {
+          ...boothDefault,
+          visited : findVisited ? true : false,
+        }
+    });
+    setRemapBooth([...remapBooth])
+  }
+
+  const mapDoubleZone = (doubleBoothsMap : any) => {
+    doubleBoothsMap.forEach((item: { code: any; booth_id: any; name: any; }, index: string | number) => {
+    
+      // find image if booth code already defined in initial booth list
+      const findDefaultBooth = initialBoothsList?.find(
+        (defaultBooth) => defaultBooth.boothCode === item.code
+      );
+
+    //  console.log(findDefaultBooth?.image)
+
+      let mapItem = {
+        boothCode : item.code,
+        doubleZonePosition : index,
+        height : 100,
+        id : item.booth_id,
+        image : findDefaultBooth?.image ||  `/image/booths/${item.code}.png` ,
+        isDoubleZone : true,
+        name : item.name,
+        visited : true,
+        width: true
+      }
+      if (doubleZoneBooths[index] == '') {
+        doubleZoneBooths[index]= mapItem;
+        updateCount()
+      }
+    });
+
+    setDoubleZoneBooths([...doubleZoneBooths])
+  }
+
+
+  
+  useEffect(() => {
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
+      }
+    }
+  }, []);
+
+ 
   useEffect(() => {
     if (booths.length === 0) {
       setBooths(getInitialBooths());
+      setInitialBoothsList(getInitialBooths())
+    }else{
+      setInitialBoothsList([...booths])
     }
   }, [booths.length, setBooths]);
+
+
+  useEffect(() => {
+    if (!initialBoothsList)  return;
+
+    if (initialBoothsList.length > 0) {
+        getCustomerRecord();
+        get_visited_booth_list(); // Call with updated state
+    }
+  }, [initialBoothsList]);
+
+
+  if(!isRender){
+    return null;
+  }
+  
 
   // RenderBooth component
   const RenderBooth = ({ booth }: { booth: BoothType | undefined }) => {
@@ -80,8 +263,8 @@ export default function Home() {
       <main className="flex-1 px-0 py-0 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
-          visited={visitedCount}
-          total={totalBooths}
+          visited={customerData?.totalBoothVisited || 0}
+          total={customerData?.totalBooths || 0}
           viewList=" Tap to view the list of visited and unvisited booths."
         />
 
@@ -127,7 +310,7 @@ export default function Home() {
                     {/*  <TestDoubleZone /> */}
 
                     {/* Double Zone Section */}
-                    <DoubleZoneDisplay />
+                    <DoubleZoneDisplay boothData={doubleZoneBooths} totalVisitCount={totalVisitCount}/>
 
                     {/* Additional Boxes/Booths Below */}
                     <div className="px-6 w-full flex">
@@ -135,7 +318,7 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "RHEIN01"
                               )}
                             />
@@ -152,14 +335,14 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "FEDER04"
                               )}
                             />
                           </div>
                           <div className="border-2 border-blue-800 mr-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MEADJ01"
                               )}
                             />
@@ -169,7 +352,7 @@ export default function Home() {
                         <div className="flex justify-center mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "UNICA01"
                               )}
                             />
@@ -179,7 +362,7 @@ export default function Home() {
                         <div className="flex justify-center mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "VALIA04"
                               )}
                             />
@@ -189,14 +372,14 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "JEVER01"
                               )}
                             />
                           </div>
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "LTHFO01"
                               )}
                             />
@@ -206,14 +389,14 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "LESLI01"
                               )}
                             />
                           </div>
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "SCPGA01"
                               )}
                             />
@@ -223,7 +406,7 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "SWEET05"
                               )}
                             />
@@ -249,7 +432,7 @@ export default function Home() {
                           </div>
                           <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MONDI01"
                               )}
                             />
@@ -259,14 +442,14 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 ml-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "PHILU01"
                               )}
                             />
                           </div>
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "PERFE01"
                               )}
                             />
@@ -276,7 +459,7 @@ export default function Home() {
                         <div className="flex justify-center mb-3">
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "SEANL01"
                               )}
                             />
@@ -328,17 +511,17 @@ export default function Home() {
                         <div className="flex gap-0.5">
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find((b) => b.id === "empty")}
+                              booth={remapBooth.find((b) => b.id === "empty")}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find((b) => b.id === "empty")}
+                              booth={remapBooth.find((b) => b.id === "empty")}
                             />
                           </div>
                           <div className=" w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "WELLM01"
                               )}
                             />
@@ -347,7 +530,7 @@ export default function Home() {
                           {/* 4th-5th combined */}
                           <div className="w-[163px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "FOODS01"
                               )}
                             />
@@ -356,21 +539,21 @@ export default function Home() {
                           {/* 6th-8th are single */}
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "RFMCO01"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MEGAP01"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "REPUB03"
                               )}
                             />
@@ -396,7 +579,7 @@ export default function Home() {
                         <div className="flex gap-0.5">
                           <div className="w-[249px] h-[80px]">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "ACSCH01"
                               )}
                             />
@@ -405,7 +588,7 @@ export default function Home() {
                           {/* 12th is single */}
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "REGEN01"
                               )}
                             />
@@ -414,7 +597,7 @@ export default function Home() {
                           {/* combined */}
                           <div className="w-[163px] h-[80px]">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "FIRST05"
                               )}
                             />
@@ -440,14 +623,14 @@ export default function Home() {
                         <div className="flex gap-0.5">
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MONHE01"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "GENTL01"
                               )}
                             />
@@ -456,7 +639,7 @@ export default function Home() {
                           {/*two squares */}
                           <div className="w-[163px] h-[80px]">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "FEDER01"
                               )}
                             />
@@ -465,28 +648,28 @@ export default function Home() {
                           {/* single grid */}
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "PHILI11"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "empty"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "empty"
                               )}
                             />
                           </div>
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "GINEB01"
                               )}
                             />
@@ -503,28 +686,28 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="col-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "JNTLC01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "empty"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "empty"
                                 )}
                               />
                             </div>
                             <div className=" col-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "PMFTC01"
                                 )}
                               />
@@ -537,35 +720,35 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5 ">
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "MAGIS01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "SKINT01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "GARDE01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "COSME01"
                                 )}
                               />
                             </div>
                             <div className="col-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "AJINO01"
                                 )}
                               />
@@ -578,35 +761,35 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "LIWAY01_2"
                                 )}
                               />
                             </div>
                             <div className="row-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "ABSOL01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "NABAT01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "SANIT01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "GREEN01"
                                 )}
                               />
@@ -618,7 +801,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "NESTL01"
                               )}
                             />
@@ -628,7 +811,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "PROCT06"
                               )}
                             />
@@ -640,14 +823,14 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="col-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "EMPER01"
                                 )}
                               />
                             </div>
                             <div className="col-span-2 row-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "NUTRI0607"
                                 )}
                               />
@@ -659,7 +842,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px]">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MONDE01"
                               )}
                             />
@@ -670,7 +853,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px]">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "ALASK01"
                               )}
                             />
@@ -682,35 +865,35 @@ export default function Home() {
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "INTER04"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "empty"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "empty"
                                 )}
                               />
                             </div>
                             <div className="row-span-2">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "PEPSI01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
-                                booth={booths.find(
+                                booth={remapBooth.find(
                                   (b) => b.boothCode === "ARCRE01"
                                 )}
                               />
@@ -726,7 +909,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "COCAC01"
                               )}
                             />
@@ -735,7 +918,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "UNIVE01-red"
                               )}
                             />
@@ -744,7 +927,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "MONDE03"
                               )}
                             />
@@ -753,7 +936,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "THEPU01&MAGNO01"
                               )}
                             />
@@ -762,7 +945,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "UNILE01"
                               )}
                             />
@@ -771,7 +954,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "CENTU03"
                               )}
                             />
@@ -780,7 +963,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "COLGA01"
                               )}
                             />
@@ -789,7 +972,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "PEERL01"
                               )}
                             />
@@ -798,7 +981,7 @@ export default function Home() {
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "DELMO01"
                               )}
                             />

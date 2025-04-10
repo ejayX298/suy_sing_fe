@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 interface BoothsProgressProps {
   visited: number;
@@ -13,8 +14,28 @@ export default function BoothsProgress({
   total,
   viewList,
 }: BoothsProgressProps) {
+
+  const [hashCode, setHashCode] = useState("");
+
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
+  const concatUrl = (urlString : string) =>{
+    return `${urlString}/?cc=${hashCode}`
+  }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      stored_hash_code = localStorage.getItem('hash_code');
+      setHashCode(stored_hash_code);
+    }
+  }, []);
+
+
   return (
-    <Link href="/booths-visited">
+    <Link href={concatUrl("/booths-visited")}>
       <div className=" flex flex-row items-center text-center justify-between gap-2 ">
         <div className="bg-white px-1 py-2 border-2 border-[#4E4E4E] min-w-52 min-h-28 max-w-52 sm:max-w-none sm:mx-0">
           <h2 className="text-[17px] md:text-lg font-bold text-[#4E4E4E] flex items-center justify-center">

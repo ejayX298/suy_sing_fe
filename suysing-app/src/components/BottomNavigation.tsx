@@ -1,14 +1,33 @@
 "use client";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function BottomNavigation() {
   const pathname = usePathname();
+  const [hashCode, setHashCode] = useState("");
+
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
+  const concatUrl = (urlString : string) =>{
+    return `${urlString}/?cc=${hashCode}`
+  }
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      stored_hash_code = localStorage.getItem('hash_code');
+      setHashCode(stored_hash_code);
+    }
+  }, []);
+
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
       <Link
-        href="/"
+        href={concatUrl("/")}
         className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
           pathname === "/" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -48,7 +67,7 @@ export default function BottomNavigation() {
         <span className="text-xs">Deal Form</span>
       </Link>
 
-      <Link href="/camera" className="flex flex-col items-center -mt-7">
+      <Link href={concatUrl("/camera")} className="flex flex-col items-center -mt-7">
         <div className="bg-[#0920B0] rounded-full p-3 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +93,7 @@ export default function BottomNavigation() {
       </Link>
 
       <Link
-        href="/best-booth"
+        href={concatUrl("/best-booth")}
         className={`flex flex-col items-center h-full justify-center px-1 gap-1 ${
           pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -95,7 +114,7 @@ export default function BottomNavigation() {
       </Link>
 
       <Link
-        href="/my-qr"
+        href={concatUrl("/my-qr")}
         className={`flex flex-col items-center h-full justify-center  px-3 gap-1 ${
           pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
         }`}

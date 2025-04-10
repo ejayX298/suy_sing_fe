@@ -6,9 +6,13 @@ interface VisitedBoothsProps {
   booths: Booth[];
 }
 
-export default function VisitedBooths({ booths }: VisitedBoothsProps) {
-  const visitedBooths = booths.filter((booth) => booth.visited);
-
+export default function VisitedBooths({
+  booths,
+  clickable = false,
+  onBoothToggle,
+}: VisitedBoothsProps) {
+  // const visitedBooths = booths.filter((booth) => booth.visited);
+  const visitedBooths = booths
   if (visitedBooths.length === 0) {
     return null;
   }

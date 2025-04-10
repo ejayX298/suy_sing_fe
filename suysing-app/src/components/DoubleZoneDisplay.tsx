@@ -1,10 +1,11 @@
 "use client";
 
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Image from "next/image";
 import { useBooths } from "@/context/BoothsContext";
 
-export default function DoubleZoneDisplay() {
+export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { totalVisitCount: number, boothData : any }) {
+
   return (
     <div className="px-6 py-4">
       <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
@@ -20,29 +21,32 @@ export default function DoubleZoneDisplay() {
         <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
           Locate the Double Zone Booths in the Tent and scan any 22 booths
           within this area.
+          <div className="font-bold mt-1">
+            {totalVisitCount} / 22 Booths Scanned
+          </div>
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
           {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row1-${i}`} boothIndex={i} />
+            <DoubleZoneCard key={`double-row1-${i}`} boothIndex={i} boothData={boothData}/>
           ))}
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
           {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row2-${i}`} boothIndex={i + 6} />
+            <DoubleZoneCard key={`double-row2-${i}`} boothIndex={i + 6} boothData={boothData}/>
           ))}
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
           {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row3-${i}`} boothIndex={i + 12} />
+            <DoubleZoneCard key={`double-row3-${i}`} boothIndex={i + 12} boothData={boothData}/>
           ))}
         </div>
 
         <div className="flex justify-center gap-10">
           {[...Array(4)].map((_, i) => (
-            <DoubleZoneCard key={`double-row4-${i}`} boothIndex={i + 18} />
+            <DoubleZoneCard key={`double-row4-${i}`} boothIndex={i + 18} boothData={boothData}/>
           ))}
         </div>
       </div>
@@ -50,9 +54,11 @@ export default function DoubleZoneDisplay() {
   );
 }
 
-function DoubleZoneCard({ boothIndex }: { boothIndex: number }) {
+function DoubleZoneCard(
+  { boothIndex, boothData }: { boothIndex: number, boothData : any },
+  ) {
   const { doubleZoneBooths } = useBooths();
-  const booth = doubleZoneBooths[boothIndex];
+  const booth = boothData[boothIndex];
 
   return (
     <div

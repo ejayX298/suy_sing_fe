@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2'
+import { auditorService } from '@/services/api';
 
 interface BoothStatusProps {
+  customerId: number,
   isComplete: boolean;
   visitedCount: number;
   totalBooths: number;
@@ -12,6 +15,7 @@ interface BoothStatusProps {
 }
 
 export default function BoothStatus({
+  customerId,
   isComplete,
   visitedCount,
   totalBooths,
@@ -19,6 +23,108 @@ export default function BoothStatus({
   onClose,
 }: BoothStatusProps) {
   const router = useRouter();
+
+
+  const checkCustomerRecordbyId = async (customer_id : number) => {
+    try {
+
+      const customerResult = await auditorService.checkCustomerRecordbyId("", customer_id);
+      
+      if(customerResult.success){
+        return customerResult.results
+      }else{
+        showMessage('0', customerResult.message)
+        return false;
+      }
+    
+    } catch (error) {
+      showMessage('0', 'Unable to process your request')
+      return false;
+      
+    }
+
+  };
+
+
+  const callOverride = async () => {
+    try {
+
+      const customerResult = await auditorService.overrideBoothVisit(customerId);
+      
+      if(customerResult.success){
+        showMessage('1' , 'Success')
+
+        //refresh customer record in localStorage
+        checkCustomerRecordbyId(customerId)
+
+        return true
+      }else{
+        showMessage('0' , customerResult.message)
+        return false
+      }
+    
+    } catch (error) {
+      showMessage('0' , 'Unable to process your request. Please try again.')
+      return false
+      
+    } finally {
+      // setIsLoading(false);
+    }
+  }
+
+  const handleOverride = async () => {
+
+    let confirmAction = await confirmMessage(`Are you sure you want to override the booth visit of this customer?`);
+
+    if(confirmAction.isConfirmed){
+
+      const overrideResult = await callOverride()
+
+      if(overrideResult){
+        let stored_hash_code: any = ""
+        if (typeof window !== 'undefined') {
+          stored_hash_code = localStorage.getItem('audit_hash_code');
+        }
+
+        router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
+      }
+    }
+  }
+
+  const confirmMessage = async (message: string)  => {
+    
+    const result = await Swal.fire({
+      title: 'Confirm',
+      text: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#F78B1E",
+    })
+
+    return result;
+  }
+
+  const showMessage = (status: string, message : string)  => {
+    
+      let iconType: "success" | "error";
+      let titleType: "Success" | "Error";
+
+      if(status == "1"){
+        iconType = "success";
+        titleType = "Success";
+      }else{
+        iconType = "error";
+        titleType = "Error";
+      }
+
+      Swal.fire({
+        title: titleType,
+        text: message,
+        icon: iconType,
+        confirmButtonColor: "#F78B1E"
+      })
+  }
+
   return (
     <div className="rounded-lg border-2 mx-auto max-w-xl border-[#F78B1E] bg-white p-6 shadow-lg text-center">
       <div className="mb-6">
@@ -66,7 +172,7 @@ export default function BoothStatus({
       {!isComplete && (
         <>
           <button
-            onClick={() => router.push('/auditor/booth-vote')}
+            onClick={handleOverride}
             className="w-full mt-3 rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
           >
             Override

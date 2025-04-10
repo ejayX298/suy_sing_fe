@@ -1,22 +1,162 @@
 "use client";
 
-import React, { useState } from "react";
-import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
+import React, { useState, useEffect } from "react";
+// import { blueBooths, orangeBooths, redBooths } from "@/data/colorBooths";
 import { BestBoothProvider, useBestBooth } from "@/context/BestBoothContext";
 import BoothGrid from "@/components/best-booth/BoothGrid";
 import VoteSummary from "@/components/best-booth/VoteSummary";
 import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
+import { bestBooth } from '@/services/api';
+import Swal from 'sweetalert2';
+import { useSearchParams } from "next/navigation";
+import { boothVisitService } from '@/services/api';
 
 function BestBoothContent() {
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
+  
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
   const [step, setStep] = useState<
     "intro" | "blue" | "orange" | "red" | "summary" | "thankyou"
   >("intro");
   const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
     useBestBooth();
 
-  const handleContinue = () => {
+  const [blueBooths, setBlueBooths] = useState([]);
+  const [orangeBooths, setOrangeBooths] = useState([]);
+  const [redBooths, setRedBooths] = useState([]);
+  const [isRender, setIsRender] = useState(false);
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
+
+
+  const fetchData = async () => {
+    try {
+      const getBooth = await bestBooth.getBoothList();
+      
+      if(getBooth.success){
+        setBlueBooths(getBooth.results.blue_booths)
+        setOrangeBooths(getBooth.results.orange_booths)
+        setRedBooths(getBooth.results.red_booths)
+      }
+    
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+
+
+  const handleSubmitBoothVoting = async () => {
+    const blue_booth_id = blueBoothVote?.id || '';
+    const orange_booth_id = orangeBoothVote?.id || '';
+    const red_booth_id = redBoothVote?.id || '';
+
+    const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
+    
+    try {
+      const submitVote = await bestBooth.submitBoothVoting(post_data);
+      
+      if(submitVote.success){
+        return true;
+      }else{
+        showMessage("0" , submitVote.message)  
+        return false;
+      }
+    
+    } catch (error) {
+      showMessage("0" , "Unable to process your request. Please try again later.")   
+      return false;
+    } finally {
+      // setIsLoading(false);
+    }
+  };
+
+
+  const getCustomerRecord = async () => {
+    try {
+      const customerResult = await boothVisitService.getCustomerRecord();
+      
+      if(customerResult.success){
+
+        const mapCustomerData = {
+          id: customerResult.results?.id,
+          code: customerResult.results?.code,
+          name: customerResult.results?.full_name,
+          hasVoted: customerResult.results?.is_done_voting,
+          isDoneVisit: customerResult.results?.is_done_visit,
+          totalBooths: customerResult.results?.total_booths,
+          totalBoothVisited: customerResult.results?.total_booth_visited,
+        };
+        
+        setCustomerData(mapCustomerData);
+      
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E"
+    })
+}
+
+
+  useEffect(() => {
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
+        fetchData();
+        getCustomerRecord();
+      }
+      
+    }
+  }, []);
+  
+  
+  const handleContinue = async () => {
     if (step === "intro") {
       setStep("blue");
     } else if (step === "blue") {
@@ -26,7 +166,12 @@ function BestBoothContent() {
     } else if (step === "red") {
       setStep("summary");
     } else if (step === "summary") {
-      setStep("thankyou");
+
+      const submitVoteResult = await handleSubmitBoothVoting()
+      if(submitVoteResult){
+        setStep("thankyou");
+      }
+      
     } else {
       // Reset and go back to intro
       resetVotes();
@@ -49,8 +194,8 @@ function BestBoothContent() {
     return (
       <div className="px-4 py-3 text-white">
         <BoothsProgress
-          visited={10}
-          total={80}
+          visited={customerData?.totalBoothVisited || 0}
+          total={customerData?.totalBooths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
 
@@ -146,7 +291,9 @@ function BestBoothContent() {
 
   return (
     <div className="flex flex-col min-h-screen ">
-      <div className="flex-1 pb-16">{renderStepContent()}</div>
+      {isRender && (
+        <div className="flex-1 pb-16">{renderStepContent()}</div>
+      )}
     </div>
   );
 }
