@@ -681,7 +681,7 @@ export const boothVisitService = {
   
     try{
   
-      const response = await httpClient(session_id).get(`/customer/booth/visited/?customer_id=${customer_id}`, {});
+      const response = await httpClient(session_id).get(`/customer/booth/visited/?customer_id=${customer_id}&order_by=asc`, {});
       
       const response_data = response?.data?.data || []
   
