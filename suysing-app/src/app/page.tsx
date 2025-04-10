@@ -324,7 +324,7 @@ export default function Home() {
                           </div>
                           <div className="border-2 border-blue-800 mr-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "SUYEN02"
                               )}
                             />
@@ -412,7 +412,7 @@ export default function Home() {
                           </div>
                           <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "UNIEL01"
                               )}
                             />
@@ -424,7 +424,7 @@ export default function Home() {
                         <div className="flex justify-between mb-3">
                           <div className="border-2 border-blue-800 ml-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
-                              booth={booths.find(
+                              booth={remapBooth.find(
                                 (b) => b.boothCode === "LAMOI01"
                               )}
                             />
