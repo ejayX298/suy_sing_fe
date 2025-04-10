@@ -8,6 +8,7 @@ export default function httpClient(api_key : string) {
       'Content-Type': 'multipart/form-data',
       Accept: 'application/json',
       // 'X-API-KEY':`${api_key}`,
+      'Authorization':`Bearer ${api_key}`,
     },
   });
 
