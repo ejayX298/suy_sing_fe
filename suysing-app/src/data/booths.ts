@@ -875,8 +875,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/UNIEL01.png",
       boothCode: "UNIEL01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 60,
+      height: 60,
       overrideAspect: true,
     },
 
@@ -936,14 +936,6 @@ export const getInitialBooths = (): Booth[] => {
       overrideAspect: true,
     },
 
-    {id: "UNIEL01",
-      name: "uni elements",
-      image: "/images/booths/UNIEL01.png",
-      boothCode: "UNIEL01",
-      visited: false,
-      width: 100,
-      height: 100,
-    },
 
     {id: "LAMOI01",
       name: "hapee",
