@@ -69,13 +69,24 @@ export default function BoothsVisitedPage() {
             booth.is_double_zone == 0
         );
 
+        const mapRegularBooths = regularBoothsMap.map(booth => ({
+          image: '/images/booths/' + booth.code + '.png',
+          ...booth
+        }));
+        
+
         const doubleBoothsMap = boothResult.results.filter(
           (booth) =>
             booth.is_double_zone == 1
         );
 
-        setRegularBooths(regularBoothsMap)
-        setDoubleBooths(doubleBoothsMap)
+        const mapDoubleZoneBooths = doubleBoothsMap.map(booth => ({
+          image: '/images/booths/' + booth.code + '.png',
+          ...booth
+        }));
+
+        setRegularBooths(mapRegularBooths)
+        setDoubleBooths(mapDoubleZoneBooths)
       }
     
     } catch (error) {
@@ -93,7 +104,12 @@ export default function BoothsVisitedPage() {
 
         const visited_list = boothResult.results?.booths || [];
 
-        setVisitedBooths(visited_list)
+        const mapVisitedList = visited_list.map(booth => ({
+          image: '/images/booths/' + booth.code + '.png',
+          ...booth
+        }));
+
+        setVisitedBooths(mapVisitedList)
       }
     
     } catch (error) {
