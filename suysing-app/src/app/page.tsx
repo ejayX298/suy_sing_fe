@@ -142,18 +142,17 @@ export default function Home() {
     doubleBoothsMap.forEach((item: { code: any; booth_id: any; name: any; }, index: string | number) => {
     
       // find image if booth code already defined in initial booth list
-      const findDefaultBooth = initialBoothsList?.find(
-        (defaultBooth) => defaultBooth.boothCode === item.code
-      );
-
-    //  console.log(findDefaultBooth?.image)
+      // const findDefaultBooth = initialBoothsList?.find(
+      //   (defaultBooth) => defaultBooth.boothCode === item.code
+      // );
 
       let mapItem = {
         boothCode : item.code,
         doubleZonePosition : index,
         height : 100,
         id : item.booth_id,
-        image : findDefaultBooth?.image ||  `/image/booths/${item.code}.png` ,
+        // image : findDefaultBooth?.image ||  `/image/booths/${item.code}.png`,
+        image : `/images/booths/${item.code}.png`,
         isDoubleZone : true,
         name : item.name,
         visited : true,
