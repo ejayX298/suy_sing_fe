@@ -153,6 +153,11 @@ export default function Sidebar() {
             isActive={pathname === '/souvenir/souvenir-availability'} 
           />
         </DropdownMenu>
+        <SidebarLink 
+            href="/deal-forms" 
+            text="Deal Forms" 
+            isActive={pathname === '/deal-forms'} 
+          />
       </nav>
     </div>
   );

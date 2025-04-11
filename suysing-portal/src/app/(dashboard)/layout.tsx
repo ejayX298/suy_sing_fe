@@ -33,6 +33,8 @@ export default function DashboardLayout({
         return 'Souvenir Claim';
       case pathname === '/souvenir/souvenir-availability':
         return 'Souvenir Availability';
+      case pathname === '/deal-forms':
+        return 'Deal Forms';
       default:
         return 'Dashboard';
     }
