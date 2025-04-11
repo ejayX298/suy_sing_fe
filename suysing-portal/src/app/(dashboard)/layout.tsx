@@ -46,7 +46,8 @@ export default function DashboardLayout({
       return Swal.fire({
         text: 'Session expired',
         icon: "error",
-        confirmButtonColor: "#193cb8"
+        confirmButtonColor: "#193cb8",
+        allowOutsideClick: false // disable outside click fot the close modal
       }).then((result) => {
         if (result.isConfirmed) {
           // call logout
@@ -68,7 +69,7 @@ export default function DashboardLayout({
 
   // If not authenticated, don't render dashboard
   if (!isAuthenticated) {
-    document.cookie = `auth=; path=/;`;
+    // document.cookie = `auth=; path=/;`;
     return null;
   }
 
