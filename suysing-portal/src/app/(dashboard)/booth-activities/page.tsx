@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaEye } from 'react-icons/fa';
+import { useState, useEffect, useRef } from 'react';
+import { FaSearch, FaFilter, FaEye, FaDownload } from 'react-icons/fa';
 import { boothActivitiesData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
 import { Booth } from '@/types';
@@ -22,6 +22,8 @@ export default function BoothActivitiesPage() {
   const [boothStatus, setBoothStatus] = useState<string>('Open');
   const itemsPerPage = 8;
   const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+  const qrRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
     try {
@@ -154,6 +156,56 @@ export default function BoothActivitiesPage() {
   }
 
 
+  const downloadQr = (booth_code : string) => {
+    const svg = qrRef.current?.querySelector('svg');
+    if (!svg) return;
+
+    const serializer = new XMLSerializer();
+    const svgString = serializer.serializeToString(svg);
+    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const url = URL.createObjectURL(svgBlob);
+    const img_file_name = `${booth_code}.png`
+    const img = new Image();
+    img.onload = () => {
+      const finalSize = 512; // Final image size (e.g., 512x512 px)
+      const padding = 40; // Padding around the QR code
+
+      const qrSize = finalSize - padding * 2;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = finalSize;
+      canvas.height = finalSize;
+      const ctx = canvas.getContext('2d');
+
+      // Fill white background
+      if (ctx) {
+        ctx.fillStyle = '#FFFFFF'; // white background
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw QR image scaled into the center with padding
+        ctx.drawImage(img, padding, padding, qrSize, qrSize);
+      }
+
+      URL.revokeObjectURL(url);
+
+      const pngUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.href = pngUrl;
+      link.download = img_file_name;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    };
+
+    img.src = url;
+  };
+
+  const handleCloseModal = (e: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+      setShowModal(false); // Close modal if clicked outside modalRef
+    }
+  };
+
   const confirmMessage = async (message: string)  => {
     
       const result = await Swal.fire({
@@ -260,19 +312,27 @@ export default function BoothActivitiesPage() {
 
       {/* Booth QR Code Modal */}
       {showModal && selectedBooth && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto">
+        <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50" onClick={handleCloseModal}>
+          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto" ref={modalRef}>
             <div className="flex justify-center items-center mb-4">
               <h2 className="text-4xl font-bold text-center">{selectedBooth.name}</h2>
             </div>
             
-            <div className="flex justify-center my-6">
+            <div ref={qrRef} className="flex justify-center my-6">
               <QRCode 
                 value={`${selectedBooth.code}`} 
                 size={290} 
                 fgColor="#0A20B1"
                 
               />
+            </div>
+            <div className="flex justify-center my-6">
+              <button
+                onClick={() => downloadQr(selectedBooth.code)}
+                className="inline-flex items-center px-4 mt-2 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700"
+              >
+                <FaDownload className="mr-2" /> Download
+              </button>
             </div>
             
             <div className="mb-4">
