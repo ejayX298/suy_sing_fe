@@ -755,4 +755,46 @@ export const boothVisitService = {
 }
 
 
+export const dealCartService = {
+ 
+  getCustomerParams: async () => {
+
+    const customer_info = localStorage.getItem('customer_info');
+    const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+    const customer_id = customerInfoParsed?.id || ''
+    const session_id = customerInfoParsed?.session_id || ''
+
+    try{
+  
+      const response = await httpClient(session_id).get(`/customer/deal/cart/params/?customer_id=${customer_id}`, {});
+      
+      const response_data = response?.data?.data || []
+      
+
+      return {
+        success : true,
+        results : response_data
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        success : false,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
+    }
+
+  },
+ 
+}
+
+
  
