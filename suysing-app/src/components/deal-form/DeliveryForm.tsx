@@ -5,11 +5,22 @@ interface DeliveryFormProps {
   transactionType: string;
   shipToAddress: string;
   remarks: string;
+  transactionTypes: string[];
+  customerDeliveryDetails: CustomerDeliveryDetails[];
   onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onNext: () => void;
+}
+
+interface CustomerDeliveryDetails {
+  id: string;
+  code: string;
+  ship_to_id: string;
+  cd_type: string;
+  branch_code: string;
+  address: string;
 }
 
 export default function DeliveryForm({
@@ -20,6 +31,8 @@ export default function DeliveryForm({
   onInputChange,
   onSelectChange,
   onNext,
+  transactionTypes,
+  customerDeliveryDetails,
 }: DeliveryFormProps) {
   return (
     <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
@@ -51,14 +64,20 @@ export default function DeliveryForm({
           >
             Transaction Type
           </label>
-          <input
-            type="text"
+          <select
             id="transactionType"
             name="transactionType"
             value={transactionType}
-            className="w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none text-black "
-            readOnly
-          />
+            onChange={onSelectChange}
+            className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
+          >
+            <option value=""></option>
+            {transactionTypes.map((transactionTypeName, index) => (
+              <option key={index} value={transactionTypeName}>
+                {transactionTypeName}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div>
@@ -76,12 +95,11 @@ export default function DeliveryForm({
             className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black "
           >
             <option value="">Select address</option>
-            <option value="Don Antonio, Quezon City">
-              Don Antonio, Quezon City
-            </option>
-            <option value="Tondo, Manila">Tondo, Manila</option>
-            <option value="Poblacion, Makati">Poblacion, Makati</option>
-            <option value="Ortigas, Pasig">Ortigas, Pasig</option>
+            {customerDeliveryDetails.map((customerDelivery, index) => (
+              <option key={index} value={customerDelivery.id}>
+                {customerDelivery.address}
+              </option>
+            ))}
           </select>
         </div>
 
