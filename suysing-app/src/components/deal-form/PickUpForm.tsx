@@ -5,11 +5,19 @@ interface PickUpFormProps {
   transactionType: string;
   branch: string;
   remarks: string;
+  transactionTypes: string[];
+  customerPickupDetails : CustomerPickupDetails[];
   onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onSelectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onNext: () => void;
+}
+
+interface CustomerPickupDetails {
+  id: string;
+  cp_type: string;
+  branch_code: string;
 }
 
 export default function PickUpForm({
@@ -20,6 +28,8 @@ export default function PickUpForm({
   onInputChange,
   onSelectChange,
   onNext,
+  transactionTypes,
+  customerPickupDetails,
 }: PickUpFormProps) {
   return (
     <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
@@ -51,14 +61,31 @@ export default function PickUpForm({
           >
             Transaction Type
           </label>
-          <input
+          {/* <input
             type="text"
             id="transactionType"
             name="transactionType"
             value={transactionType}
             className="w-full px-3 py-4 border  border-gray-400 rounded-md focus:outline-none text-black"
             readOnly
-          />
+          /> */}
+
+          <select
+            id="transactionType"
+            name="transactionType"
+            value={transactionType}
+            onChange={onSelectChange}
+            className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
+          >
+            <option value=""></option>
+            {transactionTypes.map((transactionTypeName, index) => (
+              <option key={index} value={transactionTypeName}>
+                {transactionTypeName}
+              </option>
+            ))}
+          </select>
+
+
         </div>
 
         <div>
@@ -73,10 +100,11 @@ export default function PickUpForm({
             className="w-full px-3 py-4 border  border-gray-400 rounded-md focus:outline-none text-black"
           >
             <option value=""></option>
-            <option value="Quezon City">Quezon City</option>
-            <option value="Manila">Manila</option>
-            <option value="Makati">Makati</option>
-            <option value="Pasig">Pasig</option>
+            {customerPickupDetails.map((customerPickup, index) => (
+              <option key={index} value={customerPickup.id}>
+                {customerPickup.branch_code}
+              </option>
+            ))}
           </select>
         </div>
 
