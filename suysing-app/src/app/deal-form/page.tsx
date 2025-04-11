@@ -12,6 +12,7 @@ import ProductSelection from "@/components/deal-form/ProductSelection";
 import Confirmation from "@/components/deal-form/Confirmation";
 import DealSubmitted from "@/components/deal-form/DealSubmitted";
 import { useBooths } from "@/context/BoothsContext";
+import { dealCartService } from '@/services/api';
 
 interface Product {
   id: string;
@@ -33,6 +34,28 @@ interface Cart {
   submitted?: boolean;
 }
 
+interface CustomerData {
+  id: string;
+  fname: string;
+  customer_type: string;
+  code: string;
+}
+
+interface CustomerPickupDetails {
+  id: string;
+  cp_type: string;
+  branch_code: string;
+}
+
+interface CustomerDeliveryDetails {
+  id: string;
+  code: string;
+  ship_to_id: string;
+  cd_type: string;
+  branch_code: string;
+  address: string;
+}
+
 export default function DealFormPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -42,7 +65,7 @@ export default function DealFormPage() {
   const [formData, setFormData] = useState({
     acceptTerms: false,
     customerCode: "",
-    transactionType: "",
+    transactionType: "Pick up",
     branch: "",
     shipToAddress: "",
     remarks: "",
@@ -52,8 +75,46 @@ export default function DealFormPage() {
 
   const [carts, setCarts] = useState<Cart[]>([]);
   const [currentCartIndex, setCurrentCartIndex] = useState(0);
+  const [customerData, setCustomerData] = useState<CustomerData>();
+  const [customerPickupDetails, setCustomerPickupDetails] = useState<CustomerPickupDetails[]>([]);
+  const [customerDeliveryDetails, setCustomerDeliveryDetails] = useState<CustomerDeliveryDetails[]>([]);
+  const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
+  
+  const getCustomerData = async () => {
+    try {
+
+      const customerResult = await dealCartService.getCustomerParams();
+      
+      if(customerResult.success){
+        setCustomerData(customerResult.results);
+        setFormData({
+          ...formData,
+          customerCode: customerResult.results.code || ""
+        });
+        
+        const pickUpResults = customerResult.results?.pickup || [];
+        const deliveryResults = customerResult.results?.delivery || [];
+
+        if(pickUpResults.length > 0){
+          setTransactionTypes(prev => [...prev, 'Pick up']);
+        }
+        if(deliveryResults.length > 0){
+          setTransactionTypes(prev => [...prev, 'Delivery']);
+        }
+
+        setCustomerPickupDetails(pickUpResults);
+        setCustomerDeliveryDetails(deliveryResults);
+      }
+    
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
 
   useEffect(() => {
+    getCustomerData()
+
     if (step === 1) {
       setCarts([]);
       setCurrentCartIndex(0);
@@ -231,7 +292,7 @@ export default function DealFormPage() {
       return;
     }
 
-    if (step === 3) {
+    if (step === 2) {
       if (formData.transactionType === "Pick up" && !formData.branch) {
         alert("Please select a branch.");
         return;
@@ -242,7 +303,7 @@ export default function DealFormPage() {
       }
     }
 
-    if (step === 3 && carts.length === 0) {
+    if (step === 4 && carts.length === 0) {
       const firstCart: Cart = {
         id: "CART1",
         customerCode: formData.customerCode,
@@ -258,7 +319,7 @@ export default function DealFormPage() {
       localStorage.setItem("dealformCarts", JSON.stringify([firstCart]));
     }
 
-    if (step < 5) {
+    if (step < 4) {
       setStep(step + 1);
     } else {
       // Show the submission modal
@@ -382,7 +443,7 @@ export default function DealFormPage() {
             />
           )}
 
-          {step === 2 && (
+          {/* {step === 2 && (
             <BasicForm
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
@@ -391,9 +452,9 @@ export default function DealFormPage() {
               onSelectChange={handleSelectChange}
               onNext={handleNext}
             />
-          )}
+          )} */}
 
-          {step === 3 && formData.transactionType === "Pick up" && (
+          {step === 2 && formData.transactionType === "Pick up" && (
             <PickUpForm
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
@@ -402,10 +463,12 @@ export default function DealFormPage() {
               onInputChange={handleInputChange}
               onSelectChange={handleSelectChange}
               onNext={handleNext}
+              transactionTypes={transactionTypes}
+              customerPickupDetails={customerPickupDetails}
             />
           )}
 
-          {step === 3 && formData.transactionType === "Delivery" && (
+          {step === 2 && formData.transactionType === "Delivery" && (
             <DeliveryForm
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
@@ -414,15 +477,24 @@ export default function DealFormPage() {
               onInputChange={handleInputChange}
               onSelectChange={handleSelectChange}
               onNext={handleNext}
+              transactionTypes={transactionTypes}
+              customerDeliveryDetails={customerDeliveryDetails}
             />
           )}
-
-          {step === 4 && (
+          {step === 3 && (
             <ProductSelection
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
-              branch={formData.branch}
-              shipToAddress={formData.shipToAddress}
+              branch={
+                customerPickupDetails.find(
+                  cpd => cpd.id == formData.branch
+                )?.branch_code || formData.branch
+              }
+              shipToAddress={
+                customerDeliveryDetails.find(
+                  cdd => cdd.id == formData.shipToAddress
+                )?.address || formData.shipToAddress
+              }
               onNext={handleNext}
               onPrevious={handlePrevious}
               currentCartIndex={currentCartIndex}
@@ -434,7 +506,7 @@ export default function DealFormPage() {
             />
           )}
 
-          {step === 5 && (
+          {step === 4 && (
             <Confirmation
               formData={{
                 ...formData,
