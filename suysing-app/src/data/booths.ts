@@ -950,8 +950,8 @@ export const getInitialBooths = (): Booth[] => {
     },
 
     {id: "SEANL01",
-      name: "seanl",
-      image: "/images/booths/LAMOI01.png",
+      name: "mr gulaman",
+      image: "/images/booths/SEANL01.png",
       boothCode: "SEANL01",
       visited: false,
       width: 100,
