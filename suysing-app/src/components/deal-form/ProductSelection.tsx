@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 
 // Product interface
@@ -107,6 +107,10 @@ const initialDealers: Dealer[] = [
   { id: "11", name: "Cerelac", products: [] },
 ];
 
+// Sample branches and shipping addresses
+const branches = ["Quezon City", "Makati", "Pasig", "Mandaluyong", "Taguig"];
+const shippingAddresses = ["123 Main St, Quezon City", "456 Ayala Ave, Makati", "789 Ortigas Center, Pasig", "101 Shaw Blvd, Mandaluyong"];
+
 // Component props
 interface ProductSelectionProps {
   customerCode: string;
@@ -123,6 +127,9 @@ interface ProductSelectionProps {
   onUpdateCart?: (cartIndex: number, products: Product[]) => void;
   onNavigateCart?: (direction: "prev" | "next") => void;
   maxCartsReached?: boolean;
+  onTransactionTypeChange?: (type: string) => void;
+  onBranchChange?: (branch: string) => void;
+  onShipToAddressChange?: (address: string) => void;
 }
 
 export default function ProductSelection({
@@ -138,6 +145,9 @@ export default function ProductSelection({
   onUpdateCart = () => {},
   onNavigateCart = () => {},
   maxCartsReached = false,
+  onTransactionTypeChange = () => {},
+  onBranchChange = () => {},
+  onShipToAddressChange = () => {},
 }: ProductSelectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -148,6 +158,15 @@ export default function ProductSelection({
   );
   const [dealers] = useState<Dealer[]>(initialDealers);
   const [expandedDealers, setExpandedDealers] = useState<string[]>(["1"]);
+  
+
+  const [isTransactionTypeOpen, setIsTransactionTypeOpen] = useState(false);
+  const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false);
+  const [isShippingDropdownOpen, setIsShippingDropdownOpen] = useState(false);
+  
+  const transactionTypeRef = useRef<HTMLDivElement>(null);
+  const branchDropdownRef = useRef<HTMLDivElement>(null);
+  const shippingDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (selectedProducts && selectedProducts.length > 0) {
@@ -156,7 +175,25 @@ export default function ProductSelection({
     }
   }, [selectedProducts]);
 
-  // Handle quantity changes
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (transactionTypeRef.current && !transactionTypeRef.current.contains(event.target as Node)) {
+        setIsTransactionTypeOpen(false);
+      }
+      if (branchDropdownRef.current && !branchDropdownRef.current.contains(event.target as Node)) {
+        setIsBranchDropdownOpen(false);
+      }
+      if (shippingDropdownRef.current && !shippingDropdownRef.current.contains(event.target as Node)) {
+        setIsShippingDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const handleQuantityChange = (
     id: string,
     newQuantity: number,
@@ -178,7 +215,6 @@ export default function ProductSelection({
     }
   };
 
-  // Handle search
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -202,6 +238,24 @@ export default function ProductSelection({
     onNavigateCart(direction);
   };
 
+  // Handle transaction type selection
+  const handleTransactionTypeSelect = (type: string) => {
+    onTransactionTypeChange(type);
+    setIsTransactionTypeOpen(false);
+  };
+
+  // Handle branch selection
+  const handleBranchSelect = (selectedBranch: string) => {
+    onBranchChange(selectedBranch);
+    setIsBranchDropdownOpen(false);
+  };
+
+  // Handle shipping address selection
+  const handleShippingAddressSelect = (address: string) => {
+    onShipToAddressChange(address);
+    setIsShippingDropdownOpen(false);
+  };
+
   const filteredDealers = dealers.filter((dealer) =>
     dealer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -223,11 +277,30 @@ export default function ProductSelection({
             <div className="flex-1">
               <div className="flex flex-col">
                 <span className="text-black text-sm">Transaction Type:</span>
-                <div className="flex items-center">
-                  <span className="text-black font-bold  text-sm">
-                    {transactionType}
-                  </span>
-                  <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                <div className="relative" ref={transactionTypeRef}>
+                  <div 
+                    className="flex items-center cursor-pointer"
+                    onClick={() => setIsTransactionTypeOpen(!isTransactionTypeOpen)}
+                  >
+                    <span className="text-black font-bold text-sm">
+                      {transactionType}
+                    </span>
+                    <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                  </div>
+                  
+                  {isTransactionTypeOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                      {["Pick up", "Delivery"].map((type) => (
+                        <div
+                          key={type}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${transactionType === type ? 'bg-gray-100' : ''}`}
+                          onClick={() => handleTransactionTypeSelect(type)}
+                        >
+                          <span className="text-black text-sm">{type}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -236,9 +309,28 @@ export default function ProductSelection({
           {transactionType === "Pick up" && (
             <div className="flex flex-col mt-4">
               <span className="text-black text-sm">Branch:</span>
-              <div className="flex items-center">
-                <span className="text-black font-bold text-sm">{branch}</span>
-                <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+              <div className="relative" ref={branchDropdownRef}>
+                <div 
+                  className="flex items-center cursor-pointer"
+                  onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
+                >
+                  <span className="text-black font-bold text-sm">{branch}</span>
+                  <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                </div>
+                
+                {isBranchDropdownOpen && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                    {branches.map((branchOption) => (
+                      <div
+                        key={branchOption}
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${branch === branchOption ? 'bg-gray-100' : ''}`}
+                        onClick={() => handleBranchSelect(branchOption)}
+                      >
+                        <span className="text-black text-sm">{branchOption}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -246,11 +338,30 @@ export default function ProductSelection({
           {transactionType === "Delivery" && (
             <div className="flex flex-col mt-4">
               <span className="text-black text-sm">Ship to Address:</span>
-              <div className="flex items-center">
-                <span className="text-black font-bold text-xl">
-                  {shipToAddress}
-                </span>
-                <span className="text-[#F78B1E] ml-2 text-lg">▼</span>
+              <div className="relative" ref={shippingDropdownRef}>
+                <div 
+                  className="flex items-center cursor-pointer"
+                  onClick={() => setIsShippingDropdownOpen(!isShippingDropdownOpen)}
+                >
+                  <span className="text-black font-bold text-sm">
+                    {shipToAddress}
+                  </span>
+                  <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                </div>
+                
+                {isShippingDropdownOpen && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                    {shippingAddresses.map((address) => (
+                      <div
+                        key={address}
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${shipToAddress === address ? 'bg-gray-100' : ''}`}
+                        onClick={() => handleShippingAddressSelect(address)}
+                      >
+                        <span className="text-black text-sm">{address}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

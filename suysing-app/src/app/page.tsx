@@ -724,31 +724,32 @@ export default function Home() {
                                 )}
                               />
                             </div>
-                            <div className="">
+                            <div className="row-span-2">
                               <RenderBooth
                                 booth={remapBooth.find(
-                                  (b) => b.boothCode === "SKINT01"
+                                  (b) => b.boothCode === "ABSOL01"
                                 )}
                               />
                             </div>
                             <div className="">
                               <RenderBooth
                                 booth={remapBooth.find(
-                                  (b) => b.boothCode === "GARDE01"
+                                  (b) => b.boothCode === "NABAT01"
                                 )}
                               />
                             </div>
-                            <div className="">
+                          
+                            <div >
                               <RenderBooth
                                 booth={remapBooth.find(
-                                  (b) => b.boothCode === "COSME01"
+                                  (b) => b.boothCode === "SANIT01"
                                 )}
                               />
                             </div>
-                            <div className="col-span-2">
+                            <div >
                               <RenderBooth
                                 booth={remapBooth.find(
-                                  (b) => b.boothCode === "AJINO01"
+                                  (b) => b.boothCode === "GREEN01"
                                 )}
                               />
                             </div>

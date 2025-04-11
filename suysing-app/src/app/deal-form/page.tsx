@@ -277,8 +277,19 @@ export default function DealFormPage() {
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleTransactionTypeChange = (type: string) => {
+    setFormData({ ...formData, transactionType: type });
+  };
+
+  const handleBranchChange = (branch: string) => {
+    setFormData({ ...formData, branch });
+  };
+
+  const handleShipToAddressChange = (address: string) => {
+    setFormData({ ...formData, shipToAddress: address });
   };
 
   const handleNext = () => {
@@ -503,6 +514,9 @@ export default function DealFormPage() {
               maxCartsReached={carts.length >= 3}
               onUpdateCart={handleUpdateCart}
               onNavigateCart={handleNavigateCart}
+              onTransactionTypeChange={handleTransactionTypeChange}
+              onBranchChange={handleBranchChange}
+              onShipToAddressChange={handleShipToAddressChange}
             />
           )}
 
