@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, React } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { FaArrowLeft } from 'react-icons/fa';
 import { bestBoothReportData } from '@/services/api';
 import QRCode from 'react-qr-code';
@@ -13,10 +13,11 @@ export default function CustomerBoothReportDetail({ params }: { params: { id: st
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const paramsId = useParams()
   
   const fetchData = async () => {
     try {
-      const customerId = parseInt(params.id);
+      const customerId = parseInt(paramsId.id);
       const customerData = await bestBoothReportData.getCustomerById(customerId, token);
       
       if (customerData.results.length != 0) {
@@ -31,7 +32,7 @@ export default function CustomerBoothReportDetail({ params }: { params: { id: st
 
   useEffect(() => {
     fetchData();
-  }, [params.id]);
+  }, [paramsId.id]);
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {

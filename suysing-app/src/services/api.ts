@@ -513,7 +513,7 @@ export const auditorService = {
       const mapResponse = response_data.souvenirs.map(souvenir => ({
         id : souvenir.id,
         name: souvenir.name,
-        image: '/images/souvenir/' + souvenir.id + '.png'
+        image: '/images/souvenir/' + souvenir.code + '.png'
       }));
       
       return {

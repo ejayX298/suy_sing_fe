@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 import { boothHoppingReportData } from '@/services/api';
 import Pagination from '@/components/ui/Pagination';
@@ -20,13 +20,14 @@ export default function CustomerBoothHoppingDetail({ params }: { params: { id: s
   const [totalPages, setTotalPages] = useState(0);
   const [filteredVisits, setFilteredVisits] = useState<BoothVisit[]>([]);
   const router = useRouter();
+  const paramsId = useParams()
   const itemsPerPage = 10;
   const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
 
 
   const fetchData = async () => {
     try {
-      const customerId = parseInt(params.id);
+      const customerId = parseInt(paramsId.id);
       const customerData = await boothHoppingReportData.getCustomerById(customerId, token, filterParams);
       
       if (customerData.results.length != 0) {
@@ -46,7 +47,7 @@ export default function CustomerBoothHoppingDetail({ params }: { params: { id: s
 
   useEffect(() => {
     fetchData();
-  }, [filterParams, params.id]);
+  }, [filterParams, paramsId.id]);
 
   // useEffect(() => {
   //   if (customer?.boothVisits) {
