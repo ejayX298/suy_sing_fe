@@ -74,9 +74,12 @@ export default function CameraPage() {
     }
   
   }, []);
-
+  
   const processQRCode = React.useCallback(
     async (data: string) => {
+
+      // Inititalize and show loader
+      let loader = showLoader();
 
       // Check if the QR code data is a valid booth ID
       // Format could be "booth:id123" or just "id123"
@@ -121,9 +124,10 @@ export default function CameraPage() {
 
        
 
-      
+        loader.close() // close the loading alert
         setScanning(false);
       } else {
+        loader.close() // close the loading alert
         // QR code not recognized - just continue scanning
         setScanning(false);
       }
@@ -209,6 +213,9 @@ export default function CameraPage() {
       return;
     }
 
+    // Inititalize and show loader
+    let loader = showLoader();
+
     // call api for booth visit
     const boothVisitResult = await submitBoothVisit(manualCode.trim())
     // Find booth with this ID
@@ -241,11 +248,13 @@ export default function CameraPage() {
       }  else {
         setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
       }
-
+      
+      loader.close() // close the loading alert
       setShowSuccessModal(true);
       setShowManualCodeModal(false);
 
     } else {
+      loader.close() // close the loading alert
       // Invalid code - close the modal without proceeding
       closeManualCodeModal();
     }
@@ -266,15 +275,15 @@ export default function CameraPage() {
 
     let post_data = [data];
     try {
-      const submitVote = await boothVisitService.submitBoothVisit(post_data);
+      const submitBoothVisitResult = await boothVisitService.submitBoothVisit(post_data);
       
-      if(submitVote.success){
+      if(submitBoothVisitResult.success){
     
         let booth_name = ''
         let is_double_zone = 0
-        if(submitVote.results.length > 0){
-          booth_name = submitVote?.results[0].booth?.name || ''
-          is_double_zone = submitVote?.results[0].booth?.is_double_zone || ''
+        if(submitBoothVisitResult.results.length > 0){
+          booth_name = submitBoothVisitResult?.results[0].booth?.name || ''
+          is_double_zone = submitBoothVisitResult?.results[0].booth?.is_double_zone || ''
         }
 
         return {
@@ -285,7 +294,7 @@ export default function CameraPage() {
 
       }else{
         setShowManualCodeModal(false);
-        showMessage("0" , submitVote.message)  
+        showMessage("0" , submitBoothVisitResult.message)  
 
         return {
           success : false
@@ -361,6 +370,19 @@ export default function CameraPage() {
         setScanning(true);
       }
     });
+  }
+
+
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
   }
 
   // Dont render page if customer data is empty or no customer record
