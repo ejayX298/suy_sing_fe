@@ -29,6 +29,22 @@ interface FormData {
   selectedProducts?: Product[];
 }
 
+interface CustomerPickupDetails {
+  id: string;
+  cp_type: string;
+  branch_code: string;
+}
+
+
+interface CustomerDeliveryDetails {
+  id: string;
+  code: string;
+  ship_to_id: string;
+  cd_type: string;
+  branch_code: string;
+  address: string;
+}
+
 interface ConfirmationProps {
   formData: FormData;
   onSubmit: () => void;
@@ -41,6 +57,13 @@ interface ConfirmationProps {
   onNavigateCart?: (direction: "prev" | "next") => void;
   onCreateNewCart?: () => void;
   maxCartsReached?: boolean;
+  transactionTypes : string[];
+  branch: string;
+  shipToAddress: string;
+  customerPickupDetails : CustomerPickupDetails[];
+  customerDeliveryDetails: CustomerDeliveryDetails[];
+  shipToAddressId : string;
+  branchId : string;
 }
 
 export default function Confirmation({
@@ -52,6 +75,13 @@ export default function Confirmation({
   currentCartIndex = 0,
   onNavigateCart = () => {},
   onCreateNewCart = () => {},
+  transactionTypes,
+  branch,
+  shipToAddress,
+  shipToAddressId,
+  branchId,
+  customerPickupDetails,
+  customerDeliveryDetails,
 }: ConfirmationProps) {
   // Get products with quantities greater than 0 from formData
   const products =
@@ -82,8 +112,11 @@ export default function Confirmation({
                     onChange={onSelectChange}
                     className="block w-full appearance-none border-none bg-transparent pr-8 focus:outline-none text-black font-bold text-sm"
                   >
-                    <option value="Pick up">Pick Up</option>
-                    <option value="Delivery">Delivery</option>
+                    {transactionTypes.map((transactionTypeName, index) => (
+                      <option key={index} value={transactionTypeName}>
+                        {transactionTypeName}
+                      </option>
+                    ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
                     ▼
@@ -99,13 +132,15 @@ export default function Confirmation({
               <div className="relative">
                 <select
                   name="branch"
-                  value={formData.branch}
+                  value={branchId}
                   onChange={onSelectChange}
                   className="block w-full appearance-none border-none bg-transparent pr-8 focus:outline-none text-black font-bold text-sm"
                 >
-                  <option value="Quezon City">Quezon City</option>
-                  <option value="Makati">Makati</option>
-                  <option value="Manila">Manila</option>
+                  {customerPickupDetails.map((customerPickup, index) => (
+                    <option key={index} value={customerPickup.id}>
+                      {customerPickup.branch_code}
+                    </option>
+                  ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
                   ▼
@@ -117,9 +152,23 @@ export default function Confirmation({
           {formData.transactionType === "Delivery" && (
             <div className="flex flex-col mt-4">
               <span className="text-black text-sm">Ship to Address:</span>
-              <span className="text-black font-bold text-sm">
-                {formData.shipToAddress}
-              </span>
+              <div className="relative">
+                <select
+                  name="shipToAddress"
+                  value={shipToAddressId}
+                  onChange={onSelectChange}
+                  className="block w-full appearance-none border-none bg-transparent pr-8 focus:outline-none text-black font-bold text-sm"
+                >
+                  {customerDeliveryDetails.map((customerDelivery, index) => (
+                    <option key={index} value={customerDelivery.id}>
+                      {customerDelivery.address}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
+                  ▼
+                </div>
+              </div>
             </div>
           )}
         </div>
