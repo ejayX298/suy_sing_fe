@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
 import TermsAndConditions from "@/components/deal-form/TermsAndConditions";
@@ -11,8 +11,9 @@ import DeliveryForm from "@/components/deal-form/DeliveryForm";
 import ProductSelection from "@/components/deal-form/ProductSelection";
 import Confirmation from "@/components/deal-form/Confirmation";
 import DealSubmitted from "@/components/deal-form/DealSubmitted";
+import Swal from 'sweetalert2';
 import { useBooths } from "@/context/BoothsContext";
-import { dealCartService } from '@/services/api';
+import { dealCartService, boothVisitService } from '@/services/api';
 
 interface Product {
   id: string;
@@ -75,18 +76,71 @@ export default function DealFormPage() {
 
   const [carts, setCarts] = useState<Cart[]>([]);
   const [currentCartIndex, setCurrentCartIndex] = useState(0);
-  const [customerData, setCustomerData] = useState<CustomerData>();
+  const [customerDetails, setCustomerDetails] = useState<CustomerData>();
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
   const [customerPickupDetails, setCustomerPickupDetails] = useState<CustomerPickupDetails[]>([]);
   const [customerDeliveryDetails, setCustomerDeliveryDetails] = useState<CustomerDeliveryDetails[]>([]);
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
+  const [boothProducts, setBoothProducts] = useState([]);
+  const [isRender, setIsRender] = useState(false);
+
+
+  const searchParams = useSearchParams();
+  const customer_hash_code = searchParams.get("cc");
   
-  const getCustomerData = async () => {
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
+
+  
+  const getCustomerRecord = async () => {
+    try {
+      const customerResult = await boothVisitService.getCustomerRecord();
+      
+      if(customerResult.success){
+
+        const mapCustomerData = {
+          id: customerResult.results?.id,
+          code: customerResult.results?.code,
+          name: customerResult.results?.full_name,
+          hasVoted: customerResult.results?.is_done_voting,
+          isDoneVisit: customerResult.results?.is_done_visit,
+          totalBooths: customerResult.results?.total_booths,
+          totalBoothVisited: customerResult.results?.total_booth_visited,
+        };
+        
+        setCustomerData(mapCustomerData);
+      
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+
+  const getCustomerParams = async () => {
     try {
 
       const customerResult = await dealCartService.getCustomerParams();
       
       if(customerResult.success){
-        setCustomerData(customerResult.results);
+        setCustomerDetails(customerResult.results);
         setFormData({
           ...formData,
           customerCode: customerResult.results.code || ""
@@ -96,10 +150,14 @@ export default function DealFormPage() {
         const deliveryResults = customerResult.results?.delivery || [];
 
         if(pickUpResults.length > 0){
-          setTransactionTypes(prev => [...prev, 'Pick up']);
+          setTransactionTypes(prev =>
+            prev.includes('Pick up') ? prev : [...prev, 'Pick up']
+          );
         }
         if(deliveryResults.length > 0){
-          setTransactionTypes(prev => [...prev, 'Delivery']);
+          setTransactionTypes(prev =>
+            prev.includes('Delivery') ? prev : [...prev, 'Delivery']
+          );
         }
 
         setCustomerPickupDetails(pickUpResults);
@@ -112,8 +170,59 @@ export default function DealFormPage() {
   };
 
 
+  const getBoothProducts = async () => {
+    try {
+      const customerResult = await dealCartService.getBoothProducts();
+      
+      if(customerResult.success){ 
+        setBoothProducts(customerResult.results || [])
+        return true;
+      }else{
+
+        return false;
+      }
+    
+    } catch (error) {
+      
+      return false;
+      
+    }
+
+  };
+
+
+  const createDealCart = async (post_data : any) => {
+    try {
+      const createDealCartResult = await dealCartService.createDealCart(post_data);
+      console.log(createDealCartResult)
+      if(createDealCartResult.success){
+        return true;
+      }else{
+        showMessage("0" , createDealCartResult.message)  
+        return false;
+      }
+    
+    } catch (error) {
+      console.log(error)
+      console.log(error)
+      showMessage("0" , "Unable to process your request. Please try again later. 1212 ")   
+      return false;
+      
+    }
+
+  };
+
   useEffect(() => {
-    getCustomerData()
+
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
+        setIsRender(true)
+      }
+    }
+
+    getCustomerRecord()
+    getCustomerParams()
+    getBoothProducts()
 
     if (step === 1) {
       setCarts([]);
@@ -154,9 +263,11 @@ export default function DealFormPage() {
     if (fromConfirmation) {
       setStep(2);
     }
+    
+    const updatedCarts = [...carts];
 
     if (carts.length > 0) {
-      const updatedCarts = [...carts];
+      // const updatedCarts = [...carts];
 
       updatedCarts[currentCartIndex] = {
         ...updatedCarts[currentCartIndex],
@@ -167,8 +278,6 @@ export default function DealFormPage() {
         remarks: formData.remarks,
         selectedProducts: selectedProducts,
       };
-      setCarts(updatedCarts);
-
       localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
     }
 
@@ -183,29 +292,31 @@ export default function DealFormPage() {
       remarks: "",
       selectedProducts: [],
     };
+    const updatedCartsFinal = [...updatedCarts, newCart];
 
-    const updatedCarts = [...carts, newCart];
-    setCarts(updatedCarts);
+    setCarts(updatedCartsFinal);
     setCurrentCartIndex(carts.length);
 
     // Save updated carts to localStorage
-    localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+    localStorage.setItem("dealformCarts", JSON.stringify(updatedCartsFinal));
 
     // Reset form data for the new cart
     setFormData({
       acceptTerms: formData.acceptTerms,
-      customerCode: "",
-      transactionType: "Pick up",
-      branch: "",
-      shipToAddress: "",
-      remarks: "",
+      customerCode: formData.customerCode,
+      transactionType: formData.transactionType,
+      branch: formData.branch,
+      shipToAddress: formData.shipToAddress,
+      remarks: formData.remarks,
     });
 
     setSelectedProducts([]);
   };
 
   const handleNavigateCart = (direction: "prev" | "next") => {
+    
     const updatedCarts = [...carts];
+    
     updatedCarts[currentCartIndex] = {
       ...updatedCarts[currentCartIndex],
       customerCode: formData.customerCode,
@@ -249,14 +360,43 @@ export default function DealFormPage() {
   };
 
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
-    if (cartIndex >= 0 && cartIndex < carts.length) {
+
+      // remove product quantity == 0
+      const updatedProducts =  products.filter((product) => product.quantity != 0);
+  
+      if (cartIndex >= 0 && cartIndex < carts.length) {
       const updatedCarts = [...carts];
+      const cartProducts = updatedCarts[cartIndex].selectedProducts;
+
+      // remap cart products
+      const remapCartProducts = cartProducts.map((cartProduct) => {
+        const findUpdatedProduct = updatedProducts.find(updatedProduct => updatedProduct.id == cartProduct.id);
+
+        // find and update cart product quantity if exist in updatedProducts
+        if(findUpdatedProduct){
+          const findUpdateProductIndex = updatedProducts.findIndex(updatedProduct => updatedProduct.id === findUpdatedProduct.id);
+
+          // remove product on updatedProducts array
+          if (findUpdateProductIndex !== -1) {
+            updatedProducts.splice(findUpdateProductIndex, 1);  // Removes 1 item at the found index
+          }
+          return {...cartProduct, quantity : findUpdatedProduct.quantity}
+        }else{
+          return {...cartProduct}
+        }
+        
+      });
+
+      // Merge remapCartProducts and updatedProducts
+      const finalCartProducts = [...remapCartProducts, ...updatedProducts]
+
+
       updatedCarts[cartIndex] = {
         ...updatedCarts[cartIndex],
-        selectedProducts: products,
+        selectedProducts: finalCartProducts, //
       };
       setCarts(updatedCarts);
-      setSelectedProducts(products);
+      setSelectedProducts(finalCartProducts);
 
       console.log("Updated products for cart", cartIndex, products);
 
@@ -303,6 +443,11 @@ export default function DealFormPage() {
       return;
     }
 
+    if (step === 1) {
+      // Clear dealformCarts after accepting t and c
+      localStorage.removeItem("dealformCarts");
+    }
+
     if (step === 2) {
       if (formData.transactionType === "Pick up" && !formData.branch) {
         alert("Please select a branch.");
@@ -345,7 +490,7 @@ export default function DealFormPage() {
   };
 
   // Handle form submission and booth visit tracking
-  const handleComplete = () => {
+  const handleComplete = async () => {
     const updatedCarts = [...carts];
 
     const existingProducts =
@@ -371,39 +516,49 @@ export default function DealFormPage() {
       "Selected products:",
       updatedCarts[currentCartIndex]?.selectedProducts
     );
+    
+    const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
-    existingProducts.forEach((product) => {
-      if (product.quantity > 0) {
-        const productCode = product.itemCode.toLowerCase();
-        const matchingBooth = booths.find(
-          (booth) =>
-            (booth.name && booth.name.toLowerCase().includes(productCode)) ||
-            (booth.id && booth.id.toLowerCase().includes(productCode))
-        );
+    if(submitCart){
 
-        if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
-          handleVisitBooth(matchingBooth.id);
+      existingProducts.forEach((product) => {
+        if (product.quantity > 0) {
+          const productCode = product.itemCode.toLowerCase();
+          const matchingBooth = booths.find(
+            (booth) =>
+              (booth.name && booth.name.toLowerCase().includes(productCode)) ||
+              (booth.id && booth.id.toLowerCase().includes(productCode))
+          );
+
+          if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
+            handleVisitBooth(matchingBooth.id);
+          }
         }
-      }
-    });
+      });
 
-    const remainingUnsubmittedCarts = updatedCarts.filter(
-      (cart) => !cart.submitted
-    );
-
-    if (remainingUnsubmittedCarts.length > 0) {
-      const nextUnsubmittedIndex = updatedCarts.findIndex(
+      const remainingUnsubmittedCarts = updatedCarts.filter(
         (cart) => !cart.submitted
       );
-      if (nextUnsubmittedIndex !== -1) {
-        setCurrentCartIndex(nextUnsubmittedIndex);
-        return;
+
+      if (remainingUnsubmittedCarts.length > 0) {
+        const nextUnsubmittedIndex = updatedCarts.findIndex(
+          (cart) => !cart.submitted
+        );
+        if (nextUnsubmittedIndex !== -1) {
+          showMessage("1", "Deal form submitted.")
+          setCurrentCartIndex(nextUnsubmittedIndex);
+          return;
+        }
       }
+
+      localStorage.removeItem("dealformCarts");
+
+      setShowSubmitModal(true);
+      return;
+
     }
+    
 
-    localStorage.removeItem("dealformCarts");
-
-    setShowSubmitModal(true);
   };
 
   // Handle closing modal
@@ -421,8 +576,33 @@ export default function DealFormPage() {
     setCarts([]);
     setCurrentCartIndex(0);
     setStep(1);
-    router.push("/");
+    router.push(`/?cc=${stored_hash_code}`);
   };
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E"
+    })
+  }
+
+  if(!isRender){
+    return null;
+  }
 
   return (
     <div className="flex flex-col max-w-2xl mx-auto min-h-screen">
@@ -439,8 +619,8 @@ export default function DealFormPage() {
           </div>
         ) : (
           <BoothsProgress
-            visited={visitedCount}
-            total={totalBooths}
+            visited={customerData?.totalBoothVisited || 0}
+            total={customerData?.totalBooths || 0}
             viewList=" Tap to view the list of visited and unvisited booths."
           />
         )}
@@ -517,6 +697,10 @@ export default function DealFormPage() {
               onTransactionTypeChange={handleTransactionTypeChange}
               onBranchChange={handleBranchChange}
               onShipToAddressChange={handleShipToAddressChange}
+              boothProducts={boothProducts}
+              transactionTypes={transactionTypes}
+              customerPickupDetails={customerPickupDetails}
+              customerDeliveryDetails={customerDeliveryDetails}
             />
           )}
 
@@ -535,6 +719,21 @@ export default function DealFormPage() {
               onNavigateCart={handleNavigateCart}
               onCreateNewCart={() => handleCreateNewCart(true)}
               maxCartsReached={carts.length >= 3}
+              transactionTypes={transactionTypes}
+              customerPickupDetails={customerPickupDetails}
+              branch={
+                customerPickupDetails.find(
+                  cpd => cpd.id == formData.branch
+                )?.branch_code || formData.branch
+              }
+              shipToAddress={
+                customerDeliveryDetails.find(
+                  cdd => cdd.id == formData.shipToAddress
+                )?.address || formData.shipToAddress
+              }
+              customerDeliveryDetails={customerDeliveryDetails}
+              shipToAddressId={formData.shipToAddress}
+              branchId={formData.branch}
             />
           )}
         </div>
