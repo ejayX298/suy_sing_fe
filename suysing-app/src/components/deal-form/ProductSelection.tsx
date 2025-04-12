@@ -88,6 +88,22 @@ const initialProducts: Product[] = [
   },
 ];
 
+interface CustomerPickupDetails {
+  id: string;
+  cp_type: string;
+  branch_code: string;
+}
+
+
+interface CustomerDeliveryDetails {
+  id: string;
+  code: string;
+  ship_to_id: string;
+  cd_type: string;
+  branch_code: string;
+  address: string;
+}
+
 // Initial dealer list
 const initialDealers: Dealer[] = [
   {
@@ -130,6 +146,10 @@ interface ProductSelectionProps {
   onTransactionTypeChange?: (type: string) => void;
   onBranchChange?: (branch: string) => void;
   onShipToAddressChange?: (address: string) => void;
+  boothProducts: Dealer[];
+  transactionTypes : string[];
+  customerPickupDetails : CustomerPickupDetails[];
+  customerDeliveryDetails: CustomerDeliveryDetails[];
 }
 
 export default function ProductSelection({
@@ -148,6 +168,10 @@ export default function ProductSelection({
   onTransactionTypeChange = () => {},
   onBranchChange = () => {},
   onShipToAddressChange = () => {},
+  boothProducts = [],
+  transactionTypes,
+  customerPickupDetails,
+  customerDeliveryDetails,
 }: ProductSelectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -156,7 +180,9 @@ export default function ProductSelection({
       ? selectedProducts
       : initialProducts.map((p) => ({ ...p }))
   );
-  const [dealers] = useState<Dealer[]>(initialDealers);
+  const [dealers, setDealers] = useState<Dealer[]>([]);
+  const [currentCarts, setCurrentCarts] = useState<Cart[]>([]);
+  const [currentSelectedCart, setCurrentSelectedCart] = useState<Cart>();
   const [expandedDealers, setExpandedDealers] = useState<string[]>(["1"]);
   
 
@@ -175,6 +201,24 @@ export default function ProductSelection({
     }
   }, [selectedProducts]);
 
+  useEffect(() => {
+    // set boothProduct on dealers state
+    setDealers(boothProducts)
+  }, [boothProducts]);
+
+
+  useEffect(() => { 
+    setCurrentCarts(carts)
+
+    // check if cart index exists in carts
+    if (currentCartIndex >= 0 && currentCartIndex <= carts.length) {
+     if(carts[currentCartIndex]){
+        setCurrentSelectedCart(carts[currentCartIndex])
+     }
+    }
+  }, [carts]);
+
+  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (transactionTypeRef.current && !transactionTypeRef.current.contains(event.target as Node)) {
@@ -197,13 +241,18 @@ export default function ProductSelection({
   const handleQuantityChange = (
     id: string,
     newQuantity: number,
-    dealerName: string = "Alaska Milk Corporation"
+    dealerName: string = "",
+    dealerId: string,
   ) => {
     if (newQuantity >= 0) {
+
+      // get the selected dealer products
+      const dealerSelectedProducts = dealers.find(dealer => dealer.id == dealerId)?.products || []
+
       // Update local state
-      const updatedProducts = products.map((product) =>
+      const updatedProducts = dealerSelectedProducts.map((product) =>
         product.id === id
-          ? { ...product, quantity: newQuantity, dealerName }
+          ? { ...product, quantity: newQuantity, dealerName, dealerId }
           : product
       );
       setProducts(updatedProducts);
@@ -214,6 +263,16 @@ export default function ProductSelection({
       }
     }
   };
+
+  const getActualQty = (product_id : any) => {
+    const currentSelectedCartProducts = currentSelectedCart?.selectedProducts || [];
+
+    const findCartProduct = currentSelectedCartProducts.find(product => product.id == product_id);
+    if(findCartProduct){
+      return findCartProduct.quantity
+    }
+    return 0;
+  }
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -290,13 +349,13 @@ export default function ProductSelection({
                   
                   {isTransactionTypeOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                      {["Pick up", "Delivery"].map((type) => (
+                      {transactionTypes.map((transactionTypeName, index) => (
                         <div
-                          key={type}
-                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${transactionType === type ? 'bg-gray-100' : ''}`}
-                          onClick={() => handleTransactionTypeSelect(type)}
+                          key={index}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${transactionType === transactionTypeName ? 'bg-gray-100' : ''}`}
+                          onClick={() => handleTransactionTypeSelect(transactionTypeName)}
                         >
-                          <span className="text-black text-sm">{type}</span>
+                          <span className="text-black text-sm">{transactionTypeName}</span>
                         </div>
                       ))}
                     </div>
@@ -317,16 +376,15 @@ export default function ProductSelection({
                   <span className="text-black font-bold text-sm">{branch}</span>
                   <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
                 </div>
-                
                 {isBranchDropdownOpen && (
                   <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                    {branches.map((branchOption) => (
+                    {customerPickupDetails.map((customerPickup, index) => (
                       <div
-                        key={branchOption}
-                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${branch === branchOption ? 'bg-gray-100' : ''}`}
-                        onClick={() => handleBranchSelect(branchOption)}
+                        key={index}
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${branch === customerPickup.branch_code ? 'bg-gray-100' : ''}`}
+                        onClick={() => handleBranchSelect(customerPickup.id)}
                       >
-                        <span className="text-black text-sm">{branchOption}</span>
+                        <span className="text-black text-sm">{customerPickup.branch_code}</span>
                       </div>
                     ))}
                   </div>
@@ -348,16 +406,16 @@ export default function ProductSelection({
                   </span>
                   <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
                 </div>
-                
+
                 {isShippingDropdownOpen && (
                   <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                    {shippingAddresses.map((address) => (
+                    {customerDeliveryDetails.map((customerDelivery, index) => (
                       <div
-                        key={address}
-                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${shipToAddress === address ? 'bg-gray-100' : ''}`}
-                        onClick={() => handleShippingAddressSelect(address)}
+                        key={index}
+                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${shipToAddress === customerDelivery.address ? 'bg-gray-100' : ''}`}
+                        onClick={() => handleShippingAddressSelect(customerDelivery.id)}
                       >
-                        <span className="text-black text-sm">{address}</span>
+                        <span className="text-black text-sm">{customerDelivery.address}</span>
                       </div>
                     ))}
                   </div>
@@ -490,8 +548,10 @@ export default function ProductSelection({
 
             {expandedDealers.includes(dealer.id) && (
               <div className="grid grid-cols-1 gap-2  bg-white">
-                {dealer.id === "1" ? (
-                  products.map((product) => (
+                
+                {dealer.products.length > 0 ? (
+                  
+                  dealer.products.map((product) => (
                     <div
                       key={product.id}
                       className="border-2 py-2 flex flex-col border-t-[#7D7D7D]"
@@ -516,8 +576,9 @@ export default function ProductSelection({
                             onClick={() =>
                               handleQuantityChange(
                                 product.id,
-                                product.quantity - 1,
-                                dealer.name
+                                getActualQty(product.id) - 1,
+                                dealer.name,
+                                dealer.id,
                               )
                             }
                             className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
@@ -525,14 +586,15 @@ export default function ProductSelection({
                             -
                           </button>
                           <span className="text-black font-bold text-2xl w-8 text-center">
-                            {product.quantity}
+                            {getActualQty(product.id)}
                           </span>
                           <button
                             onClick={() =>
                               handleQuantityChange(
                                 product.id,
-                                product.quantity + 1,
-                                dealer.name
+                                getActualQty(product.id) + 1,
+                                dealer.name,
+                                dealer.id,
                               )
                             }
                             className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
