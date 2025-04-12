@@ -178,7 +178,7 @@ export default function ProductSelection({
   const [products, setProducts] = useState<Product[]>(
     selectedProducts.length > 0
       ? selectedProducts
-      : initialProducts.map((p) => ({ ...p }))
+      : []
   );
   const [dealers, setDealers] = useState<Dealer[]>([]);
   const [currentCarts, setCurrentCarts] = useState<Cart[]>([]);
