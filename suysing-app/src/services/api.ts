@@ -793,6 +793,113 @@ export const dealCartService = {
     }
 
   },
+
+
+  getBoothProducts: async () => {
+
+    const customer_info = localStorage.getItem('customer_info');
+    const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+    const customer_id = customerInfoParsed?.id || ''
+    const session_id = customerInfoParsed?.session_id || ''
+
+    try{
+  
+      const response = await httpClient(session_id).get(`/customer/booth/products/?customer_id=${customer_id}`, {});
+      
+      const response_data = response?.data?.data || []
+
+      const mapBoothProducts = response_data.booths.map(booth => ({
+        id: booth.id,
+        name: booth.name,
+        code: booth.code,
+        description: booth.description,
+        products : booth.products.map(boothProduct => ({
+          id: boothProduct.id,
+          itemCode: boothProduct.item_code,
+          name: boothProduct.name,
+          quantity: 0,
+          discount: (boothProduct.discount * 100) + "% Discount",
+        }))
+      }));
+      
+
+      return {
+        success : true,
+        results : mapBoothProducts
+      }
+    
+
+    } catch (error) {
+
+      const default_err_response = {
+        success : false,
+        results : []
+      }
+      if (axios.isAxiosError(error)) {
+        
+        return default_err_response
+      }else{
+        return default_err_response
+      }
+     
+    }
+
+  },
+
+
+  createDealCart: async (post_data : any) => {
+
+    try{
+  
+      const customer_info = localStorage.getItem('customer_info');
+      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
+      const session_id = customerInfoParsed?.session_id || ''
+      const customer_id = customerInfoParsed?.id || ''
+
+      const mapBoothProducts = post_data?.selectedProducts?.map((boothProduct: { id: string; quantity: string; }) => ({
+        booth_product_id: boothProduct.id,
+        order_qty: boothProduct.quantity
+      })) || [];
+    
+      const response = await httpClient(session_id).post(`/customer/deal/cart/create/`, {
+        customer_id : customer_id,
+        customer_code : post_data?.customerCode || "",
+        transaction_type : post_data?.transactionType || "",
+        remarks : post_data?.remarks || "",
+        address : post_data?.shipToAddress || "",
+        branch : post_data?.branch || "",
+        products : JSON.stringify(mapBoothProducts)
+      });
+      
+      const response_data = response?.data?.data || []
+      
+      return {
+        success : true,
+        results : response_data
+      }
+    
+
+    } catch (error) {
+    
+      if (axios.isAxiosError(error)) {
+        
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+        
+      }else{
+        console.log(error)
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+     
+    }
+
+  },
  
 }
 
