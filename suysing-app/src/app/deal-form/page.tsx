@@ -662,7 +662,7 @@ export default function DealFormPage() {
             />
           )} */}
 
-          {step === 2 && formData.transactionType === "Pick up" && (
+          {step === 2 && (formData.transactionType === "Pick up" || formData.transactionType === "") && (
             <PickUpForm
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
