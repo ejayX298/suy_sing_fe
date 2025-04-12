@@ -9,6 +9,10 @@ interface DealSubmittedProps {
 
 const DealSubmitted: React.FC<DealSubmittedProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
+  let stored_hash_code: any = ""
+  if (typeof window !== 'undefined') {
+    stored_hash_code = localStorage.getItem('hash_code');
+  }
 
   if (!isOpen) return null;
 
@@ -17,7 +21,7 @@ const DealSubmitted: React.FC<DealSubmittedProps> = ({ isOpen, onClose }) => {
     localStorage.removeItem("dealformCarts");
     onClose();
     // Navigate to home page
-    router.push("/");
+    router.push(`/?cc=${stored_hash_code}`);
   };
 
   return (
