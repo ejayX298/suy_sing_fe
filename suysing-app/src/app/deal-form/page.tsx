@@ -492,6 +492,14 @@ export default function DealFormPage() {
   // Handle form submission and booth visit tracking
   const handleComplete = async () => {
     const updatedCarts = [...carts];
+    
+    // check if cart is already submmitted
+    if(updatedCarts[currentCartIndex]){
+      if(updatedCarts[currentCartIndex].submitted){
+        showMessage("0", "You already submmited this cart.")
+        return;
+      }
+    }
 
     const existingProducts =
       updatedCarts[currentCartIndex]?.selectedProducts || [];
@@ -504,7 +512,6 @@ export default function DealFormPage() {
       shipToAddress: formData.shipToAddress,
       remarks: formData.remarks,
       selectedProducts: existingProducts,
-      submitted: true,
     };
     setCarts(updatedCarts);
 
@@ -517,9 +524,19 @@ export default function DealFormPage() {
       updatedCarts[currentCartIndex]?.selectedProducts
     );
     
+    
     const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
     if(submitCart){
+
+      // tag the cart as submiited if api response is sucessfull
+      updatedCarts[currentCartIndex] = {
+        ...updatedCarts[currentCartIndex],
+        submitted: true,
+      };
+      setCarts(updatedCarts);
+      // Save to localStorage
+      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
 
       existingProducts.forEach((product) => {
         if (product.quantity > 0) {
@@ -546,7 +563,7 @@ export default function DealFormPage() {
         );
         if (nextUnsubmittedIndex !== -1) {
           showMessage("1", "Deal form submitted.")
-          setCurrentCartIndex(nextUnsubmittedIndex);
+          // setCurrentCartIndex(nextUnsubmittedIndex);
           return;
         }
       }
