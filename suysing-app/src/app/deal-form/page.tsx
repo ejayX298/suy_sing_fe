@@ -718,6 +718,7 @@ export default function DealFormPage() {
               transactionTypes={transactionTypes}
               customerPickupDetails={customerPickupDetails}
               customerDeliveryDetails={customerDeliveryDetails}
+              selectedProducts={carts[currentCartIndex]?.selectedProducts || []}
             />
           )}
 
