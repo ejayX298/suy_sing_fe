@@ -61,3 +61,16 @@ export interface Souvenir {
   claimed: number;
   remaining: number;
 }
+
+export interface Product {
+  id: string;
+  productCode: string;
+  productName: string;
+  discount: string;
+}
+
+export interface Vendor {
+  id: string;
+  vendorCode: string;
+  vendorName: string;
+}
