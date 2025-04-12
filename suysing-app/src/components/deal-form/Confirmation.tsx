@@ -8,6 +8,7 @@ interface Product {
   quantity: number;
   discount: string;
   dealerName?: string;
+  dealerId?: string;
 }
 
 interface Cart {
@@ -86,6 +87,26 @@ export default function Confirmation({
   // Get products with quantities greater than 0 from formData
   const products =
     formData.selectedProducts?.filter((product) => product.quantity > 0) || [];
+
+  // Group the products by dealer
+  const groupedByDealer = products.reduce((acc : any, item) => {
+    const dealerId : any = item.dealerId ?? '';
+    if(dealerId == '') return {};
+
+    if (!acc[dealerId]) {
+      acc[dealerId] = {
+        dealerId: dealerId,
+        dealerName: item.dealerName,
+        products: []
+      };
+    }
+    acc[dealerId].products.push(item);
+    return acc;
+  }, {});
+  
+  // convert to array
+  const groupedArray = Object.values(groupedByDealer);
+  
 
   return (
     <div className="flex flex-col space-y-4 min-h-screen">
@@ -270,17 +291,17 @@ export default function Confirmation({
         </div>
       </div>
 
-      {products.length > 0 && (
-        <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden ">
+      {products.length > 0 && Object.values(groupedByDealer).map((dealer : any, index) => (
+        <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden " key={index}>
           <div className="p-4 border-b border-[#7D7D7D]">
             <div className="font-bold text-black">
-              {products[0]?.dealerName}
+              {dealer?.dealerName}
             </div>
           </div>
 
           {/* Product items */}
           <div>
-            {products
+            {dealer?.products
               .filter((p) => p.quantity > 0)
               .map((product) => (
                 <div key={product.id} className="border-t border-[#E5E5E5] p-4">
@@ -296,7 +317,7 @@ export default function Confirmation({
               ))}
           </div>
         </div>
-      )}
+        ))}
       <div className="py-2">
         <button
           onClick={onSubmit}
