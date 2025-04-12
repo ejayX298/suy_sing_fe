@@ -47,7 +47,7 @@ export default function BottomNavigation() {
       </Link>
 
       <Link
-        href="/deal-form"
+        href={concatUrl("/deal-form")}
         className={`flex flex-col items-center h-full justify-center  px-2  gap-1 ${
           pathname === "/deal-form" ? "bg-[#0920B0] text-white" : ""
         }`}
