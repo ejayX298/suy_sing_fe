@@ -34,7 +34,7 @@ export default function WelcomePage({ customer_data, onContinue, onClose }: Welc
           <Image src="/images/confettii.svg" alt="Confetti" width={100} height={100} />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">
-          Hello {customerData?.name || "User"},
+          Hello {customerData?.name || ""}
         </h2>
         <p className="text-center mb-6 text-lg">
           Welcome to your digital<br />
