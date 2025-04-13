@@ -491,91 +491,120 @@ export default function DealFormPage() {
 
   // Handle form submission and booth visit tracking
   const handleComplete = async () => {
-    const updatedCarts = [...carts];
-    
-    // check if cart is already submmitted
-    if(updatedCarts[currentCartIndex]){
-      if(updatedCarts[currentCartIndex].submitted){
-        showMessage("0", "You already submmited this cart.")
-        return;
-      }
-    }
 
-    const existingProducts =
-      updatedCarts[currentCartIndex]?.selectedProducts || [];
+    let confirmAction = await confirmMessage(`Are you sure you want to submit this cart?`);
 
-    updatedCarts[currentCartIndex] = {
-      ...updatedCarts[currentCartIndex],
-      customerCode: formData.customerCode,
-      transactionType: formData.transactionType,
-      branch: formData.branch,
-      shipToAddress: formData.shipToAddress,
-      remarks: formData.remarks,
-      selectedProducts: existingProducts,
-    };
-    setCarts(updatedCarts);
+    // Inititalize and show loader
+    showLoader();
 
-    // Save to localStorage
-    localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+    if(confirmAction.isConfirmed){
 
-    console.log("Form submitted for cart:", updatedCarts[currentCartIndex]);
-    console.log(
-      "Selected products:",
-      updatedCarts[currentCartIndex]?.selectedProducts
-    );
-    
-    
-    const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
+        const updatedCarts = [...carts];
+        
+        // check if cart is already submmitted
+        if(updatedCarts[currentCartIndex]){
+          if(updatedCarts[currentCartIndex].submitted){
 
-    if(submitCart){
+            //close loader
+            Swal.close()
 
-      // tag the cart as submiited if api response is sucessfull
-      updatedCarts[currentCartIndex] = {
-        ...updatedCarts[currentCartIndex],
-        submitted: true,
-      };
-      setCarts(updatedCarts);
-      // Save to localStorage
-      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
-
-      existingProducts.forEach((product) => {
-        if (product.quantity > 0) {
-          const productCode = product.itemCode.toLowerCase();
-          const matchingBooth = booths.find(
-            (booth) =>
-              (booth.name && booth.name.toLowerCase().includes(productCode)) ||
-              (booth.id && booth.id.toLowerCase().includes(productCode))
-          );
-
-          if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
-            handleVisitBooth(matchingBooth.id);
+            // added delay before opening new alert
+            setTimeout(() => {
+              showMessage("0", "You already submmited this cart.")
+            }, 200);
+            return;
           }
         }
-      });
 
-      const remainingUnsubmittedCarts = updatedCarts.filter(
-        (cart) => !cart.submitted
-      );
+        const existingProducts =
+          updatedCarts[currentCartIndex]?.selectedProducts || [];
 
-      if (remainingUnsubmittedCarts.length > 0) {
-        const nextUnsubmittedIndex = updatedCarts.findIndex(
-          (cart) => !cart.submitted
+        updatedCarts[currentCartIndex] = {
+          ...updatedCarts[currentCartIndex],
+          customerCode: formData.customerCode,
+          transactionType: formData.transactionType,
+          branch: formData.branch,
+          shipToAddress: formData.shipToAddress,
+          remarks: formData.remarks,
+          selectedProducts: existingProducts,
+        };
+        setCarts(updatedCarts);
+
+        // Save to localStorage
+        localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+
+        console.log("Form submitted for cart:", updatedCarts[currentCartIndex]);
+        console.log(
+          "Selected products:",
+          updatedCarts[currentCartIndex]?.selectedProducts
         );
-        if (nextUnsubmittedIndex !== -1) {
-          showMessage("1", "Deal form submitted.")
-          // setCurrentCartIndex(nextUnsubmittedIndex);
-          return;
-        }
-      }
-
-      localStorage.removeItem("dealformCarts");
-
-      setShowSubmitModal(true);
-      return;
-
-    }
     
+    
+        const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
+        if(submitCart){
+
+          // tag the cart as submiited if api response is sucessfull
+          updatedCarts[currentCartIndex] = {
+            ...updatedCarts[currentCartIndex],
+            submitted: true,
+          };
+          setCarts(updatedCarts);
+          // Save to localStorage
+          localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+
+          existingProducts.forEach((product) => {
+            if (product.quantity > 0) {
+              const productCode = product.itemCode.toLowerCase();
+              const matchingBooth = booths.find(
+                (booth) =>
+                  (booth.name && booth.name.toLowerCase().includes(productCode)) ||
+                  (booth.id && booth.id.toLowerCase().includes(productCode))
+              );
+
+              if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
+                handleVisitBooth(matchingBooth.id);
+              }
+            }
+          });
+
+          const remainingUnsubmittedCarts = updatedCarts.filter(
+            (cart) => !cart.submitted
+          );
+
+          if (remainingUnsubmittedCarts.length > 0) {
+            const nextUnsubmittedIndex = updatedCarts.findIndex(
+              (cart) => !cart.submitted
+            );
+            if (nextUnsubmittedIndex !== -1) {
+              
+              //close loader
+              Swal.close()
+
+              // added delay before opening new alert
+              setTimeout(() => {
+                showMessage("1", "Deal form submitted.")
+              }, 200);
+              // setCurrentCartIndex(nextUnsubmittedIndex);
+              return;
+            }
+          }
+
+          localStorage.removeItem("dealformCarts");
+          
+          //close loader
+          Swal.close()
+
+          setShowSubmitModal(true);
+          return;
+
+        }
+
+      }else{
+
+        //close loader
+        Swal.close()
+      }
   };
 
   // Handle closing modal
@@ -616,6 +645,32 @@ export default function DealFormPage() {
       confirmButtonColor: "#F78B1E"
     })
   }
+
+  const confirmMessage = async (message: string)  => {
+    
+    const result = await Swal.fire({
+      title: 'Confirm',
+      text: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#F78B1E",
+    })
+
+    return result;
+  }
+
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
+  }
+
 
   if(!isRender){
     return null;
