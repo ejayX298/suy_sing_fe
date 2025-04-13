@@ -131,6 +131,15 @@ export const useAuth = create<AuthState>((set) => {
         localStorage.removeItem('is_force_logout');
         document.cookie = `auth=; path=/;`;
       }
+    },
+
+
+    clearDocumentCookie: async () => {
+      if (typeof window !== 'undefined') {
+        document.cookie = `auth=; path=/;`;
+      }
     }
+
+
   };
 });
