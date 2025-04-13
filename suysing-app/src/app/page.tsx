@@ -29,7 +29,7 @@ export interface Booth {
 export default function Home() {
   const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
     useBooths();
-  const [showInstructionModal, setShowInstructionModal] = useState(true);
+  const [showInstructionModal, setShowInstructionModal] = useState(false);
 
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
   const [totalVisitCount, setTotalVisitCount] = useState(0);
@@ -198,6 +198,26 @@ export default function Home() {
   }, [initialBoothsList]);
 
 
+  useEffect(() => {
+    const firstVisitIds = localStorage.getItem('firstVisitIds');
+
+    if(firstVisitIds){
+      if(customerData?.id){
+        const parSedVisitedIds = JSON.parse(firstVisitIds)
+        if(parSedVisitedIds.includes(customerData?.id || 0)){
+          console.log('included ' + firstVisitIds, customerData?.id)
+          setShowInstructionModal(false)
+        }else{
+          console.log('not included ' + firstVisitIds, customerData?.id)
+          setShowInstructionModal(true)
+        }
+      }
+    }else{
+      setShowInstructionModal(true)
+    }
+  }, [customerData]);
+
+
   if(!isRender){
     return null;
   }
@@ -257,6 +277,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Instruction Modal */}
       <InstructionModal 
+        customer_data={customerData}
         isOpen={showInstructionModal} 
         onClose={() => setShowInstructionModal(false)} 
       />
