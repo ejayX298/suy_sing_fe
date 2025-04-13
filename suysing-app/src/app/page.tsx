@@ -205,10 +205,8 @@ export default function Home() {
       if(customerData?.id){
         const parSedVisitedIds = JSON.parse(firstVisitIds)
         if(parSedVisitedIds.includes(customerData?.id || 0)){
-          console.log('included ' + firstVisitIds, customerData?.id)
           setShowInstructionModal(false)
         }else{
-          console.log('not included ' + firstVisitIds, customerData?.id)
           setShowInstructionModal(true)
         }
       }
