@@ -1,14 +1,31 @@
 "use client";
 
 import Image from "next/image";
-import React from "react";
+import React,  { useState, useEffect } from "react";
 
 interface WelcomePageProps {
+  customer_data : any;
   onContinue: () => void;
   onClose?: () => void;
 }
 
-export default function WelcomePage({ onContinue, onClose }: WelcomePageProps) {
+export default function WelcomePage({ customer_data, onContinue, onClose }: WelcomePageProps) {
+  const [customerData, setCustomerData] = useState<{
+    id: number;
+    code: string;
+    name: string;
+    hasVoted?: number;
+    isDoneVisit?: number;
+    totalBoothVisited?: number;
+    totalBooths?: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if(customer_data){
+      setCustomerData(customer_data)
+    }
+  }, [customer_data]);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-none" onClick={onClose} />
@@ -17,7 +34,7 @@ export default function WelcomePage({ onContinue, onClose }: WelcomePageProps) {
           <Image src="/images/confettii.svg" alt="Confetti" width={100} height={100} />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">
-          Hello JUAN01,
+          Hello {customerData?.name || "User"},
         </h2>
         <p className="text-center mb-6 text-lg">
           Welcome to your digital<br />
