@@ -8,7 +8,7 @@ import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { boothVisitService } from '@/services/api';
+import { boothVisitService } from "@/services/api";
 import { useSearchParams } from "next/navigation";
 import InstructionModal from "@/components/homepage/InstructionModal";
 
@@ -25,7 +25,6 @@ export interface Booth {
   doubleZonePosition?: number;
 }
 
-
 export default function Home() {
   const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
     useBooths();
@@ -34,7 +33,7 @@ export default function Home() {
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
   const [totalVisitCount, setTotalVisitCount] = useState(0);
   const [doubleZoneBooths, setDoubleZoneBooths] = useState<Booth[]>(
-    Array(22).fill('')
+    Array(22).fill("")
   );
   const [remapBooth, setRemapBooth] = useState<Booth[]>([]);
   const [customerData, setCustomerData] = useState<{
@@ -48,22 +47,19 @@ export default function Home() {
   } | null>(null);
   const [isRender, setIsRender] = useState(false);
 
-
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
-  
-  let stored_hash_code: any = ""
-  if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
-  }
 
+  let stored_hash_code: any = "";
+  if (typeof window !== "undefined") {
+    stored_hash_code = localStorage.getItem("hash_code");
+  }
 
   const getCustomerRecord = async () => {
     try {
       const customerResult = await boothVisitService.getCustomerRecord();
-      
-      if(customerResult.success){
 
+      if (customerResult.success) {
         const mapCustomerData = {
           id: customerResult.results?.id,
           code: customerResult.results?.code,
@@ -73,173 +69,161 @@ export default function Home() {
           totalBooths: customerResult.results?.total_booths,
           totalBoothVisited: customerResult.results?.total_booth_visited,
         };
-        
-        setCustomerData(mapCustomerData);
-      
-        return true;
-      }else{
 
+        setCustomerData(mapCustomerData);
+
+        return true;
+      } else {
         return false;
       }
-    
     } catch (error) {
-      
       return false;
-      
     }
-
   };
-  
 
   const get_visited_booth_list = async () => {
     try {
-
       const boothResult = await boothVisitService.getVisitedBoothlist();
-      if(boothResult.success){
-
+      if (boothResult.success) {
         const doubleBoothsMap = boothResult.results.booths.filter(
-          (booth) =>
-            booth.is_double_zone == 1
+          (booth) => booth.is_double_zone == 1
         );
 
         const regularBoothsMap = boothResult.results.booths.filter(
-          (booth) =>
-            booth.is_double_zone == 0
+          (booth) => booth.is_double_zone == 0
         );
 
-        mapRegularBooths(regularBoothsMap)
-        mapDoubleZone(doubleBoothsMap)
+        mapRegularBooths(regularBoothsMap);
+        mapDoubleZone(doubleBoothsMap);
       }
-    
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
   const updateCount = () => {
     setTotalVisitCount((prevTotalVisitCount) => {
-      return prevTotalVisitCount + 1;  // Increment by 1 based on the previous value
+      return prevTotalVisitCount + 1; // Increment by 1 based on the previous value
     });
-  }
+  };
 
-  const mapRegularBooths = (regularBooths : any) => {
-    
-    const remapBooth  = booths?.map(boothDefault => 
-      {
-        const findVisited = regularBooths.find(
-          (regularBooth) => regularBooth.code === boothDefault.boothCode
-        );
+  const mapRegularBooths = (regularBooths: any) => {
+    const remapBooth = booths?.map((boothDefault) => {
+      const findVisited = regularBooths.find(
+        (regularBooth) => regularBooth.code === boothDefault.boothCode
+      );
 
-        return {
-          ...boothDefault,
-          visited : findVisited ? true : false,
+      return {
+        ...boothDefault,
+        visited: findVisited ? true : false,
+      };
+    });
+    setRemapBooth([...remapBooth]);
+  };
+
+  const mapDoubleZone = (doubleBoothsMap: any) => {
+    doubleBoothsMap.forEach(
+      (
+        item: { code: any; booth_id: any; name: any },
+        index: string | number
+      ) => {
+        // find image if booth code already defined in initial booth list
+        // const findDefaultBooth = initialBoothsList?.find(
+        //   (defaultBooth) => defaultBooth.boothCode === item.code
+        // );
+
+        let mapItem = {
+          boothCode: item.code,
+          doubleZonePosition: index,
+          height: 100,
+          id: item.booth_id,
+          // image : findDefaultBooth?.image ||  `/image/booths/${item.code}.png`,
+          image: `/images/booths/${item.code}.png`,
+          isDoubleZone: true,
+          name: item.name,
+          visited: true,
+          width: true,
+        };
+        if (doubleZoneBooths[index] == "") {
+          doubleZoneBooths[index] = mapItem;
+          updateCount();
         }
-    });
-    setRemapBooth([...remapBooth])
-  }
-
-  const mapDoubleZone = (doubleBoothsMap : any) => {
-    doubleBoothsMap.forEach((item: { code: any; booth_id: any; name: any; }, index: string | number) => {
-    
-      // find image if booth code already defined in initial booth list
-      // const findDefaultBooth = initialBoothsList?.find(
-      //   (defaultBooth) => defaultBooth.boothCode === item.code
-      // );
-
-      let mapItem = {
-        boothCode : item.code,
-        doubleZonePosition : index,
-        height : 100,
-        id : item.booth_id,
-        // image : findDefaultBooth?.image ||  `/image/booths/${item.code}.png`,
-        image : `/images/booths/${item.code}.png`,
-        isDoubleZone : true,
-        name : item.name,
-        visited : true,
-        width: true
       }
-      if (doubleZoneBooths[index] == '') {
-        doubleZoneBooths[index]= mapItem;
-        updateCount()
-      }
-    });
+    );
 
-    setDoubleZoneBooths([...doubleZoneBooths])
-  }
+    setDoubleZoneBooths([...doubleZoneBooths]);
+  };
 
-
-  
   useEffect(() => {
-    if(customer_hash_code && stored_hash_code){
-      if(customer_hash_code == stored_hash_code){
-        setIsRender(true)
+    if (customer_hash_code && stored_hash_code) {
+      if (customer_hash_code == stored_hash_code) {
+        setIsRender(true);
       }
     }
   }, []);
 
- 
   useEffect(() => {
     if (booths.length === 0) {
       setBooths(getInitialBooths());
-      setInitialBoothsList(getInitialBooths())
-    }else{
-      setInitialBoothsList([...booths])
+      setInitialBoothsList(getInitialBooths());
+    } else {
+      setInitialBoothsList([...booths]);
     }
   }, [booths.length, setBooths]);
 
-
   useEffect(() => {
-    if (!initialBoothsList)  return;
+    if (!initialBoothsList) return;
 
     if (initialBoothsList.length > 0) {
-        getCustomerRecord();
-        get_visited_booth_list(); // Call with updated state
+      getCustomerRecord();
+      get_visited_booth_list(); // Call with updated state
     }
   }, [initialBoothsList]);
 
-
   useEffect(() => {
-    const firstVisitIds = localStorage.getItem('firstVisitIds');
+    const firstVisitIds = localStorage.getItem("firstVisitIds");
 
-    if(firstVisitIds){
-      if(customerData?.id){
-        const parSedVisitedIds = JSON.parse(firstVisitIds)
-        if(parSedVisitedIds.includes(customerData?.id || 0)){
-          setShowInstructionModal(false)
-        }else{
-          setShowInstructionModal(true)
+    if (firstVisitIds) {
+      if (customerData?.id) {
+        const parSedVisitedIds = JSON.parse(firstVisitIds);
+        if (parSedVisitedIds.includes(customerData?.id || 0)) {
+          setShowInstructionModal(false);
+        } else {
+          setShowInstructionModal(true);
         }
       }
-    }else{
-      setShowInstructionModal(true)
+    } else {
+      setShowInstructionModal(true);
     }
   }, [customerData]);
 
-
-  if(!isRender){
+  if (!isRender) {
     return null;
   }
-  
 
   // RenderBooth component
   const RenderBooth = ({ booth }: { booth: BoothType | undefined }) => {
     if (!booth) return null;
 
-    const aspectClass = booth.overrideAspect ? "border-none object-cover overflow-hidden" : "aspect-square";
-    const overrideSizeClass = booth.overrideSize ? "overflow-hidden object-cover" : "";
+    const aspectClass = booth.overrideAspect
+      ? "border-none object-cover overflow-hidden"
+      : "aspect-square";
+    const overrideSizeClass = booth.overrideSize
+      ? "overflow-hidden object-cover"
+      : "";
 
     return (
       <div key={booth.id} className="h-full">
         <button
-        onClick={() => booth.id && handleVisitBooth(booth.id)}
-        className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
+          onClick={() => booth.id && handleVisitBooth(booth.id)}
+          className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
           ${aspectClass}
           ${overrideSizeClass}
           ${booth.visited ? "border-2 border-red-500" : ""}
         `}
-      >
+        >
           <div
-            className={`w-full h-full flex items-center justify-center p-1 
+            className={`w-full h-full flex justify-center 
               ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
           >
             <Image
@@ -248,9 +232,9 @@ export default function Home() {
               width={booth.width || 100}
               height={booth.height || 100}
               style={{
-                objectFit: "contain",
                 filter: booth.visited ? "none" : "grayscale(100%)",
               }}
+              className="object-contain"
             />
 
             {booth.visited && (
@@ -274,12 +258,12 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
       {/* Instruction Modal */}
-      <InstructionModal 
+      <InstructionModal
         customer_data={customerData}
-        isOpen={showInstructionModal} 
-        onClose={() => setShowInstructionModal(false)} 
+        isOpen={showInstructionModal}
+        onClose={() => setShowInstructionModal(false)}
       />
-      
+
       <main className="flex-1 px-0 py-0 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
@@ -327,7 +311,10 @@ export default function Home() {
                     </div>
 
                     {/* Double Zone Section */}
-                    <DoubleZoneDisplay boothData={doubleZoneBooths} totalVisitCount={totalVisitCount}/>
+                    <DoubleZoneDisplay
+                      boothData={doubleZoneBooths}
+                      totalVisitCount={totalVisitCount}
+                    />
 
                     {/* Additional Boxes/Booths Below */}
                     <div className="px-6 w-full flex">
@@ -484,13 +471,13 @@ export default function Home() {
                         </div>
 
                         <div className="border-2 border-blue-800 h-[240px] flex items-center ml-6 justify-center text-lg font-semibold">
-                        <Image
-                        src="/images/suysing-logo.png"
-                        width={100}
-                        height={100}  
-                        className="w-full px-2"
-                        alt="Suysing"
-                        />
+                          <Image
+                            src="/images/suysing-logo.png"
+                            width={100}
+                            height={100}
+                            className="w-full px-2"
+                            alt="Suysing"
+                          />
                         </div>
                       </div>
                     </div>
@@ -534,7 +521,9 @@ export default function Home() {
                         <div className="flex gap-0.5">
                           <div className="w-[163px] h-[80px] ">
                             <RenderBooth
-                              booth={remapBooth.find((b) => b.boothCode === "ECOSS04")}
+                              booth={remapBooth.find(
+                                (b) => b.boothCode === "ECOSS04"
+                              )}
                             />
                           </div>
                           <div className=" w-[80px] h-[80px] ">
@@ -695,14 +684,14 @@ export default function Home() {
                         {/* First booth */}
                         <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
-                            <div >
+                            <div>
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MAGIS01"
                                 )}
                               />
                             </div>
-                            <div >
+                            <div>
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SKINT01"
@@ -757,15 +746,15 @@ export default function Home() {
                                 )}
                               />
                             </div>
-                          
-                            <div >
+
+                            <div>
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SANIT01"
                                 )}
                               />
                             </div>
-                            <div >
+                            <div>
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "GREEN01"
@@ -912,7 +901,7 @@ export default function Home() {
                                 )}
                               />
                             </div>
-                           
+
                             <div className="col-span-2">
                               <RenderBooth
                                 booth={remapBooth.find(

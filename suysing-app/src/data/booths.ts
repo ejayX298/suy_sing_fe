@@ -929,10 +929,10 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
     },
 
-    {id: "LTHF01",
+    {id: "LTHFO01",
       name: "lthf",
-      image: "/images/booths/LTHF01.png",
-      boothCode: "LTHF01",
+      image: "/images/booths/LTHFO01.png",
+      boothCode: "LTHFO01",
       visited: false,
       width: 100,
       height: 100,
