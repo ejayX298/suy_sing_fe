@@ -1,42 +1,71 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useRef } from 'react';
-import { FaSearch, FaFilter, FaEye, FaDownload } from 'react-icons/fa';
-import { boothActivitiesData } from '@/services/api';
-import Pagination from '@/components/ui/Pagination';
-import { Booth } from '@/types';
-import { useAuth } from '@/lib/hooks/useAuth';
-import QRCode from 'react-qr-code';
-import Swal from 'sweetalert2'
+import { useState, useEffect, useRef } from "react";
+import { FaSearch, FaFilter, FaEye, FaDownload } from "react-icons/fa";
+import { boothActivitiesData } from "@/services/api";
+import Pagination from "@/components/ui/Pagination";
+import { Booth } from "@/types";
+import { useAuth } from "@/lib/hooks/useAuth";
+import QRCode from "react-qr-code";
+import Swal from "sweetalert2";
 
 export default function BoothActivitiesPage() {
   const { token } = useAuth();
-  const [booths, setBooths] = useState<Booth[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredBooths, setFilteredBooths] = useState<Booth[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedBooth, setSelectedBooth] = useState<Booth | null>(null);
-  const [boothStatus, setBoothStatus] = useState<string>('Open');
-  const itemsPerPage = 8;
-  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+  const [boothStatus, setBoothStatus] = useState<string>("Open");
+
+  const [filterParams, setfilterParams] = useState({
+    page: 1,
+    perpage: 10,
+    query: "",
+  });
   const qrRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   const fetchData = async () => {
     try {
-      const boothsData = await boothActivitiesData.getBooths(token, filterParams);
-      
-      setBooths(boothsData.results);
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      const boothsData = await boothActivitiesData.getBooths(
+        token,
+        filterParams
+      );
+
       setFilteredBooths(boothsData.results);
 
-      setCurrentPage(boothsData.current_page)
-      setTotalPages(boothsData.total_pages)
-      
+      setCurrentPage(boothsData.current_page);
+      setTotalPages(boothsData.total_pages);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+    try {
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+      const boothsData = await boothActivitiesData.getBooths(
+        token,
+        filterParams
+      );
+
+      setFilteredBooths(boothsData.results);
+
+      setCurrentPage(boothsData.current_page);
+      setTotalPages(boothsData.total_pages);
+    } catch (error) {
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -46,125 +75,105 @@ export default function BoothActivitiesPage() {
     fetchData();
   }, [filterParams]);
 
-  // useEffect(() => {
-  //   const results = booths.filter(booth =>
-  //     booth.name.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
-    
-  //   setFilteredBooths(results);
-  //   setCurrentPage(1);
-  // }, [searchQuery, booths]);
-
-  // Calculate pagination
-  // const totalPages1 = Math.ceil(filteredBooths.length / itemsPerPage);
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredBooths;
 
   const handlePageChange = (pageNumber: number) => {
     // setCurrentPage(pageNumber);
-    setfilterParams({ ...filterParams, page: pageNumber })
+    setfilterParams({ ...filterParams, page: pageNumber });
   };
 
-  const handleSearchQuery = (query : any) => {
-    const search_val = query.target.value
-    setSearchQuery(search_val)
-  }
+  const handleSearchQuery = (query: React.ChangeEvent<HTMLInputElement>) => {
+    const search_val = query.target.value;
+    setSearchQuery(search_val);
+  };
 
-  
   useEffect(() => {
     // set delay 2 seconds
     const delaySetSearch = setTimeout(() => {
       // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 2000);
 
     //clears the timeout of the previous value of delaySetSearch
     //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch)
-  
+    return () => clearTimeout(delaySetSearch);
   }, [searchQuery]);
-
 
   // Status color mapping
   const getStatusColor = (status: string | undefined): string => {
-    if (!status) return 'text-gray-500';
-    
+    if (!status) return "text-gray-500";
+
     switch (status) {
-      case 'Open':
-        return 'text-green-500';
-      case 'Closed Early':
-        return 'text-red-500';
-      case 'Closed':
-        return 'text-red-500';
+      case "Open":
+        return "text-green-500";
+      case "Closed Early":
+        return "text-red-500";
+      case "Closed":
+        return "text-red-500";
       default:
-        return 'text-gray-500';
+        return "text-gray-500";
     }
   };
 
-
   const handleSubmitBooth = async () => {
-    // Here you would typically update the booth status via API
-    // console.log(`Updating booth ${selectedBooth.id} status to ${boothStatus}`);
-    // Update local state
-    // const updatedBooths = booths.map(booth => 
-    //   booth.id === selectedBooth.id ? {...booth, status: boothStatus} : booth
-    // );
-    // setBooths(updatedBooths);
-    // setFilteredBooths(updatedBooths.filter(booth =>
-    //   booth.name.toLowerCase().includes(searchQuery.toLowerCase())
-    // ));
-
     if (!selectedBooth) return;
 
-    let booth_status = 0;
-    if(boothStatus == "Closed Early"){
-      booth_status = 1;
+    if (!token) {
+      showMessage("0", "You are not authenticated. Please log in again.");
+      return;
     }
 
-    let confirmAction = await confirmMessage(`Are you sure you want to update this booth?`);
+    let booth_status = "0";
+    if (boothStatus == "Closed Early") {
+      booth_status = "1";
+    }
 
-    if(confirmAction.isConfirmed){
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to update this booth?`
+    );
 
-        try{
+    if (confirmAction.isConfirmed) {
+      try {
+        const boothUpdated = {
+          booth_id: selectedBooth.id,
+          booth_status: booth_status,
+        };
 
-          // Update booth status
-          const boothUpdated = {
-            booth_id : selectedBooth.id,
-            booth_status : booth_status,
-          }
+        const boothUpdatedData = await boothActivitiesData.updateBooth(
+          token,
+          boothUpdated
+        );
 
-          const boothUpdatedData = await boothActivitiesData.updateBooth(token, boothUpdated);
-          
-          if(boothUpdatedData.success){
-            showMessage("1" , boothUpdatedData.message)
-            setfilterParams({ ...filterParams})
-          }else{
-            showMessage("0" , boothUpdatedData.message)  
-          }
-          
-        } catch (error) {
-          // console.error('Error fetching data:', error);
-          showMessage("0" , "Error updating booth.")   
-        } finally {
-          setIsLoading(false);
+        if (boothUpdatedData.success) {
+          showMessage("1", boothUpdatedData.message);
+          setfilterParams({ ...filterParams });
+        } else {
+          showMessage("0", boothUpdatedData.message);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error updating booth.");
+      } finally {
+        setIsLoading(false);
+      }
 
-        setShowModal(false);
-
+      setShowModal(false);
     }
-  }
+  };
 
+  const downloadQr = (booth_code: string | undefined) => {
+    if (typeof window === "undefined") return;
 
-  const downloadQr = (booth_code : string) => {
-    const svg = qrRef.current?.querySelector('svg');
+    const svg = qrRef.current?.querySelector("svg");
     if (!svg) return;
 
     const serializer = new XMLSerializer();
     const svgString = serializer.serializeToString(svg);
-    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+    const svgBlob = new Blob([svgString], {
+      type: "image/svg+xml;charset=utf-8",
+    });
     const url = URL.createObjectURL(svgBlob);
-    const img_file_name = `${booth_code}.png`
+    const img_file_name = `${booth_code}.png`;
     const img = new Image();
     img.onload = () => {
       const finalSize = 512; // Final image size (e.g., 512x512 px)
@@ -172,14 +181,14 @@ export default function BoothActivitiesPage() {
 
       const qrSize = finalSize - padding * 2;
 
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = finalSize;
       canvas.height = finalSize;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
 
       // Fill white background
       if (ctx) {
-        ctx.fillStyle = '#FFFFFF'; // white background
+        ctx.fillStyle = "#FFFFFF"; // white background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         // Draw QR image scaled into the center with padding
@@ -188,8 +197,8 @@ export default function BoothActivitiesPage() {
 
       URL.revokeObjectURL(url);
 
-      const pngUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+      const pngUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.href = pngUrl;
       link.download = img_file_name;
       document.body.appendChild(link);
@@ -206,39 +215,37 @@ export default function BoothActivitiesPage() {
     }
   };
 
-  const confirmMessage = async (message: string)  => {
-    
-      const result = await Swal.fire({
-        title: 'Confirm',
-        text: message,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#193cb8",
-      })
+  const confirmMessage = async (message: string) => {
+    const result = await Swal.fire({
+      title: "Confirm",
+      text: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#193cb8",
+    });
 
-      return result;
-  }
+    return result;
+  };
 
-  const showMessage = (status: string, message : string)  => {
-    
-      let iconType: "success" | "error";
-      let titleType: "Success" | "Error";
+  const showMessage = (status: string, message: string) => {
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
 
-      if(status == "1"){
-        iconType = "success";
-        titleType = "Success";
-      }else{
-        iconType = "error";
-        titleType = "Error";
-      }
+    if (status == "1") {
+      iconType = "success";
+      titleType = "Success";
+    } else {
+      iconType = "error";
+      titleType = "Error";
+    }
 
-      Swal.fire({
-        title: titleType,
-        text: message,
-        icon: iconType,
-        confirmButtonColor: "#193cb8"
-      })
-  }
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#193cb8",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -271,23 +278,29 @@ export default function BoothActivitiesPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={3} className="px-4 py-2 text-center">Loading...</td>
+                  <td colSpan={3} className="px-4 py-2 text-center">
+                    Loading...
+                  </td>
                 </tr>
               ) : currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan={3} className="px-4 py-2 text-center">No booths found</td>
+                  <td colSpan={3} className="px-4 py-2 text-center">
+                    No booths found
+                  </td>
                 </tr>
               ) : (
                 currentItems.map((booth) => (
                   <tr key={booth.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-3">{booth.name}</td>
-                    <td className={`px-4 py-3 ${getStatusColor(booth.status)}`}>{booth.status}</td>
+                    <td className={`px-4 py-3 ${getStatusColor(booth.status)}`}>
+                      {booth.status}
+                    </td>
                     <td className="px-4 py-3 text-center">
-                      <button 
+                      <button
                         className="text-blue-600 hover:text-blue-800"
                         onClick={() => {
                           setSelectedBooth(booth);
-                          setBoothStatus(booth.status || 'Open');
+                          setBoothStatus(booth.status || "Open");
                           setShowModal(true);
                         }}
                       >
@@ -312,18 +325,25 @@ export default function BoothActivitiesPage() {
 
       {/* Booth QR Code Modal */}
       {showModal && selectedBooth && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50" onClick={handleCloseModal}>
-          <div className="bg-white p-6 rounded-lg w-full max-w-md mx-auto" ref={modalRef}>
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50"
+          onClick={handleCloseModal}
+        >
+          <div
+            className="bg-white p-6 rounded-lg w-full max-w-md mx-auto"
+            ref={modalRef}
+          >
             <div className="flex justify-center items-center mb-4">
-              <h2 className="text-4xl font-bold text-center">{selectedBooth.name}</h2>
+              <h2 className="text-4xl font-bold text-center">
+                {selectedBooth.name}
+              </h2>
             </div>
-            
+
             <div ref={qrRef} className="flex justify-center my-6">
-              <QRCode 
-                value={`${selectedBooth.code}`} 
-                size={290} 
+              <QRCode
+                value={`${selectedBooth.code}`}
+                size={290}
                 fgColor="#0A20B1"
-                
               />
             </div>
             <div className="flex justify-center my-6">
@@ -334,9 +354,11 @@ export default function BoothActivitiesPage() {
                 <FaDownload className="mr-2" /> Download
               </button>
             </div>
-            
+
             <div className="mb-4">
-              <label className="block text-sm font-medium mb-2">Booth Status</label>
+              <label className="block text-sm font-medium mb-2">
+                Booth Status
+              </label>
               <select
                 value={boothStatus}
                 onChange={(e) => setBoothStatus(e.target.value)}
@@ -346,8 +368,8 @@ export default function BoothActivitiesPage() {
                 <option value="Closed Early">Closed Early</option>
               </select>
             </div>
-            
-            <button 
+
+            <button
               onClick={handleSubmitBooth}
               className="w-full bg-blue-800 text-white py-2 px-4 hover:bg-blue-700 transition-colors"
             >

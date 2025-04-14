@@ -1,93 +1,173 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { FaSearch, FaFilter, FaPen, FaTrash, FaPlus, FaArrowLeft } from 'react-icons/fa';
-import Pagination from '@/components/ui/Pagination';
-import { Product, Vendor } from '@/types';
-import Swal from 'sweetalert2';
-
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { FaSearch, FaPen, FaTrash, FaPlus } from "react-icons/fa";
+import Pagination from "@/components/ui/Pagination";
+import { Product, Vendor } from "@/types";
+import Swal from "sweetalert2";
 
 export default function VendorDetailPage() {
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
-  
+
   const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
-  const [vendor, setVendor] = useState<(Vendor & { products?: Product[] }) | null>(null);
+  const [vendor, setVendor] = useState<
+    (Vendor & { products?: Product[] }) | null
+  >(null);
   const [products, setProducts] = useState<Product[]>([]);
-  const [filterParams, setFilterParams] = useState({ page: 1, perpage: 10, query: '' });
-  
+  const [filterParams, setFilterParams] = useState({
+    page: 1,
+    perpage: 10,
+    query: "",
+  });
+
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  
+  const [successMessage, setSuccessMessage] = useState("");
+
   // Form states
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [newProductCode, setNewProductCode] = useState('');
-  const [newProductName, setNewProductName] = useState('');
-  const [newProductDiscount, setNewProductDiscount] = useState('');
+  const [newProductCode, setNewProductCode] = useState("");
+  const [newProductName, setNewProductName] = useState("");
+  const [newProductDiscount, setNewProductDiscount] = useState("");
 
   const mockProducts: Product[] = [
-    { id: '1', productCode: '55011', productName: 'Alaska Fortified Milk 600g', discount: '10%' },
-    { id: '2', productCode: '55012', productName: 'Alaska Fortified Milk 1.4kg', discount: '10%' },
-    { id: '3', productCode: '55013', productName: 'Alaska Classic Evaporated Filled Milk 370ml', discount: '10%' },
-    { id: '4', productCode: '55014', productName: 'Alaska Classic Evaporated Filled Milk 360ml', discount: '10%' },
-    { id: '5', productCode: '55015', productName: 'Alaska Fortified Powdered Filled Milk 900g', discount: '10%' },
-    { id: '6', productCode: '55016', productName: 'Cowbell Condensap 360ml', discount: '10%' },
-    { id: '7', productCode: '55017', productName: 'Alaska Fortified Powdered Filled Milk 500g', discount: '10%' },
-    { id: '8', productCode: '55018', productName: 'Alaska Fortified Powdered Filled Milk 250ML', discount: '10%' },
+    {
+      id: "1",
+      productCode: "55011",
+      productName: "Alaska Fortified Milk 600g",
+      discount: "10%",
+    },
+    {
+      id: "2",
+      productCode: "55012",
+      productName: "Alaska Fortified Milk 1.4kg",
+      discount: "10%",
+    },
+    {
+      id: "3",
+      productCode: "55013",
+      productName: "Alaska Classic Evaporated Filled Milk 370ml",
+      discount: "10%",
+    },
+    {
+      id: "4",
+      productCode: "55014",
+      productName: "Alaska Classic Evaporated Filled Milk 360ml",
+      discount: "10%",
+    },
+    {
+      id: "5",
+      productCode: "55015",
+      productName: "Alaska Fortified Powdered Filled Milk 900g",
+      discount: "10%",
+    },
+    {
+      id: "6",
+      productCode: "55016",
+      productName: "Cowbell Condensap 360ml",
+      discount: "10%",
+    },
+    {
+      id: "7",
+      productCode: "55017",
+      productName: "Alaska Fortified Powdered Filled Milk 500g",
+      discount: "10%",
+    },
+    {
+      id: "8",
+      productCode: "55018",
+      productName: "Alaska Fortified Powdered Filled Milk 250ML",
+      discount: "10%",
+    },
   ];
 
   const mockVendors: (Vendor & { products?: Product[] })[] = [
-    { 
-      id: '1', 
-      vendorCode: 'ALAS01', 
-      vendorName: 'Alaska Milk Corporation',
-      products: mockProducts
+    {
+      id: "1",
+      vendorCode: "ALAS01",
+      vendorName: "Alaska Milk Corporation",
+      products: mockProducts,
     },
-    { id: '2', vendorCode: 'UNILE01', vendorName: 'Unilever Philippines, Inc.' },
-    { id: '3', vendorCode: 'MONDE03', vendorName: 'Mondelez Philippines, Inc.' },
-    { id: '4', vendorCode: 'MEGA001', vendorName: 'Mega Prime Foods Incorporated' },
-    { id: '5', vendorCode: 'CENTU03', vendorName: 'Century Pacific Food, Inc.' },
-    { id: '6', vendorCode: 'THEPU01', vendorName: 'The Purefoods-Hormel Co. Inc.' },
-    { id: '7', vendorCode: 'ACSC401', vendorName: 'ACS Manufacturing Corporation' },
-    { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
+    {
+      id: "2",
+      vendorCode: "UNILE01",
+      vendorName: "Unilever Philippines, Inc.",
+    },
+    {
+      id: "3",
+      vendorCode: "MONDE03",
+      vendorName: "Mondelez Philippines, Inc.",
+    },
+    {
+      id: "4",
+      vendorCode: "MEGA001",
+      vendorName: "Mega Prime Foods Incorporated",
+    },
+    {
+      id: "5",
+      vendorCode: "CENTU03",
+      vendorName: "Century Pacific Food, Inc.",
+    },
+    {
+      id: "6",
+      vendorCode: "THEPU01",
+      vendorName: "The Purefoods-Hormel Co. Inc.",
+    },
+    {
+      id: "7",
+      vendorCode: "ACSC401",
+      vendorName: "ACS Manufacturing Corporation",
+    },
+    {
+      id: "8",
+      vendorCode: "COLGA01",
+      vendorName: "Colgate-Palmolive Phil. Inc.",
+    },
   ];
 
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      const foundVendor = mockVendors.find(v => v.id === vendorId);
-      
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      const foundVendor = mockVendors.find((v) => v.id === vendorId);
+
       if (foundVendor) {
         setVendor(foundVendor);
-        
+
         // Filter products based on search query
         const vendorProducts = foundVendor.products || [];
-        const filteredProducts = vendorProducts.filter(product => 
-          product.productName.toLowerCase().includes(filterParams.query.toLowerCase()) ||
-          product.productCode.toLowerCase().includes(filterParams.query.toLowerCase())
+        const filteredProducts = vendorProducts.filter(
+          (product) =>
+            product.productName
+              .toLowerCase()
+              .includes(filterParams.query.toLowerCase()) ||
+            product.productCode
+              .toLowerCase()
+              .includes(filterParams.query.toLowerCase())
         );
-        
+
         // Calculate pagination
         const startIndex = (filterParams.page - 1) * filterParams.perpage;
         const endIndex = startIndex + filterParams.perpage;
         const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-        
+
         setProducts(paginatedProducts);
-        setTotalPages(Math.ceil(filteredProducts.length / filterParams.perpage));
+        setTotalPages(
+          Math.ceil(filteredProducts.length / filterParams.perpage)
+        );
         setCurrentPage(filterParams.page);
       }
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -113,19 +193,25 @@ export default function VendorDetailPage() {
     const delaySearch = setTimeout(() => {
       setFilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 500);
-    
+
     return () => clearTimeout(delaySearch);
   }, [searchQuery]);
 
   // Handle add product
   const handleAddProduct = async () => {
     // Validate inputs
-    if (!newProductCode.trim() || !newProductName.trim() || !newProductDiscount.trim()) {
-      alert('Please fill in all fields');
+    if (
+      !newProductCode.trim() ||
+      !newProductName.trim() ||
+      !newProductDiscount.trim()
+    ) {
+      alert("Please fill in all fields");
       return;
     }
 
-    let confirmAction = await confirmMessage(`Are you sure you want to add this product?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to add this product?`
+    );
 
     if (confirmAction.isConfirmed) {
       // Create new product object
@@ -133,26 +219,28 @@ export default function VendorDetailPage() {
         id: (products.length + 1).toString(),
         productCode: newProductCode,
         productName: newProductName,
-        discount: newProductDiscount
+        discount: newProductDiscount,
       };
 
       const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & { products: Product[] };
+      const vendorWithProducts = updatedVendor as Vendor & {
+        products: Product[];
+      };
       if (!vendorWithProducts.products) vendorWithProducts.products = [];
       vendorWithProducts.products.push(newProduct);
-      
+
       setVendor(vendorWithProducts);
       setShowAddModal(false);
-      
+
       // Reset form
-      setNewProductCode('');
-      setNewProductName('');
-      setNewProductDiscount('');
-      
+      setNewProductCode("");
+      setNewProductName("");
+      setNewProductDiscount("");
+
       // Show success message
-      setSuccessMessage('Product Added Successfully');
+      setSuccessMessage("Product Added Successfully");
       setShowSuccessModal(true);
-      
+
       // Refresh data
       fetchData();
     }
@@ -163,53 +251,63 @@ export default function VendorDetailPage() {
     const delaySearch = setTimeout(() => {
       setFilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 500);
-    
+
     return () => clearTimeout(delaySearch);
   }, [searchQuery]);
 
   // Handle edit product
   const handleEditProduct = async () => {
     if (!selectedProduct) return;
-    
+
     // Validate inputs
-    if (!newProductCode.trim() || !newProductName.trim() || !newProductDiscount.trim()) {
-      alert('Please fill in all fields');
+    if (
+      !newProductCode.trim() ||
+      !newProductName.trim() ||
+      !newProductDiscount.trim()
+    ) {
+      alert("Please fill in all fields");
       return;
     }
 
-    const confirmAction = await confirmMessage(`Are you sure you want to update this product?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to update this product?`
+    );
 
     if (confirmAction.isConfirmed) {
       const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & { products: Product[] };
-      
+      const vendorWithProducts = updatedVendor as Vendor & {
+        products: Product[];
+      };
+
       if (vendorWithProducts.products) {
-        vendorWithProducts.products = vendorWithProducts.products.map(product => {
-          if (product.id === selectedProduct.id) {
-            return {
-              ...product,
-              productCode: newProductCode,
-              productName: newProductName,
-              discount: newProductDiscount
-            };
+        vendorWithProducts.products = vendorWithProducts.products.map(
+          (product) => {
+            if (product.id === selectedProduct.id) {
+              return {
+                ...product,
+                productCode: newProductCode,
+                productName: newProductName,
+                discount: newProductDiscount,
+              };
+            }
+            return product;
           }
-          return product;
-        });
+        );
       }
-      
+
       setVendor(vendorWithProducts);
       setShowEditModal(false);
       setSelectedProduct(null);
-      
+
       // Reset form
-      setNewProductCode('');
-      setNewProductName('');
-      setNewProductDiscount('');
-      
+      setNewProductCode("");
+      setNewProductName("");
+      setNewProductDiscount("");
+
       // Show success message
-      setSuccessMessage('Product Updated Successfully');
+      setSuccessMessage("Product Updated Successfully");
       setShowSuccessModal(true);
-      
+
       // Refresh data
       fetchData();
     }
@@ -218,29 +316,33 @@ export default function VendorDetailPage() {
   // Handle delete product
   const handleDeleteProduct = async (product: Product) => {
     const result = await Swal.fire({
-      title: 'Delete product?',
-      text: 'Are you sure you want to delete this product? Once deleted, all associated data will be permanently removed and cannot be recovered.',
-      icon: 'warning',
+      title: "Delete product?",
+      text: "Are you sure you want to delete this product? Once deleted, all associated data will be permanently removed and cannot be recovered.",
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonText: 'Yes, Delete Product',
-      cancelButtonText: 'Cancel',
-      confirmButtonColor: '#193cb8',
+      confirmButtonText: "Yes, Delete Product",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#193cb8",
     });
 
     if (result.isConfirmed) {
       const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & { products: Product[] };
-      
+      const vendorWithProducts = updatedVendor as Vendor & {
+        products: Product[];
+      };
+
       if (vendorWithProducts.products) {
-        vendorWithProducts.products = vendorWithProducts.products.filter(p => p.id !== product.id);
+        vendorWithProducts.products = vendorWithProducts.products.filter(
+          (p) => p.id !== product.id
+        );
       }
-      
+
       setVendor(vendorWithProducts);
-      
+
       // Show success message
-      setSuccessMessage('Product Deleted Successfully');
+      setSuccessMessage("Product Deleted Successfully");
       setShowSuccessModal(true);
-      
+
       // Refresh data
       fetchData();
     }
@@ -257,17 +359,17 @@ export default function VendorDetailPage() {
 
   // Handle back to list
   const handleBackToList = () => {
-    router.push('/deal-forms');
+    router.push("/deal-forms");
   };
 
   // Confirmation message helper
   const confirmMessage = async (message: string) => {
     const result = await Swal.fire({
-      title: 'Confirm',
+      title: "Confirm",
       text: message,
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#193cb8',
+      confirmButtonColor: "#193cb8",
     });
 
     return result;
@@ -316,12 +418,12 @@ export default function VendorDetailPage() {
         <div className="py-4 flex justify-between items-center border-b">
           <h3 className="text-lg font-semibold">Product List</h3>
           <div className="flex items-center gap-4">
-          <button 
-            className="inline-flex items-center px-3 py-2 bg-blue-800 text-white rounded-md"
-            onClick={() => setShowAddModal(true)}
-          >
-            <FaPlus className="mr-2" /> Add Product
-          </button>
+            <button
+              className="inline-flex items-center px-3 py-2 bg-blue-800 text-white rounded-md"
+              onClick={() => setShowAddModal(true)}
+            >
+              <FaPlus className="mr-2" /> Add Product
+            </button>
 
             <div className="relative">
               <input
@@ -349,11 +451,15 @@ export default function VendorDetailPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-2 text-center">Loading...</td>
+                  <td colSpan={4} className="px-4 py-2 text-center">
+                    Loading...
+                  </td>
                 </tr>
               ) : products.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-4 py-2 text-center">No products found</td>
+                  <td colSpan={4} className="px-4 py-2 text-center">
+                    No products found
+                  </td>
                 </tr>
               ) : (
                 products.map((product) => (
@@ -363,13 +469,13 @@ export default function VendorDetailPage() {
                     <td className="px-4 py-3">{product.discount}</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex justify-center space-x-3">
-                        <button 
+                        <button
                           className="text-blue-600 hover:text-blue-800"
                           onClick={() => openEditModal(product)}
                         >
                           <FaPen size={16} />
                         </button>
-                        <button 
+                        <button
                           className="text-red-600 hover:text-red-800"
                           onClick={() => handleDeleteProduct(product)}
                         >
@@ -403,7 +509,9 @@ export default function VendorDetailPage() {
             <div className="border-t border-gray-400 px-6 py-5 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 mb-2">Product Code</label>
+                  <label className="block text-gray-700 mb-2">
+                    Product Code
+                  </label>
                   <input
                     type="text"
                     className="w-full px-2 py-4 border-gray-400 border"
@@ -412,7 +520,9 @@ export default function VendorDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 mb-2">Discount in %</label>
+                  <label className="block text-gray-700 mb-2">
+                    Discount in %
+                  </label>
                   <input
                     type="text"
                     className="w-full px-2 py-4 border-gray-400 border"
@@ -435,9 +545,9 @@ export default function VendorDetailPage() {
                   className="px-6 py-2 border border-blue-700 text-blue-700"
                   onClick={() => {
                     setShowAddModal(false);
-                    setNewProductCode('');
-                    setNewProductName('');
-                    setNewProductDiscount('');
+                    setNewProductCode("");
+                    setNewProductName("");
+                    setNewProductDiscount("");
                   }}
                 >
                   Cancel
@@ -464,7 +574,9 @@ export default function VendorDetailPage() {
             <div className="border-t border-gray-400 px-6 py-5 space-y-5">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-gray-700 mb-2">Product Code</label>
+                  <label className="block text-gray-700 mb-2">
+                    Product Code
+                  </label>
                   <input
                     type="text"
                     className="w-full px-2 py-4 border-gray-400 border"
@@ -473,7 +585,9 @@ export default function VendorDetailPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-700 mb-2">Discount in %</label>
+                  <label className="block text-gray-700 mb-2">
+                    Discount in %
+                  </label>
                   <input
                     type="text"
                     className="w-full px-2 py-4 border-gray-400 border"
@@ -497,9 +611,9 @@ export default function VendorDetailPage() {
                   onClick={() => {
                     setShowEditModal(false);
                     setSelectedProduct(null);
-                    setNewProductCode('');
-                    setNewProductName('');
-                    setNewProductDiscount('');
+                    setNewProductCode("");
+                    setNewProductName("");
+                    setNewProductDiscount("");
                   }}
                 >
                   Cancel
@@ -522,8 +636,18 @@ export default function VendorDetailPage() {
           <div className="bg-white w-full max-w-md p-6 rounded-md text-center">
             <div className="flex justify-center mb-4">
               <div className="bg-green-500 rounded-full p-3 inline-flex">
-                <svg className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                <svg
+                  className="h-8 w-8 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={3}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
               </div>
             </div>

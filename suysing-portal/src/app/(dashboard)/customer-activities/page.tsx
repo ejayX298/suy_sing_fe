@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { FaSearch, FaFilter } from 'react-icons/fa';
-import { customerActivitiesData } from '@/services/api';
-import Pagination from '@/components/ui/Pagination';
-import { Customer } from '@/types';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useState, useEffect } from "react";
+import { FaSearch, FaFilter } from "react-icons/fa";
+import { customerActivitiesData } from "@/services/api";
+import Pagination from "@/components/ui/Pagination";
+import { Customer } from "@/types";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 interface ActivitySummary {
   boothHopping: number;
@@ -20,29 +20,40 @@ export default function CustomerActivitiesPage() {
     boothVoting: 0,
     souvenirClaiming: 0,
   });
-  const [customers, setCustomers] = useState<Customer[]>([]);
+
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
-  const itemsPerPage = 7;
-  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+  const [filterParams, setfilterParams] = useState({
+    page: 1,
+    perpage: 10,
+    query: "",
+  });
 
   const fetchData = async () => {
     try {
-
+      if (!token) {
+        console.error("Authentication token is missing");
+        setIsLoading(false);
+        return;
+      }
+      
       const summaryData = await customerActivitiesData.getSummary(token);
-      const customersData = await customerActivitiesData.getCustomers(token, filterParams);
-      
+      const customersData = await customerActivitiesData.getCustomers(
+        token,
+        filterParams
+      );
+
       setSummary(summaryData);
-      setCustomers(customersData.results);
+
       setFilteredCustomers(customersData.results);
-      
-      setCurrentPage(customersData.current_page)
-      setTotalPages(customersData.total_pages)
+
+      setCurrentPage(customersData.current_page);
+      setTotalPages(customersData.total_pages);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -52,19 +63,17 @@ export default function CustomerActivitiesPage() {
     fetchData();
   }, [filterParams]);
 
-
   // useEffect(() => {
   //   const results = customers.filter(customer =>
   //     customer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
   //     customer.code.toLowerCase().includes(searchQuery.toLowerCase())
   //   );
-    
+
   //   setFilteredCustomers(results);
   //   // setCurrentPage(1);
   // }, [searchQuery, customers]);
 
   // Calculate pagination
-  const totalPages1 = Math.ceil(filteredCustomers.length / itemsPerPage);
   // const indexOfLastItem = currentPage * itemsPerPage;
   // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   // const currentItems = filteredCustomers.slice(indexOfFirstItem, indexOfLastItem);
@@ -72,50 +81,45 @@ export default function CustomerActivitiesPage() {
 
   const handlePageChange = (pageNumber: number) => {
     // setCurrentPage(pageNumber);
-    setfilterParams({ ...filterParams, page: pageNumber })
+    setfilterParams({ ...filterParams, page: pageNumber });
   };
 
-  const handleSearchQuery = (query : any) => {
-    const search_val = query.target.value
-    setSearchQuery(search_val)
-  }
+  const handleSearchQuery = (query: React.ChangeEvent<HTMLInputElement>) => {
+    const search_val = query.target.value;
+    setSearchQuery(search_val);
+  };
 
-
-   useEffect(() => {
+  useEffect(() => {
     // set delay 2 seconds
     const delaySetSearch = setTimeout(() => {
       // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 2000);
-    
+
     //clears the timeout of the previous value of delaySetSearch
     //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch)
-    
+    return () => clearTimeout(delaySetSearch);
   }, [searchQuery]);
-
 
   // Status color mapping
   const getStatusColor = (status: string | boolean | undefined): string => {
-    if (status === undefined) return 'text-gray-500';
-    
-    if (typeof status === 'boolean') {
-      return status ? 'text-green-500' : 'text-red-500';
+    if (status === undefined) return "text-gray-500";
+
+    if (typeof status === "boolean") {
+      return status ? "text-green-500" : "text-red-500";
     }
-    
+
     switch (status) {
-      case 'Completed':
-        return 'text-green-500';
-      case 'Pending':
-        return 'text-orange-500';
-      case 'Not Started':
-        return 'text-red-500';
+      case "Completed":
+        return "text-green-500";
+      case "Pending":
+        return "text-orange-500";
+      case "Not Started":
+        return "text-red-500";
       default:
-        return 'text-gray-500';
+        return "text-gray-500";
     }
   };
-
-
 
   return (
     <div className="space-y-4">
@@ -165,45 +169,70 @@ export default function CustomerActivitiesPage() {
           <thead>
             <tr className="bg-blue-800 text-white">
               <th className="table-header">Customer Name</th>
-                <th className="table-header">Total Booth Visited</th>
-                <th className="table-header">Booth Hopping</th>
-                <th className="table-header">Booth Voting</th>
-                <th className="table-header">Souvenir Claiming</th>
+              <th className="table-header">Total Booth Visited</th>
+              <th className="table-header">Booth Hopping</th>
+              <th className="table-header">Booth Voting</th>
+              <th className="table-header">Souvenir Claiming</th>
+            </tr>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 text-center">
+                  Loading...
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {isLoading ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-2 text-center">Loading...</td>
+            ) : currentItems.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="px-4 py-2 text-center">
+                  No customers found
+                </td>
+              </tr>
+            ) : (
+              currentItems.map((customer) => (
+                <tr
+                  key={customer.id}
+                  className="border-b border-gray-400 hover:bg-gray-50"
+                >
+                  <td className="table-cell">
+                    <div>{customer.name}</div>
+                  </td>
+                  <td className="table-cell">{customer.totalBoothVisited}</td>
+                  <td
+                    className={`table-cell ${getStatusColor(
+                      customer.boothHopping
+                    )}`}
+                  >
+                    {customer.boothHopping}
+                  </td>
+                  <td
+                    className={`table-cell ${getStatusColor(
+                      customer.boothVoting
+                    )}`}
+                  >
+                    {customer.boothVoting}
+                  </td>
+                  <td
+                    className={`table-cell ${getStatusColor(
+                      customer.souvenirClaiming
+                    )}`}
+                  >
+                    {customer.souvenirClaiming}
+                  </td>
                 </tr>
-              ) : currentItems.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-4 py-2 text-center">No customers found</td>
-                </tr>
-              ) : (
-                currentItems.map((customer) => (
-                  <tr key={customer.id} className="border-b border-gray-400 hover:bg-gray-50">
-                    <td className="table-cell">
-                      <div>{customer.name}</div>
-                    </td>
-                    <td className="table-cell">{customer.totalBoothVisited}</td>
-                    <td className={`table-cell ${getStatusColor(customer.boothHopping)}`}>{customer.boothHopping}</td>
-                    <td className={`table-cell ${getStatusColor(customer.boothVoting)}`}>{customer.boothVoting}</td>
-                    <td className={`table-cell ${getStatusColor(customer.souvenirClaiming)}`}>{customer.souvenirClaiming}</td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="p-4">
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
+
+      <div className="p-4">
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      </div>
+    </div>
   );
 }

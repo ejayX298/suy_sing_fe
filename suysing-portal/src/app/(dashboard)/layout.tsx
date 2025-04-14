@@ -12,7 +12,7 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { isAuthenticated, logout, clearDocumentCookie } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
@@ -69,10 +69,8 @@ export default function DashboardLayout({
     }
   }, [isAuthenticated, router]);
 
-  // If not authenticated, don't render dashboard
   if (!isAuthenticated) {
-    // document.cookie = `auth=; path=/;`;
-    clearDocumentCookie()
+    document.cookie = `auth=; path=/;`;
     return null;
   }
 

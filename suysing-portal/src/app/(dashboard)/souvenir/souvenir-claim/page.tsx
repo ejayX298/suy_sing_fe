@@ -1,45 +1,49 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { FaSearch, FaFilter } from 'react-icons/fa';
-import { souvenirClaimData } from '@/services/api';
-import Pagination from '@/components/ui/Pagination';
-import { Claim } from '@/types';
-import { useAuth } from '@/lib/hooks/useAuth';
+import { useState, useEffect } from "react";
+import { FaSearch, FaFilter } from "react-icons/fa";
+import { souvenirClaimData } from "@/services/api";
+import Pagination from "@/components/ui/Pagination";
+import { Claim } from "@/types";
+import { useAuth } from "@/lib/hooks/useAuth";
 import { MdModeEditOutline } from "react-icons/md";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
-  const [claims, setClaims] = useState<Claim[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredClaims, setFilteredClaims] = useState<Claim[]>([]);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedCustomer, setSelectedCustomer] = useState<Claim | null>(null);
-  const itemsPerPage = 8;
-  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
-  const [customerStatus, setCustomerStatus] = useState<string>('Pending');
+  const [filterParams, setfilterParams] = useState({
+    page: 1,
+    perpage: 10,
+    query: "",
+  });
+  const [customerStatus, setCustomerStatus] = useState<string>("Pending");
 
   const fetchData = async () => {
     try {
+      if (!token) {
+        console.error("No authentication token available");
+        return;
+      }
+
       const claimsData = await souvenirClaimData.getClaims(token, filterParams);
-      
-      setClaims(claimsData.results);
+
       setFilteredClaims(claimsData.results);
 
       setCurrentPage(claimsData.current_page);
       setTotalPages(claimsData.total_pages);
-
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -50,7 +54,7 @@ export default function SouvenirClaimPage() {
   //     claim.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
   //     claim.code.toLowerCase().includes(searchQuery.toLowerCase())
   //   );
-    
+
   //   setFilteredClaims(results);
   //   setCurrentPage(1);
   // }, [searchQuery, claims]);
@@ -63,122 +67,120 @@ export default function SouvenirClaimPage() {
 
   const handlePageChange = (pageNumber: number) => {
     // setCurrentPage(pageNumber);
-    setfilterParams({ ...filterParams, page: pageNumber })
+    setfilterParams({ ...filterParams, page: pageNumber });
   };
-
-
 
   useEffect(() => {
     // set delay 2 seconds
     const delaySetSearch = setTimeout(() => {
       // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 2000);
-    
+
     //clears the timeout of the previous value of delaySetSearch
     //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch)
-    
+    return () => clearTimeout(delaySetSearch);
   }, [searchQuery]);
 
   // Status color mapping
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Claimed':
-        return 'bg-[#2EE84A] text-black';
-      case 'Pending':
-        return 'bg-[#FFE944] text-black';
-      case 'On hold':
-        return 'bg-[#FF5A44] text-black';
+      case "Claimed":
+        return "bg-[#2EE84A] text-black";
+      case "Pending":
+        return "bg-[#FFE944] text-black";
+      case "On hold":
+        return "bg-[#FF5A44] text-black";
       default:
-        return 'bg-gray-400 text-black';
+        return "bg-gray-400 text-black";
     }
   };
 
   // Customer tye color mapping
   const getCustomerTypeColor = (type: string) => {
     switch (type) {
-      case 'Red':
-        return 'text-red-500';
-      case 'Green':
-        return 'text-green-500';
+      case "Red":
+        return "text-red-500";
+      case "Green":
+        return "text-green-500";
       default:
-        return 'text-gray-500';
+        return "text-gray-500";
     }
   };
 
   const openEditModal = (claim: Claim) => {
     setSelectedCustomer(claim);
-    setCustomerStatus(claim.status || 'Pending');
+    setCustomerStatus(claim.status || "Pending");
     setShowEditModal(true);
   };
 
   const handleEditCustomerStatus = async () => {
-
     if (!selectedCustomer) return;
-
-    let customer_status = 0;
-    if(customerStatus == "On hold"){
-      customer_status = 2;
+    if (!token) {
+      console.error("No authentication token available");
+      return;
     }
 
+    let customer_status = "0";
+    if (customerStatus == "On hold") {
+      customer_status = "2";
+    }
 
-    let confirmAction = await confirmMessage(`Are you sure you want to update this customer?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to update this customer?`
+    );
 
-    if(confirmAction.isConfirmed){
-
+    if (confirmAction.isConfirmed) {
       try {
-        
         // Update customer status
         const customerUpdate = {
-          customer_id : selectedCustomer.id,
-          customer_status : customer_status,
-        }
+          customer_id: selectedCustomer.id,
+          customer_status: customer_status,
+        };
 
-        const souvenirsData = await souvenirClaimData.updateCustomerStatus(token, customerUpdate);
-        
-        if(souvenirsData.success){
-          showMessage("1" , souvenirsData.message)
-          setfilterParams({ ...filterParams, page : 1, query : ''})
-        }else{
-          showMessage("0" , souvenirsData.message)  
+        const souvenirsData = await souvenirClaimData.updateCustomerStatus(
+          token,
+          customerUpdate
+        );
+
+        if (souvenirsData.success) {
+          showMessage("1", souvenirsData.message);
+          setfilterParams({ ...filterParams, page: 1, query: "" });
+        } else {
+          showMessage("0", souvenirsData.message);
         }
-        
       } catch (error) {
-        // console.error('Error fetching data:', error);
-        showMessage("0" , "Error updating customer.")   
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error updating customer.");
       } finally {
         setIsLoading(false);
       }
-      
+
       setShowEditModal(false);
       setSelectedCustomer(null);
     }
+  };
 
-  }
-
-  const confirmMessage = async (message: string)  => {
-    
+  const confirmMessage = async (message: string) => {
     const result = await Swal.fire({
-      title: 'Confirm',
+      title: "Confirm",
       text: message,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#193cb8",
-    })
+    });
 
     return result;
-}
+  };
 
-const showMessage = (status: string, message : string)  => {
-  
+  const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
     let titleType: "Success" | "Error";
 
-    if(status == "1"){
+    if (status == "1") {
       iconType = "success";
       titleType = "Success";
-    }else{
+    } else {
       iconType = "error";
       titleType = "Error";
     }
@@ -187,9 +189,9 @@ const showMessage = (status: string, message : string)  => {
       title: titleType,
       text: message,
       icon: iconType,
-      confirmButtonColor: "#193cb8"
-    })
-}
+      confirmButtonColor: "#193cb8",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -227,20 +229,32 @@ const showMessage = (status: string, message : string)  => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-2 text-center">Loading...</td>
+                  <td colSpan={6} className="px-4 py-2 text-center">
+                    Loading...
+                  </td>
                 </tr>
               ) : currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-4 py-2 text-center">No claims found</td>
+                  <td colSpan={6} className="px-4 py-2 text-center">
+                    No claims found
+                  </td>
                 </tr>
               ) : (
                 currentItems.map((claim) => (
                   <tr key={claim.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-3">{claim.code}</td>
                     <td className="px-4 py-3">{claim.name}</td>
-                    <td className={`px-4 py-3 ${getCustomerTypeColor(claim.type)}`}>{claim.type}</td>
+                    <td
+                      className={`px-4 py-3 ${getCustomerTypeColor(
+                        claim.type
+                      )}`}
+                    >
+                      {claim.type}
+                    </td>
                     <td className="px-4 py-3">
-                      <span className={`px-3 py-2  ${getStatusColor(claim.status)}`}>
+                      <span
+                        className={`px-3 py-2  ${getStatusColor(claim.status)}`}
+                      >
                         {claim.status}
                       </span>
                     </td>
@@ -248,11 +262,11 @@ const showMessage = (status: string, message : string)  => {
                     <td className="px-4 py-3">{claim.timeClaimed}</td>
                     <td className="px-4 py-3 text-center">
                       {claim.status != "Claimed" && (
-                        <button 
+                        <button
                           className="text-blue-600 hover:text-blue-800"
                           onClick={() => openEditModal(claim)}
                         >
-                          <MdModeEditOutline/>
+                          <MdModeEditOutline />
                         </button>
                       )}
                     </td>
@@ -321,7 +335,6 @@ const showMessage = (status: string, message : string)  => {
           </div>
         </div>
       )}
-
     </div>
   );
 }
