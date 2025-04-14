@@ -162,8 +162,6 @@ export default function BoothActivitiesPage() {
   };
 
   const downloadQr = (booth_code: string | undefined) => {
-    if (typeof window === "undefined") return;
-
     const svg = qrRef.current?.querySelector("svg");
     if (!svg) return;
 

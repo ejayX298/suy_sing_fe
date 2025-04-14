@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import Sidebar from '@/components/layout/Sidebar';
-import Header from '@/components/layout/Header';
-import { useAuth } from '@/lib/hooks/useAuth';
-import Swal from 'sweetalert2'
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import Sidebar from "@/components/layout/Sidebar";
+import Header from "@/components/layout/Header";
+import { useAuth } from "@/lib/hooks/useAuth";
+import Swal from "sweetalert2";
 
 export default function DashboardLayout({
   children,
@@ -19,58 +19,62 @@ export default function DashboardLayout({
   // Get page title based on pathname
   const getPageTitle = () => {
     switch (true) {
-      case pathname === '/customer-activities':
-        return 'Customer Activities';
-      case pathname === '/booth-activities':
-        return 'Booth Activities';
-      case pathname === '/booth-hopping-report':
-        return 'Booth Hopping Report';
-      case pathname === '/best-booth/best-booth-report':
-        return 'Best Booth Report';
-      case pathname === '/best-booth/best-booth-winner-tally':
-        return 'Best Booth Winner Tally';
-      case pathname === '/souvenir/souvenir-claim':
-        return 'Souvenir Claim';
-      case pathname === '/souvenir/souvenir-availability':
-        return 'Souvenir Availability';
-      case pathname === '/deal-forms':
-        return 'Deal Forms';
+      case pathname === "/customer-activities":
+        return "Customer Activities";
+      case pathname === "/booth-activities":
+        return "Booth Activities";
+      case pathname === "/booth-hopping-report":
+        return "Booth Hopping Report";
+      case pathname === "/best-booth/best-booth-report":
+        return "Best Booth Report";
+      case pathname === "/best-booth/best-booth-winner-tally":
+        return "Best Booth Winner Tally";
+      case pathname === "/souvenir/souvenir-claim":
+        return "Souvenir Claim";
+      case pathname === "/souvenir/souvenir-availability":
+        return "Souvenir Availability";
+      case pathname === "/deal-forms":
+        return "Deal Forms";
       default:
-        return 'Dashboard';
+        return "Dashboard";
     }
   };
 
-
   const checkForceLogout = () => {
-    const is_force_logout = localStorage.getItem('is_force_logout');
+    if (typeof window === "undefined") {
+      return false;
+    }
 
-    if(is_force_logout == 'true'){
+    const is_force_logout = localStorage.getItem("is_force_logout");
+
+    if (is_force_logout == "true") {
       return Swal.fire({
-        text: 'Session expired',
+        text: "Session expired",
         icon: "error",
         confirmButtonColor: "#193cb8",
-        allowOutsideClick: false // disable outside click fot the close modal
+        allowOutsideClick: false,
       }).then((result) => {
         if (result.isConfirmed) {
-          // call logout
           logout();
         }
       });
     }
 
     return false;
-  }
+  };
 
   // Check authentication
   useEffect(() => {
-    checkForceLogout()
+    checkForceLogout();
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [isAuthenticated, router]);
 
   if (!isAuthenticated) {
-    document.cookie = `auth=; path=/;`;
+    if (typeof window !== "undefined") {
+      document.cookie = `auth=; path=/;`;
+    }
     return null;
   }
 

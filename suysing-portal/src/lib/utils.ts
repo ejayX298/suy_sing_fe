@@ -1,6 +1,5 @@
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
-  if (typeof window === "undefined") return false;
 
   const auth = localStorage.getItem("auth");
   if (!auth) return false;
@@ -17,7 +16,7 @@ export const isAuthenticated = () => {
 
 // Function to get user data
 export const getUser = () => {
-  if (typeof window === "undefined") return null;
+
 
   const auth = localStorage.getItem("auth");
   if (!auth) return null;

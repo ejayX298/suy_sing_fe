@@ -137,10 +137,6 @@ export default function VendorDetailPage() {
   ];
  */
   const fetchData = async () => {
-    if (typeof window === "undefined") {
-      setIsLoading(false);
-      return;
-    }
     try {
       const booth_id = parseInt(vendorId);
       if (!token) {
