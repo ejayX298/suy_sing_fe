@@ -37,32 +37,32 @@ export default function VendorDetailPage() {
   const [newProductName, setNewProductName] = useState('');
   const [newProductDiscount, setNewProductDiscount] = useState('');
 
-  const mockProducts: Product[] = [
-    { id: '1', productCode: '55011', productName: 'Alaska Fortified Milk 600g', discount: '10%' },
-    { id: '2', productCode: '55012', productName: 'Alaska Fortified Milk 1.4kg', discount: '10%' },
-    { id: '3', productCode: '55013', productName: 'Alaska Classic Evaporated Filled Milk 370ml', discount: '10%' },
-    { id: '4', productCode: '55014', productName: 'Alaska Classic Evaporated Filled Milk 360ml', discount: '10%' },
-    { id: '5', productCode: '55015', productName: 'Alaska Fortified Powdered Filled Milk 900g', discount: '10%' },
-    { id: '6', productCode: '55016', productName: 'Cowbell Condensap 360ml', discount: '10%' },
-    { id: '7', productCode: '55017', productName: 'Alaska Fortified Powdered Filled Milk 500g', discount: '10%' },
-    { id: '8', productCode: '55018', productName: 'Alaska Fortified Powdered Filled Milk 250ML', discount: '10%' },
-  ];
+  // const mockProducts: Product[] = [
+  //   { id: '1', productCode: '55011', productName: 'Alaska Fortified Milk 600g', discount: '10%' },
+  //   { id: '2', productCode: '55012', productName: 'Alaska Fortified Milk 1.4kg', discount: '10%' },
+  //   { id: '3', productCode: '55013', productName: 'Alaska Classic Evaporated Filled Milk 370ml', discount: '10%' },
+  //   { id: '4', productCode: '55014', productName: 'Alaska Classic Evaporated Filled Milk 360ml', discount: '10%' },
+  //   { id: '5', productCode: '55015', productName: 'Alaska Fortified Powdered Filled Milk 900g', discount: '10%' },
+  //   { id: '6', productCode: '55016', productName: 'Cowbell Condensap 360ml', discount: '10%' },
+  //   { id: '7', productCode: '55017', productName: 'Alaska Fortified Powdered Filled Milk 500g', discount: '10%' },
+  //   { id: '8', productCode: '55018', productName: 'Alaska Fortified Powdered Filled Milk 250ML', discount: '10%' },
+  // ];
 
-  const mockVendors: (Vendor & { products?: Product[] })[] = [
-    { 
-      id: '1', 
-      vendorCode: 'ALAS01', 
-      vendorName: 'Alaska Milk Corporation',
-      products: mockProducts
-    },
-    { id: '2', vendorCode: 'UNILE01', vendorName: 'Unilever Philippines, Inc.' },
-    { id: '3', vendorCode: 'MONDE03', vendorName: 'Mondelez Philippines, Inc.' },
-    { id: '4', vendorCode: 'MEGA001', vendorName: 'Mega Prime Foods Incorporated' },
-    { id: '5', vendorCode: 'CENTU03', vendorName: 'Century Pacific Food, Inc.' },
-    { id: '6', vendorCode: 'THEPU01', vendorName: 'The Purefoods-Hormel Co. Inc.' },
-    { id: '7', vendorCode: 'ACSC401', vendorName: 'ACS Manufacturing Corporation' },
-    { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
-  ];
+  // const mockVendors: (Vendor & { products?: Product[] })[] = [
+  //   { 
+  //     id: '1', 
+  //     vendorCode: 'ALAS01', 
+  //     vendorName: 'Alaska Milk Corporation',
+  //     products: mockProducts
+  //   },
+  //   { id: '2', vendorCode: 'UNILE01', vendorName: 'Unilever Philippines, Inc.' },
+  //   { id: '3', vendorCode: 'MONDE03', vendorName: 'Mondelez Philippines, Inc.' },
+  //   { id: '4', vendorCode: 'MEGA001', vendorName: 'Mega Prime Foods Incorporated' },
+  //   { id: '5', vendorCode: 'CENTU03', vendorName: 'Century Pacific Food, Inc.' },
+  //   { id: '6', vendorCode: 'THEPU01', vendorName: 'The Purefoods-Hormel Co. Inc.' },
+  //   { id: '7', vendorCode: 'ACSC401', vendorName: 'ACS Manufacturing Corporation' },
+  //   { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
+  // ];
 
   const fetchData = async () => {
     setIsLoading(true);
