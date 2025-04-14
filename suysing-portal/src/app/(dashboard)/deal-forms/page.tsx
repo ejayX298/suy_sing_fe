@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import { FaSearch, FaFilter, FaEye } from 'react-icons/fa';
 import Pagination from '@/components/ui/Pagination';
 import { Vendor } from '@/types';
+import { dealFormsApiService } from '@/services/api';
+import { useAuth } from '@/lib/hooks/useAuth';
 
 export default function DealFormsPage() {
+  const { token } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -14,40 +17,30 @@ export default function DealFormsPage() {
   const [filterParams, setFilterParams] = useState({ page: 1, perpage: 10, query: '' });
 
   // Mock data for vendors
-  const mockVendors: Vendor[] = [
-    { id: '1', vendorCode: 'ALAS01', vendorName: 'Alaska Milk Corporation' },
-    { id: '2', vendorCode: 'UNILE01', vendorName: 'Unilever Philippines, Inc.' },
-    { id: '3', vendorCode: 'MONDE03', vendorName: 'Mondelez Philippines, Inc.' },
-    { id: '4', vendorCode: 'MEGA001', vendorName: 'Mega Prime Foods Incorporated' },
-    { id: '5', vendorCode: 'CENTU03', vendorName: 'Century Pacific Food, Inc.' },
-    { id: '6', vendorCode: 'THEPU01', vendorName: 'The Purefoods-Hormel Co. Inc.' },
-    { id: '7', vendorCode: 'ACSC401', vendorName: 'ACS Manufacturing Corporation' },
-    { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
-  ];
+  // const mockVendors: Vendor[] = [
+  //   { id: '1', vendorCode: 'ALAS01', vendorName: 'Alaska Milk Corporation' },
+  //   { id: '2', vendorCode: 'UNILE01', vendorName: 'Unilever Philippines, Inc.' },
+  //   { id: '3', vendorCode: 'MONDE03', vendorName: 'Mondelez Philippines, Inc.' },
+  //   { id: '4', vendorCode: 'MEGA001', vendorName: 'Mega Prime Foods Incorporated' },
+  //   { id: '5', vendorCode: 'CENTU03', vendorName: 'Century Pacific Food, Inc.' },
+  //   { id: '6', vendorCode: 'THEPU01', vendorName: 'The Purefoods-Hormel Co. Inc.' },
+  //   { id: '7', vendorCode: 'ACSC401', vendorName: 'ACS Manufacturing Corporation' },
+  //   { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
+  // ];
 
   // Fetch data function (using mock data for now)
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      // Simulate API call with delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const boothsData = await dealFormsApiService.getBooths(token, filterParams);
+      setVendors(boothsData.results);
+
+      setCurrentPage(boothsData.current_page)
+      setTotalPages(boothsData.total_pages)
       
-      // Filter vendors based on search query
-      const filteredVendors = mockVendors.filter(vendor => 
-        vendor.vendorName.toLowerCase().includes(filterParams.query.toLowerCase()) ||
-        vendor.vendorCode.toLowerCase().includes(filterParams.query.toLowerCase())
-      );
-      
-      // Calculate pagination
-      const startIndex = (filterParams.page - 1) * filterParams.perpage;
-      const endIndex = startIndex + filterParams.perpage;
-      const paginatedVendors = filteredVendors.slice(startIndex, endIndex);
-      
-      setVendors(paginatedVendors);
-      setTotalPages(Math.ceil(filteredVendors.length / filterParams.perpage));
-      setCurrentPage(filterParams.page);
     } catch (error) {
       console.error('Error fetching data:', error);
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }
