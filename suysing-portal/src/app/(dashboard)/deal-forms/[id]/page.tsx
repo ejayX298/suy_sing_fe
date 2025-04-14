@@ -6,8 +6,11 @@ import { FaSearch, FaPen, FaTrash, FaPlus } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { Product, Vendor } from "@/types";
 import Swal from "sweetalert2";
+import { dealFormsApiService } from "@/services/api";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 export default function VendorDetailPage() {
+  const { token } = useAuth();
   const params = useParams();
   const router = useRouter();
   const vendorId = params.id as string;
@@ -38,7 +41,7 @@ export default function VendorDetailPage() {
   const [newProductName, setNewProductName] = useState("");
   const [newProductDiscount, setNewProductDiscount] = useState("");
 
-  const mockProducts: Product[] = [
+  /*   const mockProducts: Product[] = [
     {
       id: "1",
       productCode: "55011",
@@ -132,18 +135,33 @@ export default function VendorDetailPage() {
       vendorName: "Colgate-Palmolive Phil. Inc.",
     },
   ];
-
+ */
   const fetchData = async () => {
-    setIsLoading(true);
+    if (typeof window === "undefined") {
+      setIsLoading(false);
+      return;
+    }
     try {
       const booth_id = parseInt(vendorId);
-      const boothProductsResult = await dealFormsApiService.getBoothProducts(booth_id, token, filterParams);
-      
+      if (!token) {
+        throw new Error("Authentication token is required");
+      }
+      const boothProductsResult = await dealFormsApiService.getBoothProducts(
+        booth_id,
+        token,
+        filterParams
+      );
+
       if (boothProductsResult.success) {
-        setVendor(boothProductsResult.results?.booth_info || []);
-        setProducts(boothProductsResult.results?.booth_products || []);
-        setCurrentPage(boothProductsResult.current_page)
-        setTotalPages(boothProductsResult.total_pages)
+        const results = boothProductsResult.results as {
+          booth_info: Vendor;
+          booth_products: Product[];
+        };
+
+        setVendor(results.booth_info);
+        setProducts(results.booth_products || []);
+        setCurrentPage(boothProductsResult.current_page);
+        setTotalPages(boothProductsResult.total_pages);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -151,7 +169,6 @@ export default function VendorDetailPage() {
       setIsLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -189,50 +206,50 @@ export default function VendorDetailPage() {
       return;
     }
 
+    if (!token) {
+      showMessage("0", "Authentication token is missing");
+      return;
+    }
+
     const confirmAction = await confirmMessage(
       `Are you sure you want to add this product?`
     );
 
     if (confirmAction.isConfirmed) {
-
       // Create new product object
       const newProduct = {
-        booth_id : vendorId,
-        booth_product_code : newProductCode,
-        booth_product_name : newProductName,
-        booth_product_discount : newProductDiscount,
-      }
-      
-      try {
-        const boothProductDataResult = await dealFormsApiService.addBoothProduct(token, newProduct);
-        
-        if(boothProductDataResult.success){
-            
-            // Show success message
-            setSuccessMessage('Product Added Successfully');
-            setShowSuccessModal(true);
-            
-            // Refresh data
-            fetchData();
+        booth_id: parseInt(vendorId),
+        booth_product_code: newProductCode,
+        booth_product_name: newProductName,
+        booth_product_discount: parseInt(newProductDiscount),
+      };
 
-        }else{
-          showMessage("0" , boothProductDataResult.message)  
-          
+      try {
+        const boothProductDataResult =
+          await dealFormsApiService.addBoothProduct(token, newProduct);
+
+        if (boothProductDataResult.success) {
+          // Show success message
+          setSuccessMessage("Product Added Successfully");
+          setShowSuccessModal(true);
+
+          // Refresh data
+          fetchData();
+        } else {
+          showMessage("0", boothProductDataResult.message);
         }
-        
       } catch (error) {
-        // console.error('Error fetching data:', error);
-        showMessage("0" , "Error adding product.")   
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error adding product.");
       }
     }
-    
+
     setShowAddModal(false);
 
     // Reset form
-    setNewProductCode('');
-    setNewProductName('');
-    setNewProductDiscount('');
-     
+    setNewProductCode("");
+    setNewProductName("");
+    setNewProductDiscount("");
   };
 
   // Debounce search input
@@ -258,52 +275,51 @@ export default function VendorDetailPage() {
       return;
     }
 
+    if (!token) {
+      showMessage("0", "Authentication token is missing");
+      return;
+    }
+
     const confirmAction = await confirmMessage(
       `Are you sure you want to update this product?`
     );
 
     if (confirmAction.isConfirmed) {
+      // Update product
+      const updateProduct = {
+        booth_product_id: parseInt(selectedProduct?.id),
+        booth_product_code: newProductCode,
+        booth_product_name: newProductName,
+        booth_product_discount: parseInt(newProductDiscount),
+      };
 
-        // Update product
-        const updateProduct = {
-          booth_product_id : selectedProduct?.id || 0,
-          booth_product_code : newProductCode,
-          booth_product_name : newProductName,
-          booth_product_discount : newProductDiscount,
-        }
-        
-        try {
-          const boothProductDataResult = await dealFormsApiService.updateBoothProduct(token, updateProduct);
-          
-          if(boothProductDataResult.success){
-              
-              // Show success message
-              setSuccessMessage('Product Updated Successfully');
-              setShowSuccessModal(true);
-              
-              // Refresh data
-              fetchData();
+      try {
+        const boothProductDataResult =
+          await dealFormsApiService.updateBoothProduct(token, updateProduct);
 
-          }else{
-            showMessage("0" , boothProductDataResult.message)  
-            
-          }
-          
-        } catch (error) {
-          // console.error('Error fetching data:', error);
-          showMessage("0" , "Error updating this product.")   
+        if (boothProductDataResult.success) {
+          // Show success message
+          setSuccessMessage("Product Updated Successfully");
+          setShowSuccessModal(true);
+
+          // Refresh data
+          fetchData();
+        } else {
+          showMessage("0", boothProductDataResult.message);
         }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error updating this product.");
+      }
     }
 
-      
     setShowEditModal(false);
     setSelectedProduct(null);
-    
+
     // Reset form
-    setNewProductCode('');
-    setNewProductName('');
-    setNewProductDiscount('');
-    
+    setNewProductCode("");
+    setNewProductName("");
+    setNewProductDiscount("");
   };
 
   // Handle delete product
@@ -319,33 +335,34 @@ export default function VendorDetailPage() {
     });
 
     if (result.isConfirmed) {
-       // Delete product
-       const deleteProduct = {
-        booth_product_id : product?.id || 0,
+      // Delete product
+      const deleteProduct = {
+        booth_product_id: parseInt(product?.id),
+      };
+
+      if (!token) {
+        showMessage("0", "Authentication token is missing");
+        return;
       }
-      
+
       try {
-        const boothProductDataResult = await dealFormsApiService.deleteBoothProduct(token, deleteProduct);
-        
-        if(boothProductDataResult.success){
-            
-            // Show success message
-            setSuccessMessage('Product Deleted Successfully');
-            setShowSuccessModal(true);
+        const boothProductDataResult =
+          await dealFormsApiService.deleteBoothProduct(token, deleteProduct);
 
-            // Refresh data
-            fetchData();
+        if (boothProductDataResult.success) {
+          // Show success message
+          setSuccessMessage("Product Deleted Successfully");
+          setShowSuccessModal(true);
 
-        }else{
-          showMessage("0" , boothProductDataResult.message)  
-          
+          // Refresh data
+          fetchData();
+        } else {
+          showMessage("0", boothProductDataResult.message);
         }
-        
       } catch (error) {
-        // console.error('Error fetching data:', error);
-        showMessage("0" , "Error deleting this product.")   
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error deleting this product.");
       }
-      
     }
   };
 
@@ -376,15 +393,14 @@ export default function VendorDetailPage() {
     return result;
   };
 
-  const showMessage = (status: string, message : string)  => {
-    
+  const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
     let titleType: "Success" | "Error";
 
-    if(status == "1"){
+    if (status == "1") {
       iconType = "success";
       titleType = "Success";
-    }else{
+    } else {
       iconType = "error";
       titleType = "Error";
     }
@@ -393,9 +409,9 @@ export default function VendorDetailPage() {
       title: titleType,
       text: message,
       icon: iconType,
-      confirmButtonColor: "#193cb8"
-    })
-}
+      confirmButtonColor: "#193cb8",
+    });
+  };
 
   if (isLoading && !vendor) {
     return (

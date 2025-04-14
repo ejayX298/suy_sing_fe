@@ -5,8 +5,11 @@ import { FaSearch, FaFilter, FaEye } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { Vendor } from "@/types";
 import { useRouter } from "next/navigation";
+import { dealFormsApiService } from "@/services/api";
+import { useAuth } from "@/lib/hooks/useAuth";
 
 export default function DealFormsPage() {
+  const { token } = useAuth();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,19 +34,24 @@ export default function DealFormsPage() {
   //   { id: '8', vendorCode: 'COLGA01', vendorName: 'Colgate-Palmolive Phil. Inc.' },
   // ];
 
-  // Fetch data function (using mock data for now)
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      const boothsData = await dealFormsApiService.getBooths(token, filterParams);
-      setVendors(boothsData.results);
+      if (!token) {
+        console.error("Authentication token is missing");
+        setIsLoading(false);
+        return;
+      }
 
-      setCurrentPage(boothsData.current_page)
-      setTotalPages(boothsData.total_pages)
-      
+      const boothsData = await dealFormsApiService.getBooths(
+        token,
+        filterParams
+      );
+      setVendors(boothsData.results);
+      setCurrentPage(boothsData.current_page);
+      setTotalPages(boothsData.total_pages);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setIsLoading(false);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }

@@ -83,7 +83,12 @@ interface ApiSouvenir {
   remaining: number;
 }
 
-
+interface BoothProductData {
+  booth_id: number;
+  booth_product_code: string;
+  booth_product_name: string;
+  booth_product_discount: number;
+}
 
 // Mock authentication service
 export const authService = {
@@ -231,16 +236,18 @@ export const customerActivitiesData = {
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
       //"@ts-expect-error"
-      const mapResponse = response_data.customers.map((customer:ApiCustomer) => ({
-        id: customer.id,
-        code: customer.code,
-        name: customer.full_name,
-        totalBoothVisited: customer.total_booth_visited,
-        boothHopping: customer.is_booth_hopping,
-        boothVoting: customer.is_booth_voting,
-        souvenirClaiming: customer.is_souvenir_claim,
-        type: customer.customer_type,
-      }));
+      const mapResponse = response_data.customers.map(
+        (customer: ApiCustomer) => ({
+          id: customer.id,
+          code: customer.code,
+          name: customer.full_name,
+          totalBoothVisited: customer.total_booth_visited,
+          boothHopping: customer.is_booth_hopping,
+          boothVoting: customer.is_booth_voting,
+          souvenirClaiming: customer.is_souvenir_claim,
+          type: customer.customer_type,
+        })
+      );
 
       return {
         total_pages: total_pages,
@@ -576,13 +583,15 @@ export const boothHoppingReportData = {
 
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
-      const mapResponse = response_data.customers.map((customer: ApiCustomer) => ({
-        id: customer.id,
-        code: customer.code,
-        name: customer.full_name,
-        type: customer.pretty_customer_type,
-        totalVisited: customer.total_booth_visited,
-      }));
+      const mapResponse = response_data.customers.map(
+        (customer: ApiCustomer) => ({
+          id: customer.id,
+          code: customer.code,
+          name: customer.full_name,
+          type: customer.pretty_customer_type,
+          totalVisited: customer.total_booth_visited,
+        })
+      );
 
       return {
         total_pages: total_pages,
@@ -628,7 +637,7 @@ export const boothHoppingReportData = {
         response_data?.booth_hopping_history?.current_page || 1;
 
       const mapBoothHistory = response_data.booth_hopping_history.booths.map(
-        (booth:ApiBoothVisit) => ({
+        (booth: ApiBoothVisit) => ({
           boothName: booth.booth_name,
           boothCode: booth.booth_code,
           date: booth.date_of_visit,
@@ -685,13 +694,15 @@ export const bestBoothReportData = {
 
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
-      const mapResponse = response_data.customers.map((customer:ApiCustomer) => ({
-        id: customer.id,
-        code: customer.code,
-        name: customer.full_name,
-        type: customer.pretty_customer_type,
-        timeSubmitted: customer.time_submitted,
-      }));
+      const mapResponse = response_data.customers.map(
+        (customer: ApiCustomer) => ({
+          id: customer.id,
+          code: customer.code,
+          name: customer.full_name,
+          type: customer.pretty_customer_type,
+          timeSubmitted: customer.time_submitted,
+        })
+      );
 
       return {
         total_pages: total_pages,
@@ -841,7 +852,7 @@ export const bestBoothReportData = {
       const response_data = response?.data?.data || [];
 
       const mapBoothVoteHistory = response_data.customer.booth_vote_history.map(
-        (boothVote:BoothVoteHistory) => ({
+        (boothVote: BoothVoteHistory) => ({
           color: boothVote.pretty_booth_color_code,
           name: boothVote.booth_name,
         })
@@ -892,7 +903,7 @@ export const bestBoothWinnerTallyData = {
 
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
-      const mapResponse = response_data.booths.map((booth:ApiBooth) => ({
+      const mapResponse = response_data.booths.map((booth: ApiBooth) => ({
         id: booth.id,
         rank: booth.rank_no,
         code: booth.code,
@@ -1026,15 +1037,17 @@ export const souvenirClaimData = {
 
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
-      const mapResponse = response_data.customers.map((customer:ApiCustomer) => ({
-        id: customer.id,
-        code: customer.code,
-        name: customer.full_name,
-        type: customer.pretty_customer_type,
-        status: customer.pretty_claim_status,
-        item: customer.item_claimed,
-        timeClaimed: customer.time_claimed,
-      }));
+      const mapResponse = response_data.customers.map(
+        (customer: ApiCustomer) => ({
+          id: customer.id,
+          code: customer.code,
+          name: customer.full_name,
+          type: customer.pretty_customer_type,
+          status: customer.pretty_claim_status,
+          item: customer.item_claimed,
+          timeClaimed: customer.time_claimed,
+        })
+      );
 
       return {
         total_pages: total_pages,
@@ -1205,13 +1218,15 @@ export const souvenirAvailabilityData = {
 
       const total_pages = response_data?.total_pages || 0;
       const current_page = response_data?.current_page || 1;
-      const mapResponse = response_data.souvenirs.map((souvenir:ApiSouvenir) => ({
-        id: souvenir.id,
-        name: souvenir.name,
-        totalQuantity: souvenir.qty,
-        claimed: souvenir.claimed,
-        remaining: souvenir.remaining,
-      }));
+      const mapResponse = response_data.souvenirs.map(
+        (souvenir: ApiSouvenir) => ({
+          id: souvenir.id,
+          name: souvenir.name,
+          totalQuantity: souvenir.qty,
+          claimed: souvenir.claimed,
+          remaining: souvenir.remaining,
+        })
+      );
 
       return {
         total_pages: total_pages,
@@ -1604,229 +1619,251 @@ export const souvenirAvailabilityDataOriginal = {
   },
 };
 
-
-
 export const dealFormsApiService = {
- 
-  getBooths: async (token : string, filterParams : any) => {
-    
-    try{
-      
-      const {page, perpage, query} = filterParams
-  
-      const response = await httpClient(token).get(`/admin/deal-forms/booths/?page=${page}&perpage=${perpage}&query=${query}`, {});
-      
-      const response_data = response?.data?.data || []
+  getBooths: async (token: string, filterParams: FilterParams) => {
+    try {
+      const { page, perpage, query } = filterParams;
 
-      const total_pages = response_data?.total_pages || 0
-      const current_page = response_data?.current_page || 1
-      const mapResponse = response_data.booths.map(booth => ({
-        id : booth.id,
-        vendorCode : booth.code,
-        vendorName : booth.name
+      const response = await httpClient(token).get(
+        `/admin/deal-forms/booths/?page=${page}&perpage=${perpage}&query=${query}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      const total_pages = response_data?.total_pages || 0;
+      const current_page = response_data?.current_page || 1;
+      interface DealFormBooth {
+        id: number;
+        vendorCode: string;
+        vendorName: string;
+      }
+
+      const mapResponse = response_data.booths.map((booth: ApiBooth): DealFormBooth => ({
+        id: booth.id,
+        vendorCode: booth.code,
+        vendorName: booth.name,
       }));
-      
-    
+
       return {
-        total_pages : total_pages,
-        current_page : current_page,
-        results : mapResponse
-      }
-    
-
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
     } catch (error) {
-      
       const default_err_response = {
-        total_pages : 0,
-        current_page : 1,
-        results : []
-      }
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
 
-        validateTokenResponse(error)
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-
     }
   },
 
+  getBoothProducts: async (
+    booth_id: number,
+    token: string,
+    filterParams: FilterParams
+  ) => {
+    try {
+      const { page, perpage, query } = filterParams;
 
-  getBoothProducts: async (booth_id: number, token : string, filterParams : any) => {
-    
-    try{
-      
-      const {page, perpage, query} = filterParams
-  
-      const response = await httpClient(token).get(`/admin/deal-forms/booth-products/?booth_id=${booth_id}&page=${page}&perpage=${perpage}&query=${query}`, {});
-      
-      const response_data = response?.data?.data || []
+      const response = await httpClient(token).get(
+        `/admin/deal-forms/booth-products/?booth_id=${booth_id}&page=${page}&perpage=${perpage}&query=${query}`,
+        {}
+      );
 
-      const total_pages = response_data?.booth_products?.total_pages || 0
-      const current_page = response_data?.booth_products?.current_page || 1
-      
-      const mapBoothProducts = response_data.booth_products?.products.map(product => ({
-        id : product.id,
-        productCode : product.item_code,
-        productName : product.name,
-        discount : product.discount
-      }));
-      
+      const response_data = response?.data?.data || [];
+
+      const total_pages = response_data?.booth_products?.total_pages || 0;
+      const current_page = response_data?.booth_products?.current_page || 1;
+
+      interface ApiBoothProduct {
+        id: number;
+        item_code: string;
+        name: string;
+        discount: number;
+      }
+
+      interface MappedBoothProduct {
+        id: number;
+        productCode: string;
+        productName: string;
+        discount: number;
+      }
+
+      const mapBoothProducts = response_data.booth_products?.products.map(
+        (product: ApiBoothProduct): MappedBoothProduct => ({
+          id: product.id,
+          productCode: product.item_code,
+          productName: product.name,
+          discount: product.discount,
+        })
+      );
 
       const mapResponse = {
-        booth_info : {
-          id : response_data.booth.id,
-          vendorCode : response_data.booth.code,
-          vendorName : response_data.booth.name
+        booth_info: {
+          id: response_data.booth.id,
+          vendorCode: response_data.booth.code,
+          vendorName: response_data.booth.name,
         },
-        booth_products : mapBoothProducts
-      }
-    
-      return {
-        success : true,
-        total_pages : total_pages,
-        current_page : current_page,
-        results : mapResponse
-      }
-    
+        booth_products: mapBoothProducts,
+      };
 
+      return {
+        success: true,
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
     } catch (error) {
-      
       const default_err_response = {
-        success : false,
-        total_pages : 0,
-        current_page : 1,
-        results : []
-      }
+        success: false,
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
 
-        validateTokenResponse(error)
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-
     }
   },
 
-  addBoothProduct: async (token: string, post_data: any) => {
-    
-    const {booth_id, booth_product_code, booth_product_name, booth_product_discount} = post_data
+  addBoothProduct: async (token: string, post_data: BoothProductData) => {
+    const {
+      booth_id,
+      booth_product_code,
+      booth_product_name,
+      booth_product_discount,
+    } = post_data;
 
-    try{
-      const response = await httpClient(token).post('/admin/deal-forms/create-booth-product/', {
-        booth_id: booth_id,
-        booth_product_code: booth_product_code,
-        booth_product_name: booth_product_name,
-        booth_product_discount: booth_product_discount,
-      });
+    try {
+      const response = await httpClient(token).post(
+        "/admin/deal-forms/create-booth-product/",
+        {
+          booth_id: booth_id,
+          booth_product_code: booth_product_code,
+          booth_product_name: booth_product_name,
+          booth_product_discount: booth_product_discount,
+        }
+      );
 
       return {
         success: true,
         message: response?.data?.message,
-        data : response?.data?.data || []
+        data: response?.data?.data || [],
       };
-
     } catch (error) {
-      
       if (axios.isAxiosError(error)) {
-
-        validateTokenResponse(error)
+        validateTokenResponse(error);
 
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-
       } else {
-         
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
     }
   },
 
+  updateBoothProduct: async (
+    token: string,
+    post_data: {
+      booth_product_id: number;
+      booth_product_code: string;
+      booth_product_name: string;
+      booth_product_discount: number;
+    }
+  ) => {
+    const {
+      booth_product_id,
+      booth_product_code,
+      booth_product_name,
+      booth_product_discount,
+    } = post_data;
 
-  updateBoothProduct: async (token: string, post_data: any) => {
-    
-    const {booth_product_id, booth_product_code, booth_product_name, booth_product_discount} = post_data
-
-    try{
-      const response = await httpClient(token).put('/admin/deal-forms/update-booth-product/', {
-        booth_product_id: booth_product_id,
-        booth_product_code: booth_product_code,
-        booth_product_name: booth_product_name,
-        booth_product_discount: booth_product_discount,
-      });
+    try {
+      const response = await httpClient(token).put(
+        "/admin/deal-forms/update-booth-product/",
+        {
+          booth_product_id: booth_product_id,
+          booth_product_code: booth_product_code,
+          booth_product_name: booth_product_name,
+          booth_product_discount: booth_product_discount,
+        }
+      );
 
       return {
         success: true,
         message: response?.data?.message,
-        data : response?.data?.data || []
+        data: response?.data?.data || [],
       };
-
     } catch (error) {
-      
       if (axios.isAxiosError(error)) {
-
-        validateTokenResponse(error)
+        validateTokenResponse(error);
 
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-
       } else {
-         
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
     }
   },
 
+  deleteBoothProduct: async (
+    token: string,
+    post_data: {
+      booth_product_id: number;
+    }
+  ) => {
+    const { booth_product_id } = post_data;
 
-  deleteBoothProduct: async (token: string, post_data: any) => {
-    
-    const {booth_product_id} = post_data
-
-    try{
-      const response = await httpClient(token).delete(`/admin/deal-forms/delete-booth-product/?booth_product_id=${booth_product_id}`);
+    try {
+      const response = await httpClient(token).delete(
+        `/admin/deal-forms/delete-booth-product/?booth_product_id=${booth_product_id}`
+      );
 
       return {
         success: true,
         message: response?.data?.message,
-        data : response?.data?.data || []
+        data: response?.data?.data || [],
       };
-
     } catch (error) {
-      
       if (axios.isAxiosError(error)) {
-
-        validateTokenResponse(error)
+        validateTokenResponse(error);
 
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-
       } else {
-         
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
     }
   },
-
 };
