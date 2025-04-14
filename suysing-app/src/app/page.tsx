@@ -9,7 +9,7 @@ import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { boothVisitService } from "@/services/api";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import InstructionModal from "@/components/homepage/InstructionModal";
 
 export interface Booth {
@@ -26,6 +26,7 @@ export interface Booth {
 }
 
 export default function Home() {
+  const router = useRouter();
   const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
     useBooths();
   const [showInstructionModal, setShowInstructionModal] = useState(false);
@@ -158,7 +159,11 @@ export default function Home() {
     if (customer_hash_code && stored_hash_code) {
       if (customer_hash_code == stored_hash_code) {
         setIsRender(true);
+      }else{
+        router.push(`/unauthorized`)
       }
+    }else{
+      router.push(`/unauthorized`)
     }
   }, []);
 

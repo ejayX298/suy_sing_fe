@@ -10,10 +10,11 @@ import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
 import { bestBooth } from '@/services/api';
 import Swal from 'sweetalert2';
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { boothVisitService } from '@/services/api';
 
 function BestBoothContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
   
@@ -150,8 +151,12 @@ function BestBoothContent() {
         setIsRender(true)
         fetchData();
         getCustomerRecord();
+      }else{
+        router.push(`/unauthorized`)
       }
       
+    }else{
+      router.push(`/unauthorized`)
     }
   }, []);
   

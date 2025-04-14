@@ -102,8 +102,12 @@ export default function SouvenirSelectionPage() {
     if(auditor_hash_code && stored_hash_code){
       if(auditor_hash_code == stored_hash_code){
         fetchData();
+      }else{
+        router.push(`/unauthorized`)
       }
       
+    }else{
+      router.push(`/unauthorized`)
     }
   }, []);
 

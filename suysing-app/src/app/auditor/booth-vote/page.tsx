@@ -138,8 +138,12 @@ function AuditorBoothVoteContent() {
       if(auditor_hash_code == stored_hash_code){
         setAuditData(auditInforParsed)
         fetchData();
+      }else{
+        router.push(`/unauthorized`)
       }
       
+    }else{
+      router.push(`/unauthorized`)
     }
   }, []);
   

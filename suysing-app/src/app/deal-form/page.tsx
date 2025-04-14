@@ -213,11 +213,14 @@ export default function DealFormPage() {
   };
 
   useEffect(() => {
-
     if(customer_hash_code && stored_hash_code){
       if(customer_hash_code == stored_hash_code){
         setIsRender(true)
+      }else{
+        router.push(`/unauthorized`)
       }
+    }else{
+      router.push(`/unauthorized`)
     }
 
     getCustomerRecord()

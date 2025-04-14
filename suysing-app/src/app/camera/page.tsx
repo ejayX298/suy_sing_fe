@@ -8,9 +8,10 @@ import BoothsProgress from "@/components/BoothsProgress";
 import { useBooths } from "@/context/BoothsContext";
 import { boothVisitService } from '@/services/api';
 import Swal from 'sweetalert2';
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function CameraPage() {
+  const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [scanning, setScanning] = useState(true);
@@ -70,7 +71,11 @@ export default function CameraPage() {
           setScanning(true);
         };
 
+      }else{
+        router.push(`/unauthorized`)
       }
+    }else{
+      router.push(`/unauthorized`)
     }
   
   }, []);

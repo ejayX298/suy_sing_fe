@@ -37,7 +37,7 @@ export default function InstructionModal({ customer_data, isOpen, onClose }: Ins
 
   const handleFirstVisitIds = (customer_id : number) =>{
     const firstVisitIds = localStorage.getItem('firstVisitIds');
-    console.log(customer_id)
+    
     if(customer_id && customer_id != 0){  
       if(!firstVisitIds){
         const firstVisitIdsStore = [customer_id]

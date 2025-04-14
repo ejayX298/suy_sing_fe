@@ -62,11 +62,14 @@ function AuditorPageContent() {
       
       if(customerResult.success){
         setAuditorAccess(true)
+      }else{
+        router.push(`/unauthorized`)
       }
     
     } catch (error) {
       console.error('Error fetching data:', error);
       setAuditorAccess(false)
+      router.push(`/unauthorized`)
     } finally {
       // setIsLoading(false);
     }

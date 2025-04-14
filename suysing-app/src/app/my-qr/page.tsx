@@ -3,10 +3,11 @@
 import Image from "next/image";
 import { useState, useEffect } from 'react';
 import QRCode from 'react-qr-code';
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { customerQr } from '@/services/api';
 
 export default function MyQrPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
 
@@ -22,6 +23,8 @@ export default function MyQrPage() {
       if(customerResult.success){
         setCustomerData(customerResult.results);
         setCustomerFound(true)
+      }else{
+        router.push(`/unauthorized`)
       }
     
     } catch (error) {
@@ -34,6 +37,8 @@ export default function MyQrPage() {
   useEffect(() => {
     if(customer_hash_code){
       fetchData();
+    }else{
+      router.push(`/unauthorized`)
     }
   }, []);
 
