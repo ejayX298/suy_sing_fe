@@ -136,35 +136,14 @@ export default function VendorDetailPage() {
   const fetchData = async () => {
     setIsLoading(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      const foundVendor = mockVendors.find((v) => v.id === vendorId);
-
-      if (foundVendor) {
-        setVendor(foundVendor);
-
-        // Filter products based on search query
-        const vendorProducts = foundVendor.products || [];
-        const filteredProducts = vendorProducts.filter(
-          (product) =>
-            product.productName
-              .toLowerCase()
-              .includes(filterParams.query.toLowerCase()) ||
-            product.productCode
-              .toLowerCase()
-              .includes(filterParams.query.toLowerCase())
-        );
-
-        // Calculate pagination
-        const startIndex = (filterParams.page - 1) * filterParams.perpage;
-        const endIndex = startIndex + filterParams.perpage;
-        const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
-        setProducts(paginatedProducts);
-        setTotalPages(
-          Math.ceil(filteredProducts.length / filterParams.perpage)
-        );
-        setCurrentPage(filterParams.page);
+      const booth_id = parseInt(vendorId);
+      const boothProductsResult = await dealFormsApiService.getBoothProducts(booth_id, token, filterParams);
+      
+      if (boothProductsResult.success) {
+        setVendor(boothProductsResult.results?.booth_info || []);
+        setProducts(boothProductsResult.results?.booth_products || []);
+        setCurrentPage(boothProductsResult.current_page)
+        setTotalPages(boothProductsResult.total_pages)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -172,6 +151,7 @@ export default function VendorDetailPage() {
       setIsLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchData();
@@ -214,36 +194,45 @@ export default function VendorDetailPage() {
     );
 
     if (confirmAction.isConfirmed) {
+
       // Create new product object
-      const newProduct: Product = {
-        id: (products.length + 1).toString(),
-        productCode: newProductCode,
-        productName: newProductName,
-        discount: newProductDiscount,
-      };
+      const newProduct = {
+        booth_id : vendorId,
+        booth_product_code : newProductCode,
+        booth_product_name : newProductName,
+        booth_product_discount : newProductDiscount,
+      }
+      
+      try {
+        const boothProductDataResult = await dealFormsApiService.addBoothProduct(token, newProduct);
+        
+        if(boothProductDataResult.success){
+            
+            // Show success message
+            setSuccessMessage('Product Added Successfully');
+            setShowSuccessModal(true);
+            
+            // Refresh data
+            fetchData();
 
-      const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & {
-        products: Product[];
-      };
-      if (!vendorWithProducts.products) vendorWithProducts.products = [];
-      vendorWithProducts.products.push(newProduct);
-
-      setVendor(vendorWithProducts);
-      setShowAddModal(false);
-
-      // Reset form
-      setNewProductCode("");
-      setNewProductName("");
-      setNewProductDiscount("");
-
-      // Show success message
-      setSuccessMessage("Product Added Successfully");
-      setShowSuccessModal(true);
-
-      // Refresh data
-      fetchData();
+        }else{
+          showMessage("0" , boothProductDataResult.message)  
+          
+        }
+        
+      } catch (error) {
+        // console.error('Error fetching data:', error);
+        showMessage("0" , "Error adding product.")   
+      }
     }
+    
+    setShowAddModal(false);
+
+    // Reset form
+    setNewProductCode('');
+    setNewProductName('');
+    setNewProductDiscount('');
+     
   };
 
   // Debounce search input
@@ -274,43 +263,47 @@ export default function VendorDetailPage() {
     );
 
     if (confirmAction.isConfirmed) {
-      const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & {
-        products: Product[];
-      };
 
-      if (vendorWithProducts.products) {
-        vendorWithProducts.products = vendorWithProducts.products.map(
-          (product) => {
-            if (product.id === selectedProduct.id) {
-              return {
-                ...product,
-                productCode: newProductCode,
-                productName: newProductName,
-                discount: newProductDiscount,
-              };
-            }
-            return product;
+        // Update product
+        const updateProduct = {
+          booth_product_id : selectedProduct?.id || 0,
+          booth_product_code : newProductCode,
+          booth_product_name : newProductName,
+          booth_product_discount : newProductDiscount,
+        }
+        
+        try {
+          const boothProductDataResult = await dealFormsApiService.updateBoothProduct(token, updateProduct);
+          
+          if(boothProductDataResult.success){
+              
+              // Show success message
+              setSuccessMessage('Product Updated Successfully');
+              setShowSuccessModal(true);
+              
+              // Refresh data
+              fetchData();
+
+          }else{
+            showMessage("0" , boothProductDataResult.message)  
+            
           }
-        );
-      }
-
-      setVendor(vendorWithProducts);
-      setShowEditModal(false);
-      setSelectedProduct(null);
-
-      // Reset form
-      setNewProductCode("");
-      setNewProductName("");
-      setNewProductDiscount("");
-
-      // Show success message
-      setSuccessMessage("Product Updated Successfully");
-      setShowSuccessModal(true);
-
-      // Refresh data
-      fetchData();
+          
+        } catch (error) {
+          // console.error('Error fetching data:', error);
+          showMessage("0" , "Error updating this product.")   
+        }
     }
+
+      
+    setShowEditModal(false);
+    setSelectedProduct(null);
+    
+    // Reset form
+    setNewProductCode('');
+    setNewProductName('');
+    setNewProductDiscount('');
+    
   };
 
   // Handle delete product
@@ -326,25 +319,33 @@ export default function VendorDetailPage() {
     });
 
     if (result.isConfirmed) {
-      const updatedVendor = { ...vendor };
-      const vendorWithProducts = updatedVendor as Vendor & {
-        products: Product[];
-      };
-
-      if (vendorWithProducts.products) {
-        vendorWithProducts.products = vendorWithProducts.products.filter(
-          (p) => p.id !== product.id
-        );
+       // Delete product
+       const deleteProduct = {
+        booth_product_id : product?.id || 0,
       }
+      
+      try {
+        const boothProductDataResult = await dealFormsApiService.deleteBoothProduct(token, deleteProduct);
+        
+        if(boothProductDataResult.success){
+            
+            // Show success message
+            setSuccessMessage('Product Deleted Successfully');
+            setShowSuccessModal(true);
 
-      setVendor(vendorWithProducts);
+            // Refresh data
+            fetchData();
 
-      // Show success message
-      setSuccessMessage("Product Deleted Successfully");
-      setShowSuccessModal(true);
-
-      // Refresh data
-      fetchData();
+        }else{
+          showMessage("0" , boothProductDataResult.message)  
+          
+        }
+        
+      } catch (error) {
+        // console.error('Error fetching data:', error);
+        showMessage("0" , "Error deleting this product.")   
+      }
+      
     }
   };
 
@@ -374,6 +375,27 @@ export default function VendorDetailPage() {
 
     return result;
   };
+
+  const showMessage = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#193cb8"
+    })
+}
 
   if (isLoading && !vendor) {
     return (
@@ -466,7 +488,7 @@ export default function VendorDetailPage() {
                   <tr key={product.id} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-3">{product.productCode}</td>
                     <td className="px-4 py-3">{product.productName}</td>
-                    <td className="px-4 py-3">{product.discount}</td>
+                    <td className="px-4 py-3">{product.discount}%</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex justify-center space-x-3">
                         <button
@@ -524,7 +546,7 @@ export default function VendorDetailPage() {
                     Discount in %
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="w-full px-2 py-4 border-gray-400 border"
                     value={newProductDiscount}
                     onChange={(e) => setNewProductDiscount(e.target.value)}
@@ -589,7 +611,7 @@ export default function VendorDetailPage() {
                     Discount in %
                   </label>
                   <input
-                    type="text"
+                    type="number"
                     className="w-full px-2 py-4 border-gray-400 border"
                     value={newProductDiscount}
                     onChange={(e) => setNewProductDiscount(e.target.value)}
