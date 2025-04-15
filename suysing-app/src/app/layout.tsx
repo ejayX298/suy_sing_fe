@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import BottomNavigation from "@/components/BottomNavigation";
@@ -32,8 +33,10 @@ export default function RootLayout({
           />
         </div>
         <BoothsProvider>
+        <Suspense fallback={<p>Loading...</p>}>
           {children}
           <BottomNavigation />
+        </Suspense>
         </BoothsProvider>
       </body>
     </html>
