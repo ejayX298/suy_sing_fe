@@ -24,7 +24,7 @@ export default function VisitedBooths({
           </div>
           {visitedBooths.map((booth) => (
             <BoothItem
-              key={booth.name}
+              key={booth.boothCode}
               boothCode={booth.boothCode}
               name={booth.name}
               image={booth.image}
