@@ -34,6 +34,7 @@ export default function DeliveryForm({
   transactionTypes,
   customerDeliveryDetails,
 }: DeliveryFormProps) {
+  
   return (
     <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
       <div className="px-6 mt-6">
@@ -71,7 +72,7 @@ export default function DeliveryForm({
             onChange={onSelectChange}
             className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
           >
-            <option value=""></option>
+            {/* <option value=""></option> */}
             {transactionTypes.map((transactionTypeName, index) => (
               <option key={index} value={transactionTypeName}>
                 {transactionTypeName}
@@ -94,7 +95,7 @@ export default function DeliveryForm({
             onChange={onSelectChange}
             className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black "
           >
-            <option value="">Select address</option>
+            {/* <option value="" disabled>Select address</option> */}
             {customerDeliveryDetails.map((customerDelivery, index) => (
               <option key={index} value={customerDelivery.id}>
                 {customerDelivery.address}
