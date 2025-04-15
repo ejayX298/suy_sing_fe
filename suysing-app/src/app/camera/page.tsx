@@ -82,9 +82,6 @@ export default function CameraPage() {
   const processQRCode = React.useCallback(
     async (data: string) => {
 
-      // Inititalize and show loader
-      showLoader();
-
       // Check if the QR code data is a valid booth ID
       // Format could be "booth:id123" or just "id123"
       // const boothId = data.includes("booth:") ? data.split("booth:")[1] : data;
@@ -111,29 +108,24 @@ export default function CameraPage() {
 
         // Set message - first booth visited or another one
         if (customerData?.totalBoothVisited === 0) {
-          Swal.close() // close the loading alert
           setSuccessMessage(
             "You've stamped your first booth. Visit and scan all the other booths to complete this section."
           );
           setShowSuccessModal(true);
         }else if(boothVisitResult.is_double_zone === 1){
-          Swal.close() // close the loading alert
           setShowSuccessModalDouble(true)
           setSuccessMessage(
             "Each booth visited will be counted as double."
           );
         } 
         else {
-          Swal.close() // close the loading alert
           setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
           setShowSuccessModal(true);
         }
 
-        setScanning(false);
       } else {
-        Swal.close() // close the loading alert
+        
         // QR code not recognized - just continue scanning
-        setScanning(false);
       }
 
       // Refresh customerData
@@ -218,9 +210,6 @@ export default function CameraPage() {
       return;
     }
 
-    // Inititalize and show loader
-    showLoader();
-
     // call api for booth visit
     const boothVisitResult = await submitBoothVisit(manualCode.trim())
     // Find booth with this ID
@@ -242,18 +231,18 @@ export default function CameraPage() {
 
       // Set message - first booth visited or another one
       if (customerData?.totalBoothVisited === 0) {
-        Swal.close() // close the loading alert
+
         setSuccessMessage(
           "You've stamped your first booth. Visit and scan all the other booths to complete this section."
         );
       } else if(boothVisitResult.is_double_zone === 1){
-        Swal.close() // close the loading alert
+
         setShowSuccessModalDouble(true)
         setSuccessMessage(
           "Each booth visited will be counted as double."
         );
       }  else {
-        Swal.close() // close the loading alert
+        
         setSuccessMessage(`You've stamped the ${boothVisitResult?.booth_name} booth.`);
       }
       
@@ -261,7 +250,7 @@ export default function CameraPage() {
       setShowManualCodeModal(false);
 
     } else {
-      Swal.close() // close the loading alert
+      
       // Invalid code - close the modal without proceeding
       closeManualCodeModal();
     }
@@ -280,12 +269,19 @@ export default function CameraPage() {
 
   const submitBoothVisit = async (data: string) => {
 
+
+    // Inititalize and show loader
+    showLoader();
+
+
     const post_data = [data];
     try {
       const submitBoothVisitResult = await boothVisitService.submitBoothVisit(post_data);
       
       if(submitBoothVisitResult.success){
-    
+        
+        Swal.close() // close the loading alert
+
         let booth_name = ''
         let is_double_zone = 0
         if(submitBoothVisitResult.results.length > 0){
@@ -300,6 +296,7 @@ export default function CameraPage() {
         };
 
       }else{
+        Swal.close() // close the loading alert
         setShowManualCodeModal(false);
         showMessage("0" , submitBoothVisitResult.message)  
 
@@ -309,6 +306,7 @@ export default function CameraPage() {
       }
     
     } catch  {
+      Swal.close() // close the loading alert
       setShowManualCodeModal(false);
       showMessage("0" , "Unable to process your request. Please try again later.")   
 
