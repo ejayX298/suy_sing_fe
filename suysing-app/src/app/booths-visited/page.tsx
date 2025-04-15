@@ -31,6 +31,8 @@ export default function BoothsVisitedPage() {
     isDoneVisit?: number;
     totalBoothVisited?: number;
     totalBooths?: number;
+    totalRegularBooths?: number;
+    totalDoubleZoneBooths?: number;
   } | null>(null);
 
   const searchParams = useSearchParams();
@@ -144,6 +146,8 @@ export default function BoothsVisitedPage() {
           isDoneVisit: customerResult.results?.is_done_visit,
           totalBooths: customerResult.results?.total_booths,
           totalBoothVisited: customerResult.results?.total_booth_visited,
+          totalRegularBooths: customerResult.results?.total_regular_booths,
+          totalDoubleZoneBooths: customerResult.results?.total_double_zone_booths,
         };
         
         setCustomerData(mapCustomerData);
@@ -193,16 +197,16 @@ export default function BoothsVisitedPage() {
         <BoothZone
           title="Regular Zone"
           booths={regularBooths}
-          progress={`${regularBooths.filter((b) => b.visited).length}/${
+          progress={`${
             regularBooths.length
-          }`}
+          }/${customerData?.totalRegularBooths}`}
         />
       
         <BoothZone
           title="Double Zone"
           booths={doubleBooths}
-          progress={`${doubleBooths.filter((b : {visited : string}) => b.visited).length}/${
-            doubleBooths.length
+          progress={`${doubleBooths.length}/${
+            customerData?.totalDoubleZoneBooths
           }`}
         />
 
