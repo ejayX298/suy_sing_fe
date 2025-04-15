@@ -43,6 +43,7 @@ function BestBoothContent() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
+  const [isDoneVisit, setIsDoneVisit] = useState(false);
 
 
   const fetchData = async () => {
@@ -107,7 +108,7 @@ function BestBoothContent() {
           totalBooths: customerResult.results?.total_booths,
           totalBoothVisited: customerResult.results?.total_booth_visited,
         };
-        
+
         setCustomerData(mapCustomerData);
       
         return true;
@@ -144,15 +145,42 @@ function BestBoothContent() {
       icon: iconType,
       confirmButtonColor: "#F78B1E"
     })
-}
+  }
+
+  const showMessageRedirect = (status: string, message : string)  => {
+    
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
+
+    if(status == "1"){
+      iconType = "success";
+      titleType = "Success";
+    }else{
+      iconType = "error";
+      titleType = "Error";
+    }
+
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#F78B1E",
+      allowOutsideClick: false // disable outside click fot the close modal
+    }).then((result) => {
+      if (result.isConfirmed) {
+        router.push(`/?cc=${stored_hash_code}`);
+      }
+    });
+  }
 
 
   useEffect(() => {
     if(customer_hash_code && stored_hash_code){
       if(customer_hash_code == stored_hash_code){
+        getCustomerRecord();
         setIsRender(true)
         fetchData();
-        getCustomerRecord();
+        
       }else{
         router.push(`/unauthorized`)
       }
@@ -162,6 +190,18 @@ function BestBoothContent() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+
+  useEffect(() => {
+    if(customerData){
+      if(customerData?.isDoneVisit == 0){
+        showMessageRedirect("0" , "You need to visit all the booths first");
+      }else{
+        setIsDoneVisit(true)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerData]);
   
   
   const handleContinue = async () => {
@@ -300,7 +340,7 @@ function BestBoothContent() {
 
   return (
     <div className="flex flex-col min-h-screen ">
-      {isRender && (
+      {isRender && isDoneVisit && (
         <div className="flex-1 pb-16">{renderStepContent()}</div>
       )}
     </div>
