@@ -37,6 +37,8 @@ function AuditorPageContent() {
     isDoneVisit?: number;
     totalBoothVisited?: number;
     totalBooths?: number;
+    totalRegularBooths?: number;
+    totalDoubleZoneBooths?: number;
   } | null>(null);
   const [currentStep, setCurrentStep] = useState<
     | "scan"
@@ -140,8 +142,9 @@ function AuditorPageContent() {
         isDoneVisit: customerRecord.is_done_visit,
         totalBooths: customerRecord.total_booths,
         totalBoothVisited: customerRecord.total_booth_visited,
+        totalRegularBooths: customerRecord.total_regular_booths,
+        totalDoubleZoneBooths: customerRecord.total_double_zone_booths,
       };
-      
       setCustomerData(mapCustomerData);
       
       const isComplete = customerRecord.is_done_visit == 1 ? true : false;
@@ -375,6 +378,8 @@ function AuditorPageContent() {
         {currentStep === "booths-list" && customerData && (
           <BoothsList
             customerId={customerData?.id}
+            totalRegularBooths={customerData?.totalRegularBooths || 0}
+            totalDoubleZoneBooths={customerData?.totalDoubleZoneBooths || 0}
             onBack={() => setCurrentStep("booth-status")}
           />
         )}
