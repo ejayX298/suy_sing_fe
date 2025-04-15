@@ -1,41 +1,51 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { FaSearch, FaFilter, FaPlus, FaLeaf } from 'react-icons/fa';
+import { useState, useEffect } from "react";
+import { FaSearch, FaFilter, FaPlus } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
-import { souvenirAvailabilityData } from '@/services/api';
-import Pagination from '@/components/ui/Pagination';
-import { Souvenir } from '@/types';
-import { useAuth } from '@/lib/hooks/useAuth';
-import Swal from 'sweetalert2'
+import { souvenirAvailabilityData } from "@/services/api";
+import Pagination from "@/components/ui/Pagination";
+import { Souvenir } from "@/types";
+import { useAuth } from "@/lib/hooks/useAuth";
+import Swal from "sweetalert2";
 
 export default function SouvenirAvailabilityPage() {
   const { token } = useAuth();
-  const [souvenirs, setSouvenirs] = useState<Souvenir[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredSouvenirs, setFilteredSouvenirs] = useState<Souvenir[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [newSouvenirName, setNewSouvenirName] = useState('');
-  const [newSouvenirQuantity, setNewSouvenirQuantity] = useState('');
-  const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(null);
-  const itemsPerPage = 8;
-  const [filterParams, setfilterParams] = useState({'page' : 1, 'perpage' : 10, 'query' : ''});
+  const [newSouvenirName, setNewSouvenirName] = useState("");
+  const [newSouvenirQuantity, setNewSouvenirQuantity] = useState("");
+  const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(
+    null
+  );
+  const [filterParams, setfilterParams] = useState({
+    page: 1,
+    perpage: 10,
+    query: "",
+  });
 
   const fetchData = async () => {
     try {
-      const souvenirsData = await souvenirAvailabilityData.getSouvenirs(token, filterParams);
-      
-      setSouvenirs(souvenirsData.results);
+      if (!token) {
+        console.error("No authentication token available");
+        return;
+      }
+      const souvenirsData = await souvenirAvailabilityData.getSouvenirs(
+        token,
+        filterParams
+      );
+
       setFilteredSouvenirs(souvenirsData.results);
-      
-      setCurrentPage(souvenirsData.current_page)
-      setTotalPages(souvenirsData.total_pages)
+
+      setCurrentPage(souvenirsData.current_page);
+      setTotalPages(souvenirsData.total_pages);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setIsLoading(false);
     }
@@ -49,7 +59,7 @@ export default function SouvenirAvailabilityPage() {
   //   const results = souvenirs.filter(souvenir =>
   //     souvenir.name.toLowerCase().includes(searchQuery.toLowerCase())
   //   );
-    
+
   //   setFilteredSouvenirs(results);
   //   setCurrentPage(1);
   // }, [searchQuery, souvenirs]);
@@ -62,39 +72,41 @@ export default function SouvenirAvailabilityPage() {
 
   const handlePageChange = (pageNumber: number) => {
     // setCurrentPage(pageNumber);
-    setfilterParams({ ...filterParams, page: pageNumber })
+    setfilterParams({ ...filterParams, page: pageNumber });
   };
 
-  const handleSearchQuery = (query : any) => {
-    const search_val = query.target.value
-    setSearchQuery(search_val)
-  }
+  const handleSearchQuery = (query: React.ChangeEvent<HTMLInputElement>) => {
+    const search_val = query.target.value;
+    setSearchQuery(search_val);
+  };
 
-
-   useEffect(() => {
+  useEffect(() => {
     // set delay 2 seconds
     const delaySetSearch = setTimeout(() => {
       // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query : searchQuery})
+      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
     }, 2000);
-    
+
     //clears the timeout of the previous value of delaySetSearch
     //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch)
-    
+    return () => clearTimeout(delaySetSearch);
   }, [searchQuery]);
 
-  
   const handleAddSouvenir = async () => {
     // Validate inputs
     if (!newSouvenirName.trim() || !newSouvenirQuantity.trim()) {
-      alert('Please fill in all fields');
+      alert("Please fill in all fields");
       return;
     }
 
     const quantity = parseInt(newSouvenirQuantity);
     if (isNaN(quantity) || quantity <= 0) {
-      alert('Please enter a valid quantity');
+      alert("Please enter a valid quantity");
+      return;
+    }
+
+    if (!token) {
+      showMessage("0", "You are not authenticated. Please log in again.");
       return;
     }
 
@@ -110,49 +122,55 @@ export default function SouvenirAvailabilityPage() {
     // Add to souvenirs list
     // setSouvenirs([...souvenirs, newSouvenir]);
 
-    let confirmAction = await confirmMessage(`Are you sure you want to add ${newSouvenirName}?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to add ${newSouvenirName}?`
+    );
 
-    if(confirmAction.isConfirmed){
+    if (confirmAction.isConfirmed) {
+      // Add souvenir
+      const newSouvenir = {
+        name: newSouvenirName,
+        totalQuantity: quantity,
+      };
 
-        // Add souvenir
-        const newSouvenir = {
-          name: newSouvenirName,
-          totalQuantity: quantity,
-        };
+      try {
+        const souvenirsData = await souvenirAvailabilityData.addSouvenir(
+          token,
+          newSouvenir
+        );
 
-        try {
-          const souvenirsData = await souvenirAvailabilityData.addSouvenir(token, newSouvenir);
-          
-          if(souvenirsData.success){
-            showMessage("1" , souvenirsData.message)
-            setfilterParams({ ...filterParams, page: 1, query : ''})
-          }else{
-            showMessage("0" , souvenirsData.message)  
-          }
-          
-        } catch (error) {
-          // console.error('Error fetching data:', error);
-          showMessage("0" , "Error adding souvenir.")   
-        } finally {
-          setIsLoading(false);
+        if (souvenirsData.success) {
+          showMessage("1", souvenirsData.message);
+          setfilterParams({ ...filterParams, page: 1, query: "" });
+        } else {
+          showMessage("0", souvenirsData.message);
         }
-        
-        // Reset form and close modal
-        setNewSouvenirName('');
-        setNewSouvenirQuantity('');
-        setShowAddModal(false);
-        
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error adding souvenir.");
+      } finally {
+        setIsLoading(false);
+      }
+
+      // Reset form and close modal
+      setNewSouvenirName("");
+      setNewSouvenirQuantity("");
+      setShowAddModal(false);
     }
-   
   };
 
   const handleEditSouvenir = async () => {
     if (!selectedSouvenir) return;
-    
+
     // Validate input
     const quantity = parseInt(newSouvenirQuantity);
     if (isNaN(quantity) || quantity <= 0) {
-      alert('Please enter a valid quantity');
+      alert("Please enter a valid quantity");
+      return;
+    }
+
+    if (!token) {
+      showMessage("0", "You are not authenticated. Please log in again.");
       return;
     }
 
@@ -169,41 +187,41 @@ export default function SouvenirAvailabilityPage() {
     //   return souvenir;
     // });
 
-    let confirmAction = await confirmMessage(`Are you sure you want to update this souvenir?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to update this souvenir?`
+    );
 
-    if(confirmAction.isConfirmed){
-
+    if (confirmAction.isConfirmed) {
       try {
-        
         // Update souvenir
         const updatedSouvenir = {
-          souvenir_id : selectedSouvenir.id,
-          souvenir_qty : quantity
-        }
+          souvenir_id: selectedSouvenir.id,
+          souvenir_qty: quantity,
+        };
 
-        const souvenirsData = await souvenirAvailabilityData.updateSouvenir(token, updatedSouvenir);
-        
-        if(souvenirsData.success){
-          showMessage("1" , souvenirsData.message)
-          setfilterParams({ ...filterParams, page : 1, query : ''})
-        }else{
-          showMessage("0" , souvenirsData.message)  
+        const souvenirsData = await souvenirAvailabilityData.updateSouvenir(
+          token,
+          updatedSouvenir
+        );
+
+        if (souvenirsData.success) {
+          showMessage("1", souvenirsData.message);
+          setfilterParams({ ...filterParams, page: 1, query: "" });
+        } else {
+          showMessage("0", souvenirsData.message);
         }
-        
       } catch (error) {
-        // console.error('Error fetching data:', error);
-        showMessage("0" , "Error updating souvenir.")   
+        console.error("Error fetching data:", error);
+        showMessage("0", "Error updating souvenir.");
       } finally {
         setIsLoading(false);
       }
-      
+
       // setSouvenirs(updatedSouvenirs);
       setShowEditModal(false);
       setSelectedSouvenir(null);
-      setNewSouvenirQuantity('');
+      setNewSouvenirQuantity("");
     }
-
-    
   };
 
   const openEditModal = (souvenir: Souvenir) => {
@@ -212,49 +230,45 @@ export default function SouvenirAvailabilityPage() {
     setShowEditModal(true);
   };
 
+  const confirmMessage = async (message: string) => {
+    const Swal = (await import("sweetalert2")).default;
+    const result = await Swal.fire({
+      title: "Confirm",
+      text: message,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#193cb8",
+    });
 
-  const confirmMessage = async (message: string)  => {
-    
-      const result = await Swal.fire({
-        title: 'Confirm',
-        text: message,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonColor: "#193cb8",
-      })
+    return result;
+  };
 
-      return result;
-  }
+  const showMessage = (status: string, message: string) => {
+    let iconType: "success" | "error";
+    let titleType: "Success" | "Error";
 
-  const showMessage = (status: string, message : string)  => {
-    
-      let iconType: "success" | "error";
-      let titleType: "Success" | "Error";
+    if (status == "1") {
+      iconType = "success";
+      titleType = "Success";
+    } else {
+      iconType = "error";
+      titleType = "Error";
+    }
 
-      if(status == "1"){
-        iconType = "success";
-        titleType = "Success";
-      }else{
-        iconType = "error";
-        titleType = "Error";
-      }
-
-      Swal.fire({
-        title: titleType,
-        text: message,
-        icon: iconType,
-        confirmButtonColor: "#193cb8"
-      })
-  }
-
-
+    Swal.fire({
+      title: titleType,
+      text: message,
+      icon: iconType,
+      confirmButtonColor: "#193cb8",
+    });
+  };
 
   return (
     <div className="space-y-6">
       <div className="">
         <div className="py-4 flex justify-end gap-4 items-center border-b">
-          <div className="flex items-center space-x-2"> 
-            <button 
+          <div className="flex items-center space-x-2">
+            <button
               className="inline-flex items-center px-3 py-3 bg-blue-800 text-white text-sm"
               onClick={() => setShowAddModal(true)}
             >
@@ -291,11 +305,15 @@ export default function SouvenirAvailabilityPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-2 text-center">Loading...</td>
+                  <td colSpan={5} className="px-4 py-2 text-center">
+                    Loading...
+                  </td>
                 </tr>
               ) : currentItems.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-2 text-center">No souvenirs found</td>
+                  <td colSpan={5} className="px-4 py-2 text-center">
+                    No souvenirs found
+                  </td>
                 </tr>
               ) : (
                 currentItems.map((souvenir) => (
@@ -305,11 +323,11 @@ export default function SouvenirAvailabilityPage() {
                     <td className="px-4 py-3">{souvenir.claimed}</td>
                     <td className="px-4 py-3">{souvenir.remaining}</td>
                     <td className="px-4 py-3 text-center">
-                      <button 
+                      <button
                         className="text-blue-600 hover:text-blue-800"
                         onClick={() => openEditModal(souvenir)}
                       >
-                        <MdModeEditOutline/>
+                        <MdModeEditOutline />
                       </button>
                     </td>
                   </tr>
@@ -337,7 +355,9 @@ export default function SouvenirAvailabilityPage() {
             </div>
             <div className="border-t border-gray-400 px-6 py-5 space-y-5">
               <div>
-                <label className="block text-gray-700 mb-2">Souvenir Name</label>
+                <label className="block text-gray-700 mb-2">
+                  Souvenir Name
+                </label>
                 <input
                   type="text"
                   className="w-full px-2 py-4  border-gray-400 border"
@@ -359,8 +379,8 @@ export default function SouvenirAvailabilityPage() {
                   className="px-6 py-2 border border-blue-700 text-blue-700"
                   onClick={() => {
                     setShowAddModal(false);
-                    setNewSouvenirName('');
-                    setNewSouvenirQuantity('');
+                    setNewSouvenirName("");
+                    setNewSouvenirQuantity("");
                   }}
                 >
                   Cancel
@@ -409,7 +429,7 @@ export default function SouvenirAvailabilityPage() {
                   onClick={() => {
                     setShowEditModal(false);
                     setSelectedSouvenir(null);
-                    setNewSouvenirQuantity('');
+                    setNewSouvenirQuantity("");
                   }}
                 >
                   Cancel

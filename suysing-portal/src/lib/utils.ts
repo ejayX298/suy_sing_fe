@@ -1,16 +1,12 @@
-import Swal from 'sweetalert2'
-
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
-  if (typeof window === 'undefined') return false;
-  
-  const auth = localStorage.getItem('auth');
+  const auth = localStorage.getItem("auth");
   if (!auth) return false;
-  
+
   try {
     const authData = JSON.parse(auth);
     return !!authData.token;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_error) {
     // Ignore JSON parse error and return false
     return false;
@@ -19,15 +15,13 @@ export const isAuthenticated = () => {
 
 // Function to get user data
 export const getUser = () => {
-  if (typeof window === 'undefined') return null;
-  
-  const auth = localStorage.getItem('auth');
+  const auth = localStorage.getItem("auth");
   if (!auth) return null;
-  
+
   try {
     const authData = JSON.parse(auth);
     return authData.user;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (_error) {
     // Ignore JSON parse error and return null
     return null;
@@ -35,7 +29,11 @@ export const getUser = () => {
 };
 
 // Function to get pagination range
-export const getPaginationRange = (totalPages: number, currentPage: number, maxPages: number = 5) => {
+export const getPaginationRange = (
+  totalPages: number,
+  currentPage: number,
+  maxPages: number = 5
+) => {
   if (totalPages <= maxPages) {
     return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
@@ -69,44 +67,44 @@ export const getPaginationRange = (totalPages: number, currentPage: number, maxP
 // Function to format date
 export const formatDate = (date: Date | string) => {
   const d = new Date(date);
-  return d.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric'
+  return d.toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
   });
 };
 
 // Function to format time
 export const formatTime = (date: Date | string) => {
   const d = new Date(date);
-  return d.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
+  return d.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
   });
 };
 
-
+interface TokenError {
+  status?: number;
+  response?: {
+    data?: {
+      code?: string;
+    };
+  };
+}
 
 // Function to check the response if token is invalid or expired and clear the auth in localStorage
-export const validateTokenResponse = (error : any) => {
-  
-  if(error?.status == 401){
-    if(error?.response?.data?.code == "token_not_valid"){
-      if (typeof window !== 'undefined') {
-        
-        const is_force_logout = localStorage.getItem('is_force_logout');
+export const validateTokenResponse = (error: TokenError) => {
+  if (error?.status == 401) {
+    if (error?.response?.data?.code == "token_not_valid") {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("is_force_logout", "true");
 
-        localStorage.setItem('is_force_logout', 'true');
+        const is_force_logout = localStorage.getItem("is_force_logout");
 
-        // force reload in initial force logout saving
-        if(is_force_logout != 'true'){
-          window.location.assign(window.location.origin + window.location.pathname);
+        if (is_force_logout != "true") {
+          window.location.href = "/login";
         }
-        
-        // remove local storage auth and force reload
-        // localStorage.removeItem('auth');
-        // window.location.assign(window.location.origin + window.location.pathname);
       }
     }
   }

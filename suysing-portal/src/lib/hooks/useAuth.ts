@@ -1,6 +1,5 @@
-// Authentication store using Zustand
-import { create } from 'zustand';
-import { authService } from '@/services/api';
+import { create } from "zustand";
+import { authService } from "@/services/api";
 
 interface User {
   id: number;
@@ -23,20 +22,20 @@ interface AuthState {
 export const useAuth = create<AuthState>((set) => {
   // Initialize state from localStorage if available
   const loadInitialState = () => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return {
         isAuthenticated: false,
         user: null,
-        token: null
+        token: null,
       };
     }
 
-    const storedAuth = localStorage.getItem('auth');
+    const storedAuth = localStorage.getItem("auth");
     if (!storedAuth) {
       return {
         isAuthenticated: false,
         user: null,
-        token: null
+        token: null,
       };
     }
 
@@ -45,14 +44,14 @@ export const useAuth = create<AuthState>((set) => {
       return {
         isAuthenticated: true,
         user: authData.user,
-        token: authData.token
+        token: authData.token,
       };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_error) {
       return {
         isAuthenticated: false,
         user: null,
-        token: null
+        token: null,
       };
     }
   };
@@ -65,81 +64,89 @@ export const useAuth = create<AuthState>((set) => {
     token: initialState.token,
     isLoading: false,
     error: null,
-    
+
     // Login action
     login: async (username: string, password: string) => {
       set({ isLoading: true, error: null });
-      
+
       try {
         const response = await authService.login(username, password);
-        
-        if (response.success) {
-          // Store auth data in localStorage
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('auth', JSON.stringify({
-              token: response.data.access_token,
-              user: response.user
-            }));
 
-            document.cookie = `auth=${localStorage.getItem("auth")}; path=/;`;
+        if (response?.success && response?.data) {
+          const userData = response.data.user || {};
+          // Store auth data in localStorage
+          if (typeof window !== "undefined") {
+            localStorage.setItem(
+              "auth",
+              JSON.stringify({
+                token: response.data.access_token,
+                user: userData,
+              })
+            );
+
+            // Only set cookie in browser environment
+            if (typeof document !== "undefined") {
+              document.cookie = `auth=${localStorage.getItem("auth")}; path=/;`;
+            }
           }
-          
+
           set({
             isAuthenticated: true,
-            user: response.user,
+            user: response.data.user,
             token: response.data.access_token,
-            isLoading: false
+            isLoading: false,
           });
-          
+
           return true;
         } else {
           set({
             isLoading: false,
-            error: response.message || 'Login failed'
+            error: response?.message || "Login failed",
           });
-          
+
           return false;
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
         set({
           isLoading: false,
-          error: 'An error occurred during login'
+          error: "An error occurred during login",
         });
-        
+
         return false;
       }
     },
-    
+
     // Logout action
     logout: async () => {
       try {
         await authService.logout();
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (_error) {
-        console.error('Logout error occurred');
+        console.error("Logout error occurred");
       }
-      
+
       set({
         isAuthenticated: false,
         user: null,
-        token: null
+        token: null,
       });
-      
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('auth');
-        localStorage.removeItem('is_force_logout');
-        document.cookie = `auth=; path=/;`;
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("auth");
+        localStorage.removeItem("is_force_logout");
+        // Only clear cookie in browser environment
+        if (typeof document !== "undefined") {
+          document.cookie = `auth=; path=/;`;
+        }
+        window.location.href = "/login";
       }
     },
 
-
     clearDocumentCookie: async () => {
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined" && typeof document !== "undefined") {
         document.cookie = `auth=; path=/;`;
       }
-    }
-
-
+    },
   };
 });
