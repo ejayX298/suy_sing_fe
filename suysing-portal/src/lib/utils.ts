@@ -1,6 +1,5 @@
 // Function to check if user is authenticated
 export const isAuthenticated = () => {
-
   const auth = localStorage.getItem("auth");
   if (!auth) return false;
 
@@ -16,8 +15,6 @@ export const isAuthenticated = () => {
 
 // Function to get user data
 export const getUser = () => {
-
-
   const auth = localStorage.getItem("auth");
   if (!auth) return null;
 
@@ -101,20 +98,13 @@ export const validateTokenResponse = (error: TokenError) => {
   if (error?.status == 401) {
     if (error?.response?.data?.code == "token_not_valid") {
       if (typeof window !== "undefined") {
-        const is_force_logout = localStorage.getItem("is_force_logout");
-
         localStorage.setItem("is_force_logout", "true");
 
-        // force reload in initial force logout saving
-        if (is_force_logout != "true") {
-          window.location.assign(
-            window.location.origin + window.location.pathname
-          );
-        }
+        const is_force_logout = localStorage.getItem("is_force_logout");
 
-        // remove local storage auth and force reload
-        // localStorage.removeItem('auth');
-        // window.location.assign(window.location.origin + window.location.pathname);
+        if (is_force_logout != "true") {
+          window.location.href = "/login";
+        }
       }
     }
   }

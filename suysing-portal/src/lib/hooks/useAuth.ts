@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { authService } from "@/services/api";
 
@@ -140,6 +139,7 @@ export const useAuth = create<AuthState>((set) => {
         if (typeof document !== "undefined") {
           document.cookie = `auth=; path=/;`;
         }
+        window.location.href = "/login";
       }
     },
 
