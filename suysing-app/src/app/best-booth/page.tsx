@@ -17,7 +17,7 @@ import { boothVisitService } from '@/services/api';
 function BestBoothContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // const customer_hash_code = searchParams.get("cc");
+  const customer_hash_code = searchParams.get("cc");
   
   let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
@@ -43,14 +43,7 @@ function BestBoothContent() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
-  const [customerHashCode, setCustomerHashCode] = useState<string | null>(null);
 
-
-
-  useEffect(() => {
-    const cc = searchParams.get('cc');
-    setCustomerHashCode(cc);
-  }, [searchParams]);
 
   const fetchData = async () => {
     try {
@@ -155,8 +148,8 @@ function BestBoothContent() {
 
 
   useEffect(() => {
-    if(customerHashCode && stored_hash_code){
-      if(customerHashCode == stored_hash_code){
+    if(customer_hash_code && stored_hash_code){
+      if(customer_hash_code == stored_hash_code){
         setIsRender(true)
         fetchData();
         getCustomerRecord();
@@ -168,7 +161,7 @@ function BestBoothContent() {
       router.push(`/unauthorized`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerHashCode]);
+  }, []);
   
   
   const handleContinue = async () => {
@@ -188,6 +181,7 @@ function BestBoothContent() {
       }
       
     } else {
+      router.push(`/best-booth/?cc=${stored_hash_code}`);
       // Reset and go back to intro
       resetVotes();
       setStep("intro");
