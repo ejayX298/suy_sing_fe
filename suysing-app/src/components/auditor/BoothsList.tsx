@@ -7,12 +7,16 @@ import { auditorService } from '@/services/api';
 
 interface BoothsListProps {
   onBack: () => void;
-  customerId : number
+  customerId : number;
+  totalRegularBooths : number;
+  totalDoubleZoneBooths : number;
 }
 
 export default function BoothsList({
   onBack,
   customerId,
+  totalRegularBooths,
+  totalDoubleZoneBooths
 }: BoothsListProps) {
   // Track which booth images failed to load
   const [failedImages, setFailedImages] = useState<{[key: string]: boolean}>({});
@@ -95,7 +99,7 @@ export default function BoothsList({
         <div className="bg-white mb-6 rounded-[10px] border border-[#7D7D7D] p-4">
         <div className="flex justify-between rounded-md items-center bg-[#0920B0] text-white px-4 py-3">
             <h2 className="text-lg font-bold">Regular Zone</h2>
-            <div className="text-sm">{regularBooths.length}/{regularBooths.length}</div>
+            <div className="text-sm">{regularBooths.length}/{totalRegularBooths}</div>
           </div>
           <div className="border border-[#7D7D7D] mt-3 rounded-sm">
           <div className="p-3 border-b border-[#7D7D7D]">
@@ -141,7 +145,7 @@ export default function BoothsList({
         <div className="bg-white mb-6 rounded-[10px] border border-[#7D7D7D] p-4 ">
         <div className="flex justify-between rounded-md items-center bg-[#0920B0] text-white px-4 py-3">
             <h2 className="text-lg font-bold">Double Zone</h2>
-            <div className="text-sm">{doubleBooths.length}/{doubleBooths.length}</div>
+            <div className="text-sm">{doubleBooths.length}/{totalDoubleZoneBooths}</div>
           </div>
           <div className="border border-[#7D7D7D] mt-3 rounded-sm">
           <div className="p-3 border-b border-[#7D7D7D]">
