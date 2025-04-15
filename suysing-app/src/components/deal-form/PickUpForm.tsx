@@ -77,7 +77,7 @@ export default function PickUpForm({
             onChange={onSelectChange}
             className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
           >
-            <option value=""></option>
+            {/* <option value="" disabled></option> */}
             {transactionTypes.map((transactionTypeName, index) => (
               <option key={index} value={transactionTypeName}>
                 {transactionTypeName}
@@ -99,7 +99,7 @@ export default function PickUpForm({
             onChange={onSelectChange}
             className="w-full px-3 py-4 border  border-gray-400 rounded-md focus:outline-none text-black"
           >
-            <option value=""></option>
+            {/* <option value=""></option> */}
             {customerPickupDetails.map((customerPickup, index) => (
               <option key={index} value={customerPickup.id}>
                 {customerPickup.branch_code}
