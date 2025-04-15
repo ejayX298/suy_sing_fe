@@ -196,7 +196,7 @@ function BestBoothContent() {
     if(customerData){
       if(customerData?.isDoneVisit == 0){
         showMessageRedirect("0" , "You need to visit all the booths first");
-      }else{
+      }else if(customerData?.isDoneVisit == 1){
         setIsDoneVisit(true)
       }
     }
