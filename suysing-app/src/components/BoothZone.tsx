@@ -2,8 +2,8 @@ import BoothItem from "./BoothItem";
 
 export interface Booth {
   name: string;
-  image: string;
-  boothCode: string;
+  image?: string;
+  boothCode?: string;
   visited: boolean;
 }
 

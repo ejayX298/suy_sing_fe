@@ -1,17 +1,26 @@
 "use client";
-import BoothZone, { Booth as BoothZoneBooth } from "@/components/BoothZone";
+import BoothZone from "@/components/BoothZone";
 import VisitedBooths from "@/components/VisitedBooths";
 import BoothsProgress from "@/components/BoothsProgress";
-import { useBooths, Booth as ContextBooth } from "@/context/BoothsContext";
+// import { useBooths, Booth as ContextBooth } from "@/context/BoothsContext";
 import { useState, useEffect } from "react";
 import { boothVisitService } from '@/services/api';
 import { useSearchParams } from "next/navigation";
 
+interface RegularBoothsType{
+  id: string;
+  name: string;
+  code: string;
+  is_double_zone: string;
+  image :  string;
+  boothCode : string
+  visited : boolean
+}
 export default function BoothsVisitedPage() {
   // Use the global booth state from context
-  const { booths, visitedCount, totalBooths } = useBooths();
+  // const { booths, visitedCount, totalBooths } = useBooths();
   const [isRender, setIsRender] = useState(false);
-  const [regularBooths, setRegularBooths] = useState([]);
+  const [regularBooths, setRegularBooths] = useState<RegularBoothsType[]>([]);
   const [doubleBooths, setDoubleBooths] = useState([]);
   const [visitedBooths, setVisitedBooths] = useState([]);
   const [customerData, setCustomerData] = useState<{
@@ -27,17 +36,17 @@ export default function BoothsVisitedPage() {
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
   
-  let stored_hash_code: any = ""
+  let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
+    stored_hash_code = localStorage.getItem('hash_code') || "";
   }
 
-  const mapToBoothZoneFormat = (booth: ContextBooth): BoothZoneBooth => ({
-    name: booth.name,
-    boothCode: booth.boothCode,
-    image: booth.image || "/default-booth-image.jpg",
-    visited: booth.visited,
-  });
+  // const mapToBoothZoneFormat = (booth: ContextBooth): BoothZoneBooth => ({
+  //   name: booth.name,
+  //   boothCode: booth.boothCode,
+  //   image: booth.image || "/default-booth-image.jpg",
+  //   visited: booth.visited,
+  // });
 
   // const regularBooths = booths
   //   .filter(
@@ -65,11 +74,11 @@ export default function BoothsVisitedPage() {
       if(boothResult.success){
 
         const regularBoothsMap = boothResult.results.filter(
-          (booth) =>
+          (booth : {is_double_zone : number}) =>
             booth.is_double_zone == 0
         );
 
-        const mapRegularBooths = regularBoothsMap.map(booth => ({
+        const mapRegularBooths = regularBoothsMap.map((booth : {code : string}) => ({
           image: '/images/booths/' + booth.code + '.png',
           boothCode : booth.code,
           ...booth
@@ -77,11 +86,11 @@ export default function BoothsVisitedPage() {
         
 
         const doubleBoothsMap = boothResult.results.filter(
-          (booth) =>
+          (booth :  {is_double_zone : number}) =>
             booth.is_double_zone == 1
         );
 
-        const mapDoubleZoneBooths = doubleBoothsMap.map(booth => ({
+        const mapDoubleZoneBooths = doubleBoothsMap.map((booth: { code: string; })   => ({
           image: '/images/booths/' + booth.code + '.png',
           boothCode : booth.code,
           ...booth
@@ -106,7 +115,7 @@ export default function BoothsVisitedPage() {
 
         const visited_list = boothResult.results?.booths || [];
 
-        const mapVisitedList = visited_list.map(booth => ({
+        const mapVisitedList = visited_list.map((booth: { code: string; }) => ({
           image: '/images/booths/' + booth.code + '.png',
           boothCode : booth.code,
           ...booth
@@ -145,8 +154,7 @@ export default function BoothsVisitedPage() {
         return false;
       }
     
-    } catch (error) {
-      
+    } catch {
       return false;
       
     }
@@ -162,8 +170,8 @@ export default function BoothsVisitedPage() {
         get_visited_booth_list();
         getCustomerRecord();
       }
-      
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if(!isRender){
@@ -193,7 +201,7 @@ export default function BoothsVisitedPage() {
         <BoothZone
           title="Double Zone"
           booths={doubleBooths}
-          progress={`${doubleBooths.filter((b) => b.visited).length}/${
+          progress={`${doubleBooths.filter((b : {visited : string}) => b.visited).length}/${
             doubleBooths.length
           }`}
         />

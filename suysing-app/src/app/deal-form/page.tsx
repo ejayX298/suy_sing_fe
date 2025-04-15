@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
 import TermsAndConditions from "@/components/deal-form/TermsAndConditions";
-import BasicForm from "@/components/deal-form/BasicForm";
 import PickUpForm from "@/components/deal-form/PickUpForm";
 import DeliveryForm from "@/components/deal-form/DeliveryForm";
 import ProductSelection from "@/components/deal-form/ProductSelection";
@@ -35,12 +34,12 @@ interface Cart {
   submitted?: boolean;
 }
 
-interface CustomerData {
-  id: string;
-  fname: string;
-  customer_type: string;
-  code: string;
-}
+// interface CustomerData {
+//   id: string;
+//   fname: string;
+//   customer_type: string;
+//   code: string;
+// }
 
 interface CustomerPickupDetails {
   id: string;
@@ -61,7 +60,7 @@ export default function DealFormPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const { booths, handleVisitBooth, visitedCount, totalBooths } = useBooths();
+  const { booths, handleVisitBooth } = useBooths();
 
   const [formData, setFormData] = useState({
     acceptTerms: false,
@@ -76,7 +75,7 @@ export default function DealFormPage() {
 
   const [carts, setCarts] = useState<Cart[]>([]);
   const [currentCartIndex, setCurrentCartIndex] = useState(0);
-  const [customerDetails, setCustomerDetails] = useState<CustomerData>();
+  // const [customerDetails, setCustomerDetails] = useState<CustomerData>();
   const [customerData, setCustomerData] = useState<{
     id: number;
     code: string;
@@ -96,9 +95,9 @@ export default function DealFormPage() {
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
   
-  let stored_hash_code: any = ""
+  let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
+    stored_hash_code = localStorage.getItem('hash_code') || "";
   }
 
   
@@ -126,8 +125,7 @@ export default function DealFormPage() {
         return false;
       }
     
-    } catch (error) {
-      
+    } catch  {
       return false;
       
     }
@@ -140,7 +138,7 @@ export default function DealFormPage() {
       const customerResult = await dealCartService.getCustomerParams();
       
       if(customerResult.success){
-        setCustomerDetails(customerResult.results);
+        // setCustomerDetails(customerResult.results);
         setFormData({
           ...formData,
           customerCode: customerResult.results.code || ""
@@ -182,15 +180,14 @@ export default function DealFormPage() {
         return false;
       }
     
-    } catch (error) {
-      
+    } catch {
       return false;
       
     }
 
   };
 
-
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const createDealCart = async (post_data : any) => {
     try {
       const createDealCartResult = await dealCartService.createDealCart(post_data);
@@ -202,9 +199,7 @@ export default function DealFormPage() {
         return false;
       }
     
-    } catch (error) {
-      console.log(error)
-      console.log(error)
+    } catch {
       showMessage("0" , "Unable to process your request. Please try again later. 1212 ")   
       return false;
       
@@ -255,6 +250,7 @@ export default function DealFormPage() {
       };
       setCarts([emptyCart]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCreateNewCart = (fromConfirmation = false) => {
@@ -495,7 +491,7 @@ export default function DealFormPage() {
   // Handle form submission and booth visit tracking
   const handleComplete = async () => {
 
-    let confirmAction = await confirmMessage(`Are you sure you want to submit this cart?`);
+    const confirmAction = await confirmMessage(`Are you sure you want to submit this cart?`);
 
     // Inititalize and show loader
     showLoader();

@@ -3,8 +3,19 @@
 import Image from "next/image";
 import React,  { useState, useEffect } from "react";
 
+
+interface CustomerData {
+  id: number;
+  code: string;
+  name: string;
+  hasVoted?: number;
+  isDoneVisit?: number;
+  totalBoothVisited?: number;
+  totalBooths?: number;
+}
+
 interface WelcomePageProps {
-  customer_data : any;
+  customer_data : CustomerData;
   onContinue: () => void;
   onClose?: () => void;
 }

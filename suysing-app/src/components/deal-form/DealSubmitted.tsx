@@ -9,9 +9,9 @@ interface DealSubmittedProps {
 
 const DealSubmitted: React.FC<DealSubmittedProps> = ({ isOpen, onClose }) => {
   const router = useRouter();
-  let stored_hash_code: any = ""
+  let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
+    stored_hash_code = localStorage.getItem('hash_code') || "";
   }
 
   if (!isOpen) return null;

@@ -9,9 +9,15 @@ import { customerQr } from '@/services/api';
 export default function MyQrPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const customer_hash_code = searchParams.get("cc");
+  const customer_hash_code = searchParams.get("cc") || "";
 
-  const [customerData, setCustomerData] = useState({});
+  const [customerData, setCustomerData] = useState<{
+    id: string;
+    code: string;
+    customer_type: string;
+    full_name: string;
+    session_id: string;
+  } | null>(null);
   const [customerFound, setCustomerFound] = useState(false);
   
   
@@ -40,6 +46,7 @@ export default function MyQrPage() {
     }else{
       router.push(`/unauthorized`)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   
@@ -67,9 +74,9 @@ export default function MyQrPage() {
        <div className="flex flex-col items-center mb-4">
          <div className="bg-white p-6 rounded-md shadow-sm mb-4 border-2 border-[#F78B1E]">
            <p className="text-center text-lg font-semibold mb-2">My QR Code</p>
-           <QRCode value={customerData.code} size={256}/>
-           <p className="text-center text-sm mt-2">Customer Code: <span className="font-semibold text-lg">{customerData.code}</span></p>
-           <p className="text-center text-2xl mt-1">{customerData.full_name}</p>
+           <QRCode value={customerData?.code || ""} size={256}/>
+           <p className="text-center text-sm mt-2">Customer Code: <span className="font-semibold text-lg">{customerData?.code || ""}</span></p>
+           <p className="text-center text-2xl mt-1">{customerData?.full_name || ""}</p>
          </div>
        </div>
      </div>

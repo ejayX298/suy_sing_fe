@@ -1,6 +1,6 @@
 "use client";
 
-import { useBooths } from "@/context/BoothsContext";
+// import { useBooths } from "@/context/BoothsContext";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { auditorService } from '@/services/api';
@@ -20,7 +20,7 @@ export default function BoothsList({
   const [doubleBooths, setDoubleBooths] = useState([]);
   
   // Get booth data from context
-  const { booths } = useBooths();
+  // const { booths } = useBooths();
 
   // Filter booths by their type/zone
   // const regularBooths = booths.filter(
@@ -41,12 +41,12 @@ export default function BoothsList({
       if(boothResult.success){
 
         const regularBoothsMap = boothResult.results.filter(
-          (booth) =>
+          (booth: { is_double_zone: number; }) =>
             booth.is_double_zone == 0
         );
 
         const doubleBoothsMap = boothResult.results.filter(
-          (booth) =>
+          (booth: { is_double_zone: number; }) =>
             booth.is_double_zone == 1
         );
         
@@ -72,11 +72,11 @@ export default function BoothsList({
       .substring(0, 2);
   };
 
-
   useEffect(() => {
-    if(customerId){
-      get_unvisited_booth_list()
+    if (customerId) {
+      get_unvisited_booth_list();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -95,7 +95,7 @@ export default function BoothsList({
         <div className="bg-white mb-6 rounded-[10px] border border-[#7D7D7D] p-4">
         <div className="flex justify-between rounded-md items-center bg-[#0920B0] text-white px-4 py-3">
             <h2 className="text-lg font-bold">Regular Zone</h2>
-            <div className="text-sm">{regularBooths.filter(b => b.visited).length}/{regularBooths.length}</div>
+            <div className="text-sm">{regularBooths.length}/{regularBooths.length}</div>
           </div>
           <div className="border border-[#7D7D7D] mt-3 rounded-sm">
           <div className="p-3 border-b border-[#7D7D7D]">
@@ -104,7 +104,7 @@ export default function BoothsList({
             </h3>
           </div>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
-              {regularBooths.map((booth) => {
+              {regularBooths.map((booth : {id : string, name : string, visited: boolean, logo:string, image:string}) => {
                 const boothId = booth.id || booth.name;
                 const imageKey = `regular-${boothId}`;
                 return (
@@ -141,7 +141,7 @@ export default function BoothsList({
         <div className="bg-white mb-6 rounded-[10px] border border-[#7D7D7D] p-4 ">
         <div className="flex justify-between rounded-md items-center bg-[#0920B0] text-white px-4 py-3">
             <h2 className="text-lg font-bold">Double Zone</h2>
-            <div className="text-sm">{doubleBooths.filter(b => b.visited).length}/{doubleBooths.length}</div>
+            <div className="text-sm">{doubleBooths.length}/{doubleBooths.length}</div>
           </div>
           <div className="border border-[#7D7D7D] mt-3 rounded-sm">
           <div className="p-3 border-b border-[#7D7D7D]">
@@ -150,7 +150,7 @@ export default function BoothsList({
             </h3>
           </div>
             <div className="space-y-2 max-h-[500px] overflow-y-auto">
-              {doubleBooths.map((booth) => {
+              {doubleBooths.map((booth : {id : string , name : string, logo: string, image : string, visited : boolean}) => {
                 const boothId = booth.id || booth.name;
                 const imageKey = `double-${boothId}`;
                 return (

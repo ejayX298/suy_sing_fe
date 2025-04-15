@@ -23,16 +23,19 @@ function AuditorBoothVoteContent() {
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
   const [redBooths, setRedBooths] = useState([]);
-  const [auditData, setAuditData] = useState([]);
+  const [auditData, setAuditData] = useState<{
+    total_booth_visited: number;
+    total_booths: number;
+  } | null>(null);
 
   const searchParams = useSearchParams();
   const auditor_hash_code = searchParams.get("cc");
 
-  let stored_hash_code: any = ""
-  let stored_auditInfo: any = ""
+  let stored_hash_code: string = ""
+  let stored_auditInfo: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('audit_hash_code');
-    stored_auditInfo = localStorage.getItem('audit_info');
+    stored_hash_code = localStorage.getItem('audit_hash_code') || "";
+    stored_auditInfo = localStorage.getItem('audit_info') || "";
   }
   const auditInforParsed = stored_auditInfo ? JSON.parse(stored_auditInfo) : [];
   
@@ -73,7 +76,7 @@ function AuditorBoothVoteContent() {
         return false;
       }
     
-    } catch (error) {
+    } catch {
       showMessage("0" , "Unable to process your request. Please try again later.")   
       return false;
     } finally {
@@ -145,6 +148,7 @@ function AuditorBoothVoteContent() {
     }else{
       router.push(`/unauthorized`)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const getStepHeader = () => {

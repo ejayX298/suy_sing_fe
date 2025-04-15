@@ -29,64 +29,64 @@ interface Cart {
 }
 
 // Initial product data
-const initialProducts: Product[] = [
-  {
-    id: "1",
-    itemCode: "55011",
-    name: "Buy Alaska Fortified Milk 600g",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-  {
-    id: "2",
-    itemCode: "55012",
-    name: "Buy Alaska Fortified Milk 1.4kg",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-  {
-    id: "3",
-    itemCode: "55013",
-    name: "Alaska Classic Evaporated Filled Milk 370ml",
-    quantity: 0,
-    discount: "15% Discount",
-  },
-  {
-    id: "4",
-    itemCode: "55014",
-    name: "Alaska Classic Evaporated Filled Milk 360ml",
-    quantity: 0,
-    discount: "25% Discount",
-  },
-  {
-    id: "5",
-    itemCode: "55015",
-    name: "Alaska Fortified Powdered Filled Milk 900g",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-  {
-    id: "6",
-    itemCode: "55016",
-    name: "Cowbell Condensap 360ml",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-  {
-    id: "7",
-    itemCode: "55017",
-    name: "Alaska Fortified Powdered Filled Milk 500g",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-  {
-    id: "8",
-    itemCode: "55018",
-    name: "Alaska Fortified Powdered Filled Milk 250ML",
-    quantity: 0,
-    discount: "10% Discount",
-  },
-];
+// const initialProducts: Product[] = [
+//   {
+//     id: "1",
+//     itemCode: "55011",
+//     name: "Buy Alaska Fortified Milk 600g",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+//   {
+//     id: "2",
+//     itemCode: "55012",
+//     name: "Buy Alaska Fortified Milk 1.4kg",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+//   {
+//     id: "3",
+//     itemCode: "55013",
+//     name: "Alaska Classic Evaporated Filled Milk 370ml",
+//     quantity: 0,
+//     discount: "15% Discount",
+//   },
+//   {
+//     id: "4",
+//     itemCode: "55014",
+//     name: "Alaska Classic Evaporated Filled Milk 360ml",
+//     quantity: 0,
+//     discount: "25% Discount",
+//   },
+//   {
+//     id: "5",
+//     itemCode: "55015",
+//     name: "Alaska Fortified Powdered Filled Milk 900g",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+//   {
+//     id: "6",
+//     itemCode: "55016",
+//     name: "Cowbell Condensap 360ml",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+//   {
+//     id: "7",
+//     itemCode: "55017",
+//     name: "Alaska Fortified Powdered Filled Milk 500g",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+//   {
+//     id: "8",
+//     itemCode: "55018",
+//     name: "Alaska Fortified Powdered Filled Milk 250ML",
+//     quantity: 0,
+//     discount: "10% Discount",
+//   },
+// ];
 
 interface CustomerPickupDetails {
   id: string;
@@ -105,27 +105,27 @@ interface CustomerDeliveryDetails {
 }
 
 // Initial dealer list
-const initialDealers: Dealer[] = [
-  {
-    id: "1",
-    name: "Alaska Milk Corporation",
-    products: initialProducts,
-  },
-  { id: "2", name: "Alce", products: [] },
-  { id: "3", name: "Aji-Ginisa", products: [] },
-  { id: "4", name: "AJI-NO-MOTO", products: [] },
-  { id: "5", name: "Aji-Shio", products: [] },
-  { id: "6", name: "B'lue", products: [] },
-  { id: "7", name: "B-Meg", products: [] },
-  { id: "8", name: "Barrio Fiesta", products: [] },
-  { id: "9", name: "Cadbury", products: [] },
-  { id: "10", name: "CDO Foodsphere", products: [] },
-  { id: "11", name: "Cerelac", products: [] },
-];
+// const initialDealers: Dealer[] = [
+//   {
+//     id: "1",
+//     name: "Alaska Milk Corporation",
+//     products: initialProducts,
+//   },
+//   { id: "2", name: "Alce", products: [] },
+//   { id: "3", name: "Aji-Ginisa", products: [] },
+//   { id: "4", name: "AJI-NO-MOTO", products: [] },
+//   { id: "5", name: "Aji-Shio", products: [] },
+//   { id: "6", name: "B'lue", products: [] },
+//   { id: "7", name: "B-Meg", products: [] },
+//   { id: "8", name: "Barrio Fiesta", products: [] },
+//   { id: "9", name: "Cadbury", products: [] },
+//   { id: "10", name: "CDO Foodsphere", products: [] },
+//   { id: "11", name: "Cerelac", products: [] },
+// ];
 
 // Sample branches and shipping addresses
-const branches = ["Quezon City", "Makati", "Pasig", "Mandaluyong", "Taguig"];
-const shippingAddresses = ["123 Main St, Quezon City", "456 Ayala Ave, Makati", "789 Ortigas Center, Pasig", "101 Shaw Blvd, Mandaluyong"];
+// const branches = ["Quezon City", "Makati", "Pasig", "Mandaluyong", "Taguig"];
+// const shippingAddresses = ["123 Main St, Quezon City", "456 Ayala Ave, Makati", "789 Ortigas Center, Pasig", "101 Shaw Blvd, Mandaluyong"];
 
 // Component props
 interface ProductSelectionProps {
@@ -181,7 +181,7 @@ export default function ProductSelection({
       : []
   );
   const [dealers, setDealers] = useState<Dealer[]>([]);
-  const [currentCarts, setCurrentCarts] = useState<Cart[]>([]);
+  // const [currentCarts, setCurrentCarts] = useState<Cart[]>([]);
   const [currentSelectedCart, setCurrentSelectedCart] = useState<Cart>();
   const [expandedDealers, setExpandedDealers] = useState<string[]>(["1"]);
   
@@ -208,7 +208,7 @@ export default function ProductSelection({
 
 
   useEffect(() => { 
-    setCurrentCarts(carts)
+    // setCurrentCarts(carts)
 
     // check if cart index exists in carts
     if (currentCartIndex >= 0 && currentCartIndex <= carts.length) {
@@ -216,6 +216,7 @@ export default function ProductSelection({
         setCurrentSelectedCart(carts[currentCartIndex])
      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carts]);
 
   
@@ -264,7 +265,7 @@ export default function ProductSelection({
     }
   };
 
-  const getActualQty = (product_id : any) => {
+  const getActualQty = (product_id : string) => {
     const currentSelectedCartProducts = currentSelectedCart?.selectedProducts || [];
 
     const findCartProduct = currentSelectedCartProducts.find(product => product.id == product_id);

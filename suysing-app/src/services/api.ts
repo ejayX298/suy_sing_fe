@@ -1,10 +1,10 @@
-import httpClient,  from './base/httpClient';
+import httpClient  from './base/httpClient';
 import axios from 'axios';
 
 
 export const customerQr = {
  
-  getCustomer: async (code : any) => {
+  getCustomer: async (code : string) => {
 
     const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
 
@@ -15,7 +15,7 @@ export const customerQr = {
       
       const response_data = response?.data?.data || []
       
-      const mapResponse = {
+      const mapResponse : {id : string, code : string,  customer_type : string, full_name : string, session_id : string } = {
         id: response_data?.id,
         code: response_data?.code,
         customer_type: response_data?.customer_type,
@@ -54,7 +54,8 @@ export const customerQr = {
 
     } catch (error) {
 
-      const default_err_response = {
+      /* eslint-disable @typescript-eslint/no-explicit-any */
+      const default_err_response : {success: boolean, results : any} = {
         success : false,
         results : []
       }
@@ -79,12 +80,10 @@ export const bestBooth = {
 
     try{
 
-      let hash_code:any = ''
-      let customer_info:any = {}
+      let customer_info:string = ''
       
       if (typeof window !== 'undefined') {
-         hash_code = localStorage.getItem('hash_code');
-         customer_info = localStorage.getItem('customer_info');
+         customer_info = localStorage.getItem('customer_info') || '';
       }
     
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
@@ -94,19 +93,19 @@ export const bestBooth = {
       
       const response_data = response?.data?.data || []
       
-      const mapBlueBooths = response_data.blue_booths.map(booth => ({
+      const mapBlueBooths = response_data.blue_booths.map((booth : {code : string} )=> ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
       }));
 
-      const mapOrangeBooths = response_data.orange_booths.map(booth => ({
+      const mapOrangeBooths = response_data.orange_booths.map((booth : { code : string}) => ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
       }));
 
-      const mapRedBooths = response_data.red_booths.map(booth => ({
+      const mapRedBooths = response_data.red_booths.map((booth : {code : string}) => ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
@@ -145,23 +144,21 @@ export const bestBooth = {
 
   },
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   submitBoothVoting: async (post_data : any) => {
 
     try{
-      
-      const hash_code = localStorage.getItem('hash_code');
-
+    
       const customer_info = localStorage.getItem('customer_info');
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
       const session_id = customerInfoParsed?.session_id || ''
       const customer_id = customerInfoParsed?.id || ''
   
-      const response = await httpClient(session_id).post(`/customer/voting/booth/submit/`, {
+      await httpClient(session_id).post(`/customer/voting/booth/submit/`, {
         customer_id : customer_id,
         booth_ids: JSON.stringify(post_data)
       });
       
-      const response_data = response?.data?.data || []
       
       return {
         success : true,
@@ -173,7 +170,7 @@ export const bestBooth = {
     
       if (axios.isAxiosError(error)) {
         
-        const errResp = error.response;
+        const errResp = error?.response
         return {
           success: false,
           message: errResp?.data?.message || 'Error! Please try again later'
@@ -196,17 +193,15 @@ export const bestBooth = {
 
 export const auditorService = {
  
-  checkAccess: async (code : any) => {
+  checkAccess: async (code : string) => {
 
     const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
 
     try{
       const hash_code = code;
   
-      const response = await httpClient(api_key).get(`/auditor/check_auditor/?ahc=${hash_code}&is_auditor=1`, {});
+      await httpClient(api_key).get(`/auditor/check_auditor/?ahc=${hash_code}&is_auditor=1`, {});
       
-      const response_data = response?.data?.data || []
-
       
       if (typeof window !== 'undefined') {
         localStorage.setItem('audit_hash_code', hash_code);
@@ -235,7 +230,7 @@ export const auditorService = {
 
 
 
-  checkCustomerRecord: async (code : any, customer_code : string) => {
+  checkCustomerRecord: async (code : string, customer_code : string) => {
 
     const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
 
@@ -261,10 +256,8 @@ export const auditorService = {
 
     } catch (error) {
 
-      const errResp = error.response;
-      
       if (axios.isAxiosError(error)) {
-        
+        const errResp = error.response;  
         return {
           success: false,
           message: errResp?.data?.message || 'Error! Please try again later'
@@ -280,7 +273,7 @@ export const auditorService = {
   },
 
 
-  checkCustomerRecordbyId: async (code : any, customer_id : number) => {
+  checkCustomerRecordbyId: async (code : string, customer_id : number) => {
 
     const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
 
@@ -306,10 +299,10 @@ export const auditorService = {
 
     } catch (error) {
 
-      const errResp = error.response;
-      
       if (axios.isAxiosError(error)) {
         
+        const errResp = error.response;
+
         return {
           success: false,
           message: errResp?.data?.message || 'Error! Please try again later'
@@ -377,9 +370,9 @@ export const auditorService = {
 
     } catch (error) {
 
-      const errResp = error.response;
-      
       if (axios.isAxiosError(error)) {
+
+        const errResp = error.response;
         
         return {
           success: false,
@@ -406,19 +399,19 @@ export const auditorService = {
       
       const response_data = response?.data?.data || []
       
-      const mapBlueBooths = response_data.blue_booths.map(booth => ({
+      const mapBlueBooths = response_data.blue_booths.map((booth : {code : string}) => ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
       }));
 
-      const mapOrangeBooths = response_data.orange_booths.map(booth => ({
+      const mapOrangeBooths = response_data.orange_booths.map((booth : {code : string}) => ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
       }));
 
-      const mapRedBooths = response_data.red_booths.map(booth => ({
+      const mapRedBooths = response_data.red_booths.map((booth : {code : string}) => ({
         boothCode: booth.code,
         image: '/images/booths/' + booth.code + '.png',
         ...booth
@@ -457,26 +450,26 @@ export const auditorService = {
 
   },
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   submitBoothVoting: async (post_data : any) => {
 
     try{
       
       const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-      let audit_info:any = {}
+      let audit_info: string = ''
       
       if (typeof window !== 'undefined') {
-        audit_info = localStorage.getItem('audit_info');
+        audit_info = localStorage.getItem('audit_info') || '';
       }
     
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
       const customer_id = auditInforParsed?.id || ''
   
-      const response = await httpClient(api_key).post(`/customer/voting/booth/submit/?is_auditor=1`, {
+      await httpClient(api_key).post(`/customer/voting/booth/submit/?is_auditor=1`, {
         customer_id : customer_id,
         booth_ids: JSON.stringify(post_data)
       });
       
-      const response_data = response?.data?.data || []
       
       return {
         success : true,
@@ -515,7 +508,7 @@ export const auditorService = {
       
       const response_data = response?.data?.data || []
      
-      const mapResponse = response_data.souvenirs.map(souvenir => ({
+      const mapResponse = response_data.souvenirs.map((souvenir : {id : string, code : string, name : string}) => ({
         id : souvenir.id,
         name: souvenir.name,
         image: '/images/souvenir/' + souvenir.code + '.png'
@@ -544,27 +537,27 @@ export const auditorService = {
 
   },
 
-
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   submitSouvenir: async (post_data : any) => {
 
     try{
       
       const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-      let audit_info:any = {}
+      let audit_info:string = ''
       
       if (typeof window !== 'undefined') {
-        audit_info = localStorage.getItem('audit_info');
+        audit_info = localStorage.getItem('audit_info') || '';
       }
 
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
       const customer_id = auditInforParsed?.id || ''
   
-      const response = await httpClient(api_key).post(`/customer/souvenir/submit/?is_auditor=1`, {
+      await httpClient(api_key).post(`/customer/souvenir/submit/?is_auditor=1`, {
         customer_id : customer_id,
-        souvenir_id: post_data.souvenir_id
+        souvenir_id: post_data?.souvenir_id || ''
       });
       
-      const response_data = response?.data?.data || []
+      
       
       return {
         success : true,
@@ -619,11 +612,11 @@ export const boothVisitService = {
     
 
     } catch (error) {
-
-      const errResp = error.response;
       
       if (axios.isAxiosError(error)) {
-        
+
+        const errResp = error.response;
+
         return {
           success: false,
           message: errResp?.data?.message || 'Error! Please try again later'
@@ -714,6 +707,7 @@ export const boothVisitService = {
   },
   
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   submitBoothVisit: async (post_data : any) => {
 
     try{
@@ -813,7 +807,7 @@ export const dealCartService = {
       
       const response_data = response?.data?.data || []
 
-      const mapBoothProducts = response_data.booths.map(booth => ({
+      const mapBoothProducts = response_data.booths.map((booth : {id : string, name : string, code : string, description: string, products : [{id : string, code : string, item_code : string, name : string, discount : number}]}) => ({
         id: booth.id,
         name: booth.name,
         code: booth.code,
@@ -851,7 +845,7 @@ export const dealCartService = {
 
   },
 
-
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   createDealCart: async (post_data : any) => {
 
     try{
@@ -895,7 +889,7 @@ export const dealCartService = {
         };
         
       }else{
-        console.log(error)
+        
         return {
           success: false,
           message: 'Unable to process your request. Please try again later.'

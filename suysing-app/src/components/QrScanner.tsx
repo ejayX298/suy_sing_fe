@@ -63,6 +63,7 @@ export default function QrScanner({ onScan }: QrScannerProps) {
 
     return () => {
       if (videoRef.current?.srcObject) {
+        //eslint-disable-next-line react-hooks/exhaustive-deps
         const tracks = (videoRef.current.srcObject as MediaStream).getTracks();
         tracks.forEach((track) => track.stop());
       }

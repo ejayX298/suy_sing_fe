@@ -8,8 +8,6 @@ interface VisitedBoothsProps {
 
 export default function VisitedBooths({
   booths,
-  clickable = false,
-  onBoothToggle,
 }: VisitedBoothsProps) {
   // const visitedBooths = booths.filter((booth) => booth.visited);
   const visitedBooths = booths

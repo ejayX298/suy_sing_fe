@@ -1,9 +1,9 @@
 "use client";
 
-import React, {useState, useEffect} from "react";
 import Image from "next/image";
-import { useBooths } from "@/context/BoothsContext";
+// import { useBooths } from "@/context/BoothsContext";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { totalVisitCount: number, boothData : any }) {
 
   return (
@@ -55,9 +55,10 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
 }
 
 function DoubleZoneCard(
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   { boothIndex, boothData }: { boothIndex: number, boothData : any },
   ) {
-  const { doubleZoneBooths } = useBooths();
+  // const { doubleZoneBooths } = useBooths();
   const booth = boothData[boothIndex];
 
   return (

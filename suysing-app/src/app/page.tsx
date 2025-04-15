@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import BoothsProgress from "@/components/BoothsProgress";
 import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
-import TestDoubleZone from "@/components/TestDoubleZone";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
@@ -27,7 +26,7 @@ export interface Booth {
 
 export default function Home() {
   const router = useRouter();
-  const { booths, setBooths, visitedCount, totalBooths, handleVisitBooth } =
+  const { booths, setBooths, handleVisitBooth } =
     useBooths();
   const [showInstructionModal, setShowInstructionModal] = useState(false);
 
@@ -51,9 +50,9 @@ export default function Home() {
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
 
-  let stored_hash_code: any = "";
+  let stored_hash_code: string = "";
   if (typeof window !== "undefined") {
-    stored_hash_code = localStorage.getItem("hash_code");
+    stored_hash_code = localStorage.getItem("hash_code") || "";
   }
 
   const getCustomerRecord = async () => {
@@ -77,7 +76,7 @@ export default function Home() {
       } else {
         return false;
       }
-    } catch (error) {
+    } catch {
       return false;
     }
   };
@@ -87,11 +86,11 @@ export default function Home() {
       const boothResult = await boothVisitService.getVisitedBoothlist();
       if (boothResult.success) {
         const doubleBoothsMap = boothResult.results.booths.filter(
-          (booth) => booth.is_double_zone == 1
+          (booth : {is_double_zone : number}) => booth.is_double_zone == 1
         );
 
         const regularBoothsMap = boothResult.results.booths.filter(
-          (booth) => booth.is_double_zone == 0
+          (booth : {is_double_zone : number}) => booth.is_double_zone == 0
         );
 
         mapRegularBooths(regularBoothsMap);
@@ -108,10 +107,11 @@ export default function Home() {
     });
   };
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const mapRegularBooths = (regularBooths: any) => {
     const remapBooth = booths?.map((boothDefault) => {
       const findVisited = regularBooths.find(
-        (regularBooth) => regularBooth.code === boothDefault.boothCode
+        (regularBooth : {code : string}) => regularBooth.code === boothDefault.boothCode
       );
 
       return {
@@ -122,18 +122,19 @@ export default function Home() {
     setRemapBooth([...remapBooth]);
   };
 
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const mapDoubleZone = (doubleBoothsMap: any) => {
     doubleBoothsMap.forEach(
       (
-        item: { code: any; booth_id: any; name: any },
-        index: string | number
+        item: { code: string; booth_id: string; name: string },
+        index: number
       ) => {
         // find image if booth code already defined in initial booth list
         // const findDefaultBooth = initialBoothsList?.find(
         //   (defaultBooth) => defaultBooth.boothCode === item.code
         // );
 
-        let mapItem = {
+        const mapItem = {
           boothCode: item.code,
           doubleZonePosition: index,
           height: 100,
@@ -143,9 +144,9 @@ export default function Home() {
           isDoubleZone: true,
           name: item.name,
           visited: true,
-          width: true,
         };
-        if (doubleZoneBooths[index] == "") {
+
+        if (doubleZoneBooths[index] == undefined) {
           doubleZoneBooths[index] = mapItem;
           updateCount();
         }
@@ -165,6 +166,7 @@ export default function Home() {
     }else{
       router.push(`/unauthorized`)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -174,6 +176,7 @@ export default function Home() {
     } else {
       setInitialBoothsList([...booths]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [booths.length, setBooths]);
 
   useEffect(() => {
@@ -183,6 +186,7 @@ export default function Home() {
       getCustomerRecord();
       get_visited_booth_list(); // Call with updated state
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBoothsList]);
 
   useEffect(() => {

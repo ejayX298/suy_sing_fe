@@ -77,8 +77,6 @@ export default function Confirmation({
   onNavigateCart = () => {},
   onCreateNewCart = () => {},
   transactionTypes,
-  branch,
-  shipToAddress,
   shipToAddressId,
   branchId,
   customerPickupDetails,
@@ -89,10 +87,10 @@ export default function Confirmation({
     formData.selectedProducts?.filter((product) => product.quantity > 0) || [];
 
   // Group the products by dealer
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   const groupedByDealer = products.reduce((acc : any, item) => {
-    const dealerId : any = item.dealerId ?? '';
+    const dealerId : string = item.dealerId ?? '';
     if(dealerId == '') return {};
-
     if (!acc[dealerId]) {
       acc[dealerId] = {
         dealerId: dealerId,
@@ -104,8 +102,6 @@ export default function Confirmation({
     return acc;
   }, {});
   
-  // convert to array
-  const groupedArray = Object.values(groupedByDealer);
   
 
   return (
@@ -302,8 +298,8 @@ export default function Confirmation({
           {/* Product items */}
           <div>
             {dealer?.products
-              .filter((p) => p.quantity > 0)
-              .map((product) => (
+              .filter((p: { quantity: number; }) => p.quantity > 0)
+              .map((product : {id: string, itemCode : string, name : string, discount : string, quantity: number}) => (
                 <div key={product.id} className="border-t border-[#E5E5E5] p-4">
                   <div className="text-sm text-black">{product.itemCode}</div>
                   <div className="text-black">{product.name}</div>

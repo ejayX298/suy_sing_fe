@@ -13,14 +13,15 @@ import Swal from 'sweetalert2';
 import { useSearchParams, useRouter } from "next/navigation";
 import { boothVisitService } from '@/services/api';
 
+
 function BestBoothContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const customer_hash_code = searchParams.get("cc");
+  // const customer_hash_code = searchParams.get("cc");
   
-  let stored_hash_code: any = ""
+  let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
+    stored_hash_code = localStorage.getItem('hash_code') || "";
   }
 
   const [step, setStep] = useState<
@@ -42,7 +43,14 @@ function BestBoothContent() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
+  const [customerHashCode, setCustomerHashCode] = useState<string | null>(null);
 
+
+
+  useEffect(() => {
+    const cc = searchParams.get('cc');
+    setCustomerHashCode(cc);
+  }, [searchParams]);
 
   const fetchData = async () => {
     try {
@@ -81,7 +89,8 @@ function BestBoothContent() {
         return false;
       }
     
-    } catch (error) {
+    } catch {
+      
       showMessage("0" , "Unable to process your request. Please try again later.")   
       return false;
     } finally {
@@ -114,7 +123,7 @@ function BestBoothContent() {
         return false;
       }
     
-    } catch (error) {
+    } catch {
       
       return false;
       
@@ -146,8 +155,8 @@ function BestBoothContent() {
 
 
   useEffect(() => {
-    if(customer_hash_code && stored_hash_code){
-      if(customer_hash_code == stored_hash_code){
+    if(customerHashCode && stored_hash_code){
+      if(customerHashCode == stored_hash_code){
         setIsRender(true)
         fetchData();
         getCustomerRecord();
@@ -158,7 +167,8 @@ function BestBoothContent() {
     }else{
       router.push(`/unauthorized`)
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerHashCode]);
   
   
   const handleContinue = async () => {

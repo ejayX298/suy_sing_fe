@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import WelcomePage from "./WelcomePage";
 import CameraInstructionPage from "./CameraInstructionPage";
 import DealFormInstructionPage from "./DealFormInstructionPage";
 import BestBoothInstructionPage from "./BestBoothInstructionPage";
 
 interface InstructionModalProps {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
   customer_data : any;
   isOpen: boolean;
   onClose: () => void;

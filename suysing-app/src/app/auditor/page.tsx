@@ -4,13 +4,13 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
-import BoothHoppingComplete from "@/components/auditor/BoothHoppingComplete";
-import MissingCard from "@/components/auditor/MissingCard";
+// import BoothHoppingComplete from "@/components/auditor/BoothHoppingComplete";
+// import MissingCard from "@/components/auditor/MissingCard";
 import BoothStatus from "@/components/auditor/BoothStatus";
 import BoothsList from "@/components/auditor/BoothsList";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
 import VoteBestBoothModal from "@/components/auditor/VoteBestBoothModal";
-import { useBooths } from "@/context/BoothsContext";
+// import { useBooths } from "@/context/BoothsContext";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auditorService } from '@/services/api';
 import Swal from 'sweetalert2';
@@ -25,7 +25,7 @@ function AuditorPageContent() {
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
   const searchParams = useSearchParams();
-  const auditor_hash_code = searchParams.get("cc");
+  const auditor_hash_code = searchParams.get("cc") || "";
   const [auditorAccess, setAuditorAccess] = useState(false);
 
   // Customer and flow state
@@ -48,7 +48,7 @@ function AuditorPageContent() {
   >("scan");
   
   // Get booth data from context
-  const { visitedCount, totalBooths } = useBooths();
+  // const { visitedCount, totalBooths } = useBooths();
   
   // Initialize router for navigation
   const router = useRouter();
@@ -87,7 +87,7 @@ function AuditorPageContent() {
         return false;
       }
     
-    } catch (error) {
+    } catch {
       showMessage('0', 'Unable to process your request')
       return false;
       
@@ -124,7 +124,7 @@ function AuditorPageContent() {
     };
 
   }
-   
+   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, showManualCodeModal, auditorAccess]);
 
   const handleScan = useCallback(async (data: string) => {
@@ -148,9 +148,9 @@ function AuditorPageContent() {
       
       setIsBoothComplete(isComplete);
 
-      let stored_hash_code: any = ""
+      let stored_hash_code: string = ""
       if (typeof window !== 'undefined') {
-        stored_hash_code = localStorage.getItem('audit_hash_code');
+        stored_hash_code = localStorage.getItem('audit_hash_code') || "";
       }
       
       if(customerRecord.is_done_souvenir_claim == 1){
@@ -168,7 +168,7 @@ function AuditorPageContent() {
       
       
     }
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerData?.totalBoothVisited, customerData?.totalBooths]);
 
   const captureAndScanQRCode = useCallback(() => {
@@ -384,13 +384,14 @@ function AuditorPageContent() {
 
         {currentStep === "vote-modal" && customerData && (
           <VoteBestBoothModal
-            customerHasVoted={customerData.hasVoted || false}
+            customerHasVoted={customerData.hasVoted ? true : false}
             onVote={handleVoteStart}
           />
         )}
 
         {currentStep === "souvenir" && (
           <SouvenirSelection
+            souvenirData={[]}
             onSelect={handleSouvenirSelect}
             onCancel={() => setCurrentStep("scan")}
             onContinue={() => setCurrentStep("success")}

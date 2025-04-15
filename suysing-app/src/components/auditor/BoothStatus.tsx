@@ -37,8 +37,8 @@ export default function BoothStatus({
         return false;
       }
     
-    } catch (error) {
-      showMessage('0', 'Unable to process your request')
+    } catch {
+      showMessage('0', 'Unable to process your request ')
       return false;
       
     }
@@ -63,7 +63,7 @@ export default function BoothStatus({
         return false
       }
     
-    } catch (error) {
+    } catch {
       showMessage('0' , 'Unable to process your request. Please try again.')
       return false
       
@@ -74,16 +74,16 @@ export default function BoothStatus({
 
   const handleOverride = async () => {
 
-    let confirmAction = await confirmMessage(`Are you sure you want to override the booth visit of this customer?`);
+    const confirmAction = await confirmMessage(`Are you sure you want to override the booth visit of this customer?`);
 
     if(confirmAction.isConfirmed){
 
       const overrideResult = await callOverride()
 
       if(overrideResult){
-        let stored_hash_code: any = ""
+        let stored_hash_code: string = ""
         if (typeof window !== 'undefined') {
-          stored_hash_code = localStorage.getItem('audit_hash_code');
+          stored_hash_code = localStorage.getItem('audit_hash_code') || "";
         }
 
         router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);

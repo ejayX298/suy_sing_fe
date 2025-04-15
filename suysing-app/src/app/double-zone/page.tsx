@@ -5,16 +5,25 @@ import { useState } from "react";
 import { x2ZoneBooths as initialX2Booths } from "@/data/booths";
 import Image from "next/image";
 
-export default function DoubleZonePage() {
-  const [x2Booths, setX2Booths] = useState(initialX2Booths);
+interface x2BoothInterface {
+  name: string;
+  logo: string;
+  visited: boolean;
+  position?: number;
+  image?: string;
+  boothCode?: string;
+}
 
-  const handleBoothToggle = (name: string, isVisited: boolean) => {
-    setX2Booths((prev) =>
-      prev.map((booth) =>
-        booth.name === name ? { ...booth, visited: isVisited } : booth
-      )
-    );
-  };
+export default function DoubleZonePage() {
+  const [x2Booths] = useState<x2BoothInterface[]>((initialX2Booths));
+
+  // const handleBoothToggle = (name: string, isVisited: boolean) => {
+  //   setX2Booths((prev) =>
+  //     prev.map((booth) =>
+  //       booth.name === name ? { ...booth, visited: isVisited } : booth
+  //     )
+  //   );
+  // };
 
   const visitedCount = x2Booths.filter((booth) => booth.visited).length;
 
@@ -47,8 +56,8 @@ export default function DoubleZonePage() {
           title="Double Point Zone"
           booths={x2Booths}
           progress={`${visitedCount}/${x2Booths.length}`}
-          clickable={true}
-          onBoothToggle={handleBoothToggle}
+          // clickable={true}
+          // onBoothToggle={handleBoothToggle}
         />
       </main>
     </div>

@@ -17,9 +17,9 @@ export default function BoothsProgress({
 
   const [hashCode, setHashCode] = useState("");
 
-  let stored_hash_code: any = ""
+  let stored_hash_code: string = ""
   if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code');
+    stored_hash_code = localStorage.getItem('hash_code') || "";
   }
 
   const concatUrl = (urlString : string) =>{
@@ -28,7 +28,8 @@ export default function BoothsProgress({
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      stored_hash_code = localStorage.getItem('hash_code');
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      stored_hash_code = localStorage.getItem('hash_code') || "";
       setHashCode(stored_hash_code);
     }
   }, []);
