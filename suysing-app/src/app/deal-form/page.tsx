@@ -65,7 +65,7 @@ export default function DealFormPage() {
   const [formData, setFormData] = useState({
     acceptTerms: false,
     customerCode: "",
-    transactionType: "Pick up",
+    transactionType: "",
     branch: "",
     shipToAddress: "",
     remarks: "",
@@ -139,24 +139,45 @@ export default function DealFormPage() {
       
       if(customerResult.success){
         // setCustomerDetails(customerResult.results);
-        setFormData({
-          ...formData,
-          customerCode: customerResult.results.code || ""
-        });
+        // setFormData({
+        //   ...formData,
+        //   customerCode: customerResult.results.code || ""
+        // });
         
         const pickUpResults = customerResult.results?.pickup || [];
         const deliveryResults = customerResult.results?.delivery || [];
+        let default_transaction_type = 'Pick up';
+        let default_ship_to_addreess = '';
+        let default_branch = '';
 
         if(pickUpResults.length > 0){
           setTransactionTypes(prev =>
             prev.includes('Pick up') ? prev : [...prev, 'Pick up']
           );
+          default_branch = pickUpResults[0].id
+        }else{
+          // set transaction type to Delivery if empty pickup details
+          default_transaction_type = 'Delivery'
         }
+
+
         if(deliveryResults.length > 0){
           setTransactionTypes(prev =>
             prev.includes('Delivery') ? prev : [...prev, 'Delivery']
           );
+          default_ship_to_addreess = deliveryResults[0].id
+        }else{
+          // set transaction type to Pickup if empty delivery details
+          default_transaction_type = 'Pick up'
         }
+        
+        setFormData({
+          ...formData,
+          customerCode: customerResult.results.code || "",
+          transactionType: default_transaction_type,
+          shipToAddress : default_ship_to_addreess,
+          branch : default_branch
+        });
 
         setCustomerPickupDetails(pickUpResults);
         setCustomerDeliveryDetails(deliveryResults);
@@ -678,6 +699,7 @@ export default function DealFormPage() {
   return (
     <div className="flex flex-col max-w-2xl mx-auto min-h-screen">
       <main className="flex-1 px-4 py-6 overflow-y-auto pb-16">
+        
         {step === 4 || step === 5 ? (
           <div className="flex justify-center mb-6">
             <Image
