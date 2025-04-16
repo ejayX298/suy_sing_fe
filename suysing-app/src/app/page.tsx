@@ -26,8 +26,7 @@ export interface Booth {
 
 export default function Home() {
   const router = useRouter();
-  const { booths, setBooths, handleVisitBooth } =
-    useBooths();
+  const { booths, setBooths, handleVisitBooth } = useBooths();
   const [showInstructionModal, setShowInstructionModal] = useState(false);
 
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
@@ -86,11 +85,11 @@ export default function Home() {
       const boothResult = await boothVisitService.getVisitedBoothlist();
       if (boothResult.success) {
         const doubleBoothsMap = boothResult.results.booths.filter(
-          (booth : {is_double_zone : number}) => booth.is_double_zone == 1
+          (booth: { is_double_zone: number }) => booth.is_double_zone == 1
         );
 
         const regularBoothsMap = boothResult.results.booths.filter(
-          (booth : {is_double_zone : number}) => booth.is_double_zone == 0
+          (booth: { is_double_zone: number }) => booth.is_double_zone == 0
         );
 
         mapRegularBooths(regularBoothsMap);
@@ -111,7 +110,8 @@ export default function Home() {
   const mapRegularBooths = (regularBooths: any) => {
     const remapBooth = booths?.map((boothDefault) => {
       const findVisited = regularBooths.find(
-        (regularBooth : {code : string}) => regularBooth.code === boothDefault.boothCode
+        (regularBooth: { code: string }) =>
+          regularBooth.code === boothDefault.boothCode
       );
 
       return {
@@ -160,11 +160,11 @@ export default function Home() {
     if (customer_hash_code && stored_hash_code) {
       if (customer_hash_code == stored_hash_code) {
         setIsRender(true);
-      }else{
-        router.push(`/unauthorized`)
+      } else {
+        router.push(`/unauthorized`);
       }
-    }else{
-      router.push(`/unauthorized`)
+    } else {
+      router.push(`/unauthorized`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -220,7 +220,7 @@ export default function Home() {
     const overrideSizeClass = booth.overrideSize
       ? "overflow-hidden object-cover"
       : "";
-
+    const isSuySing = booth.isSuySing ? "border-none" : "";
     return (
       <div key={booth.id} className="h-full">
         <button
@@ -228,7 +228,8 @@ export default function Home() {
           className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
           ${aspectClass}
           ${overrideSizeClass}
-          ${booth.visited ? "border-2 border-red-500" : ""}
+          ${booth.visited ? "border-2 border-red-500" : ""} 
+          ${isSuySing}
         `}
         >
           <div
@@ -434,9 +435,9 @@ export default function Home() {
                         </div>
                       </div>
 
-                      <div className="w-1/2 pl-2">
+                      <div className="w-1/2 pl-8">
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 ml-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "LAMOI01"
@@ -453,7 +454,7 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 ml-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "PHILU01"
@@ -479,13 +480,11 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="border-2 border-blue-800 h-[240px] flex items-center ml-6 justify-center text-lg font-semibold">
-                          <Image
-                            src="/images/suysing-logo.png"
-                            width={100}
-                            height={100}
-                            className="w-full px-2"
-                            alt="Suysing"
+                        <div className="border-2 border-blue-800 h-[240px] ">
+                          <RenderBooth
+                            booth={remapBooth.find(
+                              (b) => b.boothCode === "SUY SING"
+                            )}
                           />
                         </div>
                       </div>

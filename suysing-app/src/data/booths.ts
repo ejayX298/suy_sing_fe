@@ -20,7 +20,7 @@ export const doubleZoneBoothCodes = [
   "SYMBO01", "PAYMO01", "COLOS02", 
   "MEDIC01", "PHILI01", "GUTHR01", 
   "UNION01", "JAMGO01", 
-  "EQUAL03"
+  "EQUAL03", "FEDER01a"
 ];
 
 export const regularZoneBooths: BoothZoneItem[] = [
@@ -284,6 +284,14 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 120,
       height: 120,
+    },
+    {id: "FEDER01a",  
+      name: "Maling",
+      image: "/images/booths/FEDER01.png",
+      boothCode: "FEDER01a",
+      visited: false,
+      width: 100,
+      height: 100,
     },
 
     {id: "FIRST05",  
@@ -949,7 +957,15 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
       overrideAspect: true,
     },
-
+    {id: "SUY SING",
+      name: "suy sing",
+      image: "/images/suysing-logo.png",
+      boothCode: "SUY SING",
+      visited: false,
+      width: 180,
+      height: 180,
+      isSuySing: true,
+    },
   ];
 };
 
