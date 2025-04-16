@@ -146,7 +146,7 @@ export default function Home() {
           visited: true,
         };
 
-        if (doubleZoneBooths[index] == undefined) {
+        if (!doubleZoneBooths[index]) {
           doubleZoneBooths[index] = mapItem;
           updateCount();
         }
