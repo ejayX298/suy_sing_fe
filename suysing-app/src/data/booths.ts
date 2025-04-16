@@ -15,12 +15,12 @@ export const doubleZoneBoothCodes = [
   "QUANT06", "SEVIL02", "SLORD02", "GARDE01", "HUANS01", 
   "MONTO02", "GOLDL02", "COLUM03", "ECCOF01", "FONTE01", 
   "IMSMA01", "MINGF01", "DELFI02", "SYSUI02", "CALAB01", 
-  "UNIVE10", "FEDER01", "Gcash", "YALETRAK PHILIPPINES INCORPORATED", 
-  "METROBANK (MERCHANT ACQUIRING)", "FAIR N SQUARE EMPORIUM INC.", 
-  "SYMBO01", "PAYMONGO", "COLOSPEC ENTERPRISE CORPORATION", 
-  "MEDIC01", "PNB", "GUTHRIE-JENSEN CONSULTANTS, INC.", 
-  "UNION BANK OF THE PHILIPPINES", "JAM GOLDEN FORTUNE MARKETING", 
-  "EQUALYNX NETWORK CO."
+  "UNIVE10", "FEDER01", "Gcash", "YALET01", 
+  "METRO01", "FAIRN01", 
+  "SYMBO01", "PAYMO01", "COLOS02", 
+  "MEDIC01", "PHILI01", "GUTHR01", 
+  "UNION01", "JAMGO01", 
+  "EQUAL03"
 ];
 
 export const regularZoneBooths: BoothZoneItem[] = [
@@ -273,8 +273,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/EMPER01.png",
       boothCode: "EMPER01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 120,
+      height: 120,
     },
 
     {id: "FEDER01",  
@@ -314,10 +314,10 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
     },
 
-    {id: "NUTRI0607",  
+    {id: "NUTRI07",  
       name: "Nutraria",
       image: "/images/booths/NUTRI07.png",
-      boothCode: "NUTRI0607",
+      boothCode: "NUTRI07",
       visited: false,
       width: 100,
       height: 100,
