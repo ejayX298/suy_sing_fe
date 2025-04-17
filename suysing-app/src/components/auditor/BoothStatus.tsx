@@ -47,11 +47,15 @@ export default function BoothStatus({
 
 
   const callOverride = async () => {
+
+    showLoader(); // call the loader
     try {
 
       const customerResult = await auditorService.overrideBoothVisit(customerId);
       
       if(customerResult.success){
+        Swal.close(); // close the loader
+
         showMessage('1' , 'Success')
 
         //refresh customer record in localStorage
@@ -59,11 +63,15 @@ export default function BoothStatus({
 
         return true
       }else{
+        Swal.close(); // close the loader
+        
         showMessage('0' , customerResult.message)
         return false
       }
     
     } catch {
+      Swal.close(); // close the loader
+
       showMessage('0' , 'Unable to process your request. Please try again.')
       return false
       
@@ -123,6 +131,18 @@ export default function BoothStatus({
         icon: iconType,
         confirmButtonColor: "#F78B1E"
       })
+  }
+
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
   }
 
   return (
