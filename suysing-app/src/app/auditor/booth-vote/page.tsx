@@ -40,7 +40,24 @@ function AuditorBoothVoteContent() {
   const auditInforParsed = stored_auditInfo ? JSON.parse(stored_auditInfo) : [];
   
 
+  const checkCustomerRecordbyId = async () => {
+    try {
+      const customer_id = auditInforParsed?.id || '';
+      const customerResult = await auditorService.checkCustomerRecordbyId("", customer_id);
+      if(customerResult.success){
+        setAuditData(customerResult.results)
+        return;
+      }else{
+        return false;
+      }
+    } catch {
+      return false;
+      
+    }
+  };
+
   const fetchData = async () => {
+    showLoader(); // call the loader
     try {
       const getBooth = await auditorService.getBoothList();
       
@@ -48,10 +65,12 @@ function AuditorBoothVoteContent() {
         setBlueBooths(getBooth.results.blue_booths)
         setOrangeBooths(getBooth.results.orange_booths)
         setRedBooths(getBooth.results.red_booths)
+        Swal.close(); // close the loader
       }
     
     
     } catch (error) {
+      Swal.close(); // close the loader
       console.error('Error fetching data:', error);
     } finally {
       // setIsLoading(false);
@@ -130,6 +149,17 @@ function AuditorBoothVoteContent() {
     })
   }
 
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
+  }
 
   useEffect(() => {
     
@@ -139,8 +169,8 @@ function AuditorBoothVoteContent() {
     
     if(auditor_hash_code && stored_hash_code){
       if(auditor_hash_code == stored_hash_code){
-        setAuditData(auditInforParsed)
         fetchData();
+        checkCustomerRecordbyId()
       }else{
         router.push(`/unauthorized`)
       }
