@@ -42,7 +42,7 @@ function AuditorBoothVoteContent() {
 
   const checkCustomerRecordbyId = async () => {
     try {
-      const customer_id = auditInforParsed?.id || '';
+      const customer_id = auditInforParsed?.id || 0;
       const customerResult = await auditorService.checkCustomerRecordbyId("", customer_id);
       if(customerResult.success){
         setAuditData(customerResult.results)
