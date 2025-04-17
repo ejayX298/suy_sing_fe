@@ -79,6 +79,8 @@ function AuditorBoothVoteContent() {
 
 
   const handleSubmitBoothVoting = async () => {
+    showLoader(); // call the loader
+
     const blue_booth_id = blueBoothVote?.id || '';
     const orange_booth_id = orangeBoothVote?.id || '';
     const red_booth_id = redBoothVote?.id || '';
@@ -89,13 +91,16 @@ function AuditorBoothVoteContent() {
       const submitVote = await auditorService.submitBoothVoting(post_data);
       
       if(submitVote.success){
+        Swal.close(); // close the loader
         return true;
       }else{
+        Swal.close(); // close the loader
         showMessage("0" , submitVote.message)  
         return false;
       }
     
     } catch {
+      Swal.close(); // close the loader
       showMessage("0" , "Unable to process your request. Please try again later.")   
       return false;
     } finally {
