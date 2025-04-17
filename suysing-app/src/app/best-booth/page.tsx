@@ -67,6 +67,8 @@ function BestBoothContent() {
 
 
   const handleSubmitBoothVoting = async () => {
+    showLoader(); // call the loader
+
     const blue_booth_id = blueBoothVote?.id || '';
     const orange_booth_id = orangeBoothVote?.id || '';
     const red_booth_id = redBoothVote?.id || '';
@@ -77,14 +79,16 @@ function BestBoothContent() {
       const submitVote = await bestBooth.submitBoothVoting(post_data);
       
       if(submitVote.success){
+        Swal.close(); // close the loader
         return true;
       }else{
+        Swal.close(); // close the loader
         showMessage("0" , submitVote.message)  
         return false;
       }
     
     } catch {
-      
+      Swal.close(); // close the loader
       showMessage("0" , "Unable to process your request. Please try again later.")   
       return false;
     } finally {
@@ -173,6 +177,18 @@ function BestBoothContent() {
     });
   }
 
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
+  }
+
 
   useEffect(() => {
     if(customer_hash_code && stored_hash_code){
@@ -221,7 +237,6 @@ function BestBoothContent() {
       }
       
     } else {
-      router.push(`/best-booth/?cc=${stored_hash_code}`);
       // Reset and go back to intro
       resetVotes();
       setStep("intro");
@@ -332,7 +347,7 @@ function BestBoothContent() {
       case "summary":
         return <VoteSummary onSubmit={handleContinue} onCancel={() => setStep("intro")} />;
       case "thankyou":
-        return <ThankYouScreen onContinue={handleContinue} />;
+        return <ThankYouScreen storedHashcode={stored_hash_code} onContinue={handleContinue} />;
       default:
         return null;
     }
