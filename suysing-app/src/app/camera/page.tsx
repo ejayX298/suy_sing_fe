@@ -13,6 +13,7 @@ export default function CameraPage() {
   const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const manualCodeModalRef = useRef<HTMLDivElement>(null);
   const [scanning, setScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -201,6 +202,12 @@ export default function CameraPage() {
   const closeManualCodeModal = () => {
     setShowManualCodeModal(false);
     setManualCode("");
+  };
+
+  const handleCloseModal = (e: React.MouseEvent) => {
+    if (manualCodeModalRef.current && !manualCodeModalRef.current.contains(e.target as Node)) {
+      closeManualCodeModal(); // Close modal if clicked outside manualCodeModalRef
+    }
   };
 
   const handleManualCodeSubmit = async (e: React.FormEvent) => {
@@ -458,8 +465,8 @@ export default function CameraPage() {
 
       {/* Manual Code Entry Modal */}
       {showManualCodeModal && (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-14 max-w-md w-full border-[3px] border-[#F78B1E]">
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50" onClick={handleCloseModal}>
+          <div className="bg-white rounded-lg px-6 py-14 max-w-md w-full border-[3px] border-[#F78B1E]" ref={manualCodeModalRef}>
             <div className="flex flex-col w-full">
               <h3 className="text-start text-sm mb-2 text-[#343434]">
                 Enter Booth Code
