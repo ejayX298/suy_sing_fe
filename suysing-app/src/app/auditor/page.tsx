@@ -78,18 +78,22 @@ function AuditorPageContent() {
   };
 
   const checkCustomerRecord = async (customer_code : string) => {
+    showLoader(); // call the loader
     try {
 
       const customerResult = await auditorService.checkCustomerRecord(auditor_hash_code, customer_code);
       
       if(customerResult.success){
+        Swal.close(); // close the loader
         return customerResult.results
       }else{
+        Swal.close(); // close the loader
         showMessage('0', customerResult.message)
         return false;
       }
     
     } catch {
+      Swal.close(); // close the loader
       showMessage('0', 'Unable to process your request')
       return false;
       
@@ -281,6 +285,17 @@ function AuditorPageContent() {
     })
  }
 
+ const showLoader = ()  => {
+  const loader = Swal.fire({
+    title: 'Processing data...',
+    text: 'Please wait',
+    allowOutsideClick: false,
+    didOpen: () => {
+      Swal.showLoading();
+    }
+  });
+  return loader;
+}
 
   const videoConstraints = {
     facingMode: "environment",
