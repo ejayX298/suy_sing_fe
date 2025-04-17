@@ -59,15 +59,21 @@ export default function SouvenirSelectionPage() {
 
 
   const fetchData = async () => {
+    showLoader(); // call the loader
+
     try {
       const getSouvenirs = await auditorService.getSouvenirList();
       
       if(getSouvenirs.success){
+          Swal.close(); // close the loader
           setSouvenirList(getSouvenirs.results || [])
+      }else{
+        Swal.close(); // close the loader
       }
     
     
     } catch (error) {
+      Swal.close(); // close the loader
       console.error('Error fetching data:', error);
     } finally {
       // setIsLoading(false);
@@ -76,6 +82,7 @@ export default function SouvenirSelectionPage() {
 
 
   const handleSubmitSouvenir = async (selectedSouvenirData : any) => {
+    showLoader(); // call the loader
 
     const post_data = {
       souvenir_id : selectedSouvenir?.id || selectedSouvenirData?.id || '',
@@ -85,13 +92,16 @@ export default function SouvenirSelectionPage() {
       const submitSouvenir = await auditorService.submitSouvenir(post_data);
       
       if(submitSouvenir.success){
+        Swal.close(); // close the loader
         return true;
       }else{
+        Swal.close(); // close the loader
         showMessage("0" , submitSouvenir.message)  
         return false;
       }
     
     } catch {
+      Swal.close(); // close the loader
       showMessage("0" , "Unable to process your request. Please try again later.")   
       return false;
     } finally {
@@ -133,6 +143,18 @@ export default function SouvenirSelectionPage() {
       icon: iconType,
       confirmButtonColor: "#F78B1E"
     })
+  }
+
+  const showLoader = ()  => {
+    const loader = Swal.fire({
+      title: 'Processing data...',
+      text: 'Please wait',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    });
+    return loader;
   }
 
 
