@@ -1011,107 +1011,34 @@ export default function Home() {
 
                     {/* Entrance/Exit, CRs Section */}
                     <div className="flex justify-center pr-56 gap-[275px] w-full mt-5">
-                      <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                      <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
                         <Image
                           src="/images/booths/arrow.svg"
                           alt="Entrance/Exit"
                           width={49}
                           height={24}
                         />
-                        <span className="ml-2">ENTRANCE / EXIT</span>
+                        <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
                       </div>
-                      <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                      <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
                         <Image
                           src="/images/booths/arrow.svg"
                           alt="Entrance/Exit"
                           width={49}
                           height={24}
                         />
-                        <span className="ml-2">ENTRANCE / EXIT</span>
+                        <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
                       </div>
-                      <div className="bg-[#FF9933] w-[187px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
+                      <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
                         <Image
                           src="/images/booths/arrow.svg"
                           alt="Entrance/Exit"
                           width={49}
                           height={24}
                         />
-                        <span className="ml-2">ENTRANCE / EXIT</span>
+                        <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
                       </div>
                     </div>
-
-                    <div className="flex justify-center gap-[210px] pr-[230px] mt-1 w-full">
-                      <div className="bg-[#3399FF] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                        <Image
-                          src="/images/booths/men.svg"
-                          alt="Men's CR"
-                          width={13}
-                          height={32}
-                        />
-                        <span className="ml-2">MEN&apos;S CR</span>
-                      </div>
-                      <div className="bg-[#FF66CC] w-64 h-12 flex items-center justify-center text-[9px] font-bold border border-black rounded">
-                        <Image
-                          src="/images/booths/woman.svg"
-                          alt="Women's CR"
-                          width={16}
-                          height={32}
-                        />
-                        <span className="ml-2">WOMEN&apos;S CR</span>
-                      </div>
-                    </div>
-
-                    {/* <div className="absolute left-4 top-[120px] w-[120px]">
-                  <div className="bg-[#FFFFFF] border-2 border-dashed border-[#FF3838] p-1 rounded h-full flex flex-col justify-start items-center">
-                    <div className="w-full text-center bg-[#B6E056] text-[#0920B0] border-[#0920B0] border rounded-full -mt-4 py-0.5 mb-2 font-bold text-[12px] flex items-center justify-center">
-                      Double Zone
-                      <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-3 h-3">
-                        <span className="font-bold text-lg leading-none">i</span>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-1 w-full">
-                      {[...Array(8)].map((_, i) => {
-                        // Find a visited booth that belongs to double zone
-                        const doubleZoneBooth = booths.find(
-                          (booth) =>
-                            booth.isDoubleZone &&
-                            booth.visited &&
-                            booth.doubleZonePosition === i
-                        );
-
-                        return doubleZoneBooth ? (
-                          <div
-                            key={`double-${i}`}
-                            className="bg-white border-2 border-red-500 rounded aspect-square relative flex items-center justify-center"
-                          >
-                            <Image
-                              src={doubleZoneBooth.image || "/images/placeholder.png"}
-                              alt={doubleZoneBooth.name}
-                              width={doubleZoneBooth.width || 100}
-                              height={doubleZoneBooth.height || 100}
-                              style={{ objectFit: "contain" }}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className="bg-red-500 rounded-full p-1">
-                                <Image
-                                  src="/images/checkmark.png"
-                                  alt="Visited"
-                                  width={15}
-                                  height={15}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div
-                            key={`double-${i}`}
-                            className="bg-white border border-[#0920B0] rounded aspect-square"
-                          ></div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div> */}
                   </div>
                 </div>
               </div>
