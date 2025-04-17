@@ -5,15 +5,16 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 interface ThankYouScreenProps {
+  storedHashcode : string,
   onContinue: () => void;
 }
 
-export default function ThankYouScreen({ onContinue }: ThankYouScreenProps) {
+export default function ThankYouScreen({ storedHashcode, onContinue }: ThankYouScreenProps) {
   const router = useRouter();
 
   const handleContinue = () => {
     onContinue();
-    router.push("/");
+    router.push(`/?cc=${storedHashcode}`);
   };
 
   return (
