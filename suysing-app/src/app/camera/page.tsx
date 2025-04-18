@@ -65,9 +65,7 @@ export default function CameraPage() {
             })
             .catch((err) => {
               console.error("Camera permission error:", err);
-              setError(
-                "Camera permission denied. Please enable camera access."
-              );
+              setError("Camera Access Needed. We couldn’t access your camera.");
               setHasPermission(false);
             });
         }
@@ -408,9 +406,16 @@ export default function CameraPage() {
         {hasPermission === false && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
             <p>{error || "Camera access is required to scan QR codes."}</p>
-            <p className="mt-2">
-              Please check your browser settings and allow camera access.
-            </p>
+            <div className="mt-2 flex gap-2">
+              <p>Please allow camera access to continue.</p>
+
+              <button
+                onClick={() => window.location.reload()}
+                className="text-[#0920B0] font-medium underline focus:outline-none"
+              >
+                Allow Camera Access
+              </button>
+            </div>
           </div>
         )}
 
