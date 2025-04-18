@@ -43,6 +43,7 @@ function BestBoothContent() {
     totalBooths?: number;
   } | null>(null);
   const [isDoneVisit, setIsDoneVisit] = useState(false);
+  const [showVotedMessage, setShowVotedMessage] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -196,6 +197,9 @@ function BestBoothContent() {
         showMessageRedirect("0", "You need to visit all the booths first");
       } else if (customerData?.isDoneVisit == 1) {
         setIsDoneVisit(true);
+      }
+      if (customerData?.hasVoted === 1) {
+        setShowVotedMessage(true);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -374,7 +378,29 @@ function BestBoothContent() {
   return (
     <div className="flex flex-col min-h-screen ">
       {isRender && isDoneVisit && (
-        <div className="flex-1 pb-16">{renderStepContent()}</div>
+        <div className="flex-1 pb-16">
+          {showVotedMessage ? (
+            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+              <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+                <div className="flex flex-col items-center text-center">
+                  <h2 className="text-xl font-bold mb-4">Thank You!</h2>
+                  <p className="text-gray-600 mb-6">
+                    You&apos;re done voting! You can now claim your souvenir.
+                    Thank you.
+                  </p>
+                  <button
+                    onClick={() => router.push(`/?cc=${stored_hash_code}`)}
+                    className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                  >
+                    Go to Booth Map
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            renderStepContent()
+          )}
+        </div>
       )}
     </div>
   );
