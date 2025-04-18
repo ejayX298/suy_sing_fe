@@ -29,7 +29,6 @@ export default function BoothZone({ title, booths, progress }: BoothZoneProps) {
           </div>
           {booths
             .filter((booth) => !booth.visited)
-            .sort((a, b) => a.name.localeCompare(b.name))
             .map((booth) => (
               <BoothItem
                 key={booth.name}
