@@ -19,6 +19,7 @@ export default function CameraPage() {
   const [error, setError] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showSuccessModalDouble, setShowSuccessModalDouble] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
@@ -334,6 +335,11 @@ export default function CameraPage() {
 
         setCustomerData(mapCustomerData);
 
+        // Show completion modal if all booths are visited
+        if (mapCustomerData.isDoneVisit === 1) {
+          setShowCompletionModal(true);
+        }
+
         return true;
       } else {
         return false;
@@ -530,6 +536,36 @@ export default function CameraPage() {
               </p>
               <button
                 onClick={handleProceed}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Proceed
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Completion Modal */}
+      {showCompletionModal && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/check.svg"
+                  alt="Success"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <p className="mb-6 text-[#343434] text-[20px]">
+                Congratulations! You&apos;ve successfully visited all booths.
+              </p>
+              <button
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  router.push(`/?cc=${customer_hash_code}`);
+                }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
                 Proceed
