@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter } from "react-icons/fa";
+import { FaSearch, FaFilter, FaSortUp, FaSortDown } from "react-icons/fa";
 import { customerActivitiesData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Customer } from "@/types";
@@ -12,6 +12,13 @@ interface ActivitySummary {
   boothVoting: number;
   souvenirClaiming: number;
 }
+
+type SortField =
+  | "name"
+  | "totalBoothVisited"
+  | "boothHopping"
+  | "boothVoting"
+  | "souvenirClaiming";
 
 export default function CustomerActivitiesPage() {
   const { token } = useAuth();
@@ -31,6 +38,10 @@ export default function CustomerActivitiesPage() {
     perpage: 10,
     query: "",
   });
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
 
   const fetchData = async () => {
     try {
@@ -39,7 +50,7 @@ export default function CustomerActivitiesPage() {
         setIsLoading(false);
         return;
       }
-      
+
       const summaryData = await customerActivitiesData.getSummary(token);
       const customersData = await customerActivitiesData.getCustomers(
         token,
@@ -100,6 +111,17 @@ export default function CustomerActivitiesPage() {
     //clears the timeout on re render
     return () => clearTimeout(delaySetSearch);
   }, [searchQuery]);
+
+  // Handle sort
+  const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+
+    setSortConfig({ field, direction });
+  };
 
   // Status color mapping
   const getStatusColor = (status: string | boolean | undefined): string => {
@@ -168,11 +190,106 @@ export default function CustomerActivitiesPage() {
         <table className="w-full border-gray-400 border">
           <thead>
             <tr className="bg-blue-800 text-white">
-              <th className="table-header">Customer Name</th>
-              <th className="table-header">Total Booth Visited</th>
-              <th className="table-header">Booth Hopping</th>
-              <th className="table-header">Booth Voting</th>
-              <th className="table-header">Souvenir Claiming</th>
+              <th
+                className="table-header cursor-pointer"
+                onClick={() => handleSort("name")}
+              >
+                Customer Name
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "name" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th
+                className="table-header cursor-pointer"
+                onClick={() => handleSort("totalBoothVisited")}
+              >
+                Total Booth Visited
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "totalBoothVisited" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th
+                className="table-header cursor-pointer"
+                onClick={() => handleSort("boothHopping")}
+              >
+                Booth Hopping
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "boothHopping" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th
+                className="table-header cursor-pointer"
+                onClick={() => handleSort("boothVoting")}
+              >
+                Booth Voting
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "boothVoting" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th
+                className="table-header cursor-pointer"
+                onClick={() => handleSort("souvenirClaiming")}
+              >
+                Souvenir Claiming
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "souvenirClaiming" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
             </tr>
           </thead>
           <tbody>
