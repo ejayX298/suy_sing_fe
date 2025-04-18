@@ -617,7 +617,7 @@ export default function ProductSelection({
         ))}
       </div>
 
-      <div className="fixed right-0 top-1/3 bg-transparent flex flex-col text-xs">
+    {/*   <div className="fixed right-0 top-1/3 bg-transparent flex flex-col text-xs">
         {[
           "A",
           "B",
@@ -650,7 +650,7 @@ export default function ProductSelection({
             {letter}
           </div>
         ))}
-      </div>
+      </div> */}
 
       {products.some((product) => product.quantity > 0) && (
         <button
