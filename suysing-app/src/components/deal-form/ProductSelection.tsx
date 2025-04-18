@@ -94,7 +94,6 @@ interface CustomerPickupDetails {
   branch_code: string;
 }
 
-
 interface CustomerDeliveryDetails {
   id: string;
   code: string;
@@ -147,8 +146,8 @@ interface ProductSelectionProps {
   onBranchChange?: (branch: string) => void;
   onShipToAddressChange?: (address: string) => void;
   boothProducts: Dealer[];
-  transactionTypes : string[];
-  customerPickupDetails : CustomerPickupDetails[];
+  transactionTypes: string[];
+  customerPickupDetails: CustomerPickupDetails[];
   customerDeliveryDetails: CustomerDeliveryDetails[];
 }
 
@@ -176,20 +175,17 @@ export default function ProductSelection({
   const [searchTerm, setSearchTerm] = useState("");
 
   const [products, setProducts] = useState<Product[]>(
-    selectedProducts.length > 0
-      ? selectedProducts
-      : []
+    selectedProducts.length > 0 ? selectedProducts : []
   );
   const [dealers, setDealers] = useState<Dealer[]>([]);
   // const [currentCarts, setCurrentCarts] = useState<Cart[]>([]);
   const [currentSelectedCart, setCurrentSelectedCart] = useState<Cart>();
   const [expandedDealers, setExpandedDealers] = useState<string[]>(["1"]);
-  
 
   const [isTransactionTypeOpen, setIsTransactionTypeOpen] = useState(false);
   const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false);
   const [isShippingDropdownOpen, setIsShippingDropdownOpen] = useState(false);
-  
+
   const transactionTypeRef = useRef<HTMLDivElement>(null);
   const branchDropdownRef = useRef<HTMLDivElement>(null);
   const shippingDropdownRef = useRef<HTMLDivElement>(null);
@@ -203,39 +199,46 @@ export default function ProductSelection({
 
   useEffect(() => {
     // set boothProduct on dealers state
-    setDealers(boothProducts)
+    setDealers(boothProducts);
   }, [boothProducts]);
 
-
-  useEffect(() => { 
+  useEffect(() => {
     // setCurrentCarts(carts)
 
     // check if cart index exists in carts
     if (currentCartIndex >= 0 && currentCartIndex <= carts.length) {
-     if(carts[currentCartIndex]){
-        setCurrentSelectedCart(carts[currentCartIndex])
-     }
+      if (carts[currentCartIndex]) {
+        setCurrentSelectedCart(carts[currentCartIndex]);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carts]);
 
-  
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (transactionTypeRef.current && !transactionTypeRef.current.contains(event.target as Node)) {
+      if (
+        transactionTypeRef.current &&
+        !transactionTypeRef.current.contains(event.target as Node)
+      ) {
         setIsTransactionTypeOpen(false);
       }
-      if (branchDropdownRef.current && !branchDropdownRef.current.contains(event.target as Node)) {
+      if (
+        branchDropdownRef.current &&
+        !branchDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsBranchDropdownOpen(false);
       }
-      if (shippingDropdownRef.current && !shippingDropdownRef.current.contains(event.target as Node)) {
+      if (
+        shippingDropdownRef.current &&
+        !shippingDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsShippingDropdownOpen(false);
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -243,12 +246,12 @@ export default function ProductSelection({
     id: string,
     newQuantity: number,
     dealerName: string = "",
-    dealerId: string,
+    dealerId: string
   ) => {
     if (newQuantity >= 0) {
-
       // get the selected dealer products
-      const dealerSelectedProducts = dealers.find(dealer => dealer.id == dealerId)?.products || []
+      const dealerSelectedProducts =
+        dealers.find((dealer) => dealer.id == dealerId)?.products || [];
 
       // Update local state
       const updatedProducts = dealerSelectedProducts.map((product) =>
@@ -265,15 +268,18 @@ export default function ProductSelection({
     }
   };
 
-  const getActualQty = (product_id : string) => {
-    const currentSelectedCartProducts = currentSelectedCart?.selectedProducts || [];
+  const getActualQty = (product_id: string) => {
+    const currentSelectedCartProducts =
+      currentSelectedCart?.selectedProducts || [];
 
-    const findCartProduct = currentSelectedCartProducts.find(product => product.id == product_id);
-    if(findCartProduct){
-      return findCartProduct.quantity
+    const findCartProduct = currentSelectedCartProducts.find(
+      (product) => product.id == product_id
+    );
+    if (findCartProduct) {
+      return findCartProduct.quantity;
     }
     return 0;
-  }
+  };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -324,39 +330,49 @@ export default function ProductSelection({
     <div className="flex flex-col space-y-4 ">
       <div className="mb-4 flex gap-1">
         <div className="flex-1 bg-white border-2 border-[#7D7D7D] p-4 rounded-sm">
-          <div className="flex flex-row justify-between">
-            <div className="flex-1">
+          <div className="flex flex-col">
+            <div>
               <div className="flex flex-col">
                 <span className="text-black text-sm">Customer Code:</span>
-                <span className="text-black font-bold  text-sm">
+                <span className="text-black font-bold text-sm">
                   {customerCode}
                 </span>
               </div>
             </div>
 
-            <div className="flex-1">
+            <div className="mt-4">
               <div className="flex flex-col">
                 <span className="text-black text-sm">Transaction Type:</span>
                 <div className="relative" ref={transactionTypeRef}>
-                  <div 
+                  <div
                     className="flex items-center cursor-pointer"
-                    onClick={() => setIsTransactionTypeOpen(!isTransactionTypeOpen)}
+                    onClick={() =>
+                      setIsTransactionTypeOpen(!isTransactionTypeOpen)
+                    }
                   >
                     <span className="text-black font-bold text-sm">
                       {transactionType}
                     </span>
                     <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
                   </div>
-                  
+
                   {isTransactionTypeOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
                       {transactionTypes.map((transactionTypeName, index) => (
                         <div
                           key={index}
-                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${transactionType === transactionTypeName ? 'bg-gray-100' : ''}`}
-                          onClick={() => handleTransactionTypeSelect(transactionTypeName)}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                            transactionType === transactionTypeName
+                              ? "bg-gray-100"
+                              : ""
+                          }`}
+                          onClick={() =>
+                            handleTransactionTypeSelect(transactionTypeName)
+                          }
                         >
-                          <span className="text-black text-sm">{transactionTypeName}</span>
+                          <span className="text-black text-sm">
+                            {transactionTypeName}
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -364,66 +380,94 @@ export default function ProductSelection({
                 </div>
               </div>
             </div>
+
+            {transactionType === "Pick up" && (
+              <div className="mt-4">
+                <div className="flex flex-col">
+                  <span className="text-black text-sm">Branch:</span>
+                  <div className="relative" ref={branchDropdownRef}>
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() =>
+                        setIsBranchDropdownOpen(!isBranchDropdownOpen)
+                      }
+                    >
+                      <span className="text-black font-bold text-sm">
+                        {branch}
+                      </span>
+                      <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                    </div>
+                    {isBranchDropdownOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        {customerPickupDetails.map((customerPickup, index) => (
+                          <div
+                            key={index}
+                            className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                              branch === customerPickup.branch_code
+                                ? "bg-gray-100"
+                                : ""
+                            }`}
+                            onClick={() =>
+                              handleBranchSelect(customerPickup.id)
+                            }
+                          >
+                            <span className="text-black text-sm">
+                              {customerPickup.branch_code}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {transactionType === "Delivery" && (
+              <div className="mt-4">
+                <div className="flex flex-col">
+                  <span className="text-black text-sm">Ship to Address:</span>
+                  <div className="relative" ref={shippingDropdownRef}>
+                    <div
+                      className="flex items-center cursor-pointer"
+                      onClick={() =>
+                        setIsShippingDropdownOpen(!isShippingDropdownOpen)
+                      }
+                    >
+                      <span className="text-black font-bold text-sm">
+                        {shipToAddress}
+                      </span>
+                      <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                    </div>
+
+                    {isShippingDropdownOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        {customerDeliveryDetails.map(
+                          (customerDelivery, index) => (
+                            <div
+                              key={index}
+                              className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                                shipToAddress === customerDelivery.address
+                                  ? "bg-gray-100"
+                                  : ""
+                              }`}
+                              onClick={() =>
+                                handleShippingAddressSelect(customerDelivery.id)
+                              }
+                            >
+                              <span className="text-black text-sm">
+                                {customerDelivery.address}
+                              </span>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
-
-          {transactionType === "Pick up" && (
-            <div className="flex flex-col mt-4">
-              <span className="text-black text-sm">Branch:</span>
-              <div className="relative" ref={branchDropdownRef}>
-                <div 
-                  className="flex items-center cursor-pointer"
-                  onClick={() => setIsBranchDropdownOpen(!isBranchDropdownOpen)}
-                >
-                  <span className="text-black font-bold text-sm">{branch}</span>
-                  <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
-                </div>
-                {isBranchDropdownOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                    {customerPickupDetails.map((customerPickup, index) => (
-                      <div
-                        key={index}
-                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${branch === customerPickup.branch_code ? 'bg-gray-100' : ''}`}
-                        onClick={() => handleBranchSelect(customerPickup.id)}
-                      >
-                        <span className="text-black text-sm">{customerPickup.branch_code}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-          {transactionType === "Delivery" && (
-            <div className="flex flex-col mt-4">
-              <span className="text-black text-sm">Ship to Address:</span>
-              <div className="relative" ref={shippingDropdownRef}>
-                <div 
-                  className="flex items-center cursor-pointer"
-                  onClick={() => setIsShippingDropdownOpen(!isShippingDropdownOpen)}
-                >
-                  <span className="text-black font-bold text-sm">
-                    {shipToAddress}
-                  </span>
-                  <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
-                </div>
-
-                {isShippingDropdownOpen && (
-                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                    {customerDeliveryDetails.map((customerDelivery, index) => (
-                      <div
-                        key={index}
-                        className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${shipToAddress === customerDelivery.address ? 'bg-gray-100' : ''}`}
-                        onClick={() => handleShippingAddressSelect(customerDelivery.id)}
-                      >
-                        <span className="text-black text-sm">{customerDelivery.address}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="flex flex-col">
@@ -549,9 +593,7 @@ export default function ProductSelection({
 
             {expandedDealers.includes(dealer.id) && (
               <div className="grid grid-cols-1 gap-2  bg-white">
-                
                 {dealer.products.length > 0 ? (
-                  
                   dealer.products.map((product) => (
                     <div
                       key={product.id}
@@ -579,7 +621,7 @@ export default function ProductSelection({
                                 product.id,
                                 getActualQty(product.id) - 1,
                                 dealer.name,
-                                dealer.id,
+                                dealer.id
                               )
                             }
                             className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
@@ -595,7 +637,7 @@ export default function ProductSelection({
                                 product.id,
                                 getActualQty(product.id) + 1,
                                 dealer.name,
-                                dealer.id,
+                                dealer.id
                               )
                             }
                             className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
@@ -617,7 +659,7 @@ export default function ProductSelection({
         ))}
       </div>
 
-    {/*   <div className="fixed right-0 top-1/3 bg-transparent flex flex-col text-xs">
+      {/*   <div className="fixed right-0 top-1/3 bg-transparent flex flex-col text-xs">
         {[
           "A",
           "B",
