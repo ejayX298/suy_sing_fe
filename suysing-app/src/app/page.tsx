@@ -578,8 +578,8 @@ export default function Home() {
 
                       {/* DINING ENT label */}
                       <div className="flex flex-col items-center mx-2 -mt-5">
-                        <div className="w-[150px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                          DINING ENT
+                        <div className="w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                          DINING ENTRANCE
                         </div>
                         <div className="flex justify-center">
                           <Image
@@ -622,8 +622,8 @@ export default function Home() {
 
                       {/* DINING ENT label */}
                       <div className="flex flex-col items-center mx-2 -mt-5">
-                        <div className="w-[150px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                          DINING ENT
+                        <div className="w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                          DINING ENTRANCE
                         </div>
                         <div className="flex justify-center">
                           <Image
