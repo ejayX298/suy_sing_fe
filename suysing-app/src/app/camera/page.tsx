@@ -183,12 +183,13 @@ export default function CameraPage() {
       setShowSuccessModal(true);
     } else if (isFirstDoubleZone) {
       setIsFirstDoubleZone(false);
-      setShowSuccessModalDouble(true);
-      setSuccessMessage("Each booth visited will be counted as double.");
+      setShowSuccessModalDouble(false);
+
+      router.push(`/?cc=${customer_hash_code}`);
     } else {
       setShowSuccessModal(false);
       setShowSuccessModalDouble(false);
-      setScanning(true);
+      router.push(`/?cc=${customer_hash_code}`);
     }
   };
 
