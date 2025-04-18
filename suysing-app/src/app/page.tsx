@@ -233,7 +233,7 @@ export default function Home() {
         `}
         >
           <div
-            className={`w-full h-full flex justify-center 
+            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center 
               ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
           >
             <Image
