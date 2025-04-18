@@ -78,7 +78,7 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
           onClick={handleCancel}
           className="w-full py-3 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium mt-2"
         >
-          Cancel
+        Back
         </button>
       </div>
     </div>

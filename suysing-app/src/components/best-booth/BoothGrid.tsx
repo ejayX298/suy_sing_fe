@@ -8,9 +8,10 @@ import { ColorBooth } from "@/data/colorBooths";
 interface BoothGridProps {
   booths: ColorBooth[];
   color: "blue" | "orange" | "red";
+  onVote?: () => void;
 }
 
-export default function BoothGrid({ booths, color }: BoothGridProps) {
+export default function BoothGrid({ booths, color, onVote }: BoothGridProps) {
   const {
     blueBoothVote,
     orangeBoothVote,
@@ -30,10 +31,19 @@ export default function BoothGrid({ booths, color }: BoothGridProps) {
   const handleVote = (booth: ColorBooth) => {
     if (color === "blue") {
       setBlueBoothVote(selectedBooth?.id === booth.id ? null : booth);
+      if (selectedBooth?.id !== booth.id && onVote) {
+        onVote();
+      }
     } else if (color === "orange") {
       setOrangeBoothVote(selectedBooth?.id === booth.id ? null : booth);
+      if (selectedBooth?.id !== booth.id && onVote) {
+        onVote();
+      }
     } else {
       setRedBoothVote(selectedBooth?.id === booth.id ? null : booth);
+      if (selectedBooth?.id !== booth.id && onVote) {
+        onVote();
+      }
     }
   };
 
