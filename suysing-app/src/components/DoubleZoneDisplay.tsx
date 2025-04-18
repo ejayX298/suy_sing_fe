@@ -5,7 +5,15 @@ import Image from "next/image";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { totalVisitCount: number, boothData : any }) {
+  const getTotalVisited = () =>{
+    let totalVisitedDoubleZone = totalVisitCount
 
+    if (totalVisitCount > 22){
+      totalVisitedDoubleZone = 22;
+    }
+
+    return totalVisitedDoubleZone;
+  }
   return (
     <div className="px-6 py-4">
       <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
@@ -22,7 +30,7 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
           Locate the Double Zone Booths in the Tent and scan any 22 booths
           within this area.
           <div className="font-bold mt-1">
-            {totalVisitCount} / 22 Booths Scanned
+            {getTotalVisited()} / 22 Booths Scanned
           </div>
         </div>
 
