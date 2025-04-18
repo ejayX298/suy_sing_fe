@@ -524,7 +524,7 @@ export default function Home() {
                     </div>
 
                     {/* Top Row */}
-                    <div className="flex mb-2 justify-center w-full mt-12">
+                    <div className="flex mb-2 justify-start w-full mt-12">
                       <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                         <div className="flex gap-0.5">
                           <div className="w-[163px] h-[80px] ">
