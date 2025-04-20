@@ -46,6 +46,7 @@ export default function CustomerBoothReportDetail() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsId.id]);
 
   // Customer type color mapping
