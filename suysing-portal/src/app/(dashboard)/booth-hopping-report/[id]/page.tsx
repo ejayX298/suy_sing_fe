@@ -2,18 +2,25 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { FaArrowLeft, FaSearch } from "react-icons/fa";
+import { FaArrowLeft, FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
 import { boothHoppingReportData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import QRCode from "react-qr-code";
 import { Customer, BoothVisit } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 
+type SortField =
+  | "booth_name"
+  | "booth_code"
+  | "created_at"
+  | "booth_double_zone";
+
 export default function CustomerBoothHoppingDetail() {
   const { token } = useAuth();
+  const initialRenderVal = "__default_val__";
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredVisits, setFilteredVisits] = useState<BoothVisit[]>([]);
@@ -24,9 +31,16 @@ export default function CustomerBoothHoppingDetail() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by: "",
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       const customerId = parseInt(paramsId.id as string);
       if (!token) {
@@ -54,6 +68,7 @@ export default function CustomerBoothHoppingDetail() {
 
         setCurrentPage(customerData.current_page);
         setTotalPages(customerData.total_pages);
+        setIsLoading(false);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -64,6 +79,7 @@ export default function CustomerBoothHoppingDetail() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams, paramsId.id]);
 
   // useEffect(() => {
@@ -95,15 +111,18 @@ export default function CustomerBoothHoppingDetail() {
   };
 
   useEffect(() => {
-    // set delay 2 seconds
-    const delaySetSearch = setTimeout(() => {
-      // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 2000);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+        // set delay 2 seconds
+        const delaySetSearch = setTimeout(() => {
+          // it will get the latest value after two seconds of no keyboard activity
+          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+        }, 2000);
 
-    //clears the timeout of the previous value of delaySetSearch
-    //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch);
+        //clears the timeout of the previous value of delaySetSearch
+        //clears the timeout on re render
+        return () => clearTimeout(delaySetSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   // Customer type color mapping
@@ -116,6 +135,25 @@ export default function CustomerBoothHoppingDetail() {
       default:
         return "text-gray-500";
     }
+  };
+
+   // Handle sort
+   const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setfilterParams({ ...filterParams, sort_by: api_sort_field });
+
+    setSortConfig({ field, direction });
   };
 
   if (isLoading) {
@@ -199,7 +237,7 @@ export default function CustomerBoothHoppingDetail() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Find booth name here..."
               className="pl-10 pr-4 py-2 border rounded-md w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -212,11 +250,106 @@ export default function CustomerBoothHoppingDetail() {
           <table className="w-full">
             <thead>
               <tr className="bg-blue-600 text-white">
-                <th className="px-4 py-2 text-left">Booth Name</th>
-                <th className="px-4 py-2 text-left">Booth Code</th>
-                <th className="px-4 py-2 text-left">Date of Visit</th>
-                <th className="px-4 py-2 text-left">Time of Visit</th>
-                <th className="px-4 py-2 text-left">Booth Count</th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("booth_name")}
+                >
+                  Booth Name
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "booth_name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                </th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("booth_code")}
+                >
+                  Booth Code
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "booth_code" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                </th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("created_at")}
+                >
+                  Date of Visit
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "created_at" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                </th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("created_at")}
+                >
+                  Time of Visit
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "created_at" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                </th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("booth_double_zone")}
+                >
+                  Booth Count
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "booth_double_zone" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>

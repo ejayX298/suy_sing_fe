@@ -1,18 +1,24 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaEye } from "react-icons/fa";
+import { FaSearch, FaFilter, FaEye, FaSortUp, FaSortDown } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { Vendor } from "@/types";
 import { useRouter } from "next/navigation";
 import { dealFormsApiService } from "@/services/api";
 import { useAuth } from "@/lib/hooks/useAuth";
 
+type SortField =
+  | "code"
+  | "name";
+
 export default function DealFormsPage() {
   const { token } = useAuth();
   const router = useRouter();
+  const initialRenderVal = "__default_val__";
+
   const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -20,7 +26,13 @@ export default function DealFormsPage() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by: ""
   });
+
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
 
   // Mock data for vendors
   // const mockVendors: Vendor[] = [
@@ -50,6 +62,7 @@ export default function DealFormsPage() {
       setVendors(boothsData.results);
       setCurrentPage(boothsData.current_page);
       setTotalPages(boothsData.total_pages);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -59,6 +72,7 @@ export default function DealFormsPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams]);
 
   // Handle page change
@@ -74,12 +88,35 @@ export default function DealFormsPage() {
 
   // Debounce search input
   useEffect(() => {
-    const delaySearch = setTimeout(() => {
-      setFilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 500);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
 
-    return () => clearTimeout(delaySearch);
+        const delaySearch = setTimeout(() => {
+          setFilterParams({ ...filterParams, page: 1, query: searchQuery });
+        }, 500);
+
+        return () => clearTimeout(delaySearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
+
+  // Handle sort
+  const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setFilterParams({ ...filterParams, sort_by: api_sort_field });
+
+    setSortConfig({ field, direction });
+  };
 
   // Navigate to vendor detail page
   const handleViewVendor = (vendorId: string) => {
@@ -99,7 +136,7 @@ export default function DealFormsPage() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search vendor here..."
               className="pl-4 py-2 border w-64 focus:outline-none border-gray-400 focus:ring focus:ring-blue-500"
@@ -112,8 +149,46 @@ export default function DealFormsPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th className="px-4 py-2 text-left">Vendor Code</th>
-                <th className="px-4 py-2 text-left">Vendor Name</th>
+                <th 
+                  className="px-4 py-2 text-left"
+                  onClick={() => handleSort("code")}
+                >
+                  Vendor Code
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "code" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="px-4 py-2 text-left"
+                  onClick={() => handleSort("name")}
+                >
+                  Vendor Name
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
                 <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>

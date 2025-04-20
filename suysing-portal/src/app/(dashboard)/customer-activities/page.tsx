@@ -14,11 +14,11 @@ interface ActivitySummary {
 }
 
 type SortField =
-  | "name"
-  | "totalBoothVisited"
-  | "boothHopping"
-  | "boothVoting"
-  | "souvenirClaiming";
+  | "full_name"
+  | "total_visited_c"
+  | "booth_hopping_status"
+  | "booth_voting_status"
+  | "souvenir_claiming_status";
 
 export default function CustomerActivitiesPage() {
   const { token } = useAuth();
@@ -27,9 +27,10 @@ export default function CustomerActivitiesPage() {
     boothVoting: 0,
     souvenirClaiming: 0,
   });
+  const initialRenderVal = "__default_val__";
 
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
@@ -37,6 +38,7 @@ export default function CustomerActivitiesPage() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by : ""
   });
   const [sortConfig, setSortConfig] = useState<{
     field: SortField;
@@ -44,6 +46,8 @@ export default function CustomerActivitiesPage() {
   } | null>(null);
 
   const fetchData = async () => {
+    setIsLoading(true); //show loader
+
     try {
       if (!token) {
         console.error("Authentication token is missing");
@@ -63,15 +67,20 @@ export default function CustomerActivitiesPage() {
 
       setCurrentPage(customersData.current_page);
       setTotalPages(customersData.total_pages);
+      
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching data:", error);
     } finally {
+      setIsLoading(false);
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams]);
 
   // useEffect(() => {
@@ -101,15 +110,18 @@ export default function CustomerActivitiesPage() {
   };
 
   useEffect(() => {
-    // set delay 2 seconds
-    const delaySetSearch = setTimeout(() => {
-      // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 2000);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+        // set delay 2 seconds
+        const delaySetSearch = setTimeout(() => {
+          // it will get the latest value after two seconds of no keyboard activity
+          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+        }, 2000);
 
-    //clears the timeout of the previous value of delaySetSearch
-    //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch);
+        //clears the timeout of the previous value of delaySetSearch
+        //clears the timeout on re render
+        return () => clearTimeout(delaySetSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   // Handle sort
@@ -119,6 +131,14 @@ export default function CustomerActivitiesPage() {
     if (sortConfig && sortConfig.field === field) {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setfilterParams({ ...filterParams, sort_by: api_sort_field });
 
     setSortConfig({ field, direction });
   };
@@ -176,7 +196,7 @@ export default function CustomerActivitiesPage() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search customer here..."
               className="pl-4 pr-10 py-2 border w-72 focus:outline-none border-gray-400"
@@ -192,11 +212,11 @@ export default function CustomerActivitiesPage() {
             <tr className="bg-blue-800 text-white">
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("name")}
+                onClick={() => handleSort("full_name")}
               >
                 Customer Name
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "name" ? (
+                  {sortConfig && sortConfig.field === "full_name" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
@@ -212,11 +232,11 @@ export default function CustomerActivitiesPage() {
               </th>
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("totalBoothVisited")}
+                onClick={() => handleSort("total_visited_c")}
               >
                 Total Booth Visited
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "totalBoothVisited" ? (
+                  {sortConfig && sortConfig.field === "total_visited_c" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
@@ -232,11 +252,11 @@ export default function CustomerActivitiesPage() {
               </th>
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("boothHopping")}
+                onClick={() => handleSort("booth_hopping_status")}
               >
                 Booth Hopping
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "boothHopping" ? (
+                  {sortConfig && sortConfig.field === "booth_hopping_status" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
@@ -252,11 +272,11 @@ export default function CustomerActivitiesPage() {
               </th>
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("boothVoting")}
+                onClick={() => handleSort("booth_voting_status")}
               >
                 Booth Voting
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "boothVoting" ? (
+                  {sortConfig && sortConfig.field === "booth_voting_status" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
@@ -272,11 +292,11 @@ export default function CustomerActivitiesPage() {
               </th>
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("souvenirClaiming")}
+                onClick={() => handleSort("souvenir_claiming_status")}
               >
                 Souvenir Claiming
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "souvenirClaiming" ? (
+                  {sortConfig && sortConfig.field === "souvenir_claiming_status" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (

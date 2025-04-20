@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaPlus } from "react-icons/fa";
+import { FaSearch, FaFilter, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { souvenirAvailabilityData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
@@ -9,10 +9,18 @@ import { Souvenir } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 import Swal from "sweetalert2";
 
+type SortField =
+  | "name"
+  | "qty_as_int"
+  | "claimed_as_int"
+  | "remaining_as_int";
+
 export default function SouvenirAvailabilityPage() {
   const { token } = useAuth();
+  const initialRenderVal = "__default_val__";
+
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredSouvenirs, setFilteredSouvenirs] = useState<Souvenir[]>([]);
@@ -27,9 +35,16 @@ export default function SouvenirAvailabilityPage() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by: "",
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       if (!token) {
         console.error("No authentication token available");
@@ -44,6 +59,7 @@ export default function SouvenirAvailabilityPage() {
 
       setCurrentPage(souvenirsData.current_page);
       setTotalPages(souvenirsData.total_pages);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -53,6 +69,7 @@ export default function SouvenirAvailabilityPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams]);
 
   // useEffect(() => {
@@ -81,16 +98,39 @@ export default function SouvenirAvailabilityPage() {
   };
 
   useEffect(() => {
-    // set delay 2 seconds
-    const delaySetSearch = setTimeout(() => {
-      // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 2000);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+        // set delay 2 seconds
+        const delaySetSearch = setTimeout(() => {
+          // it will get the latest value after two seconds of no keyboard activity
+          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+        }, 2000);
 
-    //clears the timeout of the previous value of delaySetSearch
-    //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch);
+        //clears the timeout of the previous value of delaySetSearch
+        //clears the timeout on re render
+        return () => clearTimeout(delaySetSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
+
+
+  // Handle sort
+  const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setfilterParams({ ...filterParams, sort_by: api_sort_field });
+
+    setSortConfig({ field, direction });
+  };
 
   const handleAddSouvenir = async () => {
     // Validate inputs
@@ -282,7 +322,7 @@ export default function SouvenirAvailabilityPage() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search souvenir here..."
               className="pl-4 py-2 border w-64 focus:outline-none border-gray-400 focus:ring focus:ring-blue-500"
@@ -295,10 +335,86 @@ export default function SouvenirAvailabilityPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th className="px-4 py-2 text-left">Souvenir Name</th>
-                <th className="px-4 py-2 text-left">Total Quantity</th>
-                <th className="px-4 py-2 text-left">Claimed</th>
-                <th className="px-4 py-2 text-left">Remaining Qty</th>
+                <th 
+                  className="px-4 py-2 text-left cursor-pointer"
+                  onClick={() => handleSort("name")}
+                >
+                  Souvenir Name
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="px-4 py-2 text-left"
+                  onClick={() => handleSort("qty_as_int")}
+                >
+                  Total Quantity
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "qty_as_int" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="px-4 py-2 text-left"
+                  onClick={() => handleSort("claimed_as_int")}
+                >
+                  Claimed
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "claimed_as_int" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="px-4 py-2 text-left"
+                  onClick={() => handleSort("remaining_as_int")}
+                >
+                  Remaining Qty
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "remaining_as_int" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
                 <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>

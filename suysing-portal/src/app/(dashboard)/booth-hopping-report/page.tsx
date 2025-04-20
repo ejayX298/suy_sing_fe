@@ -1,19 +1,26 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FaSearch, FaFilter } from "react-icons/fa";
+import { FaSearch, FaFilter, FaSortUp, FaSortDown } from "react-icons/fa";
 import { boothHoppingReportData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Customer } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
+type SortField =
+  | "code"
+  | "full_name"
+  | "customer_type"
+  | "total_booth_visited_c";
+
 export default function BoothHoppingReportPage() {
   const router = useRouter();
   const { token } = useAuth();
+  const initialRenderVal = "__default_val__";
 
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
@@ -22,9 +29,16 @@ export default function BoothHoppingReportPage() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by: "",
   });
 
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       if (!token) {
         console.error("No authentication token available");
@@ -40,6 +54,7 @@ export default function BoothHoppingReportPage() {
 
       setCurrentPage(customersData.current_page);
       setTotalPages(customersData.total_pages);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -49,6 +64,7 @@ export default function BoothHoppingReportPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams]);
 
   // useEffect(() => {
@@ -78,15 +94,19 @@ export default function BoothHoppingReportPage() {
   };
 
   useEffect(() => {
-    // set delay 2 seconds
-    const delaySetSearch = setTimeout(() => {
-      // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 2000);
 
-    //clears the timeout of the previous value of delaySetSearch
-    //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+      // set delay 2 seconds
+      const delaySetSearch = setTimeout(() => {
+        // it will get the latest value after two seconds of no keyboard activity
+        setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+      }, 2000);
+
+      //clears the timeout of the previous value of delaySetSearch
+      //clears the timeout on re render
+      return () => clearTimeout(delaySetSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   // Customer type color mapping
@@ -105,6 +125,25 @@ export default function BoothHoppingReportPage() {
     router.push(`/booth-hopping-report/${customerId}`);
   };
 
+  // Handle sort
+  const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setfilterParams({ ...filterParams, sort_by: api_sort_field });
+
+    setSortConfig({ field, direction });
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -116,7 +155,7 @@ export default function BoothHoppingReportPage() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search customer here..."
               className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
@@ -129,10 +168,86 @@ export default function BoothHoppingReportPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th className="table-header">Customer Code</th>
-                <th className="table-header">Customer Name</th>
-                <th className="table-header">Customer Type</th>
-                <th className="table-header">Total Booth Visited</th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("code")}
+                >
+                  Customer Code
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "code" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>  
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("full_name")}
+                  >
+                  Customer Name
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "full_name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                  </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("customer_type")}
+                  >
+                  Customer Type
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "customer_type" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span> 
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("total_booth_visited_c")}
+                  >
+                  Total Booth Visited
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "total_booth_visited_c" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>

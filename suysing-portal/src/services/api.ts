@@ -7,6 +7,7 @@ interface FilterParams {
   perpage: number;
   query: string;
   color_code?: string;
+  sort_by?: string;
 }
 
 interface UpdateBoothData {
@@ -224,10 +225,10 @@ export const customerActivitiesData = {
 
   getCustomers: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/customer-activities/list/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/customer-activities/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -318,10 +319,10 @@ export const boothActivitiesData = {
   ],
   getBooths: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/booth-activities/list/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/booth-activities/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -572,10 +573,10 @@ export const boothHoppingReportData = {
   ],
   getCustomers: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/booth-hopping-report/list/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/booth-hopping-report/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -622,10 +623,10 @@ export const boothHoppingReportData = {
     filterParams: FilterParams
   ) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/booth-hopping-report/details/?customer_id=${id}&page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/booth-hopping-report/details/?customer_id=${id}&page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -683,10 +684,10 @@ export const boothHoppingReportData = {
 export const bestBoothReportData = {
   getCustomers: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query ,sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/best-booth/report/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/best-booth/report/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -892,10 +893,10 @@ export const bestBoothReportData = {
 export const bestBoothWinnerTallyData = {
   getBooths: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query, color_code } = filterParams;
+      const { page, perpage, query, color_code, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/best-booth/winner-tally/?page=${page}&perpage=${perpage}&color_code=${color_code}&query=${query}`,
+        `/admin/best-booth/winner-tally/?page=${page}&perpage=${perpage}&color_code=${color_code}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -1026,10 +1027,10 @@ export const bestBoothWinnerTallyData = {
 export const souvenirClaimData = {
   getClaims: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/souvenir/claim/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/souvenir/claim/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -1207,10 +1208,10 @@ export const souvenirClaimData = {
 export const souvenirAvailabilityData = {
   getSouvenirs: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -1622,10 +1623,10 @@ export const souvenirAvailabilityDataOriginal = {
 export const dealFormsApiService = {
   getBooths: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/deal-forms/booths/?page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/deal-forms/booths/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 
@@ -1672,10 +1673,10 @@ export const dealFormsApiService = {
     filterParams: FilterParams
   ) => {
     try {
-      const { page, perpage, query } = filterParams;
+      const { page, perpage, query, sort_by } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/deal-forms/booth-products/?booth_id=${booth_id}&page=${page}&perpage=${perpage}&query=${query}`,
+        `/admin/deal-forms/booth-products/?booth_id=${booth_id}&page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
         {}
       );
 

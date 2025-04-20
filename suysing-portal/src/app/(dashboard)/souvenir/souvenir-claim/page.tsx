@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter } from "react-icons/fa";
+import { FaSearch, FaFilter, FaSortUp, FaSortDown } from "react-icons/fa";
 import { souvenirClaimData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Claim } from "@/types";
@@ -9,10 +9,20 @@ import { useAuth } from "@/lib/hooks/useAuth";
 import { MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
 
+type SortField =
+  | "code"
+  | "full_name"
+  | "customer_type"
+  | "claim_status"
+  | "customer_souvenir_name"
+  | "customer_souvenir_time_submiited";
+
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
+  const initialRenderVal = "__default_val__";
+
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredClaims, setFilteredClaims] = useState<Claim[]>([]);
@@ -22,10 +32,18 @@ export default function SouvenirClaimPage() {
     page: 1,
     perpage: 10,
     query: "",
+    sort_by: "",
   });
+
+  const [sortConfig, setSortConfig] = useState<{
+    field: SortField;
+    direction: "asc" | "desc";
+  } | null>(null);
+
   const [customerStatus, setCustomerStatus] = useState<string>("Pending");
 
   const fetchData = async () => {
+    setIsLoading(true);
     try {
       if (!token) {
         console.error("No authentication token available");
@@ -38,6 +56,7 @@ export default function SouvenirClaimPage() {
 
       setCurrentPage(claimsData.current_page);
       setTotalPages(claimsData.total_pages);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -47,6 +66,7 @@ export default function SouvenirClaimPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterParams]);
 
   // useEffect(() => {
@@ -71,15 +91,18 @@ export default function SouvenirClaimPage() {
   };
 
   useEffect(() => {
-    // set delay 2 seconds
-    const delaySetSearch = setTimeout(() => {
-      // it will get the latest value after two seconds of no keyboard activity
-      setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-    }, 2000);
+    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+        // set delay 2 seconds
+        const delaySetSearch = setTimeout(() => {
+          // it will get the latest value after two seconds of no keyboard activity
+          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+        }, 2000);
 
-    //clears the timeout of the previous value of delaySetSearch
-    //clears the timeout on re render
-    return () => clearTimeout(delaySetSearch);
+        //clears the timeout of the previous value of delaySetSearch
+        //clears the timeout on re render
+        return () => clearTimeout(delaySetSearch);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
 
   // Status color mapping
@@ -161,6 +184,25 @@ export default function SouvenirClaimPage() {
     }
   };
 
+   // Handle sort
+   const handleSort = (field: SortField) => {
+    let direction: "asc" | "desc" = "asc";
+
+    if (sortConfig && sortConfig.field === field) {
+      direction = sortConfig.direction === "asc" ? "desc" : "asc";
+    }
+    
+    let api_sort_field : string = field
+
+    if (direction == "desc"){
+      api_sort_field  = `-${api_sort_field}`
+    }
+
+    setfilterParams({ ...filterParams, sort_by: api_sort_field });
+
+    setSortConfig({ field, direction });
+  };
+
   const confirmMessage = async (message: string) => {
     const result = await Swal.fire({
       title: "Confirm",
@@ -204,7 +246,7 @@ export default function SouvenirClaimPage() {
           <div className="relative">
             <input
               type="text"
-              value={searchQuery}
+              value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search customer here..."
               className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
@@ -217,12 +259,126 @@ export default function SouvenirClaimPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th className="table-header">Customer Code</th>
-                <th className="table-header">Customer Name</th>
-                <th className="table-header">Customer Type</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Item</th>
-                <th className="table-header">Time Claimed</th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("code")}
+                >
+                  Customer Code
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "code" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("full_name")}
+                >
+                  Customer Name
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "full_name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("customer_type")}
+                >
+                  Customer Type
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "customer_type" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("claim_status")}
+                >
+                  Status
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "claim_status" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("customer_souvenir_name")}
+                >
+                  Item
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "customer_souvenir_name" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("customer_souvenir_time_submiited")}
+                >
+                  Time Claimed
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "customer_souvenir_time_submiited" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
                 <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>
