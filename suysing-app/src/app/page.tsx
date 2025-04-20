@@ -233,7 +233,7 @@ export default function Home() {
         `}
         >
           <div
-            className={`w-full h-full flex justify-center 
+            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center 
               ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
           >
             <Image
@@ -274,7 +274,7 @@ export default function Home() {
         onClose={() => setShowInstructionModal(false)}
       />
 
-      <main className="flex-1 px-0 py-0 overflow-hidden">
+      <main className="flex-1 py-2 px-4 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
           visited={customerData?.totalBoothVisited || 0}
