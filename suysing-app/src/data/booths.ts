@@ -633,8 +633,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/LESLI01.png",
       boothCode: "LESLI01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 50,
+      height: 50,
       overrideAspect: true,
     },
 
@@ -782,8 +782,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/RHEIN01.png",
       boothCode: "RHEIN01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 60,
+      height: 60,
       overrideAspect: true,
     },
 
