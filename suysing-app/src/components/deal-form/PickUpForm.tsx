@@ -6,7 +6,7 @@ interface PickUpFormProps {
   branch: string;
   remarks: string;
   transactionTypes: string[];
-  customerPickupDetails : CustomerPickupDetails[];
+  customerPickupDetails: CustomerPickupDetails[];
   onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
@@ -61,51 +61,60 @@ export default function PickUpForm({
           >
             Transaction Type
           </label>
-          {/* <input
-            type="text"
-            id="transactionType"
-            name="transactionType"
-            value={transactionType}
-            className="w-full px-3 py-4 border  border-gray-400 rounded-md focus:outline-none text-black"
-            readOnly
-          /> */}
-
-          <select
-            id="transactionType"
-            name="transactionType"
-            value={transactionType}
-            onChange={onSelectChange}
-            className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
-          >
-            {/* <option value="" disabled></option> */}
-            {transactionTypes.map((transactionTypeName, index) => (
-              <option key={index} value={transactionTypeName}>
-                {transactionTypeName}
-              </option>
-            ))}
-          </select>
-
-
+          <div className="relative">
+            <select
+              id="transactionType"
+              name="transactionType"
+              value={transactionType}
+              onChange={onSelectChange}
+              className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none appearance-none"
+            >
+              {transactionTypes.map((transactionTypeName, index) => (
+                <option key={index} value={transactionTypeName}>
+                  {transactionTypeName}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div>
           <label htmlFor="branch" className="block text-sm  text-black mb-2">
             Branch
           </label>
-          <select
-            id="branch"
-            name="branch"
-            value={branch}
-            onChange={onSelectChange}
-            className="w-full px-3 py-4 border  border-gray-400 rounded-md focus:outline-none text-black"
-          >
-            {/* <option value=""></option> */}
-            {customerPickupDetails.map((customerPickup, index) => (
-              <option key={index} value={customerPickup.id}>
-                {customerPickup.branch_code}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              id="branch"
+              name="branch"
+              value={branch}
+              onChange={onSelectChange}
+              className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black appearance-none"
+            >
+              {customerPickupDetails.map((customerPickup, index) => (
+                <option key={index} value={customerPickup.id}>
+                  {customerPickup.branch_code}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div>
