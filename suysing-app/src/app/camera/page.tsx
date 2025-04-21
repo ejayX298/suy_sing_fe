@@ -219,38 +219,33 @@ export default function CameraPage() {
 
     // call api for booth visit
     const boothVisitResult = await submitBoothVisit(manualCode.trim());
-    // Find booth with this ID
-    // const booth = booths.find((b) => b.id === manualCode.trim());
-
+    
     if (boothVisitResult.success) {
-      // if (visited) {
-      //   setSuccessMessage(
-      //     "You've already scanned this booth. Please find another booth to scan."
-      //   );
-      //   setShowSuccessModal(true);
-      //   setShowManualCodeModal(false);
-      //   return;
-      // }
-
-      // Mark booth as visited
-      // handleVisitBooth(manualCode.trim());
-
-      // Set message - first booth visited or another one
       if (customerData?.totalBoothVisited === 0) {
-        setSuccessMessage(
-          "Great Job! You've stamped your first booth. Visit and scan all the other booths to complete this section."
-        );
+        if (boothVisitResult.is_double_zone === 1) {
+          setIsFirstDoubleZone(true);
+          setSuccessMessage(
+            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+          );
+          setShowSuccessModal(true);
+        } else {
+          setIsFirstBooth(true);
+          setSuccessMessage(
+            `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
+          );
+          setShowSuccessModal(true);
+        }
       } else if (boothVisitResult.is_double_zone === 1) {
-        setShowSuccessModalDouble(true);
-        setSuccessMessage("Each booth visited will be counted as double.");
+        setSuccessMessage(
+          `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+        );
+        setShowSuccessModal(true);
       } else {
         setSuccessMessage(
           `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`
         );
+        setShowSuccessModal(true);
       }
-
-      setShowSuccessModal(true);
-      setShowManualCodeModal(false);
     } else {
       // Invalid code - close the modal without proceeding
       closeManualCodeModal();
