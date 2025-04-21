@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
 import { bestBoothWinnerTallyData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Booth } from "@/types";
@@ -186,9 +186,9 @@ export default function BestBoothWinnerTallyPage() {
             </button>
           </div>
           <div className="py-4 flex justify-end gap-4 items-center">
-            <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
+            {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
-            </button>
+            </button> */}
 
             <div className="relative">
               <input

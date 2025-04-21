@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { souvenirAvailabilityData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
@@ -314,9 +314,9 @@ export default function SouvenirAvailabilityPage() {
             >
               <FaPlus className="mr-2" /> Add Souvenir
             </button>
-            <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
+            {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
-            </button>
+            </button> */}
           </div>
 
           <div className="relative">
