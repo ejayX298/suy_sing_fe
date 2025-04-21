@@ -471,10 +471,10 @@ export default function ProductSelection({
         </div>
 
         <div className="flex flex-col">
-          <div className="bg-white border-2 border-[#7D7D7D] py-2 px-4 rounded-sm flex flex-col items-center justify-center w-27">
+          <div className="bg-white border-2 border-[#7D7D7D] p-4 rounded-sm flex flex-col items-center justify-center h-full">
             <button
               onClick={handleCreateNewCart}
-              className={`rounded-full size-8 flex items-center justify-center mb-1 ${
+              className={`rounded-full size-8 flex items-center justify-center ${
                 maxCartsReached
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
@@ -484,11 +484,12 @@ export default function ProductSelection({
               <span className="text-white text-2xl">+</span>
             </button>
             <span
-              className={`text-xs text-center ${
+              className={`text-xs text-center mt-1 ${
                 maxCartsReached ? "text-gray-400" : "text-black"
               }`}
             >
-              Create <br />
+              Create
+              <br />
               new cart
             </span>
           </div>

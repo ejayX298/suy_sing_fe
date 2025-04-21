@@ -36,7 +36,6 @@ interface CustomerPickupDetails {
   branch_code: string;
 }
 
-
 interface CustomerDeliveryDetails {
   id: string;
   code: string;
@@ -58,13 +57,13 @@ interface ConfirmationProps {
   onNavigateCart?: (direction: "prev" | "next") => void;
   onCreateNewCart?: () => void;
   maxCartsReached?: boolean;
-  transactionTypes : string[];
+  transactionTypes: string[];
   branch: string;
   shipToAddress: string;
-  customerPickupDetails : CustomerPickupDetails[];
+  customerPickupDetails: CustomerPickupDetails[];
   customerDeliveryDetails: CustomerDeliveryDetails[];
-  shipToAddressId : string;
-  branchId : string;
+  shipToAddressId: string;
+  branchId: string;
 }
 
 export default function Confirmation({
@@ -88,38 +87,34 @@ export default function Confirmation({
 
   // Group the products by dealer
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  const groupedByDealer = products.reduce((acc : any, item) => {
-    const dealerId : string = item.dealerId ?? '';
-    if(dealerId == '') return {};
+  const groupedByDealer = products.reduce((acc: any, item) => {
+    const dealerId: string = item.dealerId ?? "";
+    if (dealerId == "") return {};
     if (!acc[dealerId]) {
       acc[dealerId] = {
         dealerId: dealerId,
         dealerName: item.dealerName,
-        products: []
+        products: [],
       };
     }
     acc[dealerId].products.push(item);
     return acc;
   }, {});
-  
-  
 
   return (
     <div className="flex flex-col space-y-4 min-h-screen">
       {/* Header info */}
       <div className="mb-4 flex gap-1">
         <div className="flex-1 bg-white border-2 border-[#7D7D7D] p-4 rounded-sm">
-          <div className="flex flex-row justify-between">
-            <div className="flex-1">
-              <div className="flex flex-col">
-                <span className="text-black text-sm">Customer Code:</span>
-                <span className="text-black font-bold text-sm">
-                  {formData.customerCode}
-                </span>
-              </div>
+          <div className="flex flex-col">
+            <div className="flex flex-col">
+              <span className="text-black text-sm">Customer Code:</span>
+              <span className="text-black font-bold text-sm">
+                {formData.customerCode}
+              </span>
             </div>
 
-            <div className="flex-1">
+            <div className="mt-4">
               <div className="flex flex-col">
                 <span className="text-black text-sm">Transaction Type:</span>
                 <div className="relative">
@@ -191,11 +186,10 @@ export default function Confirmation({
         </div>
 
         <div className="flex flex-col gap-1">
-          <div className="bg-white border-2 border-[#7D7D7D] py-2 px-4 rounded-sm flex flex-col items-center justify-center w-27">
-            {/* Always show button but disable when at max carts */}
+          <div className="bg-white border-2 border-[#7D7D7D] p-4 rounded-sm flex flex-col items-center justify-center h-full">
             <button
               onClick={onCreateNewCart}
-              className={`rounded-full size-8 flex items-center justify-center mb-1 ${
+              className={`rounded-full size-8 flex items-center justify-center ${
                 carts.length >= 3
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
@@ -205,11 +199,12 @@ export default function Confirmation({
               <span className="text-white text-2xl">+</span>
             </button>
             <span
-              className={`text-xs text-center ${
+              className={`text-xs text-center mt-1 ${
                 carts.length >= 3 ? "text-gray-400" : "text-black"
               }`}
             >
-              Create <br />
+              Create
+              <br />
               new cart
             </span>
           </div>
@@ -287,32 +282,49 @@ export default function Confirmation({
         </div>
       </div>
 
-      {products.length > 0 && Object.values(groupedByDealer).map((dealer : any, index) => (
-        <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden " key={index}>
-          <div className="p-4 border-b border-[#7D7D7D]">
-            <div className="font-bold text-black">
-              {dealer?.dealerName}
+      {products.length > 0 &&
+        Object.values(groupedByDealer).map((dealer: any, index) => (
+          <div
+            className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden "
+            key={index}
+          >
+            <div className="p-4 border-b border-[#7D7D7D]">
+              <div className="font-bold text-black">{dealer?.dealerName}</div>
+            </div>
+
+            {/* Product items */}
+            <div>
+              {dealer?.products
+                .filter((p: { quantity: number }) => p.quantity > 0)
+                .map(
+                  (product: {
+                    id: string;
+                    itemCode: string;
+                    name: string;
+                    discount: string;
+                    quantity: number;
+                  }) => (
+                    <div
+                      key={product.id}
+                      className="border-t border-[#E5E5E5] p-4"
+                    >
+                      <div className="text-sm text-black">
+                        {product.itemCode}
+                      </div>
+                      <div className="text-black">{product.name}</div>
+                      <div className="flex justify-between items-start mt-1">
+                        <div className="text-sm text-black">
+                          {product.discount}
+                        </div>
+                        <div className="font-bold text-xl text-black">
+                          x{product.quantity}
+                        </div>
+                      </div>
+                    </div>
+                  )
+                )}
             </div>
           </div>
-
-          {/* Product items */}
-          <div>
-            {dealer?.products
-              .filter((p: { quantity: number; }) => p.quantity > 0)
-              .map((product : {id: string, itemCode : string, name : string, discount : string, quantity: number}) => (
-                <div key={product.id} className="border-t border-[#E5E5E5] p-4">
-                  <div className="text-sm text-black">{product.itemCode}</div>
-                  <div className="text-black">{product.name}</div>
-                  <div className="flex justify-between items-start mt-1">
-                    <div className="text-sm text-black">{product.discount}</div>
-                    <div className="font-bold text-xl text-black">
-                      x{product.quantity}
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
         ))}
       <div className="py-2">
         <button
