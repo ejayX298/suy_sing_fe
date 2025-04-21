@@ -128,9 +128,9 @@ export default function DealFormsPage() {
       <div className="">
         <div className="py-4 flex justify-end gap-4 items-center border-b">
           <div className="flex items-center space-x-2">
-            <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
+            {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
-            </button>
+            </button> */}
           </div>
 
           <div className="relative">
