@@ -12,7 +12,7 @@ export default function DealFormInstructionPage({ onClose }: DealFormInstruction
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-none" onClick={onClose} />
       
-      <div className="absolute bottom-24  left-[12.3rem] transform -translate-x-1/2 w-[80%] max-w-xs">
+      <div className="absolute bottom-24  left-[11.3rem] transform -translate-x-1/2 w-[80%] max-w-xs">
         <div className="relative bg-white rounded-xl shadow-lg p-4 border-[3px] border-[#F78B1E]">
           <div className="flex items-center justify-center mb-4">
             <Image src="/images/deal-form.svg" alt="Deal Form" width={60} height={60} />
