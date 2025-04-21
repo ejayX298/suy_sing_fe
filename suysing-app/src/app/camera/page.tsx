@@ -65,7 +65,7 @@ export default function CameraPage() {
             })
             .catch((err) => {
               console.error("Camera permission error:", err);
-              setError("Camera Access Needed. We couldn’t access your camera.");
+              setError("Camera Access Needed. We couldn't access your camera.");
               setHasPermission(false);
             });
         }
@@ -88,24 +88,24 @@ export default function CameraPage() {
 
       if (boothVisitResult.success) {
         if (customerData?.totalBoothVisited === 0) {
-          setIsFirstBooth(true);
-          setSuccessMessage(
-            `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
-          );
-          setShowSuccessModal(true);
-        } else if (boothVisitResult.is_double_zone === 1) {
-          if (customerData?.totalBoothVisited === 1) {
+          if (boothVisitResult.is_double_zone === 1) {
             setIsFirstDoubleZone(true);
-            setSuccessMessage(
-              `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
-            );
-            setShowSuccessModal(true);
-          } else {
             setSuccessMessage(
               `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
             );
             setShowSuccessModal(true);
+          } else {
+            setIsFirstBooth(true);
+            setSuccessMessage(
+              `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
+            );
+            setShowSuccessModal(true);
           }
+        } else if (boothVisitResult.is_double_zone === 1) {
+          setSuccessMessage(
+            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+          );
+          setShowSuccessModal(true);
         } else {
           setSuccessMessage(
             `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`
@@ -182,9 +182,8 @@ export default function CameraPage() {
       setShowSuccessModal(true);
     } else if (isFirstDoubleZone) {
       setIsFirstDoubleZone(false);
-      setShowSuccessModalDouble(false);
-
-      router.push(`/?cc=${customer_hash_code}`);
+      setShowSuccessModalDouble(true);
+      setSuccessMessage("Each booth visited will be counted as double.");
     } else {
       setShowSuccessModal(false);
       setShowSuccessModalDouble(false);
