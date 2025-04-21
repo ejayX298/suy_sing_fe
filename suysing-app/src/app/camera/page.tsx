@@ -569,6 +569,8 @@ export default function CameraPage() {
               <button
                 onClick={() => {
                   setShowCompletionModal(false);
+                  setShowSuccessModal(false);
+                  setShowSuccessModalDouble(false);
                   router.push(`/?cc=${customer_hash_code}`);
                 }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
