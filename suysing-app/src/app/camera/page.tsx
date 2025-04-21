@@ -246,7 +246,7 @@ export default function CameraPage() {
         setSuccessMessage("Each booth visited will be counted as double.");
       } else {
         setSuccessMessage(
-          `You've stamped the ${boothVisitResult?.booth_name} booth.`
+          `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`
         );
       }
 
