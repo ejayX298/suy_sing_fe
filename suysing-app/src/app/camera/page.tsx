@@ -102,7 +102,7 @@ export default function CameraPage() {
             setShowSuccessModal(true);
           } else {
             setSuccessMessage(
-              `Double points! You've stamped ${boothVisitResult?.booth_name} booth.`
+              `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
             );
             setShowSuccessModal(true);
           }
