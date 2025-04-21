@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaEye, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaEye, FaSortUp, FaSortDown } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { Vendor } from "@/types";
 import { useRouter } from "next/navigation";

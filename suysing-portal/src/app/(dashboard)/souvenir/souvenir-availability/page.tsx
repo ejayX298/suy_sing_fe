@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { souvenirAvailabilityData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";

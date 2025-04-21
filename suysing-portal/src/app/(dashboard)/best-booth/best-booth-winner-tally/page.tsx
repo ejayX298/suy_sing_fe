@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaFilter, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
 import { bestBoothWinnerTallyData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Booth } from "@/types";
