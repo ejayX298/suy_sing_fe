@@ -4,16 +4,22 @@ import Image from "next/image";
 // import { useBooths } from "@/context/BoothsContext";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { totalVisitCount: number, boothData : any }) {
-  const getTotalVisited = () =>{
-    let totalVisitedDoubleZone = totalVisitCount
+export default function DoubleZoneDisplay({
+  totalVisitCount,
+  boothData,
+}: {
+  totalVisitCount: number;
+  boothData: any;
+}) {
+  const getTotalVisited = () => {
+    let totalVisitedDoubleZone = totalVisitCount;
 
-    if (totalVisitCount > 20){
+    if (totalVisitCount > 20) {
       totalVisitedDoubleZone = 20;
     }
 
     return totalVisitedDoubleZone;
-  }
+  };
   return (
     <div className="px-6 py-4">
       <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
@@ -35,26 +41,42 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
-          {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row1-${i}`} boothIndex={i} boothData={boothData}/>
+          {[...Array(5)].map((_, i) => (
+            <DoubleZoneCard
+              key={`double-row1-${i}`}
+              boothIndex={i}
+              boothData={boothData}
+            />
           ))}
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
-          {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row2-${i}`} boothIndex={i + 6} boothData={boothData}/>
+          {[...Array(5)].map((_, i) => (
+            <DoubleZoneCard
+              key={`double-row2-${i}`}
+              boothIndex={i + 5}
+              boothData={boothData}
+            />
           ))}
         </div>
 
         <div className="flex justify-center gap-4 mb-4">
-          {[...Array(6)].map((_, i) => (
-            <DoubleZoneCard key={`double-row3-${i}`} boothIndex={i + 12} boothData={boothData}/>
+          {[...Array(5)].map((_, i) => (
+            <DoubleZoneCard
+              key={`double-row3-${i}`}
+              boothIndex={i + 10}
+              boothData={boothData}
+            />
           ))}
         </div>
 
-        <div className="flex justify-center gap-10">
-          {[...Array(4)].map((_, i) => (
-            <DoubleZoneCard key={`double-row4-${i}`} boothIndex={i + 18} boothData={boothData}/>
+        <div className="flex justify-center gap-4">
+          {[...Array(5)].map((_, i) => (
+            <DoubleZoneCard
+              key={`double-row4-${i}`}
+              boothIndex={i + 15}
+              boothData={boothData}
+            />
           ))}
         </div>
       </div>
@@ -64,8 +86,8 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
 
 function DoubleZoneCard(
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  { boothIndex, boothData }: { boothIndex: number, boothData : any },
-  ) {
+  { boothIndex, boothData }: { boothIndex: number; boothData: any }
+) {
   // const { doubleZoneBooths } = useBooths();
   const booth = boothData[boothIndex];
 
