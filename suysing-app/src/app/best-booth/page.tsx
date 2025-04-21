@@ -121,14 +121,14 @@ function BestBoothContent() {
 
   const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
-    let titleType: "Success" | "Error";
+    let titleType: "Success" | "Oops!";
 
     if (status == "1") {
       iconType = "success";
       titleType = "Success";
     } else {
       iconType = "error";
-      titleType = "Error";
+      titleType = "Oops!";
     }
 
     Swal.fire({
@@ -141,14 +141,14 @@ function BestBoothContent() {
 
   const showMessageRedirect = (status: string, message: string) => {
     let iconType: "success" | "error";
-    let titleType: "Success" | "Error";
+    let titleType: "Success" | "Oops!";
 
     if (status == "1") {
       iconType = "success";
       titleType = "Success";
     } else {
       iconType = "error";
-      titleType = "Error";
+      titleType = "Oops!";
     }
 
     Swal.fire({
