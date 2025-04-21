@@ -8,8 +8,8 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
   const getTotalVisited = () =>{
     let totalVisitedDoubleZone = totalVisitCount
 
-    if (totalVisitCount > 22){
-      totalVisitedDoubleZone = 22;
+    if (totalVisitCount > 20){
+      totalVisitedDoubleZone = 20;
     }
 
     return totalVisitedDoubleZone;
@@ -27,10 +27,10 @@ export default function DoubleZoneDisplay({ totalVisitCount, boothData} : { tota
         </div>
 
         <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
-          Locate the Double Zone Booths in the Tent and scan any 22 booths
+          Locate the Double Zone Booths in the Tent and scan any 20 booths
           within this area.
           <div className="font-bold mt-1">
-            {getTotalVisited()} / 22 Booths Scanned
+            {getTotalVisited()} / 20 Booths Scanned
           </div>
         </div>
 
