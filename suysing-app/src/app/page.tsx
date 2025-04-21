@@ -32,7 +32,7 @@ export default function Home() {
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
   const [totalVisitCount, setTotalVisitCount] = useState(0);
   const [doubleZoneBooths, setDoubleZoneBooths] = useState<Booth[]>(
-    Array(22).fill("")
+    Array(20).fill("")
   );
   const [remapBooth, setRemapBooth] = useState<Booth[]>([]);
   const [customerData, setCustomerData] = useState<{
