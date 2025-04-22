@@ -73,7 +73,7 @@ export const useAuth = create<AuthState>((set) => {
         const response = await authService.login(username, password);
 
         if (response?.success && response?.data) {
-          const userData = response.data.user || {};
+          const userData = response.data.user || '';
           // Store auth data in localStorage
           if (typeof window !== "undefined") {
             localStorage.setItem(
