@@ -9,11 +9,22 @@ export default function Header({ title }: { title: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const { logout } = useAuth();
   const router = useRouter();
+  let admin_first_name = ''
 
   const handleLogout = () => {
     logout();
     router.push('/login');
   };
+
+  
+  if (typeof window != "undefined") {
+    const auth = localStorage.getItem("auth");
+    if (!auth){
+      admin_first_name = '';
+    }else{
+      admin_first_name = JSON.parse(auth)?.user || '';
+    }
+  }
 
   return (
     <header className="h-20 flex items-center justify-between px-6 mt-4 mb-4">
@@ -26,7 +37,7 @@ export default function Header({ title }: { title: string }) {
             onClick={() => setDropdownOpen(!dropdownOpen)}
           >
             <FaUserCircle className="w-6 h-6" />
-            <span>Hello John!</span>
+            <span>Hello {admin_first_name}!</span>
           </button>
           
           {dropdownOpen && (
