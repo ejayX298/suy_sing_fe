@@ -307,16 +307,16 @@ export default function Home() {
                   {/* Tent Area*/}
                   <div className="border-[3px] border-blue-800 rounded bg-white w-[550px] h-[1240px] flex flex-col self-center mr-32 overflow-y-auto">
                     <div className="bg-gray-400 w-full p-4 flex flex-col items-center justify-center mb-4">
-                      <div className="flex items-center justify-center mb-2">
+                      <div className="flex flex-col items-center justify-center mb-4">
+                        <h1 className="text-2xl font-bold mb-4 text-[#FFFFFF80]">
+                          TENT AREA
+                        </h1>
                         <Image
-                          src="/images/gaming-hub.svg"
-                          alt="Gaming Hub"
+                          src="/images/gaming arena.png"
+                          alt="Gaming Arena"
                           width={210}
                           height={210}
                         />
-                      </div>
-                      <div className="text-white font-bold text-xl text-center">
-                        GAMING HUB & CUSTOMER LOUNGE AREA
                       </div>
                     </div>
 
@@ -590,6 +590,7 @@ export default function Home() {
                           />
                         </div>
                       </div>
+
                       <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
                         <div className="flex gap-0.5">
                           <div className="w-[249px] h-[80px]">

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 // import { useBooths } from "@/context/BoothsContext";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -11,6 +12,8 @@ export default function DoubleZoneDisplay({
   totalVisitCount: number;
   boothData: any;
 }) {
+  const [showInfo, setShowInfo] = useState(false);
+
   const getTotalVisited = () => {
     let totalVisitedDoubleZone = totalVisitCount;
 
@@ -23,13 +26,24 @@ export default function DoubleZoneDisplay({
   return (
     <div className="px-6 py-4">
       <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
-        <div className="flex justify-center mb-2">
+        <div className="flex justify-center mb-2 relative">
           <div className="bg-[#B6E056] -mt-9 text-[#0920B0] border-[#0920B0] border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
             Double Zone
-            <div className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4"
+            >
               <span className="font-bold text-xs leading-none">i</span>
-            </div>
+            </button>
           </div>
+          {showInfo && (
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-white border-2 border-[#F78B1E] rounded-lg p-4 shadow-lg w-80">
+              <p className="text-sm text-center">
+                Get double the reward! Earn 2 points every time you scan a booth
+                in the Double Zone!
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
