@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 interface Product {
   id: string;
@@ -189,14 +188,14 @@ export default function Confirmation({
           <div className="bg-white border-2 border-[#7D7D7D] p-4 rounded-sm flex flex-col items-center justify-center h-full">
             <button
               onClick={onCreateNewCart}
-              className={`rounded-full size-8 flex items-center justify-center ${
+              className={`rounded-full size-10 flex items-center justify-center ${
                 carts.length >= 3
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
               }`}
               disabled={carts.length >= 3}
             >
-              <span className="text-white text-2xl">+</span>
+              <span className="text-white text-3xl">+</span>
             </button>
             <span
               className={`text-xs text-center mt-1 ${
@@ -270,16 +269,8 @@ export default function Confirmation({
         </div>
       </div>
 
-      <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/images/order-summary.svg"
-            alt="Order Summary"
-            width={70}
-            height={70}
-          />
-          <h2 className="text-lg font-bold text-black">Order Summary</h2>
-        </div>
+      <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-3">
+        <h2 className="text-lg font-bold text-black">Order Summary</h2>
       </div>
 
       {products.length > 0 &&
