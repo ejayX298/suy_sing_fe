@@ -491,41 +491,41 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex-1 h-full flex flex-col">
-                    <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
-                      <div className="flex w-full justify-center gap-40">
-                        {[...Array(9)].map((_, tableIndex) => (
-                          <div
-                            key={`dining-table-${tableIndex}`}
-                            className="relative"
-                          >
-                            <div className="w-[70px] h-[150px] bg-transparent border border-gray-300 relative">
-                              {[...Array(4)].map((_, chairIndex) => (
-                                <div
-                                  key={`left-chair-${tableIndex}-${chairIndex}`}
-                                  className="absolute -left-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                  style={{ top: `${chairIndex * 30 + 5}px` }}
-                                ></div>
-                              ))}
+                    <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                      <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
+                        <div className="flex w-full justify-center gap-40">
+                          {[...Array(9)].map((_, tableIndex) => (
+                            <div
+                              key={`dining-table-${tableIndex}`}
+                              className="relative"
+                            >
+                              <div className="w-[70px] h-[150px] bg-transparent border border-gray-300 relative">
+                                {[...Array(4)].map((_, chairIndex) => (
+                                  <div
+                                    key={`left-chair-${tableIndex}-${chairIndex}`}
+                                    className="absolute -left-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
+                                    style={{ top: `${chairIndex * 30 + 5}px` }}
+                                  ></div>
+                                ))}
 
-                              {[...Array(4)].map((_, chairIndex) => (
-                                <div
-                                  key={`right-chair-${tableIndex}-${chairIndex}`}
-                                  className="absolute -right-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                  style={{ top: `${chairIndex * 30 + 5}px` }}
-                                ></div>
-                              ))}
+                                {[...Array(4)].map((_, chairIndex) => (
+                                  <div
+                                    key={`right-chair-${tableIndex}-${chairIndex}`}
+                                    className="absolute -right-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
+                                    style={{ top: `${chairIndex * 30 + 5}px` }}
+                                  ></div>
+                                ))}
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          ))}
+                        </div>
+                        <div className="text-white font-bold text-3xl mt-6">
+                          DINING AREA
+                        </div>
                       </div>
-                      <div className="text-white font-bold text-3xl mt-6">
-                        DINING AREA
-                      </div>
-                    </div>
 
-                    {/* Top Row */}
-                    <div className="flex mb-2 justify-start w-full mt-12">
-                      <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                      {/* Top Row */}
+                      <div className="flex mb-2 justify-start w-full mt-12">
                         <div className="flex gap-0.5">
                           <div className="w-[163px] h-[80px] ">
                             <RenderBooth
@@ -574,68 +574,69 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                      </div>
 
-                      {/* DINING ENT label */}
-                      <div className="flex flex-col items-center mx-2 -mt-5">
-                        <div className="w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                          DINING ENTRANCE
-                        </div>
-                        <div className="flex justify-center">
-                          <Image
-                            src="/images/booths/arrow-up.svg"
-                            alt="Arrow Up"
-                            width={60}
-                            height={60}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
-                        <div className="flex gap-0.5">
-                          <div className="w-[249px] h-[80px]">
-                            <RenderBooth
-                              booth={remapBooth.find(
-                                (b) => b.boothCode === "ACSCH01"
-                              )}
-                            />
+                        {/* DINING ENT label */}
+                        <div className="flex flex-col items-center mx-2 -mt-5">
+                          <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                            DINING ENTRANCE
                           </div>
-
-                          {/* 12th is single */}
-                          <div className="w-[80px] h-[80px] ">
-                            <RenderBooth
-                              booth={remapBooth.find(
-                                (b) => b.boothCode === "REGEN01"
-                              )}
-                            />
-                          </div>
-
-                          {/* combined */}
-                          <div className="w-[163px] h-[80px]">
-                            <RenderBooth
-                              booth={remapBooth.find(
-                                (b) => b.boothCode === "FIRST05"
-                              )}
+                          <div className="flex justify-center">
+                            <Image
+                              src="/images/booths/arrow-up.svg"
+                              alt="Arrow Up"
+                              width={60}
+                              height={60}
                             />
                           </div>
                         </div>
-                      </div>
+                        <div className="flex flex-col items-center mx-2 -mt-10 ">
+                          <h1 className="text-4xl text-[#FFFFFF80] font-bold mb-1">
+                            MAIN HALL
+                          </h1>
 
-                      {/* DINING ENT label */}
-                      <div className="flex flex-col items-center mx-2 -mt-5">
-                        <div className="w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                          DINING ENTRANCE
+                          <div className="flex gap-0.5">
+                            <div className="w-[249px] h-[80px]">
+                              <RenderBooth
+                                booth={remapBooth.find(
+                                  (b) => b.boothCode === "ACSCH01"
+                                )}
+                              />
+                            </div>
+
+                            {/* 12th is single */}
+                            <div className="w-[80px] h-[80px] ">
+                              <RenderBooth
+                                booth={remapBooth.find(
+                                  (b) => b.boothCode === "REGEN01"
+                                )}
+                              />
+                            </div>
+
+                            {/* combined */}
+                            <div className="w-[163px] h-[80px]">
+                              <RenderBooth
+                                booth={remapBooth.find(
+                                  (b) => b.boothCode === "FIRST05"
+                                )}
+                              />
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex justify-center">
-                          <Image
-                            src="/images/booths/arrow-up.svg"
-                            alt="Arrow Up"
-                            width={60}
-                            height={60}
-                          />
+                        {/* DINING ENT label */}
+                        <div className="flex flex-col items-center mx-2 -mt-5">
+                          <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                            DINING ENTRANCE
+                          </div>
+                          <div className="flex justify-center">
+                            <Image
+                              src="/images/booths/arrow-up.svg"
+                              alt="Arrow Up"
+                              width={60}
+                              height={60}
+                            />
+                          </div>
                         </div>
-                      </div>
-                      <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+
                         <div className="flex gap-0.5">
                           <div className="w-[80px] h-[80px] ">
                             <RenderBooth
