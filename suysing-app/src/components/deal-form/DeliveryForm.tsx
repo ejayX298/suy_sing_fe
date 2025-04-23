@@ -34,7 +34,6 @@ export default function DeliveryForm({
   transactionTypes,
   customerDeliveryDetails,
 }: DeliveryFormProps) {
-  
   return (
     <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
       <div className="px-6 mt-6">
@@ -65,20 +64,31 @@ export default function DeliveryForm({
           >
             Transaction Type
           </label>
-          <select
-            id="transactionType"
-            name="transactionType"
-            value={transactionType}
-            onChange={onSelectChange}
-            className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none"
-          >
-            {/* <option value=""></option> */}
-            {transactionTypes.map((transactionTypeName, index) => (
-              <option key={index} value={transactionTypeName}>
-                {transactionTypeName}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              id="transactionType"
+              name="transactionType"
+              value={transactionType}
+              onChange={onSelectChange}
+              className="w-full px-3 py-4 border border-gray-400 rounded-md text-black focus:outline-none appearance-none"
+            >
+              {/* <option value=""></option> */}
+              {transactionTypes.map((transactionTypeName, index) => (
+                <option key={index} value={transactionTypeName}>
+                  {transactionTypeName}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div>
@@ -88,20 +98,31 @@ export default function DeliveryForm({
           >
             Ship to Address
           </label>
-          <select
-            id="shipToAddress"
-            name="shipToAddress"
-            value={shipToAddress}
-            onChange={onSelectChange}
-            className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black "
-          >
-            {/* <option value="" disabled>Select address</option> */}
-            {customerDeliveryDetails.map((customerDelivery, index) => (
-              <option key={index} value={customerDelivery.id}>
-                {customerDelivery.address}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <select
+              id="shipToAddress"
+              name="shipToAddress"
+              value={shipToAddress}
+              onChange={onSelectChange}
+              className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black appearance-none"
+            >
+              {/* <option value="" disabled>Select address</option> */}
+              {customerDeliveryDetails.map((customerDelivery, index) => (
+                <option key={index} value={customerDelivery.id}>
+                  {customerDelivery.address}
+                </option>
+              ))}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
+              <svg
+                className="fill-current h-4 w-4"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              </svg>
+            </div>
+          </div>
         </div>
 
         <div>
