@@ -9,8 +9,8 @@ import ThankYouScreen from "@/components/auditor/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auditorService } from '@/services/api';
-import Swal from 'sweetalert2';
+import { auditorService } from "@/services/api";
+import Swal from "sweetalert2";
 
 function AuditorBoothVoteContent() {
   const router = useRouter();
@@ -31,28 +31,29 @@ function AuditorBoothVoteContent() {
   const searchParams = useSearchParams();
   const auditor_hash_code = searchParams.get("cc");
 
-  let stored_hash_code: string = ""
-  let stored_auditInfo: string = ""
-  if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('audit_hash_code') || "";
-    stored_auditInfo = localStorage.getItem('audit_info') || "";
+  let stored_hash_code: string = "";
+  let stored_auditInfo: string = "";
+  if (typeof window !== "undefined") {
+    stored_hash_code = localStorage.getItem("audit_hash_code") || "";
+    stored_auditInfo = localStorage.getItem("audit_info") || "";
   }
   const auditInforParsed = stored_auditInfo ? JSON.parse(stored_auditInfo) : [];
-  
 
   const checkCustomerRecordbyId = async () => {
     try {
       const customer_id = auditInforParsed?.id || 0;
-      const customerResult = await auditorService.checkCustomerRecordbyId("", customer_id);
-      if(customerResult.success){
-        setAuditData(customerResult.results)
+      const customerResult = await auditorService.checkCustomerRecordbyId(
+        "",
+        customer_id
+      );
+      if (customerResult.success) {
+        setAuditData(customerResult.results);
         return;
-      }else{
+      } else {
         return false;
       }
     } catch {
       return false;
-      
     }
   };
 
@@ -60,48 +61,47 @@ function AuditorBoothVoteContent() {
     showLoader(); // call the loader
     try {
       const getBooth = await auditorService.getBoothList();
-      
-      if(getBooth.success){
-        setBlueBooths(getBooth.results.blue_booths)
-        setOrangeBooths(getBooth.results.orange_booths)
-        setRedBooths(getBooth.results.red_booths)
+
+      if (getBooth.success) {
+        setBlueBooths(getBooth.results.blue_booths);
+        setOrangeBooths(getBooth.results.orange_booths);
+        setRedBooths(getBooth.results.red_booths);
         Swal.close(); // close the loader
       }
-    
-    
     } catch (error) {
       Swal.close(); // close the loader
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       // setIsLoading(false);
     }
   };
 
-
   const handleSubmitBoothVoting = async () => {
     showLoader(); // call the loader
 
-    const blue_booth_id = blueBoothVote?.id || '';
-    const orange_booth_id = orangeBoothVote?.id || '';
-    const red_booth_id = redBoothVote?.id || '';
+    const blue_booth_id = blueBoothVote?.id || "";
+    const orange_booth_id = orangeBoothVote?.id || "";
+    const red_booth_id = redBoothVote?.id || "";
 
     const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
-    
+
     try {
       const submitVote = await auditorService.submitBoothVoting(post_data);
-      
-      if(submitVote.success){
+
+      if (submitVote.success) {
         Swal.close(); // close the loader
         return true;
-      }else{
+      } else {
         Swal.close(); // close the loader
-        showMessage("0" , submitVote.message)  
+        showMessage("0", submitVote.message);
         return false;
       }
-    
     } catch {
       Swal.close(); // close the loader
-      showMessage("0" , "Unable to process your request. Please try again later.")   
+      showMessage(
+        "0",
+        "Unable to process your request. Please try again later."
+      );
       return false;
     } finally {
       // setIsLoading(false);
@@ -118,14 +118,11 @@ function AuditorBoothVoteContent() {
     } else if (step === "red") {
       setStep("summary");
     } else if (step === "summary") {
-
-      const submitVoteResult = await handleSubmitBoothVoting()
-      if(submitVoteResult){
+      const submitVoteResult = await handleSubmitBoothVoting();
+      if (submitVoteResult) {
         setStep("thankyou");
       }
-      
     } else {
-
       // For auditor flow, redirect to souvenir selection after thank you
       resetVotes();
       router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
@@ -142,16 +139,14 @@ function AuditorBoothVoteContent() {
     }
   };
 
-
-  const showMessage = (status: string, message : string)  => {
-    
+  const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
     let titleType: "Success" | "Oops!";
 
-    if(status == "1"){
+    if (status == "1") {
       iconType = "success";
       titleType = "Success";
-    }else{
+    } else {
       iconType = "error";
       titleType = "Oops!";
     }
@@ -160,42 +155,40 @@ function AuditorBoothVoteContent() {
       title: titleType,
       text: message,
       icon: iconType,
-      confirmButtonColor: "#F78B1E"
-    })
-  }
+      confirmButtonColor: "#F78B1E",
+    });
+  };
 
-  const showLoader = ()  => {
+  const showLoader = () => {
     const loader = Swal.fire({
-      title: 'Processing data...',
-      text: 'Please wait',
+      title: "Processing data...",
+      text: "Please wait",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
     return loader;
-  }
+  };
 
   useEffect(() => {
-    
-    if(!stored_auditInfo){
+    if (!stored_auditInfo) {
       router.push(`/auditor/?cc=${stored_hash_code}`);
     }
-    
-    if(auditor_hash_code && stored_hash_code){
-      if(auditor_hash_code == stored_hash_code){
+
+    if (auditor_hash_code && stored_hash_code) {
+      if (auditor_hash_code == stored_hash_code) {
         fetchData();
-        checkCustomerRecordbyId()
-      }else{
-        router.push(`/unauthorized`)
+        checkCustomerRecordbyId();
+      } else {
+        router.push(`/unauthorized`);
       }
-      
-    }else{
-      router.push(`/unauthorized`)
+    } else {
+      router.push(`/unauthorized`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
+
   const getStepHeader = () => {
     if (step === "summary" || step === "thankyou") {
       return null;
@@ -322,7 +315,7 @@ function AuditorBoothVoteContent() {
           </>
         );
       case "summary":
-        return <VoteSummary onSubmit={handleContinue} onCancel={handleBack}/>;
+        return <VoteSummary onSubmit={handleContinue} onCancel={handleBack} />;
       case "thankyou":
         return <ThankYouScreen onContinue={handleContinue} />;
       default:
@@ -331,7 +324,7 @@ function AuditorBoothVoteContent() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen mb-6">
       <div className="flex-1 pb-16">{renderStepContent()}</div>
     </div>
   );
