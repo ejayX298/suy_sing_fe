@@ -49,7 +49,7 @@ export const doubleZoneBoothCodes = [
   "UNION01",
   "JAMGO01",
   "EQUAL03",
-  "FEDER01a",
+  "FEDER01A",
   "NEWPO01",
 ];
 
@@ -393,10 +393,10 @@ export const getInitialBooths = (): Booth[] => {
       height: 120,
     },
     {
-      id: "FEDER01a",
+      id: "FEDER01A",
       name: "Maling",
-      image: "/images/booths/FEDER01a.png",
-      boothCode: "FEDER01a",
+      image: "/images/booths/FEDER01A.png",
+      boothCode: "FEDER01A",
       visited: false,
       width: 100,
       height: 100,
