@@ -13,6 +13,7 @@ import DealSubmitted from "@/components/deal-form/DealSubmitted";
 import Swal from "sweetalert2";
 import { useBooths } from "@/context/BoothsContext";
 import { dealCartService, boothVisitService } from "@/services/api";
+import CartSubmitted from "@/components/deal-form/CartSubmitted";
 
 interface Product {
   id: string;
@@ -103,6 +104,8 @@ export default function DealFormPage() {
   if (typeof window !== "undefined") {
     stored_hash_code = localStorage.getItem("hash_code") || "";
   }
+
+  const [showCartSubmittedModal, setShowCartSubmittedModal] = useState(false);
 
   const getCustomerRecord = async () => {
     try {
@@ -587,12 +590,6 @@ export default function DealFormPage() {
       // Save to localStorage
       localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
 
-      console.log("Form submitted for cart:", updatedCarts[currentCartIndex]);
-      console.log(
-        "Selected products:",
-        updatedCarts[currentCartIndex]?.selectedProducts
-      );
-
       const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
       if (submitCart) {
@@ -625,34 +622,31 @@ export default function DealFormPage() {
           (cart) => !cart.submitted
         );
 
-        if (remainingUnsubmittedCarts.length > 0) {
-          const nextUnsubmittedIndex = updatedCarts.findIndex(
-            (cart) => !cart.submitted
-          );
-          if (nextUnsubmittedIndex !== -1) {
-            //close loader
-            Swal.close();
-
-            // added delay before opening new alert
-            setTimeout(() => {
-              showMessage("1", "Deal form submitted.");
-            }, 200);
-            // setCurrentCartIndex(nextUnsubmittedIndex);
-            return;
-          }
-        }
-
-        localStorage.removeItem("dealformCarts");
-
         //close loader
         Swal.close();
 
+        if (remainingUnsubmittedCarts.length > 0) {
+          // Show cart submitted modal instead of message
+          setShowCartSubmittedModal(true);
+          return;
+        }
+
+        // If this was the last cart, show the final submission modal
         setShowSubmitModal(true);
         return;
       }
     } else {
       //close loader
       Swal.close();
+    }
+  };
+
+  const handleCloseCartSubmittedModal = () => {
+    setShowCartSubmittedModal(false);
+    // Find the next unsubmitted cart
+    const nextUnsubmittedIndex = carts.findIndex((cart) => !cart.submitted);
+    if (nextUnsubmittedIndex !== -1) {
+      setCurrentCartIndex(nextUnsubmittedIndex);
     }
   };
 
@@ -858,6 +852,12 @@ export default function DealFormPage() {
           )}
         </div>
       </main>
+
+      {/* Cart Submitted Modal */}
+      <CartSubmitted
+        isOpen={showCartSubmittedModal}
+        onClose={handleCloseCartSubmittedModal}
+      />
 
       {/* Deal Submitted Modal */}
       <DealSubmitted isOpen={showSubmitModal} onClose={handleCloseModal} />
