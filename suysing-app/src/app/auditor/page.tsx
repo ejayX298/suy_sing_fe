@@ -4,8 +4,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
-// import BoothHoppingComplete from "@/components/auditor/BoothHoppingComplete";
-// import MissingCard from "@/components/auditor/MissingCard";
+import BoothHoppingComplete from "@/components/auditor/BoothHoppingComplete";
+import MissingCard from "@/components/auditor/MissingCard";
 import BoothStatus from "@/components/auditor/BoothStatus";
 import BoothsList from "@/components/auditor/BoothsList";
 import SouvenirSelection from "@/components/auditor/SouvenirSelection";
@@ -27,6 +27,10 @@ function AuditorPageContent() {
   const searchParams = useSearchParams();
   const auditor_hash_code = searchParams.get("cc") || "";
   const [auditorAccess, setAuditorAccess] = useState(false);
+  const [isBoothHoopingComplete, setIsBoothHoopingComplete] = useState(false);
+  const [isDoneVoting, setIsDoneVoting] = useState(false);
+  const [isDoneSouvenirClaim, setIsDoneSouvenirClaim] = useState(false);
+  const [isCardMissing, setIsCardMissing] = useState(false);
 
   // Customer and flow state
   const [customerData, setCustomerData] = useState<{
@@ -39,6 +43,7 @@ function AuditorPageContent() {
     totalBooths?: number;
     totalRegularBooths?: number;
     totalDoubleZoneBooths?: number;
+    isMissing?: number;
   } | null>(null);
   const [currentStep, setCurrentStep] = useState<
     | "scan"
@@ -101,6 +106,31 @@ function AuditorPageContent() {
 
   };
 
+
+  const checkCustomerRecordByHash = async (magic_link : string) => {
+    showLoader(); // call the loader
+    try {
+
+      const customerResult = await auditorService.checkCustomerRecordbyHash(auditor_hash_code, magic_link);
+      
+      if(customerResult.success){
+        Swal.close(); // close the loader
+        return customerResult.results
+      }else{
+        Swal.close(); // close the loader
+        showMessage('0', customerResult.message)
+        return false;
+      }
+    
+    } catch {
+      Swal.close(); // close the loader
+      showMessage('0', 'Unable to process your request')
+      return false;
+      
+    }
+
+  };
+
   
   
   useEffect(() => {
@@ -133,9 +163,16 @@ function AuditorPageContent() {
    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, showManualCodeModal, auditorAccess]);
 
-  const handleScan = useCallback(async (data: string) => {
+  const handleScan = useCallback(async (data: string, input_type : string = "manual") => {
     const customerCode = data.trim();
-    const customerRecord = await checkCustomerRecord(customerCode);
+    let customerRecord;
+    
+    if (input_type == "qr") {
+      customerRecord = await checkCustomerRecordByHash(customerCode);
+    }else{
+        customerRecord = await checkCustomerRecord(customerCode);
+    }
+    
     
     if(customerRecord){
       const mapCustomerData = {
@@ -148,6 +185,7 @@ function AuditorPageContent() {
         totalBoothVisited: customerRecord.total_booth_visited,
         totalRegularBooths: customerRecord.total_regular_booths,
         totalDoubleZoneBooths: customerRecord.total_double_zone_booths,
+        isMissing: customerRecord.is_missing
       };
       setCustomerData(mapCustomerData);
       
@@ -155,19 +193,26 @@ function AuditorPageContent() {
       
       setIsBoothComplete(isComplete);
 
-      let stored_hash_code: string = ""
-      if (typeof window !== 'undefined') {
-        stored_hash_code = localStorage.getItem('audit_hash_code') || "";
-      }
-      
-      if(customerRecord.is_done_souvenir_claim == 1){
-        showMessage('1', `Customer code: ${customerRecord.code} is already done with the souvenir claiming`)
+      if(customerRecord.is_missing == 1){
+
+        setIsCardMissing(true)
+
+      }else if(customerRecord.is_done_souvenir_claim == 1){
+
+        // showMessage('1', `Customer code: ${customerRecord.code} is already done with the souvenir claiming`)
+        setIsDoneSouvenirClaim(true)
+
       }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 0){
-        // redirect to booth vote
-        router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
+      
+        // show booth hopping complete modal
+        setIsBoothHoopingComplete(true)
+        setIsDoneVoting(false)
+
       }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 1){
-        // redirect to souvenir selection
-        router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
+        
+        setIsBoothHoopingComplete(true)
+        setIsDoneVoting(true)
+
       }else{
         // Redirect to booth status for booth visit
         setCurrentStep("booth-status");
@@ -208,7 +253,7 @@ function AuditorPageContent() {
 
           if (qrCode) {
             setScanning(false);
-            handleScan(qrCode.data);
+            handleScan(qrCode.data, "qr");
             return;
           }
         } catch (error) {
@@ -264,6 +309,36 @@ function AuditorPageContent() {
     }, 3000);
   };
 
+
+  const  handleNext = (redirectTo : string)  => {
+
+    let stored_hash_code: string = ""
+    if (typeof window !== 'undefined') {
+      stored_hash_code = localStorage.getItem('audit_hash_code') || "";
+    }
+
+    if(redirectTo == 'souvenir'){
+      if(!isDoneVoting){
+        console.log('booth vote')
+          // redirect to booth vote
+          router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
+      }else{        
+        router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
+      }
+      
+    }else if(redirectTo == 'card-missing'){
+      
+      setIsCardMissing(false)
+      setScanning(true)
+
+    }else if(redirectTo == 'done-claiming'){
+
+      setIsDoneSouvenirClaim(false)
+      setScanning(true)
+
+    }
+  }
+
   const showMessage = (status: string, message : string)  => {
     
     let iconType: "success" | "error";
@@ -281,8 +356,14 @@ function AuditorPageContent() {
       title: titleType,
       text: message,
       icon: iconType,
-      confirmButtonColor: "#F78B1E"
-    })
+      confirmButtonColor: "#F78B1E",
+      allowOutsideClick: false, // disable outside click fot the close modal
+    }).then((result: { isConfirmed: boolean }) => {
+      if (result.isConfirmed) {
+        // set the scanning to true
+        setScanning(true);
+      }
+    });
  }
 
  const showLoader = ()  => {
@@ -478,6 +559,46 @@ function AuditorPageContent() {
           </div>
         </div>
       )}
+
+
+      {isBoothHoopingComplete && (
+        <BoothHoppingComplete navigateToSouvenir={() => handleNext('souvenir')} />
+      )}
+
+      {isCardMissing && (
+        <MissingCard onClose={() => handleNext('card-missing')} />
+      )}
+
+      {isDoneSouvenirClaim && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg px-6 py-14 max-w-md w-full mx-4 border-2 border-[#F78B1E]">
+            <div className="text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/souvenir/success-icon.svg"
+                  alt="Success"
+                  width={78}
+                  height={78}
+                  className="mx-auto"
+                />
+              </div>
+              
+              <h2 className="text-4xl font-bold mb-2">Success!</h2>
+              <p className="text-xl mb-4">
+              Customer {customerData?.code} has finished claiming the souvenir.
+              </p>
+              
+              <button
+                onClick={() => handleNext('done-claiming')}
+                className="w-full bg-[#F78B1E] font-semibold text-lg py-3 rounded-lg"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }
