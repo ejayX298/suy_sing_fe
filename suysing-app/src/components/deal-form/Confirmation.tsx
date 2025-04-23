@@ -63,12 +63,12 @@ interface ConfirmationProps {
   customerDeliveryDetails: CustomerDeliveryDetails[];
   shipToAddressId: string;
   branchId: string;
+  onNavigateToProducts?: () => void;
 }
 
 export default function Confirmation({
   formData,
   onSubmit,
-
   onSelectChange = () => {},
   carts = [],
   currentCartIndex = 0,
@@ -79,6 +79,7 @@ export default function Confirmation({
   branchId,
   customerPickupDetails,
   customerDeliveryDetails,
+  onNavigateToProducts = () => {},
 }: ConfirmationProps) {
   // Get products with quantities greater than 0 from formData
   const products =
@@ -99,6 +100,10 @@ export default function Confirmation({
     acc[dealerId].products.push(item);
     return acc;
   }, {});
+
+  const handleBack = () => {
+    onNavigateToProducts();
+  };
 
   return (
     <div className="flex flex-col space-y-4 min-h-screen">
@@ -317,7 +322,13 @@ export default function Confirmation({
             </div>
           </div>
         ))}
-      <div className="py-2">
+      <div className="px-2 pb-4 flex gap-4 ">
+        <button
+          onClick={handleBack}
+          className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+        >
+          Back
+        </button>
         <button
           onClick={onSubmit}
           className="w-full bg-[#F78B1E] py-3 text-black font-bold text-center rounded-md text-lg"
