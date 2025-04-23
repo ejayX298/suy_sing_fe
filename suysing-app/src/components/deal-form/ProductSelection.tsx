@@ -173,6 +173,9 @@ export default function ProductSelection({
   customerDeliveryDetails,
 }: ProductSelectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeLetter, setActiveLetter] = useState<string>("");
+  const dealersContainerRef = useRef<HTMLDivElement>(null);
+  const dealerRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
   const [products, setProducts] = useState<Product[]>(
     selectedProducts.length > 0 ? selectedProducts : []
@@ -326,8 +329,22 @@ export default function ProductSelection({
     dealer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleLetterClick = (letter: string) => {
+    setActiveLetter(letter);
+    const firstDealerWithLetter = dealers.find((dealer) =>
+      dealer.name.toUpperCase().startsWith(letter)
+    );
+
+    if (firstDealerWithLetter && dealerRefs.current[firstDealerWithLetter.id]) {
+      dealerRefs.current[firstDealerWithLetter.id]?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
-    <div className="flex flex-col space-y-4 ">
+    <div className="flex flex-col space-y-4 mb-8 relative">
       <div className="mb-4 flex gap-1">
         <div className="flex-1 bg-white border-2 border-[#7D7D7D] p-4 rounded-sm">
           <div className="flex flex-col">
@@ -474,14 +491,14 @@ export default function ProductSelection({
           <div className="bg-white border-2 border-[#7D7D7D] p-4 rounded-sm flex flex-col items-center justify-center h-full">
             <button
               onClick={handleCreateNewCart}
-              className={`rounded-full size-8 flex items-center justify-center ${
+              className={`rounded-full size-10 flex items-center justify-center ${
                 maxCartsReached
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
               }`}
               disabled={maxCartsReached}
             >
-              <span className="text-white text-2xl">+</span>
+              <span className="text-white text-3xl">+</span>
             </button>
             <span
               className={`text-xs text-center mt-1 ${
@@ -558,7 +575,7 @@ export default function ProductSelection({
       <div className="relative mb-6">
         <input
           type="text"
-          placeholder="Find Dealer..."
+          placeholder="Find Supplier"
           value={searchTerm}
           onChange={handleSearch}
           className="w-full px-4 py-2 rounded-sm text-black bg-white border-2 border-[#7D7D7D] focus:outline-none "
@@ -576,133 +593,121 @@ export default function ProductSelection({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {filteredDealers.map((dealer) => (
-          <div
-            key={dealer.id}
-            className="border-2 border-[#7D7D7D] rounded-md overflow-hidden"
-          >
-            <div
-              className="p-3 flex justify-between items-center cursor-pointer bg-white"
-              onClick={() => toggleDealer(dealer.id)}
-            >
-              <h3 className="text-black font-medium">{dealer.name}</h3>
-              <span className="text-[#7D7D7D] text-xs">
-                {expandedDealers.includes(dealer.id) ? "▲" : "▼"}
-              </span>
-            </div>
+      <div className="flex gap-2">
+        <div className="flex-1">
+          <div className="flex flex-col gap-2" ref={dealersContainerRef}>
+            {filteredDealers.map((dealer) => (
+              <div
+                key={dealer.id}
+                ref={(el) => {
+                  dealerRefs.current[dealer.id] = el;
+                }}
+                className="border-2 border-[#7D7D7D] rounded-md overflow-hidden"
+              >
+                <div
+                  className="p-3 flex justify-between items-center cursor-pointer bg-white"
+                  onClick={() => toggleDealer(dealer.id)}
+                >
+                  <h3 className="text-black font-medium">{dealer.name}</h3>
+                  <span className="text-[#7D7D7D] text-xs">
+                    {expandedDealers.includes(dealer.id) ? "▲" : "▼"}
+                  </span>
+                </div>
 
-            {expandedDealers.includes(dealer.id) && (
-              <div className="grid grid-cols-1 gap-2  bg-white">
-                {dealer.products.length > 0 ? (
-                  dealer.products.map((product) => (
-                    <div
-                      key={product.id}
-                      className="border-2 py-2 flex flex-col border-t-[#7D7D7D]"
-                    >
-                      <div className="flex justify-between items-center p-2">
-                        <div className="space-y-1">
-                          <p className="text-sm text-black ">
-                            Item Code:{" "}
-                            <span className="font-bold">
-                              {product.itemCode}
-                            </span>
-                          </p>
-                          <p className="text-black font-light">
-                            {product.name}
-                          </p>
-                          <p className="text-sm font-bold text-black">
-                            {product.discount}
-                          </p>
+                {expandedDealers.includes(dealer.id) && (
+                  <div className="grid grid-cols-1 gap-2  bg-white">
+                    {dealer.products.length > 0 ? (
+                      dealer.products.map((product) => (
+                        <div
+                          key={product.id}
+                          className="border-2 py-2 flex flex-col border-t-[#7D7D7D]"
+                        >
+                          <div className="flex justify-between items-center p-2">
+                            <div className="space-y-1">
+                              <p className="text-sm text-black ">
+                                Item Code:{" "}
+                                <span className="font-bold">
+                                  {product.itemCode}
+                                </span>
+                              </p>
+                              <p className="text-black font-light">
+                                {product.name}
+                              </p>
+                              <p className="text-sm font-bold text-black">
+                                {product.discount}
+                              </p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    product.id,
+                                    getActualQty(product.id) - 1,
+                                    dealer.name,
+                                    dealer.id
+                                  )
+                                }
+                                className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
+                              >
+                                -
+                              </button>
+                              <span className="text-black font-bold text-2xl w-8 text-center">
+                                {getActualQty(product.id)}
+                              </span>
+                              <button
+                                onClick={() =>
+                                  handleQuantityChange(
+                                    product.id,
+                                    getActualQty(product.id) + 1,
+                                    dealer.name,
+                                    dealer.id
+                                  )
+                                }
+                                className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
+                              >
+                                +
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-2">
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(
-                                product.id,
-                                getActualQty(product.id) - 1,
-                                dealer.name,
-                                dealer.id
-                              )
-                            }
-                            className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
-                          >
-                            -
-                          </button>
-                          <span className="text-black font-bold text-2xl w-8 text-center">
-                            {getActualQty(product.id)}
-                          </span>
-                          <button
-                            onClick={() =>
-                              handleQuantityChange(
-                                product.id,
-                                getActualQty(product.id) + 1,
-                                dealer.name,
-                                dealer.id
-                              )
-                            }
-                            className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
-                          >
-                            +
-                          </button>
-                        </div>
+                      ))
+                    ) : (
+                      <div className="p-4 text-center text-black font-light border-2 rounded-md">
+                        No products available for this dealer
                       </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="p-4 text-center text-black font-light border-2 rounded-md">
-                    No products available for this dealer
+                    )}
                   </div>
                 )}
               </div>
-            )}
+            ))}
           </div>
-        ))}
+        </div>
+
+        <div className="sticky top-0 h-fit flex flex-col text-xs bg-transparent">
+          {Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ").map((letter) => (
+            <button
+              key={letter}
+              onClick={() => handleLetterClick(letter)}
+              className={`p-1 font-medium transition-colors ${
+                activeLetter === letter ? "text-[#F78B1E]" : "text-white"
+              } hover:text-[#F78B1E] cursor-pointer`}
+            >
+              {letter}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/*   <div className="fixed right-0 top-1/3 bg-transparent flex flex-col text-xs">
-        {[
-          "A",
-          "B",
-          "C",
-          "D",
-          "E",
-          "F",
-          "G",
-          "H",
-          "I",
-          "J",
-          "K",
-          "L",
-          "M",
-          "N",
-          "O",
-          "P",
-          "Q",
-          "R",
-          "S",
-          "T",
-          "U",
-          "V",
-          "W",
-          "X",
-          "Y",
-          "Z",
-        ].map((letter) => (
-          <div key={letter} className="p-1 text-blue-500 font-medium">
-            {letter}
-          </div>
-        ))}
-      </div> */}
-
-      {products.some((product) => product.quantity > 0) && (
-        <button
-          onClick={onNext}
-          className="w-full bg-[#F78B1E] py-3 text-black font-bold text-center rounded-md text-lg"
-        >
-          Confirm
-        </button>
-      )}
+      <div className="py-2">
+        {products.some((product) => product.quantity > 0) && (
+          <button
+            onClick={onNext}
+            className="w-full bg-[#F78B1E] py-3 text-black font-bold text-center rounded-md text-lg"
+          >
+            Confirm
+          </button>
+        )}
+      </div>
     </div>
   );
 }
