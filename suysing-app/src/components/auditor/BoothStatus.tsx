@@ -193,7 +193,7 @@ export default function BoothStatus({
         <>
           <button
             onClick={handleOverride}
-            className="w-full mt-3 rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
+            className="w-full mt-3 rounded-lg font-semibold bg-[#FF3A3A] px-4 py-3  hover:bg-orange-500"
           >
             Override
           </button>

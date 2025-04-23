@@ -273,6 +273,49 @@ export const auditorService = {
   },
 
 
+  checkCustomerRecordbyHash: async (code : string, customer_magic_link : string) => {
+
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
+
+    try{
+      const hash_code = code;
+  
+      const response = await httpClient(api_key).get(`/customer/get_details_by_hash_code/?ahc=${hash_code}&customer_magic_link=${customer_magic_link}&is_auditor=1`, {});
+      
+      const response_data = response?.data?.data || []
+      
+      if(response_data){
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('audit_info', JSON.stringify(response_data));
+        }
+      }
+
+      return {
+        success : true,
+        message : "success",
+        results : response_data
+      }
+    
+
+    } catch (error) {
+
+      if (axios.isAxiosError(error)) {
+        const errResp = error.response;  
+        return {
+          success: false,
+          message: errResp?.data?.message || 'Error! Please try again later'
+        };
+      }else{
+        return {
+          success: false,
+          message: 'Unable to process your request. Please try again later.'
+        };
+      }
+     
+    }
+  },
+
+
   checkCustomerRecordbyId: async (code : string, customer_id : number) => {
 
     const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
