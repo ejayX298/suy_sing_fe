@@ -19,12 +19,13 @@ export default function TermsAndConditions({
         </h3>
         <ol className="list-decimal pl-6 space-y-3 mb-6 font-light text-black">
           <li>
-            You may edit your orders after submission. Please refer to the
-            instructions given to you for the steps.
+            Suki Day deals are available from May 4, 8:30am until May 5, 3:00pm
+            only.
           </li>
           <li>
-            Submit this Form until 7:00pm today only. Forms submitted after the
-            deadline will not be accepted.
+            Submitted orders are considered final and may not be edited. Please
+            create and submit a new cart for any additional orders. An order
+            summary will be sent to your email upon submission.
           </li>
           <li>
             This serves as your proposed order. Fulfillment of order is subject
