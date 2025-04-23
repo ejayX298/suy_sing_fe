@@ -1146,10 +1146,10 @@ export const getInitialBooths = (): Booth[] => {
       overrideAspect: true,
     },
     {
-      id: "SUY SING",
+      id: "SUYSI01",
       name: "suy sing",
-      image: "/images/booths/SUY SING.png",
-      boothCode: "SUY SING",
+      image: "/images/booths/SUYSI01.png",
+      boothCode: "SUYSI01",
       visited: false,
       width: 180,
       height: 180,

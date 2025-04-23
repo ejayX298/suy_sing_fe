@@ -483,7 +483,7 @@ export default function Home() {
                         <div className="border-2 border-blue-800 h-[240px] ">
                           <RenderBooth
                             booth={remapBooth.find(
-                              (b) => b.boothCode === "SUY SING"
+                              (b) => b.boothCode === "SUYSI01"
                             )}
                           />
                         </div>
