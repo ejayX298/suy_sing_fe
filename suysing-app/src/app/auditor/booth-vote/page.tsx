@@ -132,6 +132,16 @@ function AuditorBoothVoteContent() {
     }
   };
 
+  const handleBack = () => {
+    if (step === "orange") {
+      setStep("blue");
+    } else if (step === "red") {
+      setStep("orange");
+    } else if (step === "summary") {
+      setStep("red");
+    }
+  };
+
 
   const showMessage = (status: string, message : string)  => {
     
@@ -222,7 +232,11 @@ function AuditorBoothVoteContent() {
           <>
             {getStepHeader()}
             <div className="relative">
-              <BoothGrid booths={blueBooths} color="blue" />
+              <BoothGrid
+                booths={blueBooths}
+                color="blue"
+                onVote={handleContinue}
+              />
               <IntroScreen onContinue={handleContinue} />
             </div>
           </>
@@ -231,7 +245,11 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={blueBooths} color="blue" />
+            <BoothGrid
+              booths={blueBooths}
+              color="blue"
+              onVote={handleContinue}
+            />
             <div className="px-4 pb-4">
               <button
                 onClick={handleContinue}
@@ -251,12 +269,22 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={orangeBooths} color="orange" />
-            <div className="px-4 pb-4">
+            <BoothGrid
+              booths={orangeBooths}
+              color="orange"
+              onVote={handleContinue}
+            />
+            <div className="px-2 pb-4 flex gap-4 ">
+              <button
+                onClick={handleBack}
+                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+              >
+                Back
+              </button>
               <button
                 onClick={handleContinue}
                 disabled={!orangeBoothVote}
-                className={`w-full py-3 rounded-lg text-lg font-medium ${
+                className={`w-full py-1 rounded-lg text-lg font-medium ${
                   orangeBoothVote
                     ? "bg-[#F78B1E] text-[#252740]"
                     : "bg-gray-300 text-gray-500"
@@ -271,12 +299,18 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={redBooths} color="red" />
-            <div className="px-4 pb-4">
+            <BoothGrid booths={redBooths} color="red" onVote={handleContinue} />
+            <div className="px-4 pb-4 flex gap-4">
+              <button
+                onClick={handleBack}
+                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+              >
+                Back
+              </button>
               <button
                 onClick={handleContinue}
                 disabled={!redBoothVote}
-                className={`w-full py-3 rounded-lg text-lg font-medium ${
+                className={`w-full py-1 rounded-lg text-lg font-medium ${
                   redBoothVote
                     ? "bg-[#F78B1E] text-[#252740]"
                     : "bg-gray-300 text-gray-500"
@@ -288,7 +322,7 @@ function AuditorBoothVoteContent() {
           </>
         );
       case "summary":
-        return <VoteSummary onSubmit={handleContinue} onCancel={() => setStep("intro")}/>;
+        return <VoteSummary onSubmit={handleContinue} onCancel={handleBack}/>;
       case "thankyou":
         return <ThankYouScreen onContinue={handleContinue} />;
       default:
