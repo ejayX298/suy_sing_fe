@@ -738,7 +738,7 @@ export default function Home() {
                             <div className="">
                               <RenderBooth
                                 booth={remapBooth.find(
-                                  (b) => b.boothCode === "LIWAY01"
+                                  (b) => b.boothCode === "Liway01"
                                 )}
                               />
                             </div>

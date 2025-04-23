@@ -207,10 +207,10 @@ export const getInitialBooths = (): Booth[] => {
       height: 100,
     },
     {
-      id: "LIWAY01",
+      id: "Liway01",
       name: "Oishi Red",
-      image: "/images/booths/LIWAY01.png",
-      boothCode: "LIWAY01",
+      image: "/images/booths/Liway01.png",
+      boothCode: "Liway01",
       visited: false,
       width: 100,
       height: 100,
