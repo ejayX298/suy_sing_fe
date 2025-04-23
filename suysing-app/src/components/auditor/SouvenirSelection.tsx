@@ -49,7 +49,7 @@ export default function SouvenirSelection({
   };
 
   return (
-    <div className="w-full h-full flex flex-col items-center">
+    <div className="w-full h-full flex flex-col items-center mb-10">
       <div className="pb-6 text-center">
         <div className="mb-2">
           <Image
@@ -118,13 +118,13 @@ export default function SouvenirSelection({
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={onCancel}
-            className="w-full rounded-lg bg-white py-4 text-lg font-semibold text-[#F78B1E] border-2 border-[#F78B1E]"
+            className="w-full rounded-lg bg-white py-3 text-lg font-semibold text-[#F78B1E] border-2 border-[#F78B1E]"
           >
             Cancel
           </button>
           <button
             onClick={handleProceed}
-            className={`w-full rounded-lg py-4 text-lg font-semibold ${selectedSouvenir ? 'bg-[#F78B1E]' : 'bg-gray-400'}`}
+            className={`w-full rounded-lg py-3 text-lg font-semibold ${selectedSouvenir ? 'bg-[#F78B1E]' : 'bg-gray-400'}`}
             disabled={!selectedSouvenir}
           >
             Proceed
