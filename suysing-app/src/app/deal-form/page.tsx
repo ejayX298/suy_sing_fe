@@ -10,9 +10,10 @@ import DeliveryForm from "@/components/deal-form/DeliveryForm";
 import ProductSelection from "@/components/deal-form/ProductSelection";
 import Confirmation from "@/components/deal-form/Confirmation";
 import DealSubmitted from "@/components/deal-form/DealSubmitted";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { useBooths } from "@/context/BoothsContext";
-import { dealCartService, boothVisitService } from '@/services/api';
+import { dealCartService, boothVisitService } from "@/services/api";
+import CartSubmitted from "@/components/deal-form/CartSubmitted";
 
 interface Product {
   id: string;
@@ -56,11 +57,36 @@ interface CustomerDeliveryDetails {
   address: string;
 }
 
+interface SubCode {
+  id: number;
+  code: string;
+  transaction_type: string;
+  ship_to: string | null;
+  payment_code: string;
+}
+
+interface CustomerParams {
+  id: number;
+  code: string;
+  fname: string;
+  customer_type: string;
+  sub_codes: SubCode[];
+  delivery: CustomerDeliveryDetails[];
+  pickup: CustomerPickupDetails[];
+  payment_types: {
+    id: number;
+    code: string | null;
+    payment_code: string;
+    description: string;
+  }[];
+}
+
 export default function DealFormPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const { booths, handleVisitBooth } = useBooths();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     acceptTerms: false,
@@ -85,28 +111,32 @@ export default function DealFormPage() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
-  const [customerPickupDetails, setCustomerPickupDetails] = useState<CustomerPickupDetails[]>([]);
-  const [customerDeliveryDetails, setCustomerDeliveryDetails] = useState<CustomerDeliveryDetails[]>([]);
+  const [customerPickupDetails, setCustomerPickupDetails] = useState<
+    CustomerPickupDetails[]
+  >([]);
+  const [customerDeliveryDetails, setCustomerDeliveryDetails] = useState<
+    CustomerDeliveryDetails[]
+  >([]);
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   const [boothProducts, setBoothProducts] = useState([]);
   const [isRender, setIsRender] = useState(false);
-
+  const [subCodes, setSubCodes] = useState<SubCode[]>([]);
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
-  
-  let stored_hash_code: string = ""
-  if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code') || "";
+
+  let stored_hash_code: string = "";
+  if (typeof window !== "undefined") {
+    stored_hash_code = localStorage.getItem("hash_code") || "";
   }
 
-  
+  const [showCartSubmittedModal, setShowCartSubmittedModal] = useState(false);
+
   const getCustomerRecord = async () => {
     try {
       const customerResult = await boothVisitService.getCustomerRecord();
-      
-      if(customerResult.success){
 
+      if (customerResult.success) {
         const mapCustomerData = {
           id: customerResult.results?.id,
           code: customerResult.results?.code,
@@ -116,153 +146,164 @@ export default function DealFormPage() {
           totalBooths: customerResult.results?.total_booths,
           totalBoothVisited: customerResult.results?.total_booth_visited,
         };
-        
-        setCustomerData(mapCustomerData);
-      
-        return true;
-      }else{
 
+        setCustomerData(mapCustomerData);
+
+        return true;
+      } else {
         return false;
       }
-    
-    } catch  {
+    } catch {
       return false;
-      
     }
-
   };
 
   const getCustomerParams = async () => {
     try {
-
       const customerResult = await dealCartService.getCustomerParams();
-      
-      if(customerResult.success){
-        // setCustomerDetails(customerResult.results);
-        // setFormData({
-        //   ...formData,
-        //   customerCode: customerResult.results.code || ""
-        // });
-        
-        const pickUpResults = customerResult.results?.pickup || [];
-        const deliveryResults = customerResult.results?.delivery || [];
-        let default_transaction_type = 'Pick up';
-        let default_ship_to_addreess = '';
-        let default_branch = '';
 
-        if(pickUpResults.length > 0){
-          setTransactionTypes(prev =>
-            prev.includes('Pick up') ? prev : [...prev, 'Pick up']
+      if (customerResult.success) {
+        const customerParams: CustomerParams = customerResult.results;
+        const pickUpResults = customerParams.pickup || [];
+        const deliveryResults = customerParams.delivery || [];
+        const subCodes = customerParams.sub_codes || [];
+        let default_transaction_type = "Pick up";
+        let default_ship_to_addreess = "";
+        let default_branch = "";
+
+        if (pickUpResults.length > 0) {
+          setTransactionTypes((prev) =>
+            prev.includes("Pick up") ? prev : [...prev, "Pick up"]
           );
-          default_branch = pickUpResults[0].id
-        }else{
-          // set transaction type to Delivery if empty pickup details
-          default_transaction_type = 'Delivery'
+          default_branch = pickUpResults[0].id;
+        } else {
+          default_transaction_type = "Delivery";
         }
 
-
-        if(deliveryResults.length > 0){
-          setTransactionTypes(prev =>
-            prev.includes('Delivery') ? prev : [...prev, 'Delivery']
+        if (deliveryResults.length > 0) {
+          setTransactionTypes((prev) =>
+            prev.includes("Delivery") ? prev : [...prev, "Delivery"]
           );
-          default_ship_to_addreess = deliveryResults[0].id
-        }else{
-          // set transaction type to Pickup if empty delivery details
-          default_transaction_type = 'Pick up'
+          default_ship_to_addreess = deliveryResults[0].id;
+        } else {
+          default_transaction_type = "Pick up";
         }
-        
+
         setFormData({
           ...formData,
-          customerCode: customerResult.results.code || "",
+          customerCode: customerParams.code || "",
           transactionType: default_transaction_type,
-          shipToAddress : default_ship_to_addreess,
-          branch : default_branch
+          shipToAddress: default_ship_to_addreess,
+          branch: default_branch,
         });
 
         setCustomerPickupDetails(pickUpResults);
         setCustomerDeliveryDetails(deliveryResults);
+        setSubCodes(subCodes);
       }
-    
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
-
 
   const getBoothProducts = async () => {
     try {
       const customerResult = await dealCartService.getBoothProducts();
-      
-      if(customerResult.success){ 
-        setBoothProducts(customerResult.results || [])
-        return true;
-      }else{
 
+      if (customerResult.success) {
+        setBoothProducts(customerResult.results || []);
+        return true;
+      } else {
         return false;
       }
-    
     } catch {
       return false;
-      
     }
-
   };
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  const createDealCart = async (post_data : any) => {
+  const createDealCart = async (post_data: any) => {
     try {
-      const createDealCartResult = await dealCartService.createDealCart(post_data);
-      console.log(createDealCartResult)
-      if(createDealCartResult.success){
+      const createDealCartResult = await dealCartService.createDealCart(
+        post_data
+      );
+      console.log(createDealCartResult);
+      if (createDealCartResult.success) {
         return true;
-      }else{
-        showMessage("0" , createDealCartResult.message)  
+      } else {
+        showMessage("0", createDealCartResult.message);
         return false;
       }
-    
     } catch {
-      showMessage("0" , "Unable to process your request. Please try again later. 1212 ")   
+      showMessage(
+        "0",
+        "Unable to process your request. Please try again later. 1212 "
+      );
       return false;
-      
     }
-
   };
 
-  useEffect(() => {
-    if(customer_hash_code && stored_hash_code){
-      if(customer_hash_code == stored_hash_code){
-        setIsRender(true)
-      }else{
-        router.push(`/unauthorized`)
+  const initializeData = async () => {
+    setIsLoading(true);
+    // Get customer info from localStorage
+    const customer_info = localStorage.getItem("customer_info");
+    const customerInfoParsed = customer_info ? JSON.parse(customer_info) : null;
+
+    if (!customerInfoParsed?.id) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Load customer record first
+    const customerRecordSuccess = await getCustomerRecord();
+    if (!customerRecordSuccess) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Load customer params (pickup/delivery details)
+    await getCustomerParams();
+
+    // Load booth products
+    await getBoothProducts();
+
+    // Check for active carts in localStorage
+    const storedCarts = localStorage.getItem("dealformCarts");
+    if (storedCarts) {
+      const parsedCarts = JSON.parse(storedCarts);
+      if (parsedCarts.length > 0) {
+        // If there are active carts, go to step 3 (ProductSelection)
+        setCarts(parsedCarts);
+        setStep(3);
+        // Set form data from the first cart
+        if (parsedCarts[0]) {
+          setFormData({
+            acceptTerms: true,
+            customerCode:
+              parsedCarts[0].customerCode || customerInfoParsed.code,
+            transactionType: parsedCarts[0].transactionType || "Pick up",
+            branch: parsedCarts[0].branch || "",
+            shipToAddress: parsedCarts[0].shipToAddress || "",
+            remarks: parsedCarts[0].remarks || "",
+          });
+        }
+        setIsLoading(false);
+        return;
       }
-    }else{
-      router.push(`/unauthorized`)
     }
 
-    getCustomerRecord()
-    getCustomerParams()
-    getBoothProducts()
-
-    if (step === 1) {
-      setCarts([]);
-      setCurrentCartIndex(0);
-      setSelectedProducts([]);
-      setFormData({
-        acceptTerms: false,
-        customerCode: "",
-        transactionType: "",
-        branch: "",
-        shipToAddress: "",
-        remarks: "",
-      });
-
-      localStorage.removeItem("dealformCarts");
+    // Check if terms were previously accepted
+    const acceptedTerms = localStorage.getItem("dealFormTermsAccepted");
+    if (acceptedTerms === "true") {
+      setFormData((prev) => ({ ...prev, acceptTerms: true }));
+      setStep(2);
     }
 
+    // Initialize empty cart if none exists
     if (carts.length === 0) {
       const emptyCart: Cart = {
         id: "CART1",
-        customerCode: "",
+        customerCode: customerInfoParsed.code,
         transactionType: "Pick up",
         branch: "",
         shipToAddress: "",
@@ -271,6 +312,21 @@ export default function DealFormPage() {
       };
       setCarts([emptyCart]);
     }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (customer_hash_code && stored_hash_code) {
+      if (customer_hash_code == stored_hash_code) {
+        setIsRender(true);
+      } else {
+        router.push(`/unauthorized`);
+      }
+    } else {
+      router.push(`/unauthorized`);
+    }
+
+    initializeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -283,7 +339,7 @@ export default function DealFormPage() {
     if (fromConfirmation) {
       setStep(2);
     }
-    
+
     const updatedCarts = [...carts];
 
     if (carts.length > 0) {
@@ -334,82 +390,81 @@ export default function DealFormPage() {
   };
 
   const handleNavigateCart = (direction: "prev" | "next") => {
-    
+    // Save current cart state first
     const updatedCarts = [...carts];
-    
     updatedCarts[currentCartIndex] = {
       ...updatedCarts[currentCartIndex],
-      customerCode: formData.customerCode,
-      transactionType: formData.transactionType,
-      branch: formData.branch,
-      shipToAddress: formData.shipToAddress,
-      remarks: formData.remarks,
-      selectedProducts: selectedProducts,
+      customerCode: formData.customerCode || "",
+      transactionType: formData.transactionType || "Pick up",
+      branch: formData.branch || "",
+      shipToAddress: formData.shipToAddress || "",
+      remarks: formData.remarks || "",
+      selectedProducts: selectedProducts || [],
     };
-    setCarts(updatedCarts);
 
-    // Save to localStorage
-    localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
-
+    // Calculate new index
     const newIndex =
       direction === "prev" ? currentCartIndex - 1 : currentCartIndex + 1;
 
+    // Validate index bounds
     if (newIndex >= 0 && newIndex < carts.length) {
-      setCurrentCartIndex(newIndex);
+      // Update carts state and save to localStorage first
+      setCarts(updatedCarts);
+      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
 
       // Get the selected cart's data
       const selectedCart = updatedCarts[newIndex];
 
       // Update form data with the selected cart's data
       setFormData({
-        ...formData,
-        customerCode: selectedCart.customerCode,
+        acceptTerms: true,
+        customerCode: selectedCart.customerCode || "",
         transactionType: selectedCart.transactionType || "Pick up",
         branch: selectedCart.branch || "",
         shipToAddress: selectedCart.shipToAddress || "",
         remarks: selectedCart.remarks || "",
       });
 
-      console.log(
-        "Loading products for cart",
-        newIndex,
-        selectedCart.selectedProducts
-      );
+      // Update selected products with proper initialization
       setSelectedProducts(selectedCart.selectedProducts || []);
+
+      // Finally update the current cart index
+      setCurrentCartIndex(newIndex);
     }
   };
 
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
+    // remove product quantity == 0
+    const updatedProducts = products.filter((product) => product.quantity != 0);
 
-      // remove product quantity == 0
-      const updatedProducts =  products.filter((product) => product.quantity != 0);
-  
-      if (cartIndex >= 0 && cartIndex < carts.length) {
+    if (cartIndex >= 0 && cartIndex < carts.length) {
       const updatedCarts = [...carts];
       const cartProducts = updatedCarts[cartIndex].selectedProducts;
 
       // remap cart products
       const remapCartProducts = cartProducts.map((cartProduct) => {
-        const findUpdatedProduct = updatedProducts.find(updatedProduct => updatedProduct.id == cartProduct.id);
+        const findUpdatedProduct = updatedProducts.find(
+          (updatedProduct) => updatedProduct.id == cartProduct.id
+        );
 
         // find and update cart product quantity if exist in updatedProducts
-        if(findUpdatedProduct){
-          const findUpdateProductIndex = updatedProducts.findIndex(updatedProduct => updatedProduct.id === findUpdatedProduct.id);
+        if (findUpdatedProduct) {
+          const findUpdateProductIndex = updatedProducts.findIndex(
+            (updatedProduct) => updatedProduct.id === findUpdatedProduct.id
+          );
 
           // remove product on updatedProducts array
           if (findUpdateProductIndex !== -1) {
-            updatedProducts.splice(findUpdateProductIndex, 1);  // Removes 1 item at the found index
+            updatedProducts.splice(findUpdateProductIndex, 1); // Removes 1 item at the found index
           }
-          return {...cartProduct, quantity : findUpdatedProduct.quantity}
-        }else{
-          return {...cartProduct}
+          return { ...cartProduct, quantity: findUpdatedProduct.quantity };
+        } else {
+          return { ...cartProduct };
         }
-        
       });
 
       // Merge remapCartProducts and updatedProducts
-      const finalCartProducts = [...remapCartProducts, ...updatedProducts]
-
+      const finalCartProducts = [...remapCartProducts, ...updatedProducts];
 
       updatedCarts[cartIndex] = {
         ...updatedCarts[cartIndex],
@@ -434,6 +489,9 @@ export default function DealFormPage() {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormData({ ...formData, [name]: checked });
+    if (name === "acceptTerms" && checked) {
+      localStorage.setItem("dealFormTermsAccepted", "true");
+    }
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -511,120 +569,105 @@ export default function DealFormPage() {
 
   // Handle form submission and booth visit tracking
   const handleComplete = async () => {
-
-    const confirmAction = await confirmMessage(`Are you sure you want to submit this cart?`);
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to submit this cart?`
+    );
 
     // Inititalize and show loader
     showLoader();
 
-    if(confirmAction.isConfirmed){
+    if (confirmAction.isConfirmed) {
+      const updatedCarts = [...carts];
 
-        const updatedCarts = [...carts];
-        
-        // check if cart is already submmitted
-        if(updatedCarts[currentCartIndex]){
-          if(updatedCarts[currentCartIndex].submitted){
+      // check if cart is already submmitted
+      if (updatedCarts[currentCartIndex]) {
+        if (updatedCarts[currentCartIndex].submitted) {
+          //close loader
+          Swal.close();
 
-            //close loader
-            Swal.close()
-
-            // added delay before opening new alert
-            setTimeout(() => {
-              showMessage("0", "You already submmited this cart.")
-            }, 200);
-            return;
-          }
+          // added delay before opening new alert
+          setTimeout(() => {
+            showMessage("0", "You already submmited this cart.");
+          }, 200);
+          return;
         }
+      }
 
-        const existingProducts =
-          updatedCarts[currentCartIndex]?.selectedProducts || [];
+      const existingProducts =
+        updatedCarts[currentCartIndex]?.selectedProducts || [];
 
+      updatedCarts[currentCartIndex] = {
+        ...updatedCarts[currentCartIndex],
+        customerCode: formData.customerCode,
+        transactionType: formData.transactionType,
+        branch: formData.branch,
+        shipToAddress: formData.shipToAddress,
+        remarks: formData.remarks,
+        selectedProducts: existingProducts,
+      };
+      setCarts(updatedCarts);
+
+      // Save to localStorage
+      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+
+      const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
+
+      if (submitCart) {
+        // tag the cart as submiited if api response is sucessfull
         updatedCarts[currentCartIndex] = {
           ...updatedCarts[currentCartIndex],
-          customerCode: formData.customerCode,
-          transactionType: formData.transactionType,
-          branch: formData.branch,
-          shipToAddress: formData.shipToAddress,
-          remarks: formData.remarks,
-          selectedProducts: existingProducts,
+          submitted: true,
         };
         setCarts(updatedCarts);
-
         // Save to localStorage
         localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
 
-        console.log("Form submitted for cart:", updatedCarts[currentCartIndex]);
-        console.log(
-          "Selected products:",
-          updatedCarts[currentCartIndex]?.selectedProducts
-        );
-    
-    
-        const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
-
-        if(submitCart){
-
-          // tag the cart as submiited if api response is sucessfull
-          updatedCarts[currentCartIndex] = {
-            ...updatedCarts[currentCartIndex],
-            submitted: true,
-          };
-          setCarts(updatedCarts);
-          // Save to localStorage
-          localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
-
-          existingProducts.forEach((product) => {
-            if (product.quantity > 0) {
-              const productCode = product.itemCode.toLowerCase();
-              const matchingBooth = booths.find(
-                (booth) =>
-                  (booth.name && booth.name.toLowerCase().includes(productCode)) ||
-                  (booth.id && booth.id.toLowerCase().includes(productCode))
-              );
-
-              if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
-                handleVisitBooth(matchingBooth.id);
-              }
-            }
-          });
-
-          const remainingUnsubmittedCarts = updatedCarts.filter(
-            (cart) => !cart.submitted
-          );
-
-          if (remainingUnsubmittedCarts.length > 0) {
-            const nextUnsubmittedIndex = updatedCarts.findIndex(
-              (cart) => !cart.submitted
+        existingProducts.forEach((product) => {
+          if (product.quantity > 0) {
+            const productCode = product.itemCode.toLowerCase();
+            const matchingBooth = booths.find(
+              (booth) =>
+                (booth.name &&
+                  booth.name.toLowerCase().includes(productCode)) ||
+                (booth.id && booth.id.toLowerCase().includes(productCode))
             );
-            if (nextUnsubmittedIndex !== -1) {
-              
-              //close loader
-              Swal.close()
 
-              // added delay before opening new alert
-              setTimeout(() => {
-                showMessage("1", "Deal form submitted.")
-              }, 200);
-              // setCurrentCartIndex(nextUnsubmittedIndex);
-              return;
+            if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
+              handleVisitBooth(matchingBooth.id);
             }
           }
+        });
 
-          localStorage.removeItem("dealformCarts");
-          
-          //close loader
-          Swal.close()
-
-          setShowSubmitModal(true);
-          return;
-
-        }
-
-      }else{
+        const remainingUnsubmittedCarts = updatedCarts.filter(
+          (cart) => !cart.submitted
+        );
 
         //close loader
-        Swal.close()
+        Swal.close();
+
+        if (remainingUnsubmittedCarts.length > 0) {
+          // Show cart submitted modal instead of message
+          setShowCartSubmittedModal(true);
+          return;
+        }
+
+        // If this was the last cart, show the final submission modal
+        setShowSubmitModal(true);
+        return;
       }
+    } else {
+      //close loader
+      Swal.close();
+    }
+  };
+
+  const handleCloseCartSubmittedModal = () => {
+    setShowCartSubmittedModal(false);
+    // Find the next unsubmitted cart
+    const nextUnsubmittedIndex = carts.findIndex((cart) => !cart.submitted);
+    if (nextUnsubmittedIndex !== -1) {
+      setCurrentCartIndex(nextUnsubmittedIndex);
+    }
   };
 
   // Handle closing modal
@@ -645,15 +688,14 @@ export default function DealFormPage() {
     router.push(`/?cc=${stored_hash_code}`);
   };
 
-  const showMessage = (status: string, message : string)  => {
-    
+  const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
     let titleType: "Success" | "Oops!";
 
-    if(status == "1"){
+    if (status == "1") {
       iconType = "success";
       titleType = "Success";
-    }else{
+    } else {
       iconType = "error";
       titleType = "Oops!";
     }
@@ -662,44 +704,41 @@ export default function DealFormPage() {
       title: titleType,
       text: message,
       icon: iconType,
-      confirmButtonColor: "#F78B1E"
-    })
-  }
+      confirmButtonColor: "#F78B1E",
+    });
+  };
 
-  const confirmMessage = async (message: string)  => {
-    
+  const confirmMessage = async (message: string) => {
     const result = await Swal.fire({
-      title: 'Confirm',
+      title: "Confirm",
       text: message,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#F78B1E",
-    })
+    });
 
     return result;
-  }
+  };
 
-  const showLoader = ()  => {
+  const showLoader = () => {
     const loader = Swal.fire({
-      title: 'Processing data...',
-      text: 'Please wait',
+      title: "Processing data...",
+      text: "Please wait",
       allowOutsideClick: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
     return loader;
-  }
+  };
 
-
-  if(!isRender){
+  if (!isRender || isLoading) {
     return null;
   }
 
   return (
     <div className="flex flex-col max-w-2xl mx-auto min-h-screen">
       <main className="flex-1 px-4 py-6 overflow-y-auto pb-16">
-        
         {step === 4 || step === 5 ? (
           <div className="flex justify-center mb-6">
             <Image
@@ -738,19 +777,21 @@ export default function DealFormPage() {
             />
           )} */}
 
-          {step === 2 && (formData.transactionType === "Pick up" || formData.transactionType === "") && (
-            <PickUpForm
-              customerCode={formData.customerCode}
-              transactionType={formData.transactionType}
-              branch={formData.branch}
-              remarks={formData.remarks}
-              onInputChange={handleInputChange}
-              onSelectChange={handleSelectChange}
-              onNext={handleNext}
-              transactionTypes={transactionTypes}
-              customerPickupDetails={customerPickupDetails}
-            />
-          )}
+          {step === 2 &&
+            (formData.transactionType === "Pick up" ||
+              formData.transactionType === "") && (
+              <PickUpForm
+                customerCode={formData.customerCode}
+                transactionType={formData.transactionType}
+                branch={formData.branch}
+                remarks={formData.remarks}
+                onInputChange={handleInputChange}
+                onSelectChange={handleSelectChange}
+                onNext={handleNext}
+                transactionTypes={transactionTypes}
+                customerPickupDetails={customerPickupDetails}
+              />
+            )}
 
           {step === 2 && formData.transactionType === "Delivery" && (
             <DeliveryForm
@@ -770,13 +811,12 @@ export default function DealFormPage() {
               customerCode={formData.customerCode}
               transactionType={formData.transactionType}
               branch={
-                customerPickupDetails.find(
-                  cpd => cpd.id == formData.branch
-                )?.branch_code || formData.branch
+                customerPickupDetails.find((cpd) => cpd.id == formData.branch)
+                  ?.branch_code || formData.branch
               }
               shipToAddress={
                 customerDeliveryDetails.find(
-                  cdd => cdd.id == formData.shipToAddress
+                  (cdd) => cdd.id == formData.shipToAddress
                 )?.address || formData.shipToAddress
               }
               onNext={handleNext}
@@ -795,6 +835,10 @@ export default function DealFormPage() {
               customerPickupDetails={customerPickupDetails}
               customerDeliveryDetails={customerDeliveryDetails}
               selectedProducts={carts[currentCartIndex]?.selectedProducts || []}
+              subCodes={subCodes}
+              onCustomerCodeChange={(code: string) => {
+                setFormData((prev) => ({ ...prev, customerCode: code }));
+              }}
             />
           )}
 
@@ -816,22 +860,28 @@ export default function DealFormPage() {
               transactionTypes={transactionTypes}
               customerPickupDetails={customerPickupDetails}
               branch={
-                customerPickupDetails.find(
-                  cpd => cpd.id == formData.branch
-                )?.branch_code || formData.branch
+                customerPickupDetails.find((cpd) => cpd.id == formData.branch)
+                  ?.branch_code || formData.branch
               }
               shipToAddress={
                 customerDeliveryDetails.find(
-                  cdd => cdd.id == formData.shipToAddress
+                  (cdd) => cdd.id == formData.shipToAddress
                 )?.address || formData.shipToAddress
               }
               customerDeliveryDetails={customerDeliveryDetails}
               shipToAddressId={formData.shipToAddress}
               branchId={formData.branch}
+              onNavigateToProducts={handlePrevious}
             />
           )}
         </div>
       </main>
+
+      {/* Cart Submitted Modal */}
+      <CartSubmitted
+        isOpen={showCartSubmittedModal}
+        onClose={handleCloseCartSubmittedModal}
+      />
 
       {/* Deal Submitted Modal */}
       <DealSubmitted isOpen={showSubmitModal} onClose={handleCloseModal} />

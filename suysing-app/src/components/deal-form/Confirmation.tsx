@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 
 interface Product {
   id: string;
@@ -64,12 +63,12 @@ interface ConfirmationProps {
   customerDeliveryDetails: CustomerDeliveryDetails[];
   shipToAddressId: string;
   branchId: string;
+  onNavigateToProducts?: () => void;
 }
 
 export default function Confirmation({
   formData,
   onSubmit,
-
   onSelectChange = () => {},
   carts = [],
   currentCartIndex = 0,
@@ -80,6 +79,7 @@ export default function Confirmation({
   branchId,
   customerPickupDetails,
   customerDeliveryDetails,
+  onNavigateToProducts = () => {},
 }: ConfirmationProps) {
   // Get products with quantities greater than 0 from formData
   const products =
@@ -100,6 +100,10 @@ export default function Confirmation({
     acc[dealerId].products.push(item);
     return acc;
   }, {});
+
+  const handleBack = () => {
+    onNavigateToProducts();
+  };
 
   return (
     <div className="flex flex-col space-y-4 min-h-screen">
@@ -189,14 +193,14 @@ export default function Confirmation({
           <div className="bg-white border-2 border-[#7D7D7D] p-4 rounded-sm flex flex-col items-center justify-center h-full">
             <button
               onClick={onCreateNewCart}
-              className={`rounded-full size-8 flex items-center justify-center ${
+              className={`rounded-full size-10 flex items-center justify-center ${
                 carts.length >= 3
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
               }`}
               disabled={carts.length >= 3}
             >
-              <span className="text-white text-2xl">+</span>
+              <span className="text-white text-3xl">+</span>
             </button>
             <span
               className={`text-xs text-center mt-1 ${
@@ -270,16 +274,8 @@ export default function Confirmation({
         </div>
       </div>
 
-      <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-4">
-        <div className="flex items-center gap-2">
-          <Image
-            src="/images/order-summary.svg"
-            alt="Order Summary"
-            width={70}
-            height={70}
-          />
-          <h2 className="text-lg font-bold text-black">Order Summary</h2>
-        </div>
+      <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-3">
+        <h2 className="text-lg font-bold text-black">Order Summary</h2>
       </div>
 
       {products.length > 0 &&
@@ -326,7 +322,13 @@ export default function Confirmation({
             </div>
           </div>
         ))}
-      <div className="py-2">
+      <div className="px-2 pb-4 flex gap-4 ">
+        <button
+          onClick={handleBack}
+          className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+        >
+          Back
+        </button>
         <button
           onClick={onSubmit}
           className="w-full bg-[#F78B1E] py-3 text-black font-bold text-center rounded-md text-lg"
