@@ -61,6 +61,7 @@ export default function DealFormPage() {
   const [step, setStep] = useState(1);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const { booths, handleVisitBooth } = useBooths();
+  const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
     acceptTerms: false,
@@ -219,6 +220,78 @@ export default function DealFormPage() {
     }
   };
 
+  const initializeData = async () => {
+    setIsLoading(true);
+    // Get customer info from localStorage
+    const customer_info = localStorage.getItem("customer_info");
+    const customerInfoParsed = customer_info ? JSON.parse(customer_info) : null;
+
+    if (!customerInfoParsed?.id) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Load customer record first
+    const customerRecordSuccess = await getCustomerRecord();
+    if (!customerRecordSuccess) {
+      setIsLoading(false);
+      return;
+    }
+
+    // Load customer params (pickup/delivery details)
+    await getCustomerParams();
+
+    // Load booth products
+    await getBoothProducts();
+
+    // Check for active carts in localStorage
+    const storedCarts = localStorage.getItem("dealformCarts");
+    if (storedCarts) {
+      const parsedCarts = JSON.parse(storedCarts);
+      if (parsedCarts.length > 0) {
+        // If there are active carts, go to step 3 (ProductSelection)
+        setCarts(parsedCarts);
+        setStep(3);
+        // Set form data from the first cart
+        if (parsedCarts[0]) {
+          setFormData({
+            acceptTerms: true,
+            customerCode:
+              parsedCarts[0].customerCode || customerInfoParsed.code,
+            transactionType: parsedCarts[0].transactionType || "Pick up",
+            branch: parsedCarts[0].branch || "",
+            shipToAddress: parsedCarts[0].shipToAddress || "",
+            remarks: parsedCarts[0].remarks || "",
+          });
+        }
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    // Check if terms were previously accepted
+    const acceptedTerms = localStorage.getItem("dealFormTermsAccepted");
+    if (acceptedTerms === "true") {
+      setFormData((prev) => ({ ...prev, acceptTerms: true }));
+      setStep(2);
+    }
+
+    // Initialize empty cart if none exists
+    if (carts.length === 0) {
+      const emptyCart: Cart = {
+        id: "CART1",
+        customerCode: customerInfoParsed.code,
+        transactionType: "Pick up",
+        branch: "",
+        shipToAddress: "",
+        remarks: "",
+        selectedProducts: [],
+      };
+      setCarts([emptyCart]);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
     if (customer_hash_code && stored_hash_code) {
       if (customer_hash_code == stored_hash_code) {
@@ -230,45 +303,7 @@ export default function DealFormPage() {
       router.push(`/unauthorized`);
     }
 
-    // Check if terms were previously accepted
-    const acceptedTerms = localStorage.getItem("dealFormTermsAccepted");
-    if (acceptedTerms === "true") {
-      setFormData((prev) => ({ ...prev, acceptTerms: true }));
-      setStep(2);
-    }
-
-    getCustomerRecord();
-    getCustomerParams();
-    getBoothProducts();
-
-    if (step === 1) {
-      setCarts([]);
-      setCurrentCartIndex(0);
-      setSelectedProducts([]);
-      setFormData({
-        acceptTerms: false,
-        customerCode: "",
-        transactionType: "",
-        branch: "",
-        shipToAddress: "",
-        remarks: "",
-      });
-
-      localStorage.removeItem("dealformCarts");
-    }
-
-    if (carts.length === 0) {
-      const emptyCart: Cart = {
-        id: "CART1",
-        customerCode: "",
-        transactionType: "Pick up",
-        branch: "",
-        shipToAddress: "",
-        remarks: "",
-        selectedProducts: [],
-      };
-      setCarts([emptyCart]);
-    }
+    initializeData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -332,47 +367,46 @@ export default function DealFormPage() {
   };
 
   const handleNavigateCart = (direction: "prev" | "next") => {
+    // Save current cart state first
     const updatedCarts = [...carts];
-
     updatedCarts[currentCartIndex] = {
       ...updatedCarts[currentCartIndex],
-      customerCode: formData.customerCode,
-      transactionType: formData.transactionType,
-      branch: formData.branch,
-      shipToAddress: formData.shipToAddress,
-      remarks: formData.remarks,
-      selectedProducts: selectedProducts,
+      customerCode: formData.customerCode || "",
+      transactionType: formData.transactionType || "Pick up",
+      branch: formData.branch || "",
+      shipToAddress: formData.shipToAddress || "",
+      remarks: formData.remarks || "",
+      selectedProducts: selectedProducts || [],
     };
-    setCarts(updatedCarts);
 
-    // Save to localStorage
-    localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
-
+    // Calculate new index
     const newIndex =
       direction === "prev" ? currentCartIndex - 1 : currentCartIndex + 1;
 
+    // Validate index bounds
     if (newIndex >= 0 && newIndex < carts.length) {
-      setCurrentCartIndex(newIndex);
+      // Update carts state and save to localStorage first
+      setCarts(updatedCarts);
+      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
 
       // Get the selected cart's data
       const selectedCart = updatedCarts[newIndex];
 
       // Update form data with the selected cart's data
       setFormData({
-        ...formData,
-        customerCode: selectedCart.customerCode,
+        acceptTerms: true,
+        customerCode: selectedCart.customerCode || "",
         transactionType: selectedCart.transactionType || "Pick up",
         branch: selectedCart.branch || "",
         shipToAddress: selectedCart.shipToAddress || "",
         remarks: selectedCart.remarks || "",
       });
 
-      console.log(
-        "Loading products for cart",
-        newIndex,
-        selectedCart.selectedProducts
-      );
+      // Update selected products with proper initialization
       setSelectedProducts(selectedCart.selectedProducts || []);
+
+      // Finally update the current cart index
+      setCurrentCartIndex(newIndex);
     }
   };
 
@@ -684,7 +718,7 @@ export default function DealFormPage() {
     return loader;
   };
 
-  if (!isRender) {
+  if (!isRender || isLoading) {
     return null;
   }
 
@@ -819,6 +853,7 @@ export default function DealFormPage() {
               customerDeliveryDetails={customerDeliveryDetails}
               shipToAddressId={formData.shipToAddress}
               branchId={formData.branch}
+              onNavigateToProducts={handlePrevious}
             />
           )}
         </div>
