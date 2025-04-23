@@ -651,9 +651,22 @@ export default function ProductSelection({
                               >
                                 -
                               </button>
-                              <span className="text-black font-bold text-2xl w-8 text-center">
-                                {getActualQty(product.id)}
-                              </span>
+                              <input
+                                type="number"
+                                min="0"
+                                value={getActualQty(product.id)}
+                                onChange={(e) => {
+                                  const newValue =
+                                    parseInt(e.target.value) || 0;
+                                  handleQuantityChange(
+                                    product.id,
+                                    newValue,
+                                    dealer.name,
+                                    dealer.id
+                                  );
+                                }}
+                                className="text-black font-bold text-2xl w-12 text-center border-2 border-[#7D7D7D] rounded focus:outline-none focus:border-[#F78B1E] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                              />
                               <button
                                 onClick={() =>
                                   handleQuantityChange(
