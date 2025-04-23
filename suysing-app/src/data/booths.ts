@@ -101,6 +101,14 @@ export const getInitialBooths = (): Booth[] => {
     },
 
     {
+      id: "UNION01",
+      name: "Union",
+      image: "/images/booths/UNION01.png",
+      boothCode: "UNION01",
+      visited: false,
+    },
+
+    {
       id: "FIBER02",
       name: "Happy",
       image: "/images/booths/FIBER02.png",
@@ -883,6 +891,16 @@ export const getInitialBooths = (): Booth[] => {
       name: "perfectti",
       image: "/images/booths/PERFE01.png",
       boothCode: "PERFE01",
+      visited: false,
+      width: 100,
+      height: 100,
+      overrideAspect: true,
+    },
+    {
+      id: "PERFE02",
+      name: "perfectti",
+      image: "/images/booths/PERFE02.png",
+      boothCode: "PERFE02",
       visited: false,
       width: 100,
       height: 100,
