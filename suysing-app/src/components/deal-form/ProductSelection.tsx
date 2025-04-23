@@ -103,6 +103,14 @@ interface CustomerDeliveryDetails {
   address: string;
 }
 
+interface SubCode {
+  id: number;
+  code: string;
+  transaction_type: string;
+  ship_to: string | null;
+  payment_code: string;
+}
+
 // Initial dealer list
 // const initialDealers: Dealer[] = [
 //   {
@@ -149,6 +157,8 @@ interface ProductSelectionProps {
   transactionTypes: string[];
   customerPickupDetails: CustomerPickupDetails[];
   customerDeliveryDetails: CustomerDeliveryDetails[];
+  subCodes: SubCode[];
+  onCustomerCodeChange?: (code: string) => void;
 }
 
 export default function ProductSelection({
@@ -171,11 +181,15 @@ export default function ProductSelection({
   transactionTypes,
   customerPickupDetails,
   customerDeliveryDetails,
+  subCodes = [],
+  onCustomerCodeChange = () => {},
 }: ProductSelectionProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeLetter, setActiveLetter] = useState<string>("");
   const dealersContainerRef = useRef<HTMLDivElement>(null);
   const dealerRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const [isCustomerCodeOpen, setIsCustomerCodeOpen] = useState(false);
+  const customerCodeRef = useRef<HTMLDivElement>(null);
 
   const [products, setProducts] = useState<Product[]>(
     selectedProducts.length > 0 ? selectedProducts : []
@@ -236,6 +250,12 @@ export default function ProductSelection({
         !shippingDropdownRef.current.contains(event.target as Node)
       ) {
         setIsShippingDropdownOpen(false);
+      }
+      if (
+        customerCodeRef.current &&
+        !customerCodeRef.current.contains(event.target as Node)
+      ) {
+        setIsCustomerCodeOpen(false);
       }
     }
 
@@ -351,9 +371,38 @@ export default function ProductSelection({
             <div>
               <div className="flex flex-col">
                 <span className="text-black text-sm">Customer Code:</span>
-                <span className="text-black font-bold text-sm">
-                  {customerCode}
-                </span>
+                <div className="relative" ref={customerCodeRef}>
+                  <div
+                    className="flex items-center cursor-pointer"
+                    onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
+                  >
+                    <span className="text-black font-bold text-sm">
+                      {customerCode}
+                    </span>
+                    <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                  </div>
+
+                  {isCustomerCodeOpen && (
+                    <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                      {subCodes.map((subCode, index) => (
+                        <div
+                          key={index}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                            customerCode === subCode.code ? "bg-gray-100" : ""
+                          }`}
+                          onClick={() => {
+                            onCustomerCodeChange(subCode.code);
+                            setIsCustomerCodeOpen(false);
+                          }}
+                        >
+                          <span className="text-black text-sm">
+                            {subCode.code}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

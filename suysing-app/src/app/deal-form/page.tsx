@@ -57,6 +57,30 @@ interface CustomerDeliveryDetails {
   address: string;
 }
 
+interface SubCode {
+  id: number;
+  code: string;
+  transaction_type: string;
+  ship_to: string | null;
+  payment_code: string;
+}
+
+interface CustomerParams {
+  id: number;
+  code: string;
+  fname: string;
+  customer_type: string;
+  sub_codes: SubCode[];
+  delivery: CustomerDeliveryDetails[];
+  pickup: CustomerPickupDetails[];
+  payment_types: {
+    id: number;
+    code: string | null;
+    payment_code: string;
+    description: string;
+  }[];
+}
+
 export default function DealFormPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -96,6 +120,7 @@ export default function DealFormPage() {
   const [transactionTypes, setTransactionTypes] = useState<string[]>([]);
   const [boothProducts, setBoothProducts] = useState([]);
   const [isRender, setIsRender] = useState(false);
+  const [subCodes, setSubCodes] = useState<SubCode[]>([]);
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -138,14 +163,10 @@ export default function DealFormPage() {
       const customerResult = await dealCartService.getCustomerParams();
 
       if (customerResult.success) {
-        // setCustomerDetails(customerResult.results);
-        // setFormData({
-        //   ...formData,
-        //   customerCode: customerResult.results.code || ""
-        // });
-
-        const pickUpResults = customerResult.results?.pickup || [];
-        const deliveryResults = customerResult.results?.delivery || [];
+        const customerParams: CustomerParams = customerResult.results;
+        const pickUpResults = customerParams.pickup || [];
+        const deliveryResults = customerParams.delivery || [];
+        const subCodes = customerParams.sub_codes || [];
         let default_transaction_type = "Pick up";
         let default_ship_to_addreess = "";
         let default_branch = "";
@@ -156,7 +177,6 @@ export default function DealFormPage() {
           );
           default_branch = pickUpResults[0].id;
         } else {
-          // set transaction type to Delivery if empty pickup details
           default_transaction_type = "Delivery";
         }
 
@@ -166,13 +186,12 @@ export default function DealFormPage() {
           );
           default_ship_to_addreess = deliveryResults[0].id;
         } else {
-          // set transaction type to Pickup if empty delivery details
           default_transaction_type = "Pick up";
         }
 
         setFormData({
           ...formData,
-          customerCode: customerResult.results.code || "",
+          customerCode: customerParams.code || "",
           transactionType: default_transaction_type,
           shipToAddress: default_ship_to_addreess,
           branch: default_branch,
@@ -180,6 +199,7 @@ export default function DealFormPage() {
 
         setCustomerPickupDetails(pickUpResults);
         setCustomerDeliveryDetails(deliveryResults);
+        setSubCodes(subCodes);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -815,6 +835,10 @@ export default function DealFormPage() {
               customerPickupDetails={customerPickupDetails}
               customerDeliveryDetails={customerDeliveryDetails}
               selectedProducts={carts[currentCartIndex]?.selectedProducts || []}
+              subCodes={subCodes}
+              onCustomerCodeChange={(code: string) => {
+                setFormData((prev) => ({ ...prev, customerCode: code }));
+              }}
             />
           )}
 
