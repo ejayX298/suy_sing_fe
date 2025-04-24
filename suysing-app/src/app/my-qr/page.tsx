@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { customerQr } from "@/services/api";
+import InstructionModal from "@/components/homepage/InstructionModal";
 
 interface Schedule {
   event: string;
@@ -27,6 +28,7 @@ export default function MyQrPage() {
   } | null>(null);
   const [customerFound, setCustomerFound] = useState(false);
   const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
+  const [showInstructionModal, setShowInstructionModal] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -57,6 +59,23 @@ export default function MyQrPage() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const firstVisitIds = localStorage.getItem("firstVisitIds");
+
+    if (firstVisitIds) {
+      if (customerData?.id) {
+        const parSedVisitedIds = JSON.parse(firstVisitIds);
+        if (parSedVisitedIds.includes(customerData?.id)) {
+          setShowInstructionModal(false);
+        } else {
+          setShowInstructionModal(true);
+        }
+      }
+    } else {
+      setShowInstructionModal(true);
+    }
+  }, [customerData]);
 
   if (!customerFound) {
     return null;
@@ -121,6 +140,12 @@ export default function MyQrPage() {
           ))}
         </div>
       </div>
+
+      <InstructionModal
+        customer_data={customerData}
+        isOpen={showInstructionModal}
+        onClose={() => setShowInstructionModal(false)}
+      />
     </div>
   );
 }

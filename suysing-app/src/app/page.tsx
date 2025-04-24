@@ -9,7 +9,6 @@ import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { boothVisitService } from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
-import InstructionModal from "@/components/homepage/InstructionModal";
 
 export interface Booth {
   id?: string;
@@ -27,7 +26,6 @@ export interface Booth {
 export default function Home() {
   const router = useRouter();
   const { booths, setBooths, handleVisitBooth } = useBooths();
-  const [showInstructionModal, setShowInstructionModal] = useState(false);
 
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
   const [totalVisitCount, setTotalVisitCount] = useState(0);
@@ -189,23 +187,6 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBoothsList]);
 
-  useEffect(() => {
-    const firstVisitIds = localStorage.getItem("firstVisitIds");
-
-    if (firstVisitIds) {
-      if (customerData?.id) {
-        const parSedVisitedIds = JSON.parse(firstVisitIds);
-        if (parSedVisitedIds.includes(customerData?.id || 0)) {
-          setShowInstructionModal(false);
-        } else {
-          setShowInstructionModal(true);
-        }
-      }
-    } else {
-      setShowInstructionModal(true);
-    }
-  }, [customerData]);
-
   if (!isRender) {
     return null;
   }
@@ -267,13 +248,6 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-hidden">
-      {/* Instruction Modal */}
-      <InstructionModal
-        customer_data={customerData}
-        isOpen={showInstructionModal}
-        onClose={() => setShowInstructionModal(false)}
-      />
-
       <main className="flex-1 py-2 px-4 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
