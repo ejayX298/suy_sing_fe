@@ -588,25 +588,25 @@ export default function CameraPage() {
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
-                  src="/images/check.svg"
+                  src="/images/best-booth1.svg"
                   alt="Success"
                   width={100}
                   height={100}
                 />
               </div>
               <p className="mb-6 text-[#343434] text-[20px]">
-                Congratulations! You&apos;ve successfully visited all booths.
+                <span className="font-bold">Congratulations! </span>You&apos;ve completed your Booth Hopping Card. Click Best Booth to vote now!
               </p>
               <button
                 onClick={() => {
                   setShowCompletionModal(false);
                   setShowSuccessModal(false);
                   setShowSuccessModalDouble(false);
-                  router.push(`/?cc=${customer_hash_code}`);
+                  router.push(`/best-booth?cc=${customer_hash_code}`);
                 }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
-                Proceed
+                Vote for Best Booth
               </button>
             </div>
           </div>
