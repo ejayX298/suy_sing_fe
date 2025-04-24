@@ -33,7 +33,7 @@ export default function BottomNavigation() {
           pathname === "/" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative size-6">
+        <div className="relative w-[21px] h-[21px]">
           <Image
             src="/images/booths.png"
             alt="Booths"
@@ -44,7 +44,7 @@ export default function BottomNavigation() {
             }}
           />
         </div>
-        <span className="text-xs">Booths</span>
+        <span className="text-sm">Booths</span>
       </Link>
 
       <Link
@@ -53,7 +53,7 @@ export default function BottomNavigation() {
           pathname === "/deal-form" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative size-6">
+        <div className="relative w-[16px] h-[21px]">
           <Image
             src="/images/deal-form.png"
             alt="Deal Form"
@@ -65,7 +65,7 @@ export default function BottomNavigation() {
             }}
           />
         </div>
-        <span className="text-xs">Deal Form</span>
+        <span className="text-sm">Deal Form</span>
       </Link>
 
       <Link href={concatUrl("/camera")} className="flex flex-col items-center -mt-7">
@@ -99,7 +99,7 @@ export default function BottomNavigation() {
           pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative size-8">
+        <div className="relative w-[18px] h-[26px]">
           <Image
             src="/images/best-booth.svg"
             alt="Best Booth"
@@ -111,16 +111,16 @@ export default function BottomNavigation() {
             }}
           />
         </div>
-        <span className="text-xs">Best Booth</span>
+        <span className="text-sm">Best Booth</span>
       </Link>
 
       <Link
         href={concatUrl("/my-qr")}
-        className={`flex flex-col items-center h-full justify-center  px-3 gap-1 ${
+        className={`flex flex-col items-center h-full justify-center  px-1 gap-1 ${
           pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative size-6 ">
+        <div className="relative w-[19px] h-[22px]">
           <Image
             src="/images/account.png"
             alt="Account"
@@ -132,7 +132,7 @@ export default function BottomNavigation() {
             }}
           />
         </div>
-        <span className="text-xs">Account</span>
+        <span className="text-sm">Account</span>
       </Link>
     </nav>
   );
