@@ -2,6 +2,7 @@ import React from "react";
 
 interface DeliveryFormProps {
   customerCode: string;
+  customerSubCode: string;
   transactionType: string;
   shipToAddress: string;
   remarks: string;
@@ -25,6 +26,7 @@ interface CustomerDeliveryDetails {
 
 export default function DeliveryForm({
   customerCode,
+  customerSubCode,
   transactionType,
   shipToAddress,
   remarks,
@@ -48,11 +50,19 @@ export default function DeliveryForm({
             Customer Code
           </label>
           <input
-            type="text"
+            type="hidden"
             id="customerCode"
             name="customerCode"
             value={customerCode}
             className="w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none text-black "
+            readOnly
+          />
+           <input
+            type="text"
+            id="customerSubCode"
+            name="customerSubCode"
+            value={customerSubCode}
+            className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
             readOnly
           />
         </div>
@@ -106,12 +116,13 @@ export default function DeliveryForm({
               onChange={onSelectChange}
               className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black appearance-none"
             >
-              {/* <option value="" disabled>Select address</option> */}
-              {customerDeliveryDetails.map((customerDelivery, index) => (
-                <option key={index} value={customerDelivery.id}>
-                  {customerDelivery.address}
-                </option>
-              ))}
+              {customerDeliveryDetails
+                .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
+                .map((customerDelivery, index) => (
+                  <option key={index} value={customerDelivery.id}>
+                    {customerDelivery.address}
+                  </option>
+                ))}
             </select>
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-700">
               <svg
