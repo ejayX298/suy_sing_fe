@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Webcam from "react-webcam";
 import jsQR from "jsqr";
 import Image from "next/image";
@@ -35,6 +35,7 @@ export default function CameraPage() {
   const [isRender, setIsRender] = useState(false);
   const [isFirstBooth, setIsFirstBooth] = useState(false);
   const [isFirstDoubleZone, setIsFirstDoubleZone] = useState(false);
+  const [isStreamReady, setIsStreamReady] = useState(false);
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -121,8 +122,8 @@ export default function CameraPage() {
     [customerData?.totalBoothVisited]
   );
 
-  const captureAndScanQRCode = React.useCallback(() => {
-    if (!scanning) return;
+  const captureAndScanQRCode = useCallback(() => {
+    if (!scanning || !isStreamReady) return;
 
     const videoElement = webcamRef.current?.video;
     const canvas = canvasRef.current;
@@ -131,7 +132,6 @@ export default function CameraPage() {
       const videoWidth = videoElement.videoWidth;
       const videoHeight = videoElement.videoHeight;
 
-      // Set canvas dimensions to match video
       canvas.width = videoWidth;
       canvas.height = videoHeight;
 
@@ -152,7 +152,7 @@ export default function CameraPage() {
 
           if (qrCode) {
             setScanning(false);
-            // Process the QR code data
+            setIsStreamReady(false);
             processQRCode(qrCode.data);
             return;
           }
@@ -162,16 +162,16 @@ export default function CameraPage() {
       }
     }
 
-    if (scanning) {
+    if (scanning && isStreamReady) {
       requestAnimationFrame(captureAndScanQRCode);
     }
-  }, [scanning, processQRCode]);
+  }, [scanning, isStreamReady, processQRCode]);
 
   useEffect(() => {
-    if (hasPermission && scanning) {
+    if (hasPermission && scanning && isStreamReady) {
       requestAnimationFrame(captureAndScanQRCode);
     }
-  }, [hasPermission, captureAndScanQRCode, scanning]);
+  }, [hasPermission, scanning, isStreamReady, captureAndScanQRCode]);
 
   const handleProceed = () => {
     if (isFirstBooth) {
@@ -219,7 +219,7 @@ export default function CameraPage() {
 
     // call api for booth visit
     const boothVisitResult = await submitBoothVisit(manualCode.trim());
-    
+
     if (boothVisitResult.success) {
       if (customerData?.totalBoothVisited === 0) {
         if (boothVisitResult.is_double_zone === 1) {
@@ -257,8 +257,6 @@ export default function CameraPage() {
 
   const videoConstraints = {
     facingMode: "environment",
-    width: { ideal: 1280 },
-    height: { ideal: 720 },
   };
 
   const submitBoothVisit = async (data: string) => {
@@ -363,6 +361,7 @@ export default function CameraPage() {
       if (result.isConfirmed) {
         // set the scanning to true
         setScanning(true);
+        setIsStreamReady(true);
       }
     });
   };
@@ -402,7 +401,6 @@ export default function CameraPage() {
             <p>{error || "Camera access is required to scan QR codes."}</p>
             <div className="mt-2 flex gap-2">
               <p>Please allow camera access to continue.</p>
-
               <button
                 onClick={() => window.location.reload()}
                 className="text-[#0920B0] font-medium underline focus:outline-none"
@@ -415,18 +413,57 @@ export default function CameraPage() {
 
         {hasPermission === true && (
           <div className="relative w-full aspect-[3/4] rounded-lg overflow-hidden border-4 border-orange-500">
+            {/* Loading state while camera initializes */}
+            {!isStreamReady && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-200 text-gray-600">
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#0920B0] mb-2"></div>
+                Initializing camera...
+              </div>
+            )}
+
             <Webcam
               ref={webcamRef}
               videoConstraints={videoConstraints}
-              className="absolute inset-0 w-full h-full object-cover"
-            />
-            <canvas
-              ref={canvasRef}
-              className="absolute inset-0 w-full h-full opacity-0"
+              className={`absolute inset-0 w-full h-full object-cover ${
+                isStreamReady ? "opacity-100" : "opacity-0"
+              }`}
+              onUserMedia={() => {
+                console.log("Webcam stream ready.");
+                setIsStreamReady(true);
+              }}
+              onUserMediaError={(error: string | DOMException) => {
+                console.error("Webcam UserMedia Error:", error);
+                if (typeof error === "string") {
+                  setError(`Could not access camera: ${error}`);
+                } else if (error.name === "NotAllowedError") {
+                  setError(
+                    "Camera permission was denied. Please allow access in browser settings."
+                  );
+                } else if (error.name === "NotFoundError") {
+                  setError(
+                    "No camera found on this device, or the preferred camera is unavailable."
+                  );
+                } else if (error.name === "NotReadableError") {
+                  setError(
+                    "Camera is already in use by another application or browser tab."
+                  );
+                } else {
+                  setError(
+                    `Could not access camera: ${error.message || error.name}`
+                  );
+                }
+                setHasPermission(false);
+                setIsStreamReady(false);
+              }}
             />
 
-            {scanning && (
-              <div className="absolute inset-0 flex items-center justify-center">
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+            />
+
+            {scanning && isStreamReady && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                 <div className="w-3/4 h-3/4 border-2 border-white rounded-lg opacity-70"></div>
               </div>
             )}
