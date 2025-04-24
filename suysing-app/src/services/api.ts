@@ -906,6 +906,7 @@ export const dealCartService = {
       const response = await httpClient(session_id).post(`/customer/deal/cart/create/`, {
         customer_id : customer_id,
         customer_code : post_data?.customerCode || "",
+        customer_sub_code_id : post_data?.customerSubCodeId || "",
         transaction_type : post_data?.transactionType || "",
         remarks : post_data?.remarks || "",
         address : post_data?.shipToAddress || "",
