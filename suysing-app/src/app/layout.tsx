@@ -30,13 +30,15 @@ export default function RootLayout({
             alt="Background"
             fill
             priority
+            objectFit="cover"
+            className="object-cover"
           />
         </div>
         <BoothsProvider>
-        <Suspense fallback={<p>Loading...</p>}>
-          {children}
-          <BottomNavigation />
-        </Suspense>
+          <Suspense fallback={<p>Loading...</p>}>
+            {children}
+            <BottomNavigation />
+          </Suspense>
         </BoothsProvider>
       </body>
     </html>
