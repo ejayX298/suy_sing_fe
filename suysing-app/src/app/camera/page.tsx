@@ -530,7 +530,11 @@ export default function CameraPage() {
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
-                  src="/images/check.svg"
+                  src={
+                    successMessage.includes("Double points")
+                      ? "/images/double-star.svg"
+                      : "/images/check.svg"
+                  }
                   alt="Success"
                   width={100}
                   height={100}
