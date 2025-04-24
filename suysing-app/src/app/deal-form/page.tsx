@@ -323,6 +323,8 @@ export default function DealFormPage() {
             customerSubCodeId: parsedCarts[0].customerSubCodeId || "",
             customerSubCode: parsedCarts[0].customerSubCode || "",
           });
+
+          setSelectedProducts(parsedCarts[0].selectedProducts || []);
         }
         setIsLoading(false);
         return;
