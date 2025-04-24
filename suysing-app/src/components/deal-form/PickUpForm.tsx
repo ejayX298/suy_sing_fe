@@ -2,6 +2,7 @@ import React from "react";
 
 interface PickUpFormProps {
   customerCode: string;
+  customerSubCode: string;
   transactionType: string;
   branch: string;
   remarks: string;
@@ -22,6 +23,7 @@ interface CustomerPickupDetails {
 
 export default function PickUpForm({
   customerCode,
+  customerSubCode,
   transactionType,
   branch,
   remarks,
@@ -45,10 +47,18 @@ export default function PickUpForm({
             Customer Code
           </label>
           <input
-            type="text"
+            type="hidden"
             id="customerCode"
             name="customerCode"
             value={customerCode}
+            className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
+            readOnly
+          />
+          <input
+            type="text"
+            id="customerSubCode"
+            name="customerSubCode"
+            value={customerSubCode}
             className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
             readOnly
           />
