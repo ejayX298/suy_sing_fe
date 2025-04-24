@@ -184,46 +184,32 @@ export default function BoothActivitiesPage() {
     const svg = qrRef.current?.querySelector("svg");
     if (!svg) return;
 
-    const serializer = new XMLSerializer();
-    const svgString = serializer.serializeToString(svg);
-    const svgBlob = new Blob([svgString], {
-      type: "image/svg+xml;charset=utf-8",
-    });
-    const url = URL.createObjectURL(svgBlob);
-    const img_file_name = `${booth_code}.png`;
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
     const img = new Image();
     img.onload = () => {
-      const finalSize = 512; // Final image size (e.g., 512x512 px)
-      const padding = 40; // Padding around the QR code
+      // Set canvas size
+      const size = 512;
+      canvas.width = size;
+      canvas.height = size;
 
-      const qrSize = finalSize - padding * 2;
-
-      const canvas = document.createElement("canvas");
-      canvas.width = finalSize;
-      canvas.height = finalSize;
-      const ctx = canvas.getContext("2d");
-
-      // Fill white background
+      // White background
       if (ctx) {
-        ctx.fillStyle = "#FFFFFF"; // white background
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, size, size);
+        ctx.drawImage(img, 0, 0, size, size);
 
-        // Draw QR image scaled into the center with padding
-        ctx.drawImage(img, padding, padding, qrSize, qrSize);
+        const pngFile = canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.download = `${booth_code}.png`;
+        downloadLink.href = pngFile;
+        downloadLink.click();
       }
-
-      URL.revokeObjectURL(url);
-
-      const pngUrl = canvas.toDataURL("image/png");
-      const link = document.createElement("a");
-      link.href = pngUrl;
-      link.download = img_file_name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     };
 
-    img.src = url;
+    img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgData)));
   };
 
   // Handle sort
@@ -444,7 +430,7 @@ export default function BoothActivitiesPage() {
             <div className="flex justify-center my-6">
               <button
                 onClick={() => downloadQr(selectedBooth.code)}
-                className="inline-flex items-center px-4 mt-2 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700"
+                className="inline-flex items-center px-4 mt-2 py-2 bg-blue-800 text-white rounded-md hover:bg-blue-700 cursor-pointer"
               >
                 <FaDownload className="mr-2" /> Download
               </button>
