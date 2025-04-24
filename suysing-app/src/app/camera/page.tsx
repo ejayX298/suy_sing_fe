@@ -361,6 +361,7 @@ export default function CameraPage() {
       if (result.isConfirmed) {
         // set the scanning to true
         setScanning(true);
+        setIsStreamReady(true);
       }
     });
   };
