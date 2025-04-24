@@ -1,949 +1,882 @@
-import httpClient  from './base/httpClient';
-import axios from 'axios';
-
+import httpClient from "./base/httpClient";
+import axios from "axios";
 
 export const customerQr = {
- 
-  getCustomer: async (code : string) => {
+  getCustomer: async (code: string) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
+    try {
       const hash_code = code;
-  
-      const response = await httpClient(api_key).get(`/customer/details/?chc=${hash_code}`, {});
-      
-      const response_data = response?.data?.data || []
-      
-      const mapResponse : {id : string, code : string,  customer_type : string, full_name : string, session_id : string } = {
+
+      const response = await httpClient(api_key).get(
+        `/customer/details/?chc=${hash_code}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      const mapResponse: {
+        id: string;
+        code: string;
+        customer_type: string;
+        full_name: string;
+        session_id: string;
+      } = {
         id: response_data?.id,
         code: response_data?.code,
         customer_type: response_data?.customer_type,
         full_name: `${response_data?.fname} ${response_data?.mname}  ${response_data?.lname} `,
-        session_id: response_data?.session_id
-      }
+        session_id: response_data?.session_id,
+      };
 
-      if(response_data){
-        if (typeof window !== 'undefined') {
+      if (response_data) {
+        if (typeof window !== "undefined") {
+          const stored_hash_code = localStorage.getItem("hash_code");
 
-          const stored_hash_code = localStorage.getItem('hash_code');
-          
           // Reload page on initial saving data for refreshing of bottom navigation urls
-          if(!stored_hash_code){
-            localStorage.setItem('customer_info', JSON.stringify(mapResponse));
-            localStorage.setItem('hash_code', hash_code);
-            window.location.href = `/my-qr/?cc=${hash_code}`
+          if (!stored_hash_code) {
+            localStorage.setItem("customer_info", JSON.stringify(mapResponse));
+            localStorage.setItem("hash_code", hash_code);
+            window.location.href = `/my-qr/?cc=${hash_code}`;
           }
 
-          localStorage.setItem('customer_info', JSON.stringify(mapResponse));
-          localStorage.setItem('hash_code', hash_code);
+          localStorage.setItem("customer_info", JSON.stringify(mapResponse));
+          localStorage.setItem("hash_code", hash_code);
 
-          // Reload page on updating of hash code for refreshing of bottom navigation urls 
-          if(stored_hash_code != hash_code){
-            window.location.href = `/my-qr/?cc=${hash_code}`
+          // Reload page on updating of hash code for refreshing of bottom navigation urls
+          if (stored_hash_code != hash_code) {
+            window.location.href = `/my-qr/?cc=${hash_code}`;
           }
         }
       }
-      
 
       return {
-        success : true,
-        results : mapResponse
-      }
-    
-
+        success: true,
+        results: mapResponse,
+      };
     } catch (error) {
-
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      const default_err_response : {success: boolean, results : any} = {
-        success : false,
-        results : []
-      }
+      const default_err_response: { success: boolean; results: any } = {
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
- 
-}
 
+  getSchedule: async () => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
+      const response = await httpClient(api_key).get("/customer/get_schedule/");
+
+      const response_data = response?.data?.data || [];
+
+      return {
+        success: true,
+        results: response_data,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          results: [],
+        };
+      } else {
+        return {
+          success: false,
+          results: [],
+        };
+      }
+    }
+  },
+};
 
 export const bestBooth = {
- 
   getBoothList: async () => {
+    try {
+      let customer_info: string = "";
 
-    try{
-
-      let customer_info:string = ''
-      
-      if (typeof window !== 'undefined') {
-         customer_info = localStorage.getItem('customer_info') || '';
+      if (typeof window !== "undefined") {
+        customer_info = localStorage.getItem("customer_info") || "";
       }
-    
+
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-      const session_id = customerInfoParsed?.session_id || ''
-  
-      const response = await httpClient(session_id).get(`/customer/voting/booth/list/`, {});
-      
-      const response_data = response?.data?.data || []
-      
-      const mapBlueBooths = response_data.blue_booths.map((booth : {code : string} )=> ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const session_id = customerInfoParsed?.session_id || "";
 
-      const mapOrangeBooths = response_data.orange_booths.map((booth : { code : string}) => ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const response = await httpClient(session_id).get(
+        `/customer/voting/booth/list/`,
+        {}
+      );
 
-      const mapRedBooths = response_data.red_booths.map((booth : {code : string}) => ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const response_data = response?.data?.data || [];
+
+      const mapBlueBooths = response_data.blue_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
+
+      const mapOrangeBooths = response_data.orange_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
+
+      const mapRedBooths = response_data.red_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
 
       const mapResponse = {
         blue_booths: mapBlueBooths || [],
         orange_booths: mapOrangeBooths || [],
         red_booths: mapRedBooths || [],
-      }
-      
+      };
+
       return {
-        success : true,
-        results : mapResponse
-      }
-    
-
+        success: true,
+        results: mapResponse,
+      };
     } catch (error) {
-      
       const default_err_response = {
-        success : false,
-        results : {
-          blue_booths : [],
+        success: false,
+        results: {
+          blue_booths: [],
           orange_booths: [],
-          red_booths: []
-        }
-      }
+          red_booths: [],
+        },
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  submitBoothVoting: async (post_data : any) => {
-
-    try{
-    
-      const customer_info = localStorage.getItem('customer_info');
+  submitBoothVoting: async (post_data: any) => {
+    try {
+      const customer_info = localStorage.getItem("customer_info");
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-      const session_id = customerInfoParsed?.session_id || ''
-      const customer_id = customerInfoParsed?.id || ''
-  
+      const session_id = customerInfoParsed?.session_id || "";
+      const customer_id = customerInfoParsed?.id || "";
+
       await httpClient(session_id).post(`/customer/voting/booth/submit/`, {
-        customer_id : customer_id,
-        booth_ids: JSON.stringify(post_data)
+        customer_id: customer_id,
+        booth_ids: JSON.stringify(post_data),
       });
-      
-      
+
       return {
-        success : true,
-        results : []
-      }
-    
-
+        success: true,
+        results: [],
+      };
     } catch (error) {
-    
       if (axios.isAxiosError(error)) {
-        
-        const errResp = error?.response
+        const errResp = error?.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-        
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
-
   },
- 
-}
-
-
+};
 
 export const auditorService = {
- 
-  checkAccess: async (code : string) => {
+  checkAccess: async (code: string) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
+    try {
       const hash_code = code;
-  
-      await httpClient(api_key).get(`/auditor/check_auditor/?ahc=${hash_code}&is_auditor=1`, {});
-      
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('audit_hash_code', hash_code);
+
+      await httpClient(api_key).get(
+        `/auditor/check_auditor/?ahc=${hash_code}&is_auditor=1`,
+        {}
+      );
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem("audit_hash_code", hash_code);
       }
-      
 
       return {
-        success : true
-      }
-    
-
+        success: true,
+      };
     } catch (error) {
-
       const default_err_response = {
-        success : false,
-      }
+        success: false,
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
   },
 
+  checkCustomerRecord: async (code: string, customer_code: string) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-
-  checkCustomerRecord: async (code : string, customer_code : string) => {
-
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
+    try {
       const hash_code = code;
-  
-      const response = await httpClient(api_key).get(`/customer/get_details/?ahc=${hash_code}&customer_code=${customer_code}&is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
-      
-      if(response_data){
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('audit_info', JSON.stringify(response_data));
+
+      const response = await httpClient(api_key).get(
+        `/customer/get_details/?ahc=${hash_code}&customer_code=${customer_code}&is_auditor=1`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      if (response_data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("audit_info", JSON.stringify(response_data));
         }
       }
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-
       if (axios.isAxiosError(error)) {
-        const errResp = error.response;  
+        const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
   },
 
+  checkCustomerRecordbyHash: async (
+    code: string,
+    customer_magic_link: string
+  ) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-  checkCustomerRecordbyHash: async (code : string, customer_magic_link : string) => {
-
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
+    try {
       const hash_code = code;
-  
-      const response = await httpClient(api_key).get(`/customer/get_details_by_hash_code/?ahc=${hash_code}&customer_magic_link=${customer_magic_link}&is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
-      
-      if(response_data){
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('audit_info', JSON.stringify(response_data));
+
+      const response = await httpClient(api_key).get(
+        `/customer/get_details_by_hash_code/?ahc=${hash_code}&customer_magic_link=${customer_magic_link}&is_auditor=1`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      if (response_data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("audit_info", JSON.stringify(response_data));
         }
       }
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-
       if (axios.isAxiosError(error)) {
-        const errResp = error.response;  
+        const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
   },
 
+  checkCustomerRecordbyId: async (code: string, customer_id: number) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-  checkCustomerRecordbyId: async (code : string, customer_id : number) => {
-
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
+    try {
       const hash_code = code;
-  
-      const response = await httpClient(api_key).get(`/customer/get_details/?ahc=${hash_code}&customer_id=${customer_id}&is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
 
-      if(response_data){
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('audit_info', JSON.stringify(response_data));
+      const response = await httpClient(api_key).get(
+        `/customer/get_details/?ahc=${hash_code}&customer_id=${customer_id}&is_auditor=1`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      if (response_data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("audit_info", JSON.stringify(response_data));
         }
       }
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-
       if (axios.isAxiosError(error)) {
-        
         const errResp = error.response;
 
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
   },
 
+  getUnvisitedBoothlist: async (customer_id: number) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-  getUnvisitedBoothlist: async (customer_id : number) => {
+    try {
+      const response = await httpClient(api_key).get(
+        `/customer/booth/unvisited/?customer_id=${customer_id}&is_auditor=1`,
+        {}
+      );
 
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
-  
-      const response = await httpClient(api_key).get(`/customer/booth/unvisited/?customer_id=${customer_id}&is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
+      const response_data = response?.data?.data || [];
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
   },
 
+  overrideBoothVisit: async (customer_id: number) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-  overrideBoothVisit: async (customer_id : number) => {
+    try {
+      const response = await httpClient(api_key).get(
+        `/customer/booth/override/?customer_id=${customer_id}&is_auditor=1`,
+        {}
+      );
 
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-
-    try{
-  
-      const response = await httpClient(api_key).get(`/customer/booth/override/?customer_id=${customer_id}&is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
+      const response_data = response?.data?.data || [];
 
       return {
-        success : true,
-        results : response_data
-      }
-    
-
+        success: true,
+        results: response_data,
+      };
     } catch (error) {
-
       if (axios.isAxiosError(error)) {
-
         const errResp = error.response;
-        
+
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
   },
-
 
   getBoothList: async () => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-    try{
+      const response = await httpClient(api_key).get(
+        `/customer/voting/booth/list/?is_auditor=1`,
+        {}
+      );
 
-      const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-  
-      const response = await httpClient(api_key).get(`/customer/voting/booth/list/?is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
-      
-      const mapBlueBooths = response_data.blue_booths.map((booth : {code : string}) => ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const response_data = response?.data?.data || [];
 
-      const mapOrangeBooths = response_data.orange_booths.map((booth : {code : string}) => ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const mapBlueBooths = response_data.blue_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
 
-      const mapRedBooths = response_data.red_booths.map((booth : {code : string}) => ({
-        boothCode: booth.code,
-        image: '/images/booths/' + booth.code + '.png',
-        ...booth
-      }));
+      const mapOrangeBooths = response_data.orange_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
+
+      const mapRedBooths = response_data.red_booths.map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
 
       const mapResponse = {
         blue_booths: mapBlueBooths || [],
         orange_booths: mapOrangeBooths || [],
         red_booths: mapRedBooths || [],
-      }
-      
+      };
+
       return {
-        success : true,
-        results : mapResponse
-      }
-    
-
+        success: true,
+        results: mapResponse,
+      };
     } catch (error) {
-      
       const default_err_response = {
-        success : false,
-        results : {
-          blue_booths : [],
+        success: false,
+        results: {
+          blue_booths: [],
           orange_booths: [],
-          red_booths: []
-        }
-      }
+          red_booths: [],
+        },
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  submitBoothVoting: async (post_data : any) => {
+  submitBoothVoting: async (post_data: any) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+      let audit_info: string = "";
 
-    try{
-      
-      const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-      let audit_info: string = ''
-      
-      if (typeof window !== 'undefined') {
-        audit_info = localStorage.getItem('audit_info') || '';
+      if (typeof window !== "undefined") {
+        audit_info = localStorage.getItem("audit_info") || "";
       }
-    
+
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
-      const customer_id = auditInforParsed?.id || ''
-  
-      await httpClient(api_key).post(`/customer/voting/booth/submit/?is_auditor=1`, {
-        customer_id : customer_id,
-        booth_ids: JSON.stringify(post_data)
-      });
-      
-      
-      return {
-        success : true,
-        results : []
-      }
-    
+      const customer_id = auditInforParsed?.id || "";
 
+      await httpClient(api_key).post(
+        `/customer/voting/booth/submit/?is_auditor=1`,
+        {
+          customer_id: customer_id,
+          booth_ids: JSON.stringify(post_data),
+        }
+      );
+
+      return {
+        success: true,
+        results: [],
+      };
     } catch (error) {
-    
       if (axios.isAxiosError(error)) {
-        
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-        
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
-
   },
 
   getSouvenirList: async () => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
-    try{
+      const response = await httpClient(api_key).get(
+        `/customer/souvenir/list/?is_auditor=1`,
+        {}
+      );
 
-      const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-  
-      const response = await httpClient(api_key).get(`/customer/souvenir/list/?is_auditor=1`, {});
-      
-      const response_data = response?.data?.data || []
-     
-      const mapResponse = response_data.souvenirs.map((souvenir : {id : string, code : string, name : string}) => ({
-        id : souvenir.id,
-        name: souvenir.name,
-        image: '/images/souvenir/' + souvenir.code + '.png'
-      }));
-      
+      const response_data = response?.data?.data || [];
+
+      const mapResponse = response_data.souvenirs.map(
+        (souvenir: { id: string; code: string; name: string }) => ({
+          id: souvenir.id,
+          name: souvenir.name,
+          image: "/images/souvenir/" + souvenir.code + ".png",
+        })
+      );
+
       return {
-        success : true,
-        results : mapResponse
-      }
-    
-
+        success: true,
+        results: mapResponse,
+      };
     } catch (error) {
-      
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  submitSouvenir: async (post_data : any) => {
+  submitSouvenir: async (post_data: any) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+      let audit_info: string = "";
 
-    try{
-      
-      const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-      let audit_info:string = ''
-      
-      if (typeof window !== 'undefined') {
-        audit_info = localStorage.getItem('audit_info') || '';
+      if (typeof window !== "undefined") {
+        audit_info = localStorage.getItem("audit_info") || "";
       }
 
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
-      const customer_id = auditInforParsed?.id || ''
-  
-      await httpClient(api_key).post(`/customer/souvenir/submit/?is_auditor=1`, {
-        customer_id : customer_id,
-        souvenir_id: post_data?.souvenir_id || ''
-      });
-      
-      
-      
-      return {
-        success : true,
-        results : []
-      }
-    
+      const customer_id = auditInforParsed?.id || "";
 
+      await httpClient(api_key).post(
+        `/customer/souvenir/submit/?is_auditor=1`,
+        {
+          customer_id: customer_id,
+          souvenir_id: post_data?.souvenir_id || "",
+        }
+      );
+
+      return {
+        success: true,
+        results: [],
+      };
     } catch (error) {
-    
       if (axios.isAxiosError(error)) {
-        
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-        
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
-
   },
-  
-
-}
-
+};
 
 export const boothVisitService = {
-
-
   getCustomerRecord: async () => {
-
-    const customer_info = localStorage.getItem('customer_info');
+    const customer_info = localStorage.getItem("customer_info");
     const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-    const api_key = process.env.NEXT_PUBLIC_API_KEY || '';
-    const customer_id = customerInfoParsed?.id || ''
-    try{
-      const response = await httpClient(api_key).get(`/customer/get_details/?customer_id=${customer_id}`, {});
-      
-      const response_data = response?.data?.data || []
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+    const customer_id = customerInfoParsed?.id || "";
+    try {
+      const response = await httpClient(api_key).get(
+        `/customer/get_details/?customer_id=${customer_id}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-      
       if (axios.isAxiosError(error)) {
-
         const errResp = error.response;
 
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
   },
-
 
   getUnvisitedBoothlist: async () => {
-
-    const customer_info = localStorage.getItem('customer_info');
+    const customer_info = localStorage.getItem("customer_info");
     const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-    const customer_id = customerInfoParsed?.id || ''
-    const session_id = customerInfoParsed?.session_id || ''
+    const customer_id = customerInfoParsed?.id || "";
+    const session_id = customerInfoParsed?.session_id || "";
 
-    try{
-  
-      const response = await httpClient(session_id).get(`/customer/booth/unvisited/?customer_id=${customer_id}`, {});
-      
-      const response_data = response?.data?.data || []
+    try {
+      const response = await httpClient(session_id).get(
+        `/customer/booth/unvisited/?customer_id=${customer_id}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
 
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
   },
-
 
   getVisitedBoothlist: async () => {
-
-    const customer_info = localStorage.getItem('customer_info');
+    const customer_info = localStorage.getItem("customer_info");
     const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-    const customer_id = customerInfoParsed?.id || ''
-    const session_id = customerInfoParsed?.session_id || ''
-    
-  
-    try{
-  
-      const response = await httpClient(session_id).get(`/customer/booth/visited/?customer_id=${customer_id}&order_by=asc`, {});
-      
-      const response_data = response?.data?.data || []
-  
+    const customer_id = customerInfoParsed?.id || "";
+    const session_id = customerInfoParsed?.session_id || "";
+
+    try {
+      const response = await httpClient(session_id).get(
+        `/customer/booth/visited/?customer_id=${customer_id}&order_by=asc`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
       return {
-        success : true,
-        message : "success",
-        results : response_data
-      }
-    
-  
+        success: true,
+        message: "success",
+        results: response_data,
+      };
     } catch (error) {
-  
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
   },
-  
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  submitBoothVisit: async (post_data : any) => {
-
-    try{
-      
-      const customer_info = localStorage.getItem('customer_info');
+  submitBoothVisit: async (post_data: any) => {
+    try {
+      const customer_info = localStorage.getItem("customer_info");
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-      const session_id = customerInfoParsed?.session_id || ''
-      const customer_id = customerInfoParsed?.id || ''
-  
-      const response = await httpClient(session_id).post(`/customer/booth/submit/`, {
-        customer_id : customer_id,
-        booth_codes: JSON.stringify(post_data)
-      });
-      
-      const response_data = response?.data?.data || []
-      
-      return {
-        success : true,
-        results : response_data
-      }
-    
+      const session_id = customerInfoParsed?.session_id || "";
+      const customer_id = customerInfoParsed?.id || "";
 
+      const response = await httpClient(session_id).post(
+        `/customer/booth/submit/`,
+        {
+          customer_id: customer_id,
+          booth_codes: JSON.stringify(post_data),
+        }
+      );
+
+      const response_data = response?.data?.data || [];
+
+      return {
+        success: true,
+        results: response_data,
+      };
     } catch (error) {
-    
       if (axios.isAxiosError(error)) {
-        
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-        
-      }else{
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
-
   },
-
-}
-
+};
 
 export const dealCartService = {
- 
   getCustomerParams: async () => {
-
-    const customer_info = localStorage.getItem('customer_info');
+    const customer_info = localStorage.getItem("customer_info");
     const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-    const customer_id = customerInfoParsed?.id || ''
-    const session_id = customerInfoParsed?.session_id || ''
+    const customer_id = customerInfoParsed?.id || "";
+    const session_id = customerInfoParsed?.session_id || "";
 
-    try{
-  
-      const response = await httpClient(session_id).get(`/customer/deal/cart/params/?customer_id=${customer_id}`, {});
-      
-      const response_data = response?.data?.data || []
-      
+    try {
+      const response = await httpClient(session_id).get(
+        `/customer/deal/cart/params/?customer_id=${customer_id}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
 
       return {
-        success : true,
-        results : response_data
-      }
-    
-
+        success: true,
+        results: response_data,
+      };
     } catch (error) {
-
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
 
-
   getBoothProducts: async () => {
-
-    const customer_info = localStorage.getItem('customer_info');
+    const customer_info = localStorage.getItem("customer_info");
     const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-    const customer_id = customerInfoParsed?.id || ''
-    const session_id = customerInfoParsed?.session_id || ''
+    const customer_id = customerInfoParsed?.id || "";
+    const session_id = customerInfoParsed?.session_id || "";
 
-    try{
-  
-      const response = await httpClient(session_id).get(`/customer/booth/products/?customer_id=${customer_id}`, {});
-      
-      const response_data = response?.data?.data || []
+    try {
+      const response = await httpClient(session_id).get(
+        `/customer/booth/products/?customer_id=${customer_id}`,
+        {}
+      );
 
-      const mapBoothProducts = response_data.booths.map((booth : {id : string, name : string, code : string, description: string, products : [{id : string, code : string, item_code : string, name : string, discount : number}]}) => ({
-        id: booth.id,
-        name: booth.name,
-        code: booth.code,
-        description: booth.description,
-        products : booth.products.map(boothProduct => ({
-          id: boothProduct.id,
-          itemCode: boothProduct.item_code,
-          name: boothProduct.name,
-          quantity: 0,
-          discount: (boothProduct.discount * 100) + "% Discount",
-        }))
-      }));
-      
+      const response_data = response?.data?.data || [];
+
+      const mapBoothProducts = response_data.booths.map(
+        (booth: {
+          id: string;
+          name: string;
+          code: string;
+          description: string;
+          products: [
+            {
+              id: string;
+              code: string;
+              item_code: string;
+              name: string;
+              discount: number;
+            }
+          ];
+        }) => ({
+          id: booth.id,
+          name: booth.name,
+          code: booth.code,
+          description: booth.description,
+          products: booth.products.map((boothProduct) => ({
+            id: boothProduct.id,
+            itemCode: boothProduct.item_code,
+            name: boothProduct.name,
+            quantity: 0,
+            discount: boothProduct.discount * 100 + "% Discount",
+          })),
+        })
+      );
 
       return {
-        success : true,
-        results : mapBoothProducts
-      }
-    
-
+        success: true,
+        results: mapBoothProducts,
+      };
     } catch (error) {
-
       const default_err_response = {
-        success : false,
-        results : []
-      }
+        success: false,
+        results: [],
+      };
       if (axios.isAxiosError(error)) {
-        
-        return default_err_response
-      }else{
-        return default_err_response
+        return default_err_response;
+      } else {
+        return default_err_response;
       }
-     
     }
-
   },
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  createDealCart: async (post_data : any) => {
-
-    try{
-  
-      const customer_info = localStorage.getItem('customer_info');
+  createDealCart: async (post_data: any) => {
+    try {
+      const customer_info = localStorage.getItem("customer_info");
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-      const session_id = customerInfoParsed?.session_id || ''
-      const customer_id = customerInfoParsed?.id || ''
+      const session_id = customerInfoParsed?.session_id || "";
+      const customer_id = customerInfoParsed?.id || "";
 
-      const mapBoothProducts = post_data?.selectedProducts?.map((boothProduct: { id: string; quantity: string; }) => ({
-        booth_product_id: boothProduct.id,
-        order_qty: boothProduct.quantity
-      })) || [];
-    
-      const response = await httpClient(session_id).post(`/customer/deal/cart/create/`, {
-        customer_id : customer_id,
-        customer_code : post_data?.customerCode || "",
-        transaction_type : post_data?.transactionType || "",
-        remarks : post_data?.remarks || "",
-        address : post_data?.shipToAddress || "",
-        branch : post_data?.branch || "",
-        products : JSON.stringify(mapBoothProducts)
-      });
-      
-      const response_data = response?.data?.data || []
-      
+      const mapBoothProducts =
+        post_data?.selectedProducts?.map(
+          (boothProduct: { id: string; quantity: string }) => ({
+            booth_product_id: boothProduct.id,
+            order_qty: boothProduct.quantity,
+          })
+        ) || [];
+
+      const response = await httpClient(session_id).post(
+        `/customer/deal/cart/create/`,
+        {
+          customer_id: customer_id,
+          customer_code: post_data?.customerCode || "",
+          transaction_type: post_data?.transactionType || "",
+          remarks: post_data?.remarks || "",
+          address: post_data?.shipToAddress || "",
+          branch: post_data?.branch || "",
+          products: JSON.stringify(mapBoothProducts),
+        }
+      );
+
+      const response_data = response?.data?.data || [];
+
       return {
-        success : true,
-        results : response_data
-      }
-    
-
+        success: true,
+        results: response_data,
+      };
     } catch (error) {
-    
       if (axios.isAxiosError(error)) {
-        
         const errResp = error.response;
         return {
           success: false,
-          message: errResp?.data?.message || 'Error! Please try again later'
+          message: errResp?.data?.message || "Error! Please try again later",
         };
-        
-      }else{
-        
+      } else {
         return {
           success: false,
-          message: 'Unable to process your request. Please try again later.'
+          message: "Unable to process your request. Please try again later.",
         };
       }
-     
     }
-
   },
- 
-}
-
-
- 
+};
