@@ -122,8 +122,8 @@ export default function BottomNavigation() {
       >
         <div className="relative size-6 ">
           <Image
-            src="/images/my-qr.png"
-            alt="My QR"
+            src="/images/account.png"
+            alt="Account"
             fill
             style={{
               objectFit: "contain",
@@ -132,7 +132,7 @@ export default function BottomNavigation() {
             }}
           />
         </div>
-        <span className="text-xs">My QR</span>
+        <span className="text-xs">Account</span>
       </Link>
     </nav>
   );
