@@ -137,6 +137,7 @@ interface SubCode {
 // Component props
 interface ProductSelectionProps {
   customerCode: string;
+  customerSubCode: string;
   transactionType: string;
   branch: string;
   shipToAddress: string;
@@ -163,6 +164,7 @@ interface ProductSelectionProps {
 
 export default function ProductSelection({
   customerCode,
+  customerSubCode,
   transactionType,
   branch,
   shipToAddress,
@@ -374,12 +376,12 @@ export default function ProductSelection({
                 <div className="relative" ref={customerCodeRef}>
                   <div
                     className="flex items-center cursor-pointer"
-                    onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
+                    // onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
                   >
                     <span className="text-black font-bold text-sm">
-                      {customerCode}
+                      {customerSubCode}
                     </span>
-                    <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
+                    {/* <span className="text-[#F78B1E] ml-2 text-sm">▼</span> */}
                   </div>
 
                   {isCustomerCodeOpen && (
@@ -508,8 +510,9 @@ export default function ProductSelection({
 
                     {isShippingDropdownOpen && (
                       <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
-                        {customerDeliveryDetails.map(
-                          (customerDelivery, index) => (
+                        {customerDeliveryDetails
+                          .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
+                          .map((customerDelivery, index) => (
                             <div
                               key={index}
                               className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
@@ -525,8 +528,7 @@ export default function ProductSelection({
                                 {customerDelivery.address}
                               </span>
                             </div>
-                          )
-                        )}
+                        ))}
                       </div>
                     )}
                   </div>
