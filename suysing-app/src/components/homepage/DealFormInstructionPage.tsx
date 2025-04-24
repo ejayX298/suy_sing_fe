@@ -11,11 +11,11 @@ export default function DealFormInstructionPage({
   onClose,
 }: DealFormInstructionPageProps) {
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-      <div
-        className="absolute inset-0 bg-black/20 backdrop-blur-none"
-        onClick={onClose}
-      />
+    <div
+      className="fixed inset-0 flex items-center justify-center z-50"
+      onClick={onClose}
+    >
+      <div className="absolute inset-0 bg-black/20 backdrop-blur-none" />
 
       <div className="absolute bottom-24  left-[45%] sm:left-[39%] transform -translate-x-1/2 w-[80%] max-w-xs">
         <div className="relative bg-white rounded-xl shadow-lg p-4 border-[3px] border-[#F78B1E]">
