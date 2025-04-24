@@ -46,6 +46,7 @@ interface CustomerDeliveryDetails {
 
 interface ConfirmationProps {
   formData: FormData;
+  customerSubCode: string;
   onSubmit: () => void;
   onInputChange?: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -68,10 +69,12 @@ interface ConfirmationProps {
 
 export default function Confirmation({
   formData,
+  customerSubCode,
   onSubmit,
   onSelectChange = () => {},
   carts = [],
   currentCartIndex = 0,
+  maxCartsReached = false,
   onNavigateCart = () => {},
   onCreateNewCart = () => {},
   transactionTypes,
@@ -114,7 +117,7 @@ export default function Confirmation({
             <div className="flex flex-col">
               <span className="text-black text-sm">Customer Code:</span>
               <span className="text-black font-bold text-sm">
-                {formData.customerCode}
+                {customerSubCode}
               </span>
             </div>
 
@@ -175,7 +178,9 @@ export default function Confirmation({
                   onChange={onSelectChange}
                   className="block w-full appearance-none border-none bg-transparent pr-8 focus:outline-none text-black font-bold text-sm"
                 >
-                  {customerDeliveryDetails.map((customerDelivery, index) => (
+                {customerDeliveryDetails
+                  .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
+                  .map((customerDelivery, index) => (
                     <option key={index} value={customerDelivery.id}>
                       {customerDelivery.address}
                     </option>
@@ -194,11 +199,11 @@ export default function Confirmation({
             <button
               onClick={onCreateNewCart}
               className={`rounded-full size-10 flex items-center justify-center ${
-                carts.length >= 3
+                maxCartsReached
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-blue-900"
               }`}
-              disabled={carts.length >= 3}
+              disabled={maxCartsReached}
             >
               <span className="text-white text-3xl">+</span>
             </button>
