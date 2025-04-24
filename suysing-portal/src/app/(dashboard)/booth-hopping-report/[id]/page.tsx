@@ -116,7 +116,7 @@ export default function CustomerBoothHoppingDetail() {
         const delaySetSearch = setTimeout(() => {
           // it will get the latest value after two seconds of no keyboard activity
           setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 2000);
+        }, 500);
 
         //clears the timeout of the previous value of delaySetSearch
         //clears the timeout on re render
