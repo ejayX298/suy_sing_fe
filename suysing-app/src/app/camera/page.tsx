@@ -531,8 +531,7 @@ export default function CameraPage() {
       <ManualCodeModal
         isOpen={showManualCodeModal}
         onClose={closeManualCodeModal}
-        onSubmit={handleManualCodeSubmit}
-        value={manualCode}
+        onSubmit={handleManualCodeSubmit}     
         onChange={setManualCode}
       />
 
