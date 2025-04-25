@@ -22,6 +22,8 @@ export default function CameraPage() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showDoubleZoneCompletionModal, setShowDoubleZoneCompletionModal] =
     useState(false);
+  const [doubleZoneCapReached, setDoubleZoneCapReached] =
+    useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
@@ -87,7 +89,7 @@ export default function CameraPage() {
 
   const processQRCode = React.useCallback(
     async (data: string) => {
-      const boothVisitResult = await submitBoothVisit(data.trim());
+      const boothVisitResult = await submitBoothVisit(data.trim(), 'scan');
 
       if (boothVisitResult.success) {
         if (customerData?.totalBoothVisited === 0) {
@@ -186,7 +188,12 @@ export default function CameraPage() {
       setIsFirstDoubleZone(false);
       setShowSuccessModalDouble(true);
       setSuccessMessage("Each booth visited will be counted as double.");
-    } else {
+    } else if (doubleZoneCapReached){
+      setShowSuccessModal(false);
+      setShowSuccessModalDouble(false);
+      setDoubleZoneCapReached(false);
+      setShowDoubleZoneCompletionModal(true)
+    }  else {
       setShowSuccessModal(false);
       setShowSuccessModalDouble(false);
       router.push(`/?cc=${customer_hash_code}`);
@@ -220,7 +227,7 @@ export default function CameraPage() {
     }
 
     // call api for booth visit
-    const boothVisitResult = await submitBoothVisit(manualCode.trim());
+    const boothVisitResult = await submitBoothVisit(manualCode.trim(), 'manual');
 
     if (boothVisitResult.success) {
       if (customerData?.totalBoothVisited === 0) {
@@ -261,32 +268,53 @@ export default function CameraPage() {
     facingMode: "environment",
   };
 
-  const submitBoothVisit = async (data: string) => {
+  const submitBoothVisit = async (data: string, input_type: string) => {
     // Inititalize and show loader
     showLoader();
 
     const post_data = [data];
     try {
       const submitBoothVisitResult = await boothVisitService.submitBoothVisit(
-        post_data
+        post_data, input_type=input_type
       );
 
       if (submitBoothVisitResult.success) {
         Swal.close(); // close the loading alert
+        
+        // Check if double zone cap reached
+        if(submitBoothVisitResult.is_double_cap_reached){
 
-        let booth_name = "";
-        let is_double_zone = 0;
-        if (submitBoothVisitResult.results.length > 0) {
-          booth_name = submitBoothVisitResult?.results[0].booth?.name || "";
-          is_double_zone =
-            submitBoothVisitResult?.results[0].booth?.is_double_zone || "";
+            setShowDoubleZoneCompletionModal(true)
+            return {
+              success: false,
+            };
+
+        }else{
+
+          let booth_name = "";
+          let is_double_zone = 0;
+          let is_double_zone_cap_reached = 0;
+
+          if (submitBoothVisitResult.results.length > 0) {
+            booth_name = submitBoothVisitResult?.results[0].booth?.name || "";
+            is_double_zone =
+              submitBoothVisitResult?.results[0].booth?.is_double_zone || "";
+            is_double_zone_cap_reached = submitBoothVisitResult?.results[0]?.double_zone_cap_reached || 0;
+            if(is_double_zone_cap_reached == 1){
+              setDoubleZoneCapReached(true)
+            }
+          }
+
+          return {
+            success: true,
+            booth_name: booth_name,
+            is_double_zone: is_double_zone,
+            double_zone_cap_reached: is_double_zone_cap_reached,
+          };
+          
         }
 
-        return {
-          success: true,
-          booth_name: booth_name,
-          is_double_zone: is_double_zone,
-        };
+        
       } else {
         Swal.close(); // close the loading alert
         setShowManualCodeModal(false);
@@ -641,8 +669,7 @@ export default function CameraPage() {
               <button
                 onClick={() => {
                   setShowDoubleZoneCompletionModal(false);
-                  setShowSuccessModal(false);
-                  setShowSuccessModalDouble(false);
+                  handleProceed();
                 }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
