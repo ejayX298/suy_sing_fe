@@ -698,7 +698,7 @@ export const boothVisitService = {
   },
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  submitBoothVisit: async (post_data: any) => {
+  submitBoothVisit: async (post_data: any, input_type: string) => {
     try {
       const customer_info = localStorage.getItem("customer_info");
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
@@ -710,6 +710,7 @@ export const boothVisitService = {
         {
           customer_id: customer_id,
           booth_codes: JSON.stringify(post_data),
+          input_type : input_type
         }
       );
 
@@ -717,18 +718,33 @@ export const boothVisitService = {
 
       return {
         success: true,
+        is_double_cap_reached: false,
         results: response_data,
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {
+
+        if (error?.status == 400) {
+          if (error?.response?.data?.message == "double_zone_cap_reached") {
+            return {
+              success: true,
+              is_double_cap_reached: true,
+              results: [],
+            };
+            
+          }
+        }
+
         const errResp = error.response;
         return {
           success: false,
+          is_double_cap_reached: false,
           message: errResp?.data?.message || "Error! Please try again later",
         };
       } else {
         return {
           success: false,
+          is_double_cap_reached: false,
           message: "Unable to process your request. Please try again later.",
         };
       }
