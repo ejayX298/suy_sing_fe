@@ -660,6 +660,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -756,6 +757,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -766,6 +768,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -776,6 +779,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 40,
       height: 40,
+      overrideAspect: true,
     },
 
     {
@@ -826,6 +830,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 90,
       height: 90,
+      overrideAspect: true,
     },
 
     {
@@ -866,6 +871,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 60,
       height: 60,
+      overrideAspect: true,
     },
 
     {
@@ -896,6 +902,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
     {
       id: "PERFE02",
@@ -905,6 +912,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -915,6 +923,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -945,6 +954,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 50,
       height: 50,
+      overrideAspect: true,
     },
 
     {
@@ -955,6 +965,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -975,6 +986,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -985,6 +997,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -1025,6 +1038,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
 
     {
@@ -1045,6 +1059,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 80,
       height: 80,
+      overrideAspect: true,
     },
 
     {
@@ -1065,6 +1080,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 40,
       height: 40,
+      overrideAspect: true,
     },
 
     {
@@ -1105,6 +1121,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+      overrideAspect: true,
     },
 
     {
@@ -1125,6 +1142,7 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      overrideAspect: true,
     },
     {
       id: "SUYSI01",

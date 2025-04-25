@@ -234,8 +234,8 @@ export default function Home() {
                   <Image
                     src="/images/checkmark.svg"
                     alt="Visited"
-                    width={booth.width ? booth.width * 0.6 : 40}
-                    height={booth.height ? booth.height * 0.5 : 40}
+                    width={aspectClass === "overflow-hidden" ? 40 : 80}
+                    height={aspectClass === "overflow-hidden" ? 40 : 80}
                   />
                 </div>
               </div>
