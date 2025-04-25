@@ -196,7 +196,7 @@ export default function Home() {
     if (!booth) return null;
 
     const aspectClass = booth.overrideAspect
-      ? "border-none object-cover overflow-hidden"
+      ? "overflow-hidden"
       : "aspect-square";
     const overrideSizeClass = booth.overrideSize
       ? "overflow-hidden object-cover"
@@ -234,8 +234,8 @@ export default function Home() {
                   <Image
                     src="/images/checkmark.svg"
                     alt="Visited"
-                    width={80}
-                    height={80}
+                    width={booth.width ? booth.width * 0.6 : 40}
+                    height={booth.height ? booth.height * 0.5 : 40}
                   />
                 </div>
               </div>
@@ -304,14 +304,14 @@ export default function Home() {
                     <div className="px-6 w-full flex">
                       <div className="w-1/2 pr-2">
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px] text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "RHEIN01"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 mr-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" mr-6 w-[100px] h-[51px] text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "SUYEN02"
@@ -321,14 +321,14 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "FEDER04"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 mr-6 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" mr-6 w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "MEADJ01"
@@ -338,7 +338,7 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-center mb-6">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "UNICA01"
@@ -348,7 +348,7 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-center mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "VALIA04"
@@ -358,14 +358,14 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "JEVER01"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "LTHFO01"
@@ -375,14 +375,14 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "LESLI01"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "SCPGA01"
@@ -392,14 +392,14 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "SWEET05"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "UNIEL01"
@@ -411,14 +411,14 @@ export default function Home() {
 
                       <div className="w-1/2 pl-8">
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className="w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "LAMOI01"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className="w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "MONDI01"
@@ -428,14 +428,14 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-between mb-3">
-                          <div className="border-2 border-blue-800  w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className="  w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "PHILU01"
                               )}
                             />
                           </div>
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "PERFE01"
@@ -445,7 +445,7 @@ export default function Home() {
                         </div>
 
                         <div className="flex justify-center mb-6">
-                          <div className="border-2 border-blue-800 w-[100px] h-[51px] flex items-center justify-center text-xs font-semibold">
+                          <div className=" w-[100px] h-[51px]  text-xs font-semibold">
                             <RenderBooth
                               booth={remapBooth.find(
                                 (b) => b.boothCode === "SEANL01"
@@ -454,7 +454,7 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="border-2 border-blue-800 h-[240px] ">
+                        <div className=" h-[240px] ">
                           <RenderBooth
                             booth={remapBooth.find(
                               (b) => b.boothCode === "SUYSI01"

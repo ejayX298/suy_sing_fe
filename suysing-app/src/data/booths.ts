@@ -660,7 +660,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -757,7 +756,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -768,7 +766,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -777,9 +774,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/LESLI01.png",
       boothCode: "LESLI01",
       visited: false,
-      width: 50,
-      height: 50,
-      overrideAspect: true,
+      width: 40,
+      height: 40,
     },
 
     {
@@ -828,9 +824,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/MEADJ01.png",
       boothCode: "MEADJ01",
       visited: false,
-      width: 100,
-      height: 100,
-      overrideAspect: true,
+      width: 90,
+      height: 90,
     },
 
     {
@@ -869,9 +864,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/MONDI01.png",
       boothCode: "MONDI01",
       visited: false,
-      width: 100,
-      height: 100,
-      overrideAspect: true,
+      width: 60,
+      height: 60,
     },
 
     {
@@ -902,7 +896,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
     {
       id: "PERFE02",
@@ -912,7 +905,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -923,7 +915,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -952,9 +943,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/RHEIN01.png",
       boothCode: "RHEIN01",
       visited: false,
-      width: 60,
-      height: 60,
-      overrideAspect: true,
+      width: 50,
+      height: 50,
     },
 
     {
@@ -965,7 +955,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -986,7 +975,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -997,7 +985,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -1038,7 +1025,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
 
     {
@@ -1057,9 +1043,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/UNIEL01.png",
       boothCode: "UNIEL01",
       visited: false,
-      width: 60,
-      height: 60,
-      overrideAspect: true,
+      width: 80,
+      height: 80,
     },
 
     {
@@ -1078,9 +1063,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/VALIA04.png",
       boothCode: "VALIA04",
       visited: false,
-      width: 60,
-      height: 60,
-      overrideAspect: true,
+      width: 40,
+      height: 40,
     },
 
     {
@@ -1119,9 +1103,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/LTHFO01.png",
       boothCode: "LTHFO01",
       visited: false,
-      width: 100,
-      height: 100,
-      overrideAspect: true,
+      width: 70,
+      height: 70,
     },
 
     {
@@ -1142,7 +1125,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
-      overrideAspect: true,
     },
     {
       id: "SUYSI01",
@@ -1152,7 +1134,6 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 180,
       height: 180,
-      isSuySing: true,
     },
   ];
 };
