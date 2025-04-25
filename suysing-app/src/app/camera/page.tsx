@@ -41,8 +41,8 @@ export default function CameraPage() {
   const [isFirstBooth, setIsFirstBooth] = useState(false);
   const [isFirstDoubleZone, setIsFirstDoubleZone] = useState(false);
   const [isStreamReady, setIsStreamReady] = useState(false);
-  //const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
-  //const [errorMessage, setErrorMessage] = useState("");
+  const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -640,7 +640,7 @@ export default function CameraPage() {
       )}
 
       {/* Error Message Modal */}
-     {/*  {showErrorMessageModal && (
+      {showErrorMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
           <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
             <div className="flex flex-col items-center text-center">
@@ -667,7 +667,7 @@ export default function CameraPage() {
             </div>
           </div>
         </div>
-      )} */}
+      )}
     </div>
   );
 }
