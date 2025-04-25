@@ -7,7 +7,7 @@ import React,  { useState, useEffect } from "react";
 interface CustomerData {
   id: number;
   code: string;
-  name: string;
+  full_name: string;
   hasVoted?: number;
   isDoneVisit?: number;
   totalBoothVisited?: number;
@@ -24,7 +24,7 @@ export default function WelcomePage({ customer_data, onContinue, onClose }: Welc
   const [customerData, setCustomerData] = useState<{
     id: number;
     code: string;
-    name: string;
+    full_name: string;
     hasVoted?: number;
     isDoneVisit?: number;
     totalBoothVisited?: number;
@@ -45,7 +45,7 @@ export default function WelcomePage({ customer_data, onContinue, onClose }: Welc
           <Image src="/images/confettii.svg" alt="Confetti" width={100} height={100} />
         </div>
         <h2 className="text-2xl font-bold text-center mb-2">
-          Hello {customerData?.name || ""}
+          Hello {customerData?.full_name  || ""}
         </h2>
         <p className="text-center mb-6 text-lg">
           Welcome to your digital<br />
