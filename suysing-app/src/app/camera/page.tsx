@@ -14,7 +14,7 @@ export default function CameraPage() {
   const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const manualCodeModalRef = useRef<HTMLDivElement>(null);
+ //const manualCodeModalRef = useRef<HTMLDivElement>(null);
   const [scanning, setScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -213,14 +213,14 @@ export default function CameraPage() {
     setManualCode("");
   };
 
-  const handleCloseModal = (e: React.MouseEvent) => {
+/*   const handleCloseModal = (e: React.MouseEvent) => {
     if (
       manualCodeModalRef.current &&
       !manualCodeModalRef.current.contains(e.target as Node)
     ) {
       closeManualCodeModal(); // Close modal if clicked outside manualCodeModalRef
     }
-  };
+  }; */
 
   const handleManualCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
