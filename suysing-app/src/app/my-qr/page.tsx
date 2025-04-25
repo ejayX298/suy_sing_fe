@@ -115,7 +115,7 @@ export default function MyQrPage() {
 
         {/* Schedule of Activities Card */}
         <div className="bg-white rounded-md border-2 border-gray-500 overflow-hidden mb-10">
-          <div className="p-4 border-b border-gray-500">
+          <div className="px-4 py-3 border-b border-gray-500">
             <h2 className="text-xl font-semibold ">Schedule of Activities</h2>
           </div>
 
