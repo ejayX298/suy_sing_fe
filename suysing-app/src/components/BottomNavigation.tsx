@@ -33,7 +33,7 @@ export default function BottomNavigation() {
           pathname === "/" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative w-[21px] h-[21px]">
+        <div className="relative w-[21px] h-[24px]">
           <Image
             src="/images/booths.png"
             alt="Booths"
@@ -53,7 +53,7 @@ export default function BottomNavigation() {
           pathname === "/deal-form" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative w-[16px] h-[21px]">
+        <div className="relative w-[16px] h-[24px]">
           <Image
             src="/images/deal-form.png"
             alt="Deal Form"
@@ -99,7 +99,7 @@ export default function BottomNavigation() {
           pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative w-[18px] h-[26px]">
+        <div className="relative w-[22px] h-[24px]">
           <Image
             src="/images/best-booth.svg"
             alt="Best Booth"
@@ -120,7 +120,7 @@ export default function BottomNavigation() {
           pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
         }`}
       >
-        <div className="relative w-[19px] h-[22px]">
+        <div className="relative w-[19px] h-[24px]">
           <Image
             src="/images/account.png"
             alt="Account"
