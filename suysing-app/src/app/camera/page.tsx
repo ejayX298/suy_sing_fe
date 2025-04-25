@@ -8,7 +8,8 @@ import BoothsProgress from "@/components/BoothsProgress";
 import { boothVisitService } from "@/services/api";
 import Swal from "sweetalert2";
 import { useSearchParams, useRouter } from "next/navigation";
-
+import ManualCodeModal from "@/components/camera/ManualCodeModal";
+import SuccessModal from "@/components/camera/SuccessModal";
 export default function CameraPage() {
   const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
@@ -38,6 +39,8 @@ export default function CameraPage() {
   const [isFirstBooth, setIsFirstBooth] = useState(false);
   const [isFirstDoubleZone, setIsFirstDoubleZone] = useState(false);
   const [isStreamReady, setIsStreamReady] = useState(false);
+  const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -493,69 +496,21 @@ export default function CameraPage() {
       </div>
 
       {/* Manual Code Entry Modal */}
-      {showManualCodeModal && (
-        <div
-          className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50"
-          onClick={handleCloseModal}
-        >
-          <div
-            className="bg-white rounded-lg px-6 py-14 max-w-md w-full border-[3px] border-[#F78B1E]"
-            ref={manualCodeModalRef}
-          >
-            <div className="flex flex-col w-full">
-              <h3 className="text-start text-sm mb-2 text-[#343434]">
-                Enter Booth Code
-              </h3>
-              <form onSubmit={handleManualCodeSubmit} className="w-full">
-                <input
-                  type="text"
-                  value={manualCode}
-                  onChange={(e) => setManualCode(e.target.value)}
-                  className="mb-2 w-full border border-gray-600 text-[#343434] rounded px-3 py-4 focus:outline-none focus:border-gray-800"
-                />
-                <button
-                  type="submit"
-                  className="w-full py-3 mt-3 bg-[#F78B1E] hover:bg-orange-600 text-[#252740] font-semibold rounded-md"
-                >
-                  Next
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
+      <ManualCodeModal
+        isOpen={showManualCodeModal}
+        onClose={closeManualCodeModal}
+        onSubmit={handleManualCodeSubmit}
+        value={manualCode}
+        onChange={setManualCode}
+      />
 
       {/* Success Modal */}
-      {showSuccessModal && (
-        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-4">
-                <Image
-                  src={
-                    successMessage.includes("Double points")
-                      ? "/images/double-star.svg"
-                      : "/images/check.svg"
-                  }
-                  alt="Success"
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <p className="mb-6 text-[#343434] text-[20px]">
-                {/*  <span className="font-bold">Nice! </span> */}
-                {successMessage}
-              </p>
-              <button
-                onClick={handleProceed}
-                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
-              >
-                Proceed
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={handleProceed}
+        message={successMessage}
+        isDoublePoints={successMessage.includes("Double points")}
+      />
 
       {/* Success Modal for Double zone */}
       {showSuccessModalDouble && (
@@ -647,6 +602,34 @@ export default function CameraPage() {
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
                 Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message Modal */}
+      {showErrorMessageModal && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/close.svg"
+                  alt="Error"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h1 className="text-[#343434] text-[20px]">Oops!</h1>
+              <p className="mb-6 text-[#343434] text-[20px]">{errorMessage}</p>
+              <button
+                onClick={() => {
+                  setShowErrorMessageModal(false);
+                }}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Okay
               </button>
             </div>
           </div>
