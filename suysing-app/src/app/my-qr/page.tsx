@@ -99,41 +99,39 @@ export default function MyQrPage() {
         <div className="bg-white rounded-md border-2 border-gray-500 p-6 mb-2">
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <p className="text-gray-600 font-medium">Customer Name:</p>
-              <p className="font-semibold text-gray-800">
-                {customerData?.full_name || "Juan Dela Cruz"}
-              </p>
-            </div>
-            <div>
               <p className="text-gray-600 font-medium">Customer Code:</p>
               <p className="font-semibold text-gray-800">
                 {customerData?.code || "DCRUZ001"}
               </p>
             </div>
+            <div>
+              <p className="text-gray-600 font-medium">Customer Name:</p>
+              <p className="font-semibold text-gray-800">
+                {customerData?.full_name || "Juan Dela Cruz"}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Activities Summary Card */}
+        {/* Schedule of Activities Card */}
         <div className="bg-white rounded-md border-2 border-gray-500 overflow-hidden mb-10">
           <div className="p-4 border-b border-gray-500">
-            <h2 className="text-xl font-semibold ">Summary of Activities</h2>
+            <h2 className="text-xl font-semibold ">Schedule of Activities</h2>
           </div>
 
           {scheduleData.map((day, dayIndex) => (
             <div key={dayIndex}>
-              <div className="px-4 mt-4 mb-2">
-                <h3 className="text-lg font-medium text-[#838383]">
-                  {day.event}
-                </h3>
-              </div>
-
               {day.schedule.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
-                  className="px-4 last:border-b border-gray-500 "
+                  className="grid grid-cols-2 border-b border-gray-500"
                 >
-                  <p className="font-medium mb-2">{item.activity}</p>
-                  <p className="text-[#838383] text-sm pb-5">{item.time}</p>
+                  <div className="p-4">
+                    <p className="font-medium">{item.time}</p>
+                  </div>
+                  <div className="p-4">
+                    <p className="font-medium">{item.activity}</p>
+                  </div>
                 </div>
               ))}
             </div>
