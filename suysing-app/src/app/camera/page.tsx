@@ -321,7 +321,9 @@ export default function CameraPage() {
       } else {
         Swal.close(); // close the loading alert
         setShowManualCodeModal(false);
-        showMessage("0", submitBoothVisitResult.message);
+        setShowErrorMessageModal(true);
+        setErrorMessage(submitBoothVisitResult.message)
+        // showMessage("0", submitBoothVisitResult.message);
 
         return {
           success: false,
@@ -330,10 +332,12 @@ export default function CameraPage() {
     } catch {
       Swal.close(); // close the loading alert
       setShowManualCodeModal(false);
-      showMessage(
-        "0",
-        "Unable to process your request. Please try again later."
-      );
+      setShowErrorMessageModal(true);
+      setErrorMessage("Unable to process your request. Please try again later.")
+      // showMessage(
+      //   "0",
+      //   "Unable to process your request. Please try again later."
+      // );
 
       return {
         success: false,
@@ -372,32 +376,32 @@ export default function CameraPage() {
     }
   };
 
-  const showMessage = (status: string, message: string) => {
-    let iconType: "success" | "error";
-    let titleType: "Success" | "Oops!";
+  // const showMessage = (status: string, message: string) => {
+  //   let iconType: "success" | "error";
+  //   let titleType: "Success" | "Oops!";
 
-    if (status == "1") {
-      iconType = "success";
-      titleType = "Success";
-    } else {
-      iconType = "error";
-      titleType = "Oops!";
-    }
+  //   if (status == "1") {
+  //     iconType = "success";
+  //     titleType = "Success";
+  //   } else {
+  //     iconType = "error";
+  //     titleType = "Oops!";
+  //   }
 
-    Swal.fire({
-      title: titleType,
-      text: message,
-      icon: iconType,
-      confirmButtonColor: "#F78B1E",
-      allowOutsideClick: false, // disable outside click fot the close modal
-    }).then((result: { isConfirmed: boolean }) => {
-      if (result.isConfirmed) {
-        // set the scanning to true
-        setScanning(true);
-        setIsStreamReady(true);
-      }
-    });
-  };
+  //   Swal.fire({
+  //     title: titleType,
+  //     text: message,
+  //     icon: iconType,
+  //     confirmButtonColor: "#F78B1E",
+  //     allowOutsideClick: false, // disable outside click fot the close modal
+  //   }).then((result: { isConfirmed: boolean }) => {
+  //     if (result.isConfirmed) {
+  //       // set the scanning to true
+  //       setScanning(true);
+  //       setIsStreamReady(true);
+  //     }
+  //   });
+  // };
 
   const showLoader = () => {
     const loader = Swal.fire({
@@ -653,6 +657,8 @@ export default function CameraPage() {
               <button
                 onClick={() => {
                   setShowErrorMessageModal(false);
+                  setScanning(true);
+                  setIsStreamReady(true);
                 }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
