@@ -12,6 +12,7 @@ import { bestBooth } from "@/services/api";
 import Swal from "sweetalert2";
 import { useSearchParams, useRouter } from "next/navigation";
 import { boothVisitService } from "@/services/api";
+import Image from "next/image";
 
 function BestBoothContent() {
   const router = useRouter();
@@ -381,9 +382,16 @@ function BestBoothContent() {
         <div className="flex-1 pb-16">
           {showVotedMessage ? (
             <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-              <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+              <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border-2 border-[#F78B1E]">
                 <div className="flex flex-col items-center text-center">
-                  <h2 className="text-xl font-bold mb-4">Thank You!</h2>
+                  <div className="mb-4">
+                    <Image
+                      src="/images/best-booth.svg"
+                      alt="Success"
+                      width={100}
+                      height={100}
+                    />
+                  </div>
                   <p className="text-gray-600 mb-6">
                     <span className="text-lg font-bold">
                       You&apos;ve already submitted your Best Booth votes.
