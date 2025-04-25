@@ -43,6 +43,8 @@ export default function Home() {
     totalBooths?: number;
   } | null>(null);
   const [isRender, setIsRender] = useState(false);
+  const [latestVisitedBoothCode, setLatestVisitedBoothCode] =
+    useState<string>("");
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -81,6 +83,7 @@ export default function Home() {
   const get_visited_booth_list = async () => {
     try {
       const boothResult = await boothVisitService.getVisitedBoothlist();
+      console.log(boothResult);
       if (boothResult.success) {
         const doubleBoothsMap = boothResult.results.booths.filter(
           (booth: { is_double_zone: number }) => booth.is_double_zone == 1
@@ -89,6 +92,12 @@ export default function Home() {
         const regularBoothsMap = boothResult.results.booths.filter(
           (booth: { is_double_zone: number }) => booth.is_double_zone == 0
         );
+
+        // Get the latest visited booth (last item in the array)
+        const allBooths = [...doubleBoothsMap, ...regularBoothsMap];
+        if (allBooths.length > 0) {
+          setLatestVisitedBoothCode(allBooths[allBooths.length - 1].code);
+        }
 
         mapRegularBooths(regularBoothsMap);
         mapDoubleZone(doubleBoothsMap);
@@ -202,6 +211,19 @@ export default function Home() {
       ? "overflow-hidden object-cover"
       : "";
     const isSuySing = booth.isSuySing ? "border-none" : "";
+
+    // border style
+    const getBorderStyle = () => {
+      if (booth.boothCode === latestVisitedBoothCode) {
+        return customerData?.isDoneVisit
+          ? "border-[4px] border-red-500" 
+          : "border-[4px] border-red-500 animate-pulse"; 
+      }
+      if (booth.visited) {
+        return "border-2 border-red-500";
+      }
+      return "border-[3px] border-blue-800";
+    };
     return (
       <div key={booth.id} className="h-full">
         <button
@@ -209,7 +231,7 @@ export default function Home() {
           className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
           ${aspectClass}
           ${overrideSizeClass}
-          ${booth.visited ? "border-2 border-red-500" : ""} 
+             ${getBorderStyle()}
           ${isSuySing}
         `}
         >
