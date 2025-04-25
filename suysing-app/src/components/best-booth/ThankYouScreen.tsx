@@ -5,11 +5,14 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 interface ThankYouScreenProps {
-  storedHashcode : string,
+  storedHashcode: string;
   onContinue: () => void;
 }
 
-export default function ThankYouScreen({ storedHashcode, onContinue }: ThankYouScreenProps) {
+export default function ThankYouScreen({
+  storedHashcode,
+  onContinue,
+}: ThankYouScreenProps) {
   const router = useRouter();
 
   const handleContinue = () => {
@@ -22,21 +25,17 @@ export default function ThankYouScreen({ storedHashcode, onContinue }: ThankYouS
       <div className="px-4 py-10 bg-white rounded-lg shadow-md border-2 border-[#F78B1E]">
         <div className="flex items-center justify-center ">
           <Image
-            src="/images/confetti.svg"
+            src="/images/best-booth.svg"
             alt="Confetti"
             width={48}
             height={48}
           />
         </div>
         <h2 className="text-[34px] font-bold text-center mb-2 text-[#343434]">
-          Thank you for voting!
+          You have submitted your Best Booth votes.
         </h2>
         <p className="text-center text-[#343434] text-[14px] mb-6">
-          You may claim your Suki Day Souvenir at the
-          <br />
-          <span className="font-bold">
-            Tent Lobby from 2:30pm until 7:00pm.
-          </span>
+          Claim your Souvenir at the Tent Lobby from 2:30pm -7:00pm.
         </p>
 
         <button

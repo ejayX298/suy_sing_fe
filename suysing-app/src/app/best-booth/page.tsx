@@ -385,7 +385,7 @@ function BestBoothContent() {
                 <div className="flex flex-col items-center text-center">
                   <h2 className="text-xl font-bold mb-4">Thank You!</h2>
                   <p className="text-gray-600 mb-6">
-                    <span className="text-lg">
+                    <span className="text-lg font-bold">
                       You&apos;ve already submitted your Best Booth votes.
                     </span>
                     Claim your Suki Day Souvenir at the Tent Lobby from 2:30pm
