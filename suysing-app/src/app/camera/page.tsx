@@ -592,14 +592,15 @@ export default function CameraPage() {
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
-                  src="/images/best-booth1.svg"
+                  src="/images/trophy.svg"
                   alt="Success"
                   width={100}
                   height={100}
                 />
               </div>
               <p className="mb-6 text-[#343434] text-[20px]">
-                <span className="font-bold">Congratulations! </span>You&apos;ve completed your Booth Hopping Card. Click Best Booth to vote now!
+                <span className="font-bold">Congratulations! </span>You&apos;ve
+                completed your Booth Hopping Card. Click Best Booth to vote now!
               </p>
               <button
                 onClick={() => {
