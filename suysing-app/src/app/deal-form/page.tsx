@@ -34,7 +34,8 @@ interface Cart {
   selectedProducts: Product[];
   submitted?: boolean;
   customerSubCodeId?: string;
-  customerSubCode?: string; 
+  customerSubCode?: string;
+  email?: string; 
 }
 
 // interface CustomerData {
@@ -99,7 +100,8 @@ export default function DealFormPage() {
     shipToAddress: "",
     remarks: "",
     customerSubCodeId: "",
-    customerSubCode: ""
+    customerSubCode: "",
+    email: "",
   });
 
   const [selectedProducts, setSelectedProducts] = useState<Product[]>([]);
@@ -288,6 +290,9 @@ export default function DealFormPage() {
       return;
     }
 
+    //set intial customer code
+    setFormData({ ...formData, customerCode: customerInfoParsed?.code || "" });
+
     // Load customer record first
     const customerRecordSuccess = await getCustomerRecord();
     if (!customerRecordSuccess) {
@@ -302,7 +307,7 @@ export default function DealFormPage() {
     await getBoothProducts();
 
     // Check for active carts in localStorage
-    const storedCarts = localStorage.getItem("dealformCarts");
+    const storedCarts = localStorage.getItem(`dealformCarts-${customerInfoParsed?.code}`);
     if (storedCarts) {
       const parsedCarts = JSON.parse(storedCarts);
       if (parsedCarts.length > 0) {
@@ -322,6 +327,7 @@ export default function DealFormPage() {
             remarks: parsedCarts[0].remarks || "",
             customerSubCodeId: parsedCarts[0].customerSubCodeId || "",
             customerSubCode: parsedCarts[0].customerSubCode || "",
+            email: parsedCarts[0].email || "",
           });
 
           setSelectedProducts(parsedCarts[0].selectedProducts || []);
@@ -434,8 +440,9 @@ export default function DealFormPage() {
         shipToAddress: formData.shipToAddress,
         remarks: formData.remarks,
         selectedProducts: selectedProducts,
+        email: formData.email,
       };
-      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
     }
 
     const newCartId = `CART${carts.length + 1}`;
@@ -450,6 +457,7 @@ export default function DealFormPage() {
       shipToAddress: default_ship_to_addreess,
       remarks: "",
       selectedProducts: [],
+      email: formData.email,
     };
     const updatedCartsFinal = [...updatedCarts, newCart];
 
@@ -457,7 +465,7 @@ export default function DealFormPage() {
     setCurrentCartIndex(carts.length);
 
     // Save updated carts to localStorage
-    localStorage.setItem("dealformCarts", JSON.stringify(updatedCartsFinal));
+    localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCartsFinal));
 
     // Reset form data for the new cart
     setFormData({
@@ -469,6 +477,7 @@ export default function DealFormPage() {
       remarks: formData.remarks,
       customerSubCodeId: next_sub_code_id,
       customerSubCode: next_sub_code,
+      email: formData.email,
     });
 
     setSelectedProducts([]);
@@ -495,7 +504,7 @@ export default function DealFormPage() {
     if (newIndex >= 0 && newIndex < carts.length) {
       // Update carts state and save to localStorage first
       setCarts(updatedCarts);
-      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
 
       // Get the selected cart's data
       const selectedCart = updatedCarts[newIndex];
@@ -510,6 +519,7 @@ export default function DealFormPage() {
         remarks: selectedCart.remarks || "",
         customerSubCodeId: selectedCart.customerSubCodeId || "",
         customerSubCode: selectedCart.customerSubCode || "",
+        email: selectedCart.email || "",
       });
 
       // Update selected products with proper initialization
@@ -520,10 +530,83 @@ export default function DealFormPage() {
     }
   };
 
+
+  const handleCustomerSubCodeChange = (code: string, subcodeId : string, cartIndex?: number) => {
+
+       // get sub code base on subcodeId
+       const getSubCode = subCodes.find(subCode => subcodeId === subCode.id.toString());
+
+        let default_transaction_type = "Pick up";
+        let default_ship_to_addreess = "";
+        let default_branch = "";
+        let next_sub_code_id = "";
+        let next_sub_code= "";
+        let next_transaction_type= "";
+        let next_pickup_branch_code= "";
+
+        // get the first element in remainingSubCodes
+        if(getSubCode){
+          next_sub_code_id = getSubCode.id.toString();
+          next_sub_code = getSubCode.code;
+          next_transaction_type = getSubCode.transaction_type;
+          next_pickup_branch_code = getSubCode.pickup_branch_code || "";
+        }
+
+        
+        if(next_transaction_type != ""){
+          if(next_transaction_type.toLowerCase() == "del"){
+            default_transaction_type = "Delivery";
+            default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => customerDeliveryDetail.code === next_sub_code)?.id || "";
+            if(!default_ship_to_addreess){
+              // if no default sub code address get the first empty code in delivery array
+              default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => !customerDeliveryDetail.code)?.id || "";
+            }
+          }else{
+            default_transaction_type = "Pick up";
+            default_branch = customerPickupDetails.find(customerPickupDetail => customerPickupDetail.branch_code === next_pickup_branch_code)?.id || "";
+          }
+        }
+
+        if(cartIndex != undefined){
+          if (cartIndex >= 0 && cartIndex <= carts.length) {
+
+            console.log('cart update triggered')
+            const updatedCarts = [...carts];
+            
+            updatedCarts[cartIndex] = {
+              ...updatedCarts[cartIndex],
+              branch: default_branch,
+              shipToAddress: default_ship_to_addreess,
+              customerSubCodeId: next_sub_code_id,
+              customerSubCode: next_sub_code,
+              transactionType : default_transaction_type
+            };
+            setCarts(updatedCarts);
+
+            localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+          }
+        }
+        
+
+        setFormData({
+          acceptTerms: formData.acceptTerms,
+          customerCode: formData.customerCode,
+          transactionType: default_transaction_type,
+          branch: default_branch,
+          shipToAddress: default_ship_to_addreess,
+          remarks: formData.remarks,
+          customerSubCodeId: next_sub_code_id,
+          customerSubCode: next_sub_code,
+          email: formData.email,
+        });
+
+    
+  };
+
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
     // remove product quantity == 0
     
-    const updatedProducts = products.filter((product) => product.quantity != 0);
+    let updatedProducts = products;
 
     if (cartIndex >= 0 && cartIndex < carts.length) {
       const updatedCarts = [...carts];
@@ -540,11 +623,12 @@ export default function DealFormPage() {
           const findUpdateProductIndex = updatedProducts.findIndex(
             (updatedProduct) => updatedProduct.id === findUpdatedProduct.id
           );
-
+          
           // remove product on updatedProducts array
           if (findUpdateProductIndex !== -1) {
-            updatedProducts.splice(findUpdateProductIndex, 1); // Removes 1 item at the found index
+              updatedProducts.splice(findUpdateProductIndex, 1); // Removes 1 item at the found index      
           }
+          
           return { ...cartProduct, quantity: findUpdatedProduct.quantity };
         } else {
           return { ...cartProduct };
@@ -554,20 +638,25 @@ export default function DealFormPage() {
       // Merge remapCartProducts and updatedProducts
       const finalCartProducts = [...remapCartProducts, ...updatedProducts];
 
+      // Remove quantiy == 0
+      const cleanedProducts = finalCartProducts.filter(
+        (finalCartProduct) => finalCartProduct.quantity !== 0
+      );
+
       updatedCarts[cartIndex] = {
         ...updatedCarts[cartIndex],
         branch: formData.branch,
         shipToAddress: formData.shipToAddress,
         customerSubCodeId: formData.customerSubCodeId,
         customerSubCode: formData.customerSubCode,
-        selectedProducts: finalCartProducts, //
+        selectedProducts: cleanedProducts, //
       };
       setCarts(updatedCarts);
-      setSelectedProducts(finalCartProducts);
-
+      setSelectedProducts(cleanedProducts);
+      
       console.log("Updated products for cart", cartIndex, products);
 
-      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
     }
   };
 
@@ -592,15 +681,38 @@ export default function DealFormPage() {
 
   const handleTransactionTypeChange = (type: string) => {
     setFormData({ ...formData, transactionType: type });
+    updateCartDetails('transactionType', type);
   };
 
   const handleBranchChange = (branch: string) => {
     setFormData({ ...formData, branch : branch, shipToAddress:"" });
+
+    updateCartDetails('branch', branch);
+    // updateCartDetails('shipToAddress', "");
   };
 
   const handleShipToAddressChange = (address: string) => {
     setFormData({ ...formData, shipToAddress: address, branch : "", });
+    updateCartDetails('shipToAddress', address);
+    // updateCartDetails('branch', "");
   };
+
+  const isValidEmail = (email : string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const updateCartDetails = (cart_details_key : string, cart_details_value : string) => {
+    
+    const updatedCarts = [...carts];
+    updatedCarts[currentCartIndex] = {
+      ...updatedCarts[currentCartIndex],
+      [cart_details_key]: cart_details_value
+    };
+
+    // Update carts state and save to localStorage first
+    setCarts(updatedCarts);
+    localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+  }
 
   const handleNext = () => {
     if (step === 1 && !formData.acceptTerms) {
@@ -614,8 +726,11 @@ export default function DealFormPage() {
     }
 
     if (step === 1) {
+      const customer_info = localStorage.getItem("customer_info");
+      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : null;
+
       // Clear dealformCarts after accepting t and c
-      localStorage.removeItem("dealformCarts");
+      localStorage.removeItem(`dealformCarts-${customerInfoParsed.code}`);
     }
 
     if (step === 2) {
@@ -627,6 +742,12 @@ export default function DealFormPage() {
         alert("Please enter a shipping address.");
         return;
       }
+
+      if (formData.email != "" && !isValidEmail(formData.email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
     }
     
     if (step === 2 && carts.length === 0) {
@@ -635,6 +756,7 @@ export default function DealFormPage() {
         id: "CART1",
         customerCode: formData.customerCode,
         customerSubCodeId: formData.customerSubCodeId,
+        email: formData.email,
         customerSubCode: formData.customerSubCode,
         transactionType: formData.transactionType,
         branch: formData.branch,
@@ -645,7 +767,7 @@ export default function DealFormPage() {
       setCarts([firstCart]);
 
       // Save to localStorage
-      localStorage.setItem("dealformCarts", JSON.stringify([firstCart]));
+      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify([firstCart]));
     }
 
     if (step < 4) {
@@ -705,7 +827,7 @@ export default function DealFormPage() {
       setCarts(updatedCarts);
 
       // Save to localStorage
-      localStorage.setItem("dealformCarts", JSON.stringify(updatedCarts));
+      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
 
       const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
@@ -721,7 +843,7 @@ export default function DealFormPage() {
 
         setCarts(removedSubmittedCart);
         // Save to localStorage
-        localStorage.setItem("dealformCarts", JSON.stringify(removedSubmittedCart));
+        localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(removedSubmittedCart));
 
         existingProducts.forEach((product) => {
           if (product.quantity > 0) {
@@ -739,8 +861,6 @@ export default function DealFormPage() {
           }
         });
 
-        console.log('currentCartIndex')
-        console.log(currentCartIndex)
 
         const remainingUnsubmittedCarts = removedSubmittedCart.filter(
           (cart) => !cart.submitted
@@ -765,6 +885,7 @@ export default function DealFormPage() {
               remarks: selectedCart.remarks || "",
               customerSubCodeId: selectedCart.customerSubCodeId || "",
               customerSubCode: selectedCart.customerSubCode || "",
+              email: selectedCart.email || "",
             });
 
             // Update selected products with proper initialization
@@ -811,6 +932,7 @@ export default function DealFormPage() {
       remarks: "",
       customerSubCode: "",
       customerSubCodeId: "",
+      email: "",
     });
     setCarts([]);
     setCurrentCartIndex(0);
@@ -913,6 +1035,7 @@ export default function DealFormPage() {
               <PickUpForm
                 customerCode={formData.customerCode}
                 customerSubCode={formData.customerSubCode}
+                email={formData.email}
                 transactionType={formData.transactionType}
                 branch={formData.branch}
                 remarks={formData.remarks}
@@ -928,6 +1051,7 @@ export default function DealFormPage() {
             <DeliveryForm
               customerCode={formData.customerCode}
               customerSubCode={formData.customerSubCode}
+              email={formData.email}
               transactionType={formData.transactionType}
               shipToAddress={formData.shipToAddress}
               remarks={formData.remarks}
@@ -969,9 +1093,7 @@ export default function DealFormPage() {
               customerDeliveryDetails={customerDeliveryDetails}
               selectedProducts={carts[currentCartIndex]?.selectedProducts || []}
               subCodes={subCodes}
-              onCustomerCodeChange={(code: string) => {
-                setFormData((prev) => ({ ...prev, customerCode: code }));
-              }}
+              onCustomerCodeChange={handleCustomerSubCodeChange}
             />
           )}
 
@@ -1006,6 +1128,8 @@ export default function DealFormPage() {
               shipToAddressId={formData.shipToAddress}
               branchId={formData.branch}
               onNavigateToProducts={handlePrevious}
+              subCodes={subCodes}
+              onCustomerCodeChange={handleCustomerSubCodeChange}
             />
           )}
         </div>
