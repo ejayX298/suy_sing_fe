@@ -3,6 +3,7 @@ import React from "react";
 interface PickUpFormProps {
   customerCode: string;
   customerSubCode: string;
+  email: string;
   transactionType: string;
   branch: string;
   remarks: string;
@@ -24,6 +25,7 @@ interface CustomerPickupDetails {
 export default function PickUpForm({
   customerCode,
   customerSubCode,
+  email,
   transactionType,
   branch,
   remarks,
@@ -61,6 +63,23 @@ export default function PickUpForm({
             value={customerSubCode}
             className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
             readOnly
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm  text-black mb-2"
+          >
+            Email Address (optional)
+          </label>
+           <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={onInputChange}
+            className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
           />
         </div>
 
