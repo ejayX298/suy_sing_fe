@@ -3,6 +3,7 @@ import React from "react";
 interface DeliveryFormProps {
   customerCode: string;
   customerSubCode: string;
+  email: string;
   transactionType: string;
   shipToAddress: string;
   remarks: string;
@@ -27,6 +28,7 @@ interface CustomerDeliveryDetails {
 export default function DeliveryForm({
   customerCode,
   customerSubCode,
+  email,
   transactionType,
   shipToAddress,
   remarks,
@@ -64,6 +66,23 @@ export default function DeliveryForm({
             value={customerSubCode}
             className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
             readOnly
+          />
+        </div>
+
+        <div>
+          <label
+            htmlFor="email"
+            className="block text-sm  text-black mb-2"
+          >
+            Email Address (optional)
+          </label>
+           <input
+            type="email"
+            id="email"
+            name="email"
+            value={email}
+            onChange={onInputChange}
+            className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
           />
         </div>
 
