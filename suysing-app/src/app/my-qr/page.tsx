@@ -6,13 +6,69 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { customerQr } from "@/services/api";
 import InstructionModal from "@/components/homepage/InstructionModal";
 
-interface Schedule {
-  event: string;
-  schedule: Array<{
-    activity: string;
-    time: string;
-  }>;
+interface ScheduleItem {
+  time: string;
+  activity: string;
+  details?: string[]; // Added for nested list items
 }
+
+interface Schedule {
+  event?: string; // Optional event title for the day
+  schedule: ScheduleItem[];
+}
+
+// Schedule for Red and Green customer types
+const scheduleRedGreen: Schedule[] = [
+  {
+    schedule: [
+      { time: "07:00 AM", activity: "Registration" },
+      { time: "08:00 AM", activity: "Opening Ceremony" },
+      {
+        time: "08:30 AM",
+        activity: "Booth Hopping:",
+        details: [
+          "Main Hall: Trade Booths",
+          "Tent:",
+          "• Suy Sing Booths",
+          "• Gaming Hub",
+          "• More Trade Booths",
+          "• Store Solution Pavilion",
+          "Suki Day Deals",
+        ],
+      },
+      { time: "11:30 AM", activity: "Buffet Lunch" },
+      { time: "12:00 PM", activity: "Suki Day Show" },
+      { time: "02:30 PM", activity: "Souvenir Redemption" },
+      { time: "03:30 PM", activity: "Mini Show at Lobby Area" },
+      { time: "07:00 PM (Sharp)", activity: "Event Closing" },
+    ],
+  },
+];
+
+// Schedule for Yellow customer type
+const scheduleYellow: Schedule[] = [
+  {
+    schedule: [
+      { time: "01:30 PM", activity: "Registration" },
+      {
+        time: "", // Empty time for multi-line activity alignment
+        activity: "Booth Hopping:",
+        details: [
+          "Main Hall: Trade Booths",
+          "Tent:",
+          "• Suy Sing Booths",
+          "• Gaming Hub",
+          "• More Trade Booths",
+          "• Store Solution Pavilion",
+          "Suki Day Deals",
+        ],
+      },
+      { time: "02:30 PM", activity: "Souvenir Redemption" },
+      { time: "03:30 PM", activity: "Mini Show at Lobby Area" },
+      { time: "07:00 PM (Sharp)", activity: "Event Closing" },
+    ],
+  },
+];
 
 export default function MyQrPage() {
   const router = useRouter();
@@ -27,21 +83,16 @@ export default function MyQrPage() {
     session_id: string;
   } | null>(null);
   const [customerFound, setCustomerFound] = useState(false);
-  const [scheduleData, setScheduleData] = useState<Schedule[]>([]);
   const [showInstructionModal, setShowInstructionModal] = useState(false);
 
   const fetchData = async () => {
     try {
       const customerResult = await customerQr.getCustomer(customer_hash_code);
+      console.log(customerResult);
 
       if (customerResult.success) {
         setCustomerData(customerResult.results);
         setCustomerFound(true);
-
-        const scheduleResult = await customerQr.getSchedule();
-        if (scheduleResult.success) {
-          setScheduleData(scheduleResult.results);
-        }
       } else {
         router.push(`/unauthorized`);
       }
@@ -81,6 +132,12 @@ export default function MyQrPage() {
     return null;
   }
 
+  // Determine which schedule to display
+  const scheduleToDisplay =
+    customerData?.customer_type === "yellow"
+      ? scheduleYellow
+      : scheduleRedGreen;
+
   return (
     <div className="flex min-h-screen flex-col py-10 items-center w-full mb-10">
       {/* Epic Journey Image */}
@@ -100,13 +157,13 @@ export default function MyQrPage() {
           <div className="grid grid-cols-2 gap-2">
             <div>
               <p className="text-gray-600 font-medium">Customer Code:</p>
-              <p className="font-semibold text-gray-800">
+              <p className="font-bold text-gray-800">
                 {customerData?.code || "DCRUZ001"}
               </p>
             </div>
             <div>
               <p className="text-gray-600 font-medium">Customer Name:</p>
-              <p className="font-semibold text-gray-800">
+              <p className="font-bold text-gray-800">
                 {customerData?.full_name || "Juan Dela Cruz"}
               </p>
             </div>
@@ -116,21 +173,60 @@ export default function MyQrPage() {
         {/* Schedule of Activities Card */}
         <div className="bg-white rounded-md border-2 border-gray-500 overflow-hidden mb-10">
           <div className="px-4 py-3 border-b border-gray-500">
-            <h2 className="text-xl font-semibold ">Schedule of Activities</h2>
+            <h2 className="text-lg font-bold ">Schedule of Activities</h2>
           </div>
 
-          {scheduleData.map((day, dayIndex) => (
+          {scheduleToDisplay.map((day, dayIndex) => (
             <div key={dayIndex}>
+              {day.event && (
+                <div className="px-4 py-2 bg-gray-100 border-b border-gray-500">
+                  <p className="font-bold text-gray-700">{day.event}</p>
+                </div>
+              )}
               {day.schedule.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
-                  className="grid grid-cols-2 border-b border-gray-500"
+                  className={`grid grid-cols-2 border-b border-gray-500 ${
+                    item.activity === "Booth Hopping:"
+                      ? "items-start"
+                      : "items-center"
+                  }`}
                 >
-                  <div className="p-4">
-                    <p className="font-medium">{item.time}</p>
+                  <div className="px-4 py-3">
+                    <p className="text-sm">{item.time}</p>
                   </div>
-                  <div className="p-4">
-                    <p className="font-medium">{item.activity}</p>
+                  <div className="px-4 py-3">
+                    <p className="font-bold text-sm">{item.activity}</p>
+
+                    {item.details && (
+                      <ul className="mt-1 text-sm ">
+                        {item.details.map((detail, detailIndex) => (
+                          <li
+                            key={detailIndex}
+                            className={
+                              detail === "Tent:"
+                                ? "font-bold mt-1"
+                                : detail === "Suki Day Deals"
+                                ? "font-bold mt-2"
+                                : detail.startsWith("•")
+                                ? "mt-1"
+                                : ""
+                            }
+                          >
+                            {detail === "Tent:" && (
+                              <Image
+                                src="/images/new.svg"
+                                alt="New"
+                                width={24}
+                                height={12}
+                                className="inline-block -ml-7 mr-1 relative -top-0.5"
+                              />
+                            )}
+                            {detail}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               ))}
