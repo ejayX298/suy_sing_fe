@@ -606,7 +606,7 @@ export default function DealFormPage() {
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
     // remove product quantity == 0
     
-    let updatedProducts = products;
+    const updatedProducts = products;
 
     if (cartIndex >= 0 && cartIndex < carts.length) {
       const updatedCarts = [...carts];

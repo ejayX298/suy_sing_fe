@@ -120,7 +120,6 @@ export default function Confirmation({
   useEffect(() => {
     // setCurrentCarts(carts)
     getUsedSubcodes(carts)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [carts]);
 
   useEffect(() => {

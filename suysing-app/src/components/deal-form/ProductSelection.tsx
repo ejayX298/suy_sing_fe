@@ -165,7 +165,7 @@ interface ProductSelectionProps {
 }
 
 export default function ProductSelection({
-  customerCode,
+  // customerCode,
   customerSubCode,
   transactionType,
   branch,
