@@ -26,6 +26,8 @@ interface Cart {
   branch: string;
   shipToAddress: string;
   selectedProducts: Product[];
+  customerSubCodeId?: string;
+  customerSubCode?: string;
 }
 
 // Initial product data
@@ -159,7 +161,7 @@ interface ProductSelectionProps {
   customerPickupDetails: CustomerPickupDetails[];
   customerDeliveryDetails: CustomerDeliveryDetails[];
   subCodes: SubCode[];
-  onCustomerCodeChange?: (code: string) => void;
+  onCustomerCodeChange?: (code: string, subcodeId : string, currentCartIndex?: number) => void;
 }
 
 export default function ProductSelection({
@@ -204,6 +206,7 @@ export default function ProductSelection({
   const [isTransactionTypeOpen, setIsTransactionTypeOpen] = useState(false);
   const [isBranchDropdownOpen, setIsBranchDropdownOpen] = useState(false);
   const [isShippingDropdownOpen, setIsShippingDropdownOpen] = useState(false);
+  const [usedSubCodes, setUsedSubCodes] = useState<string[]>([]);
 
   const transactionTypeRef = useRef<HTMLDivElement>(null);
   const branchDropdownRef = useRef<HTMLDivElement>(null);
@@ -223,7 +226,7 @@ export default function ProductSelection({
 
   useEffect(() => {
     // setCurrentCarts(carts)
-
+    getUsedSubcodes(carts)
     // check if cart index exists in carts
     if (currentCartIndex >= 0 && currentCartIndex <= carts.length) {
       if (carts[currentCartIndex]) {
@@ -267,6 +270,14 @@ export default function ProductSelection({
     };
   }, []);
 
+  const getUsedSubcodes = (carts: Cart[]) => {
+    // get subCodes in carts
+    const usedSubCodes = carts
+        .filter(cart => typeof cart.customerSubCode === "string" && cart.customerSubCode.trim() !== "")
+        .map(cart => cart.customerSubCode as string)
+    setUsedSubCodes(usedSubCodes)
+  }
+
   const handleQuantityChange = (
     id: string,
     newQuantity: number,
@@ -284,11 +295,16 @@ export default function ProductSelection({
           ? { ...product, quantity: newQuantity, dealerName, dealerId }
           : product
       );
+
+      const filteredProduct = updatedProducts.filter(
+        (dealerSelectedProduct) => dealerSelectedProduct.id == id
+      );
+
       setProducts(updatedProducts);
 
       // Update the cart with current products
       if (onUpdateCart) {
-        onUpdateCart(currentCartIndex, updatedProducts);
+        onUpdateCart(currentCartIndex, filteredProduct);
       }
     }
   };
@@ -376,31 +392,35 @@ export default function ProductSelection({
                 <div className="relative" ref={customerCodeRef}>
                   <div
                     className="flex items-center cursor-pointer"
-                    // onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
+                    onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
                   >
                     <span className="text-black font-bold text-sm">
                       {customerSubCode}
                     </span>
-                    {/* <span className="text-[#F78B1E] ml-2 text-sm">▼</span> */}
+                    <span className="text-[#F78B1E] ml-2 text-sm">▼</span>
                   </div>
 
                   {isCustomerCodeOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-                      {subCodes.map((subCode, index) => (
-                        <div
-                          key={index}
-                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-                            customerCode === subCode.code ? "bg-gray-100" : ""
-                          }`}
-                          onClick={() => {
-                            onCustomerCodeChange(subCode.code);
-                            setIsCustomerCodeOpen(false);
-                          }}
-                        >
-                          <span className="text-black text-sm">
-                            {subCode.code}
-                          </span>
-                        </div>
+
+                      {/* exclude used subcodes in displaying  of options*/}
+                      {subCodes
+                        .filter(subCode =>  !usedSubCodes.includes(subCode.code) || subCode.code === customerSubCode)
+                        .map((subCode, index) => (
+                          <div
+                            key={index}
+                            className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                              customerSubCode === subCode.code ? "bg-gray-100" : ""
+                            }`}
+                            onClick={() => {
+                              onCustomerCodeChange(subCode.code, subCode.id.toString(), currentCartIndex);
+                              setIsCustomerCodeOpen(false);
+                            }}
+                          >
+                            <span className="text-black text-sm">
+                              {subCode.code}
+                            </span>
+                          </div>
                       ))}
                     </div>
                   )}
