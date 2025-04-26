@@ -37,11 +37,13 @@ export const customerQr = {
           if (!stored_hash_code) {
             localStorage.setItem("customer_info", JSON.stringify(mapResponse));
             localStorage.setItem("hash_code", hash_code);
+            localStorage.setItem(`customer_info_${mapResponse.code}`, JSON.stringify(mapResponse));
             window.location.href = `/my-qr/?cc=${hash_code}`;
           }
 
           localStorage.setItem("customer_info", JSON.stringify(mapResponse));
           localStorage.setItem("hash_code", hash_code);
+          localStorage.setItem(`customer_info_${mapResponse.code}`, JSON.stringify(mapResponse));
 
           // Reload page on updating of hash code for refreshing of bottom navigation urls
           if (stored_hash_code != hash_code) {
