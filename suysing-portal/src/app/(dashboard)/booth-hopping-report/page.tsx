@@ -116,6 +116,8 @@ export default function BoothHoppingReportPage() {
         return "text-red-500";
       case "Green":
         return "text-green-500";
+      case "Yellow":
+          return "text-yellow-500";
       default:
         return "text-gray-500";
     }

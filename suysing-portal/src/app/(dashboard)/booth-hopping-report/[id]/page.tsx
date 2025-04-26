@@ -127,11 +127,14 @@ export default function CustomerBoothHoppingDetail() {
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {
+    type = type ? type.toLowerCase() : type
     switch (type) {
-      case "Red":
+      case "red":
         return "text-red-500";
-      case "Green":
+      case "green":
         return "text-green-500";
+      case "yellow":
+        return "text-yellow-500";
       default:
         return "text-gray-500";
     }
