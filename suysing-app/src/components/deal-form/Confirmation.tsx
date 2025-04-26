@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 interface Product {
   id: string;
@@ -17,6 +17,17 @@ interface Cart {
   branch: string;
   shipToAddress: string;
   selectedProducts: Product[];
+  customerSubCode?: string;
+  email?: string; 
+}
+
+interface SubCode {
+  id: number;
+  code: string;
+  pickup_branch_code?: string;
+  transaction_type: string;
+  ship_to: string | null;
+  payment_code: string;
 }
 
 interface FormData {
@@ -65,6 +76,8 @@ interface ConfirmationProps {
   shipToAddressId: string;
   branchId: string;
   onNavigateToProducts?: () => void;
+  subCodes: SubCode[];
+  onCustomerCodeChange?: (code: string, subcodeId : string, currentCartIndex?: number) => void;
 }
 
 export default function Confirmation({
@@ -83,10 +96,48 @@ export default function Confirmation({
   customerPickupDetails,
   customerDeliveryDetails,
   onNavigateToProducts = () => {},
+  subCodes = [],
+  onCustomerCodeChange = () => {},
 }: ConfirmationProps) {
+    const [usedSubCodes, setUsedSubCodes] = useState<string[]>([]);
+    const [isCustomerCodeOpen, setIsCustomerCodeOpen] = useState(false);
+    const customerCodeRef = useRef<HTMLDivElement>(null);
+
+
   // Get products with quantities greater than 0 from formData
   const products =
     formData.selectedProducts?.filter((product) => product.quantity > 0) || [];
+
+  const getUsedSubcodes = (carts: Cart[]) => {
+    // get subCodes in carts
+    const usedSubCodes = carts
+        .filter(cart => typeof cart.customerSubCode === "string" && cart.customerSubCode.trim() !== "")
+        .map(cart => cart.customerSubCode as string)
+    setUsedSubCodes(usedSubCodes)
+  }
+
+
+  useEffect(() => {
+    // setCurrentCarts(carts)
+    getUsedSubcodes(carts)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [carts]);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        customerCodeRef.current &&
+        !customerCodeRef.current.contains(event.target as Node)
+      ) {
+        setIsCustomerCodeOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Group the products by dealer
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -116,9 +167,44 @@ export default function Confirmation({
           <div className="flex flex-col">
             <div className="flex flex-col">
               <span className="text-black text-sm">Customer Code:</span>
-              <span className="text-black font-bold text-sm">
-                {customerSubCode}
-              </span>
+                <div className="relative" ref={customerCodeRef}>
+                  <div
+                    className="flex items-center cursor-pointer"
+                    onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
+                  >
+                    <span className="text-black font-bold text-sm">
+                      {customerSubCode}
+                    </span>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
+                        ▼
+                    </div>
+                  </div>
+
+                    {isCustomerCodeOpen && (
+                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+
+                        {/* exclude used subcodes in displaying  of options*/}
+                        {subCodes
+                          .filter(subCode =>  !usedSubCodes.includes(subCode.code) || subCode.code === customerSubCode)
+                          .map((subCode, index) => (
+                            <div
+                              key={index}
+                              className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                                customerSubCode === subCode.code ? "bg-gray-100" : ""
+                              }`}
+                              onClick={() => {
+                                onCustomerCodeChange(subCode.code, subCode.id.toString(), currentCartIndex);
+                                setIsCustomerCodeOpen(false);
+                              }}
+                            >
+                              <span className="text-black text-sm">
+                                {subCode.code}
+                              </span>
+                            </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
             </div>
 
             <div className="mt-4">
