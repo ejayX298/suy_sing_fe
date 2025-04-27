@@ -10,7 +10,7 @@ interface Souvenir {
 }
 
 interface SouvenirSelectionProps {
-  souvenirData : Souvenir[];
+  souvenirData: Souvenir[];
   onSelect: (souvenir: Souvenir) => void;
   onCancel: () => void;
   onContinue: (souvenir: Souvenir) => void;
@@ -24,15 +24,15 @@ interface SouvenirSelectionProps {
 //   { id: "5", name: "Suy Sing GC", image: "/images/souvenir/massage_gun.png" },
 // ];
 
-
-
 export default function SouvenirSelection({
   souvenirData,
   onSelect,
   onCancel,
   onContinue,
 }: SouvenirSelectionProps) {
-  const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(null);
+  const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(
+    null
+  );
   const SOUVENIRS = souvenirData;
 
   const handleSouvenirSelect = (souvenir: Souvenir) => {
@@ -66,39 +66,22 @@ export default function SouvenirSelection({
         </p>
       </div>
 
-      <div className="w-full px-4 pb-4 mx-auto max-w-4xl">
-        {/* First row with 3 items */}
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {SOUVENIRS.slice(0, 3).map((souvenir) => (
-            <div key={souvenir.id} className="rounded-lg overflow-hidden">
+      <div className="w-full  pb-4 mx-auto max-w-2xl">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
+          {SOUVENIRS.map((souvenir) => (
+            <div
+              key={souvenir.id}
+              className="relative rounded-lg overflow-hidden "
+            >
               <button
-                className={`w-full flex flex-col items-center bg-white rounded-t-lg p-4 ${selectedSouvenir?.id === souvenir.id ? 'ring-2 ring-[#F78B1E]' : ''}`}
+                className={`w-full flex flex-col box-border border-2 border-[#F78B1E]  items-center bg-white rounded-t-lg py-4 transition-all duration-150 ${
+                  selectedSouvenir?.id === souvenir.id
+                    ? "border-[4px] border-[#F78B1E] "
+                    : ""
+                }`}
                 onClick={() => handleSouvenirSelect(souvenir)}
               >
-                <Image
-                  src={souvenir.image}
-                  alt={souvenir.name}
-                  width={120}
-                  height={120}
-                  className="mb-2 object-contain h-32"
-                />
-              </button>
-              <div className="bg-[#F78B1E] text-white py-2 text-center font-medium">
-                {souvenir.name}
-              </div>
-            </div>
-          ))}
-        </div>
-        
-        {/* Second row with remaining items, centered */}
-        <div className="flex justify-center mb-8">
-          <div className="grid grid-cols-2 gap-2 w-full max-w-lg">
-            {SOUVENIRS.slice(3).map((souvenir) => (
-              <div key={souvenir.id} className="rounded-lg overflow-hidden">
-                <button
-                  className={`w-full flex flex-col items-center bg-white rounded-t-lg p-4 ${selectedSouvenir?.id === souvenir.id ? 'ring-2 ring-[#F78B1E]' : ''}`}
-                  onClick={() => handleSouvenirSelect(souvenir)}
-                >
+                <div className="relative w-full flex justify-center items-center">
                   <Image
                     src={souvenir.image}
                     alt={souvenir.name}
@@ -106,13 +89,25 @@ export default function SouvenirSelection({
                     height={120}
                     className="mb-2 object-contain h-32"
                   />
-                </button>
-                <div className="bg-[#F78B1E] text-white py-2 text-center font-medium">
-                  {souvenir.name}
+                  {selectedSouvenir?.id === souvenir.id && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <Image
+                        src="/images/check-souvenir.svg"
+                        alt="Selected"
+                        width={75}
+                        height={75}
+                        className="z-10"
+                        priority
+                      />
+                    </span>
+                  )}
                 </div>
+              </button>
+              <div className="bg-[#F78B1E] text-white py-2 text-center font-medium rounded-b-lg">
+                {souvenir.name}
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -124,7 +119,9 @@ export default function SouvenirSelection({
           </button>
           <button
             onClick={handleProceed}
-            className={`w-full rounded-lg py-3 text-lg font-semibold ${selectedSouvenir ? 'bg-[#F78B1E]' : 'bg-gray-400'}`}
+            className={`w-full rounded-lg py-3 text-lg font-semibold ${
+              selectedSouvenir ? "bg-[#F78B1E]" : "bg-gray-400"
+            }`}
             disabled={!selectedSouvenir}
           >
             Proceed
