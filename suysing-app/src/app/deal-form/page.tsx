@@ -128,6 +128,8 @@ export default function DealFormPage() {
   const [boothProducts, setBoothProducts] = useState([]);
   const [isRender, setIsRender] = useState(false);
   const [subCodes, setSubCodes] = useState<SubCode[]>([]);
+  const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -267,14 +269,18 @@ export default function DealFormPage() {
       if (createDealCartResult.success) {
         return true;
       } else {
-        showMessage("0", createDealCartResult.message);
+        setShowErrorMessageModal(true);
+        setErrorMessage(createDealCartResult.message);
+        // showMessage("0", createDealCartResult.message);
         return false;
       }
     } catch {
-      showMessage(
-        "0",
-        "Unable to process your request. Please try again later. 1212 "
-      );
+      setShowErrorMessageModal(true)
+      setErrorMessage(  "Unable to process your request. Please try again later.")
+      // showMessage(
+      //   "0",
+      //   "Unable to process your request. Please try again later. "
+      // );
       return false;
     }
   };
@@ -804,7 +810,9 @@ export default function DealFormPage() {
 
           // added delay before opening new alert
           setTimeout(() => {
-            showMessage("0", "You already submmited this cart.");
+            // showMessage("0", "You already submmited this cart.");
+            setShowErrorMessageModal(true)
+            setErrorMessage( "You already submmited this cart.")
           }, 200);
           return;
         }
@@ -903,6 +911,9 @@ export default function DealFormPage() {
         // If this was the last cart, show the final submission modal
         setShowSubmitModal(true);
         return;
+      }else{
+         //close loader
+          Swal.close();
       }
     } else {
       //close loader
@@ -940,25 +951,25 @@ export default function DealFormPage() {
     router.push(`/?cc=${stored_hash_code}`);
   };
 
-  const showMessage = (status: string, message: string) => {
-    let iconType: "success" | "error";
-    let titleType: "Success" | "Oops!";
+  // const showMessage = (status: string, message: string) => {
+  //   let iconType: "success" | "error";
+  //   let titleType: "Success" | "Oops!";
 
-    if (status == "1") {
-      iconType = "success";
-      titleType = "Success";
-    } else {
-      iconType = "error";
-      titleType = "Oops!";
-    }
+  //   if (status == "1") {
+  //     iconType = "success";
+  //     titleType = "Success";
+  //   } else {
+  //     iconType = "error";
+  //     titleType = "Oops!";
+  //   }
 
-    Swal.fire({
-      title: titleType,
-      text: message,
-      icon: iconType,
-      confirmButtonColor: "#F78B1E",
-    });
-  };
+  //   Swal.fire({
+  //     title: titleType,
+  //     text: message,
+  //     icon: iconType,
+  //     confirmButtonColor: "#F78B1E",
+  //   });
+  // };
 
   const confirmMessage = async (message: string) => {
     const result = await Swal.fire({
@@ -1143,6 +1154,35 @@ export default function DealFormPage() {
 
       {/* Deal Submitted Modal */}
       <DealSubmitted isOpen={showSubmitModal} onClose={handleCloseModal} />
+
+       {/* Error Message Modal */}
+       {showErrorMessageModal && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/close.svg"
+                  alt="Error"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h1 className="text-[#343434] text-[20px]">Oops!</h1>
+              <p className="mb-6 text-[#343434] text-[20px]">{errorMessage}</p>
+              <button
+                onClick={() => {
+                  setShowErrorMessageModal(false)
+                }}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Okay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

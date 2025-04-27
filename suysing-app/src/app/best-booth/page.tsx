@@ -45,6 +45,8 @@ function BestBoothContent() {
   } | null>(null);
   const [isDoneVisit, setIsDoneVisit] = useState(false);
   const [showVotedMessage, setShowVotedMessage] = useState(false);
+  const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const fetchData = async () => {
     try {
@@ -79,15 +81,19 @@ function BestBoothContent() {
         return true;
       } else {
         Swal.close(); // close the loader
-        showMessage("0", submitVote.message);
+        setShowErrorMessageModal(true);
+        setErrorMessage(submitVote.message);
+        // showMessage("0", submitVote.message);
         return false;
       }
     } catch {
       Swal.close(); // close the loader
-      showMessage(
-        "0",
-        "Unable to process your request. Please try again later."
-      );
+      setShowErrorMessageModal(true);
+      setErrorMessage("Unable to process your request. Please try again later.");
+      // showMessage(
+      //   "0",
+      //   "Unable to process your request. Please try again later."
+      // );
       return false;
     } finally {
       // setIsLoading(false);
@@ -120,50 +126,50 @@ function BestBoothContent() {
     }
   };
 
-  const showMessage = (status: string, message: string) => {
-    let iconType: "success" | "error";
-    let titleType: "Success" | "Oops!";
+  // const showMessage = (status: string, message: string) => {
+  //   let iconType: "success" | "error";
+  //   let titleType: "Success" | "Oops!";
 
-    if (status == "1") {
-      iconType = "success";
-      titleType = "Success";
-    } else {
-      iconType = "error";
-      titleType = "Oops!";
-    }
+  //   if (status == "1") {
+  //     iconType = "success";
+  //     titleType = "Success";
+  //   } else {
+  //     iconType = "error";
+  //     titleType = "Oops!";
+  //   }
 
-    Swal.fire({
-      title: titleType,
-      text: message,
-      icon: iconType,
-      confirmButtonColor: "#F78B1E",
-    });
-  };
+  //   Swal.fire({
+  //     title: titleType,
+  //     text: message,
+  //     icon: iconType,
+  //     confirmButtonColor: "#F78B1E",
+  //   });
+  // };
 
-  const showMessageRedirect = (status: string, message: string) => {
-    let iconType: "success" | "error";
-    let titleType: "Success" | "Oops!";
+  // const showMessageRedirect = (status: string, message: string) => {
+  //   let iconType: "success" | "error";
+  //   let titleType: "Success" | "Oops!";
 
-    if (status == "1") {
-      iconType = "success";
-      titleType = "Success";
-    } else {
-      iconType = "error";
-      titleType = "Oops!";
-    }
+  //   if (status == "1") {
+  //     iconType = "success";
+  //     titleType = "Success";
+  //   } else {
+  //     iconType = "error";
+  //     titleType = "Oops!";
+  //   }
 
-    Swal.fire({
-      title: titleType,
-      text: message,
-      icon: iconType,
-      confirmButtonColor: "#F78B1E",
-      allowOutsideClick: false, // disable outside click fot the close modal
-    }).then((result) => {
-      if (result.isConfirmed) {
-        router.push(`/?cc=${stored_hash_code}`);
-      }
-    });
-  };
+  //   Swal.fire({
+  //     title: titleType,
+  //     text: message,
+  //     icon: iconType,
+  //     confirmButtonColor: "#F78B1E",
+  //     allowOutsideClick: false, // disable outside click fot the close modal
+  //   }).then((result) => {
+  //     if (result.isConfirmed) {
+  //       router.push(`/?cc=${stored_hash_code}`);
+  //     }
+  //   });
+  // };
 
   const showLoader = () => {
     const loader = Swal.fire({
@@ -195,7 +201,9 @@ function BestBoothContent() {
   useEffect(() => {
     if (customerData) {
       if (customerData?.isDoneVisit == 0) {
-        showMessageRedirect("0", "You need to visit all the booths first");
+        // showMessageRedirect("0", "You need to visit all the booths first");
+        setShowErrorMessageModal(true);
+        setErrorMessage("You need to visit all the booths first");
       } else if (customerData?.isDoneVisit == 1) {
         setIsDoneVisit(true);
       }
@@ -203,7 +211,6 @@ function BestBoothContent() {
         setShowVotedMessage(true);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customerData]);
 
   const handleContinue = async () => {
@@ -234,6 +241,15 @@ function BestBoothContent() {
       setStep("orange");
     } else if (step === "summary") {
       setStep("red");
+    }
+  };
+
+  const handleProceed = () => {
+    if (!isDoneVisit) {
+      setShowErrorMessageModal(false)
+      router.push(`/?cc=${stored_hash_code}`);
+    }  else {
+      setShowErrorMessageModal(false)
     }
   };
 
@@ -413,6 +429,33 @@ function BestBoothContent() {
           )}
         </div>
       )}
+
+       {/* Error Message Modal */}
+       {showErrorMessageModal && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4">
+                <Image
+                  src="/images/close.svg"
+                  alt="Error"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <h1 className="text-[#343434] text-[20px]">Oops!</h1>
+              <p className="mb-6 text-[#343434] text-[20px]">{errorMessage}</p>
+              <button
+                onClick={handleProceed}
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+              >
+                Okay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
