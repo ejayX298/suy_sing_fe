@@ -577,7 +577,7 @@ export default function SouvenirAvailabilityPage() {
                 <input
                   type="number"
                   className="w-full px-2 py-4 border border-gray-400"
-                  // value={newSouvenirQuantity}
+                  value={newSouvenirQuantity}
                   onChange={(e) => setNewSouvenirQuantity(e.target.value)}
                 />
               </div>
