@@ -18,7 +18,7 @@ interface Cart {
   shipToAddress: string;
   selectedProducts: Product[];
   customerSubCode?: string;
-  email?: string; 
+  email?: string;
 }
 
 interface SubCode {
@@ -38,6 +38,7 @@ interface FormData {
   remarks: string;
   carts?: Cart[];
   selectedProducts?: Product[];
+  email?: string;
 }
 
 interface CustomerPickupDetails {
@@ -59,7 +60,7 @@ interface ConfirmationProps {
   formData: FormData;
   customerSubCode: string;
   onSubmit: () => void;
-  onInputChange?: (
+  onInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void;
   onSelectChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -77,13 +78,18 @@ interface ConfirmationProps {
   branchId: string;
   onNavigateToProducts?: () => void;
   subCodes: SubCode[];
-  onCustomerCodeChange?: (code: string, subcodeId : string, currentCartIndex?: number) => void;
+  onCustomerCodeChange?: (
+    code: string,
+    subcodeId: string,
+    currentCartIndex?: number
+  ) => void;
 }
 
 export default function Confirmation({
   formData,
   customerSubCode,
   onSubmit,
+  onInputChange,
   onSelectChange = () => {},
   carts = [],
   currentCartIndex = 0,
@@ -99,10 +105,9 @@ export default function Confirmation({
   subCodes = [],
   onCustomerCodeChange = () => {},
 }: ConfirmationProps) {
-    const [usedSubCodes, setUsedSubCodes] = useState<string[]>([]);
-    const [isCustomerCodeOpen, setIsCustomerCodeOpen] = useState(false);
-    const customerCodeRef = useRef<HTMLDivElement>(null);
-
+  const [usedSubCodes, setUsedSubCodes] = useState<string[]>([]);
+  const [isCustomerCodeOpen, setIsCustomerCodeOpen] = useState(false);
+  const customerCodeRef = useRef<HTMLDivElement>(null);
 
   // Get products with quantities greater than 0 from formData
   const products =
@@ -111,15 +116,18 @@ export default function Confirmation({
   const getUsedSubcodes = (carts: Cart[]) => {
     // get subCodes in carts
     const usedSubCodes = carts
-        .filter(cart => typeof cart.customerSubCode === "string" && cart.customerSubCode.trim() !== "")
-        .map(cart => cart.customerSubCode as string)
-    setUsedSubCodes(usedSubCodes)
-  }
-
+      .filter(
+        (cart) =>
+          typeof cart.customerSubCode === "string" &&
+          cart.customerSubCode.trim() !== ""
+      )
+      .map((cart) => cart.customerSubCode as string);
+    setUsedSubCodes(usedSubCodes);
+  };
 
   useEffect(() => {
     // setCurrentCarts(carts)
-    getUsedSubcodes(carts)
+    getUsedSubcodes(carts);
   }, [carts]);
 
   useEffect(() => {
@@ -166,44 +174,53 @@ export default function Confirmation({
           <div className="flex flex-col">
             <div className="flex flex-col">
               <span className="text-black text-sm">Customer Code:</span>
-                <div className="relative" ref={customerCodeRef}>
-                  <div
-                    className="flex items-center cursor-pointer"
-                    onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
-                  >
-                    <span className="text-black font-bold text-sm">
-                      {customerSubCode}
-                    </span>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
-                        ▼
-                    </div>
+              <div className="relative" ref={customerCodeRef}>
+                <div
+                  className="flex items-center cursor-pointer"
+                  onClick={() => setIsCustomerCodeOpen(!isCustomerCodeOpen)}
+                >
+                  <span className="text-black font-bold text-sm">
+                    {customerSubCode}
+                  </span>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
+                    ▼
                   </div>
-
-                    {isCustomerCodeOpen && (
-                      <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-
-                        {/* exclude used subcodes in displaying  of options*/}
-                        {subCodes
-                          .filter(subCode =>  !usedSubCodes.includes(subCode.code) || subCode.code === customerSubCode)
-                          .map((subCode, index) => (
-                            <div
-                              key={index}
-                              className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-                                customerSubCode === subCode.code ? "bg-gray-100" : ""
-                              }`}
-                              onClick={() => {
-                                onCustomerCodeChange(subCode.code, subCode.id.toString(), currentCartIndex);
-                                setIsCustomerCodeOpen(false);
-                              }}
-                            >
-                              <span className="text-black text-sm">
-                                {subCode.code}
-                              </span>
-                            </div>
-                        ))}
-                      </div>
-                    )}
                 </div>
+
+                {isCustomerCodeOpen && (
+                  <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                    {/* exclude used subcodes in displaying  of options*/}
+                    {subCodes
+                      .filter(
+                        (subCode) =>
+                          !usedSubCodes.includes(subCode.code) ||
+                          subCode.code === customerSubCode
+                      )
+                      .map((subCode, index) => (
+                        <div
+                          key={index}
+                          className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
+                            customerSubCode === subCode.code
+                              ? "bg-gray-100"
+                              : ""
+                          }`}
+                          onClick={() => {
+                            onCustomerCodeChange(
+                              subCode.code,
+                              subCode.id.toString(),
+                              currentCartIndex
+                            );
+                            setIsCustomerCodeOpen(false);
+                          }}
+                        >
+                          <span className="text-black text-sm">
+                            {subCode.code}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="mt-4">
@@ -263,13 +280,17 @@ export default function Confirmation({
                   onChange={onSelectChange}
                   className="block w-full appearance-none border-none bg-transparent pr-8 focus:outline-none text-black font-bold text-sm"
                 >
-                {customerDeliveryDetails
-                  .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
-                  .map((customerDelivery, index) => (
-                    <option key={index} value={customerDelivery.id}>
-                      {customerDelivery.address}
-                    </option>
-                  ))}
+                  {customerDeliveryDetails
+                    .filter(
+                      (customerDelivery) =>
+                        customerDelivery.code === customerSubCode ||
+                        !customerDelivery.code
+                    )
+                    .map((customerDelivery, index) => (
+                      <option key={index} value={customerDelivery.id}>
+                        {customerDelivery.address}
+                      </option>
+                    ))}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-[#F78B1E]">
                   ▼
@@ -363,7 +384,37 @@ export default function Confirmation({
             )}
         </div>
       </div>
+      <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-3">
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block text-sm text-black mb-2">
+              Email Address (optional)
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email || ""}
+              onChange={onInputChange}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none text-black"
+            />
+          </div>
 
+          <div>
+            <label htmlFor="remarks" className="block text-sm text-black mb-2">
+              Remarks
+            </label>
+            <textarea
+              id="remarks"
+              name="remarks"
+              value={formData.remarks}
+              onChange={onInputChange}
+              rows={4}
+              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none text-black"
+            />
+          </div>
+        </div>
+      </div>
       <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-3">
         <h2 className="text-lg font-bold text-black">Order Summary</h2>
       </div>
