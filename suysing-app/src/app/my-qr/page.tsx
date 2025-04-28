@@ -32,7 +32,7 @@ const scheduleRedGreen: Schedule[] = [
           "• Suy Sing Booths",
           "• Gaming Hub",
           "• More Trade Booths",
-          "• Store Solution Pavilion",
+          "• Store Booster Pavilion",
           "Suki Day Deals",
         ],
       },
