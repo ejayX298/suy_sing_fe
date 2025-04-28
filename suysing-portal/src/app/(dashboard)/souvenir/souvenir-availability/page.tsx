@@ -315,7 +315,7 @@ export default function SouvenirAvailabilityPage() {
       try {
 
         const deleteSouvenir = {
-          souvenir_id: parseInt(souvenir?.id),
+          souvenir_id: souvenir?.id || 0,
         };
 
         const souvenirDelete =
