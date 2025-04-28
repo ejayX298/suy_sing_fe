@@ -306,10 +306,34 @@ export default function SouvenirAvailabilityPage() {
     );
 
     if (confirmAction.isConfirmed) {
-      // TODO: Implement API call when ready
-      console.log("Delete souvenir:", souvenir.id);
-      showMessage("1", "Souvenir deleted successfully");
-      setfilterParams({ ...filterParams, page: 1, query: "" });
+      
+      if (!token) {
+        showMessage("0", "You are not authenticated. Please log in again.");
+        return;
+      }
+
+      try {
+
+        const deleteSouvenir = {
+          souvenir_id: parseInt(souvenir?.id),
+        };
+
+        const souvenirDelete =
+          await souvenirAvailabilityData.deleteSouvenir(token, deleteSouvenir);
+
+        if (souvenirDelete.success) {
+            showMessage("1", souvenirDelete.message);
+            setfilterParams({ ...filterParams, page: 1, query: "" });
+          } else {
+            showMessage("0", souvenirDelete.message);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          showMessage("0", "Error deleting souvenir.");
+        } finally {
+          setIsLoading(false);
+        }
+
     }
   };
 
@@ -318,12 +342,12 @@ export default function SouvenirAvailabilityPage() {
       <div className="">
         <div className="py-4 flex justify-end gap-4 items-center border-b">
           <div className="flex items-center space-x-2">
-            <button
+            {/* <button
               className="inline-flex items-center px-3 py-3 bg-blue-800 text-white text-sm"
               onClick={() => setShowAddModal(true)}
             >
               <FaPlus className="mr-2" /> Change Souvenir
-            </button>
+            </button> */}
             {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
             </button> */}
