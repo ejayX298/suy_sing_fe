@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 
 interface Souvenir {
-  id: string;
+  id: number;
   name: string;
-  image: string;
+  code: string;
+  color: string;
 }
 
 interface SouvenirSelectionProps {
@@ -25,37 +26,37 @@ interface SouvenirSelectionProps {
 // ];
 
 // Helper to get border, background, and shadow color
-function getSouvenirStyle(
-  souvenir: Souvenir,
-  index: number,
-  souvenirs: Souvenir[]
-): { border: string; bg: string; shadow: string } {
-  // Check for all massage guns
-  const isMassageGun = souvenir.image.includes("suysing-motivo-massage-gun");
-  // Find the first massage gun index
-  const firstMassageGunIdx = souvenirs.findIndex((s) =>
-    s.image.includes("suysing-motivo-massage-gun")
-  );
-
-  if (souvenir.image.includes("suysing-portable-fan")) {
-    return {
-      border: "border-[#FD2929]",
-      bg: "bg-[#FD2929]",
-      shadow: "shadow-[0_0_5.1px_7px_#FD2929]",
-    };
+function getSouvenirStyle(souvenir: Souvenir): {
+  border: string;
+  bg: string;
+  shadow: string;
+} {
+  switch (souvenir.color) {
+    case "red":
+      return {
+        border: "border-[#FD2929]",
+        bg: "bg-[#FD2929]",
+        shadow: "shadow-[0_0_5.1px_7px_#FD2929]",
+      };
+    case "green":
+      return {
+        border: "border-[#2F9E0E]",
+        bg: "bg-[#2F9E0E]",
+        shadow: "shadow-[0_0_5.1px_7px_rgba(157,233,134,0.35)]",
+      };
+    case "yellow":
+      return {
+        border: "border-[#B9A71C]",
+        bg: "bg-[#B9A71C]",
+        shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+      };
+    default:
+      return {
+        border: "border-[#B9A71C]",
+        bg: "bg-[#B9A71C]",
+        shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+      };
   }
-  if (isMassageGun && index === firstMassageGunIdx) {
-    return {
-      border: "border-[#2F9E0E]",
-      bg: "bg-[#2F9E0E]",
-      shadow: "shadow-[0_0_5.1px_7px_rgba(157,233,134,0.35)]",
-    };
-  }
-  return {
-    border: "border-[#B9A71C]",
-    bg: "bg-[#B9A71C]",
-    shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
-  };
 }
 
 export default function SouvenirSelection({
@@ -67,15 +68,12 @@ export default function SouvenirSelection({
   const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(
     null
   );
-  const SOUVENIRS = souvenirData;
 
   const handleSouvenirSelect = (souvenir: Souvenir) => {
     setSelectedSouvenir(souvenir);
-    // Just store the selection, don't call onSelect yet
   };
 
   const handleProceed = () => {
-    // Only call onSelect when Proceed is clicked and a souvenir is selected
     if (selectedSouvenir) {
       onSelect(selectedSouvenir);
       onContinue(selectedSouvenir);
@@ -100,19 +98,15 @@ export default function SouvenirSelection({
         </p>
       </div>
 
-      <div className="w-full  pb-4 mx-auto max-w-xl">
+      <div className="w-full pb-4 mx-auto max-w-xl">
         <div className="grid grid-cols-2 gap-2 mb-8">
-          {SOUVENIRS.map((souvenir, idx) => {
-            const { border, bg, shadow } = getSouvenirStyle(
-              souvenir,
-              idx,
-              SOUVENIRS
-            );
+          {souvenirData.map((souvenir) => {
+            const { border, bg, shadow } = getSouvenirStyle(souvenir);
             const isSelected = selectedSouvenir?.id === souvenir.id;
             return (
               <div
                 key={souvenir.id}
-                className="relative rounded-lg overflow-hidden "
+                className="relative rounded-lg overflow-hidden"
               >
                 <button
                   className={`w-full flex flex-col box-border items-center rounded-t-lg py-4 transition-all duration-150 border-2 ${border} bg-white
@@ -121,7 +115,7 @@ export default function SouvenirSelection({
                 >
                   <div className="relative w-full flex justify-center items-center">
                     <Image
-                      src={souvenir.image}
+                      src={`/images/souvenir/${souvenir.code}.png`}
                       alt={souvenir.name}
                       width={120}
                       height={120}

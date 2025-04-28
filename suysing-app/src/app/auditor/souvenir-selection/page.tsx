@@ -8,9 +8,10 @@ import { auditorService } from "@/services/api";
 import Swal from "sweetalert2";
 
 interface Souvenir {
-  id: string;
+  id: number;
   name: string;
-  image: string;
+  code: string;
+  color: string;
 }
 
 export default function SouvenirSelectionPage() {
@@ -19,7 +20,7 @@ export default function SouvenirSelectionPage() {
     null
   );
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [souvenirList, setSouvenirList] = useState([]);
+  const [souvenirList, setSouvenirList] = useState<Souvenir[]>([]);
 
   const searchParams = useSearchParams();
   const auditor_hash_code = searchParams.get("cc");
@@ -37,15 +38,13 @@ export default function SouvenirSelectionPage() {
 
   const handleSouvenirSelect = (souvenir: Souvenir) => {
     setSelectedSouvenir(souvenir);
-    // setShowSuccessModal(true);
   };
 
   const handleCancel = () => {
     router.push(`/auditor/?cc=${stored_hash_code}`);
   };
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
-  const handleContinue = async (selectedSouvenirData: any) => {
+  const handleContinue = async (selectedSouvenirData: Souvenir) => {
     const submitSouvenirResult = await handleSubmitSouvenir(
       selectedSouvenirData
     );
@@ -60,52 +59,57 @@ export default function SouvenirSelectionPage() {
   };
 
   const fetchData = async () => {
-    showLoader(); // call the loader
+    showLoader();
 
     try {
       const getSouvenirs = await auditorService.getSouvenirList();
 
       if (getSouvenirs.success) {
-        Swal.close(); // close the loader
-        setSouvenirList(getSouvenirs.results || []);
+        Swal.close();
+        // Map the response data to match our Souvenir interface
+        const mappedSouvenirs = getSouvenirs.results.map(
+          (souvenir: Souvenir) => ({
+            id: souvenir.id,
+            name: souvenir.name,
+            code: souvenir.code,
+            color: souvenir.color,
+          })
+        );
+        setSouvenirList(mappedSouvenirs);
       } else {
-        Swal.close(); // close the loader
+        Swal.close();
       }
     } catch (error) {
-      Swal.close(); // close the loader
+      Swal.close();
       console.error("Error fetching data:", error);
-    } finally {
-      // setIsLoading(false);
     }
   };
 
-  const handleSubmitSouvenir = async (selectedSouvenirData: any) => {
-    showLoader(); // call the loader
+  const handleSubmitSouvenir = async (selectedSouvenirData: Souvenir) => {
+    showLoader();
 
     const post_data = {
-      souvenir_id: selectedSouvenir?.id || selectedSouvenirData?.id || "",
+      souvenir_id: selectedSouvenirData.id,
     };
 
     try {
       const submitSouvenir = await auditorService.submitSouvenir(post_data);
 
       if (submitSouvenir.success) {
-        Swal.close(); // close the loader
+        Swal.close();
         return true;
       } else {
-        Swal.close(); // close the loader
+        Swal.close();
         showMessage("0", submitSouvenir.message);
         return false;
       }
     } catch {
-      Swal.close(); // close the loader
+      Swal.close();
       showMessage(
         "0",
         "Unable to process your request. Please try again later."
       );
       return false;
-    } finally {
-      // setIsLoading(false);
     }
   };
 
@@ -119,7 +123,6 @@ export default function SouvenirSelectionPage() {
     } else {
       router.push(`/unauthorized`);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showMessage = (status: string, message: string) => {
@@ -156,7 +159,7 @@ export default function SouvenirSelectionPage() {
 
   return (
     <div className="flex min-h-screen flex-col p-4">
-      <div className="flex-1 flex items-center justify-center ">
+      <div className="flex-1 flex items-center justify-center">
         <SouvenirSelection
           souvenirData={souvenirList}
           onSelect={handleSouvenirSelect}
