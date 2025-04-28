@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoTrashOutline } from "react-icons/io5";
 import { souvenirAvailabilityData } from "@/services/api";
@@ -315,7 +315,7 @@ export default function SouvenirAvailabilityPage() {
       try {
 
         const deleteSouvenir = {
-          souvenir_id: parseInt(souvenir?.id),
+          souvenir_id: souvenir?.id || 0,
         };
 
         const souvenirDelete =
