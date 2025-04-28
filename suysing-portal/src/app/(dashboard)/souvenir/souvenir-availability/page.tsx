@@ -3,17 +3,14 @@
 import { useState, useEffect } from "react";
 import { FaSearch, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
+import { IoTrashOutline } from "react-icons/io5";
 import { souvenirAvailabilityData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Souvenir } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 import Swal from "sweetalert2";
 
-type SortField =
-  | "name"
-  | "qty_as_int"
-  | "claimed_as_int"
-  | "remaining_as_int";
+type SortField = "name" | "qty_as_int" | "claimed_as_int" | "remaining_as_int";
 
 export default function SouvenirAvailabilityPage() {
   const { token } = useAuth();
@@ -98,20 +95,20 @@ export default function SouvenirAvailabilityPage() {
   };
 
   useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        // set delay 2 seconds
-        const delaySetSearch = setTimeout(() => {
-          // it will get the latest value after two seconds of no keyboard activity
-          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+    if (searchQuery != initialRenderVal) {
+      // to avoid executing on initial render
+      // set delay 2 seconds
+      const delaySetSearch = setTimeout(() => {
+        // it will get the latest value after two seconds of no keyboard activity
+        setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+      }, 500);
 
-        //clears the timeout of the previous value of delaySetSearch
-        //clears the timeout on re render
-        return () => clearTimeout(delaySetSearch);
+      //clears the timeout of the previous value of delaySetSearch
+      //clears the timeout on re render
+      return () => clearTimeout(delaySetSearch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
-
 
   // Handle sort
   const handleSort = (field: SortField) => {
@@ -120,11 +117,11 @@ export default function SouvenirAvailabilityPage() {
     if (sortConfig && sortConfig.field === field) {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
-    
-    let api_sort_field : string = field
 
-    if (direction == "desc"){
-      api_sort_field  = `-${api_sort_field}`
+    let api_sort_field: string = field;
+
+    if (direction == "desc") {
+      api_sort_field = `-${api_sort_field}`;
     }
 
     setfilterParams({ ...filterParams, sort_by: api_sort_field });
@@ -303,6 +300,19 @@ export default function SouvenirAvailabilityPage() {
     });
   };
 
+  const handleDeleteSouvenir = async (souvenir: Souvenir) => {
+    const confirmAction = await confirmMessage(
+      `Are you sure you want to delete ${souvenir.name}?`
+    );
+
+    if (confirmAction.isConfirmed) {
+      // TODO: Implement API call when ready
+      console.log("Delete souvenir:", souvenir.id);
+      showMessage("1", "Souvenir deleted successfully");
+      setfilterParams({ ...filterParams, page: 1, query: "" });
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="">
@@ -312,7 +322,7 @@ export default function SouvenirAvailabilityPage() {
               className="inline-flex items-center px-3 py-3 bg-blue-800 text-white text-sm"
               onClick={() => setShowAddModal(true)}
             >
-              <FaPlus className="mr-2" /> Add Souvenir
+              <FaPlus className="mr-2" /> Change Souvenir
             </button>
             {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
               <FaFilter className="mr-2" /> Filter by
@@ -335,7 +345,7 @@ export default function SouvenirAvailabilityPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th 
+                <th
                   className="px-4 py-2 text-left cursor-pointer"
                   onClick={() => handleSort("name")}
                 >
@@ -355,7 +365,7 @@ export default function SouvenirAvailabilityPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left"
                   onClick={() => handleSort("qty_as_int")}
                 >
@@ -375,7 +385,7 @@ export default function SouvenirAvailabilityPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left"
                   onClick={() => handleSort("claimed_as_int")}
                 >
@@ -395,7 +405,7 @@ export default function SouvenirAvailabilityPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left"
                   onClick={() => handleSort("remaining_as_int")}
                 >
@@ -439,12 +449,20 @@ export default function SouvenirAvailabilityPage() {
                     <td className="px-4 py-3">{souvenir.claimed}</td>
                     <td className="px-4 py-3">{souvenir.remaining}</td>
                     <td className="px-4 py-3 text-center">
-                      <button
-                        className="text-blue-600 hover:text-blue-800"
-                        onClick={() => openEditModal(souvenir)}
-                      >
-                        <MdModeEditOutline />
-                      </button>
+                      <div className="flex justify-center space-x-2">
+                        <button
+                          className="text-blue-700 hover:text-blue-800"
+                          onClick={() => openEditModal(souvenir)}
+                        >
+                          <MdModeEditOutline className="size-5" />
+                        </button>
+                        <button
+                          className="text-red-700 hover:text-red-800"
+                          onClick={() => handleDeleteSouvenir(souvenir)}
+                        >
+                          <IoTrashOutline className="size-5" />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
