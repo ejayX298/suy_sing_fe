@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { FaArrowLeft, FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
 import { boothHoppingReportData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
-import QRCode from "react-qr-code";
+//import QRCode from "react-qr-code";
 import { Customer, BoothVisit } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 
@@ -225,9 +225,9 @@ export default function CustomerBoothHoppingDetail() {
             </div>
           </div>
 
-          <div className="flex-shrink-0">
+        {/*   <div className="flex-shrink-0">
             <QRCode value={customer.code} size={128} fgColor="#0A20B1" />
-          </div>
+          </div> */}
         </div>
       </div>
 
