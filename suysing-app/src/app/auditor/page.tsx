@@ -12,8 +12,8 @@ import SouvenirSelection from "@/components/auditor/SouvenirSelection";
 import VoteBestBoothModal from "@/components/auditor/VoteBestBoothModal";
 // import { useBooths } from "@/context/BoothsContext";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auditorService } from '@/services/api';
-import Swal from 'sweetalert2';
+import { auditorService } from "@/services/api";
+import Swal from "sweetalert2";
 
 function AuditorPageContent() {
   // Camera and scanning states
@@ -53,91 +53,85 @@ function AuditorPageContent() {
     | "souvenir"
     | "success"
   >("scan");
-  
+
   // Get booth data from context
   // const { visitedCount, totalBooths } = useBooths();
-  
+
   // Initialize router for navigation
   const router = useRouter();
-  
+
   const [isBoothComplete, setIsBoothComplete] = useState(false);
 
   const check_auditor_access = async () => {
     try {
+      const customerResult = await auditorService.checkAccess(
+        auditor_hash_code
+      );
 
-      const customerResult = await auditorService.checkAccess(auditor_hash_code);
-      
-      if(customerResult.success){
-        setAuditorAccess(true)
-      }else{
-        router.push(`/unauthorized`)
+      if (customerResult.success) {
+        setAuditorAccess(true);
+      } else {
+        router.push(`/unauthorized`);
       }
-    
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setAuditorAccess(false)
-      router.push(`/unauthorized`)
+      console.error("Error fetching data:", error);
+      setAuditorAccess(false);
+      router.push(`/unauthorized`);
     } finally {
       // setIsLoading(false);
     }
   };
 
-  const checkCustomerRecord = async (customer_code : string) => {
+  const checkCustomerRecord = async (customer_code: string) => {
     showLoader(); // call the loader
     try {
+      const customerResult = await auditorService.checkCustomerRecord(
+        auditor_hash_code,
+        customer_code
+      );
 
-      const customerResult = await auditorService.checkCustomerRecord(auditor_hash_code, customer_code);
-      
-      if(customerResult.success){
+      if (customerResult.success) {
         Swal.close(); // close the loader
-        return customerResult.results
-      }else{
+        return customerResult.results;
+      } else {
         Swal.close(); // close the loader
-        showMessage('0', customerResult.message)
+        showMessage("0", customerResult.message);
         return false;
       }
-    
     } catch {
       Swal.close(); // close the loader
-      showMessage('0', 'Unable to process your request')
+      showMessage("0", "Unable to process your request");
       return false;
-      
     }
-
   };
 
-
-  const checkCustomerRecordByHash = async (magic_link : string) => {
+  const checkCustomerRecordByHash = async (magic_link: string) => {
     showLoader(); // call the loader
     try {
+      const customerResult = await auditorService.checkCustomerRecordbyHash(
+        auditor_hash_code,
+        magic_link
+      );
 
-      const customerResult = await auditorService.checkCustomerRecordbyHash(auditor_hash_code, magic_link);
-      
-      if(customerResult.success){
+      if (customerResult.success) {
         Swal.close(); // close the loader
-        return customerResult.results
-      }else{
+        return customerResult.results;
+      } else {
         Swal.close(); // close the loader
-        showMessage('0', customerResult.message)
+        showMessage("0", customerResult.message);
         return false;
       }
-    
     } catch {
       Swal.close(); // close the loader
-      showMessage('0', 'Unable to process your request')
+      showMessage("0", "Unable to process your request");
       return false;
-      
     }
-
   };
 
-  
-  
   useEffect(() => {
-    check_auditor_access()
-    
+    check_auditor_access();
+
     if (currentStep === "scan" && !showManualCodeModal && auditorAccess) {
-      
       if (typeof navigator !== "undefined" && navigator.mediaDevices) {
         navigator.mediaDevices
           .getUserMedia({ video: { facingMode: "environment" } })
@@ -154,74 +148,70 @@ function AuditorPageContent() {
       // clear audit info in initial auditor page
       localStorage.removeItem("audit_info");
 
-
-    return () => {
-      setScanning(false);
-    };
-
-  }
-   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentStep, showManualCodeModal, auditorAccess]);
-
-  const handleScan = useCallback(async (data: string, input_type : string = "manual") => {
-    const customerCode = data.trim();
-    let customerRecord;
-    
-    if (input_type == "qr") {
-      customerRecord = await checkCustomerRecordByHash(customerCode);
-    }else{
-        customerRecord = await checkCustomerRecord(customerCode);
-    }
-    
-    
-    if(customerRecord){
-      const mapCustomerData = {
-        id: customerRecord.id,
-        code: customerRecord.code,
-        name: customerRecord.full_name,
-        hasVoted: customerRecord.is_done_voting,
-        isDoneVisit: customerRecord.is_done_visit,
-        totalBooths: customerRecord.total_booths,
-        totalBoothVisited: customerRecord.total_booth_visited,
-        totalRegularBooths: customerRecord.total_regular_booths,
-        totalDoubleZoneBooths: customerRecord.total_double_zone_booths,
-        isMissing: customerRecord.is_missing
+      return () => {
+        setScanning(false);
       };
-      setCustomerData(mapCustomerData);
-      
-      const isComplete = customerRecord.is_done_visit == 1 ? true : false;
-      
-      setIsBoothComplete(isComplete);
-
-      if(customerRecord.is_missing == 1){
-
-        setIsCardMissing(true)
-
-      }else if(customerRecord.is_done_souvenir_claim == 1){
-
-        // showMessage('1', `Customer code: ${customerRecord.code} is already done with the souvenir claiming`)
-        setIsDoneSouvenirClaim(true)
-
-      }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 0){
-      
-        // show booth hopping complete modal
-        setIsBoothHoopingComplete(true)
-        setIsDoneVoting(false)
-
-      }else if(customerRecord.is_done_visit == 1 && customerRecord.is_done_voting == 1){
-        
-        setIsBoothHoopingComplete(true)
-        setIsDoneVoting(true)
-
-      }else{
-        // Redirect to booth status for booth visit
-        setCurrentStep("booth-status");
-      }
-      
-      
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [customerData?.totalBoothVisited, customerData?.totalBooths]);
+  }, [currentStep, showManualCodeModal, auditorAccess]);
+
+  const handleScan = useCallback(
+    async (data: string, input_type: string = "manual") => {
+      const customerCode = data.trim();
+      let customerRecord;
+
+      if (input_type == "qr") {
+        customerRecord = await checkCustomerRecordByHash(customerCode);
+      } else {
+        customerRecord = await checkCustomerRecord(customerCode);
+      }
+
+      if (customerRecord) {
+        const mapCustomerData = {
+          id: customerRecord.id,
+          code: customerRecord.code,
+          name: customerRecord.full_name,
+          hasVoted: customerRecord.is_done_voting,
+          isDoneVisit: customerRecord.is_done_visit,
+          totalBooths: customerRecord.total_booths,
+          totalBoothVisited: customerRecord.total_booth_visited,
+          totalRegularBooths: customerRecord.total_regular_booths,
+          totalDoubleZoneBooths: customerRecord.total_double_zone_booths,
+          isMissing: customerRecord.is_missing,
+        };
+        setCustomerData(mapCustomerData);
+
+        const isComplete = customerRecord.is_done_visit == 1 ? true : false;
+
+        setIsBoothComplete(isComplete);
+
+        if (customerRecord.is_missing == 1) {
+          setIsCardMissing(true);
+        } else if (customerRecord.is_done_souvenir_claim == 1) {
+          // showMessage('1', `Customer code: ${customerRecord.code} is already done with the souvenir claiming`)
+          setIsDoneSouvenirClaim(true);
+        } else if (
+          customerRecord.is_done_visit == 1 &&
+          customerRecord.is_done_voting == 0
+        ) {
+          // show booth hopping complete modal
+          setIsBoothHoopingComplete(true);
+          setIsDoneVoting(false);
+        } else if (
+          customerRecord.is_done_visit == 1 &&
+          customerRecord.is_done_voting == 1
+        ) {
+          setIsBoothHoopingComplete(true);
+          setIsDoneVoting(true);
+        } else {
+          // Redirect to booth status for booth visit
+          setCurrentStep("booth-status");
+        }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [customerData?.totalBoothVisited, customerData?.totalBooths]
+  );
 
   const captureAndScanQRCode = useCallback(() => {
     if (!scanning || currentStep !== "scan") return;
@@ -275,7 +265,7 @@ function AuditorPageContent() {
 
   const handleManualCodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!manualCode.trim()) {
       return;
     }
@@ -309,45 +299,37 @@ function AuditorPageContent() {
     }, 3000);
   };
 
-
-  const  handleNext = (redirectTo : string)  => {
-
-    let stored_hash_code: string = ""
-    if (typeof window !== 'undefined') {
-      stored_hash_code = localStorage.getItem('audit_hash_code') || "";
+  const handleNext = (redirectTo: string) => {
+    let stored_hash_code: string = "";
+    if (typeof window !== "undefined") {
+      stored_hash_code = localStorage.getItem("audit_hash_code") || "";
     }
 
-    if(redirectTo == 'souvenir'){
-      if(!isDoneVoting){
-        console.log('booth vote')
-          // redirect to booth vote
-          router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
-      }else{        
+    if (redirectTo == "souvenir") {
+      if (!isDoneVoting) {
+        console.log("booth vote");
+        // redirect to booth vote
+        router.push(`/auditor/booth-vote/?cc=${stored_hash_code}`);
+      } else {
         router.push(`/auditor/souvenir-selection?cc=${stored_hash_code}`);
       }
-      
-    }else if(redirectTo == 'card-missing'){
-      
-      setIsCardMissing(false)
-      setScanning(true)
-
-    }else if(redirectTo == 'done-claiming'){
-
-      setIsDoneSouvenirClaim(false)
-      setScanning(true)
-
+    } else if (redirectTo == "card-missing") {
+      setIsCardMissing(false);
+      setScanning(true);
+    } else if (redirectTo == "done-claiming") {
+      setIsDoneSouvenirClaim(false);
+      setScanning(true);
     }
-  }
+  };
 
-  const showMessage = (status: string, message : string)  => {
-    
+  const showMessage = (status: string, message: string) => {
     let iconType: "success" | "error";
     let titleType: "Success" | "Oops!";
 
-    if(status == "1"){
+    if (status == "1") {
       iconType = "success";
       titleType = "Success";
-    }else{
+    } else {
       iconType = "error";
       titleType = "Oops!";
     }
@@ -364,19 +346,19 @@ function AuditorPageContent() {
         setScanning(true);
       }
     });
- }
+  };
 
- const showLoader = ()  => {
-  const loader = Swal.fire({
-    title: 'Processing data...',
-    text: 'Please wait',
-    allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    }
-  });
-  return loader;
-}
+  const showLoader = () => {
+    const loader = Swal.fire({
+      title: "Processing data...",
+      text: "Please wait",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+    return loader;
+  };
 
   const videoConstraints = {
     facingMode: "environment",
@@ -394,7 +376,7 @@ function AuditorPageContent() {
       <div className="w-full max-w-md sm:max-w-4xl">
         <div className="mb-8 text-center">
           <Image
-            src="/images/epic-journey.png"
+            src="/images/epic-journey1.png"
             alt="Epic Journey"
             width={300}
             height={100}
@@ -454,8 +436,6 @@ function AuditorPageContent() {
           </div>
         )}
 
-
-
         {currentStep === "booth-status" && customerData && (
           <BoothStatus
             customerId={customerData?.id}
@@ -479,9 +459,6 @@ function AuditorPageContent() {
             onBack={() => setCurrentStep("booth-status")}
           />
         )}
-
-
-
 
         {currentStep === "vote-modal" && customerData && (
           <VoteBestBoothModal
@@ -511,7 +488,7 @@ function AuditorPageContent() {
             <h2 className="text-xl font-semibold">Success</h2>
             <p className="text-gray-600">Souvenir successfully claimed</p>
             <button
-              onClick={() => {
+              onClick={() => {  
                 setCurrentStep("scan");
                 setScanning(true);
               }}
@@ -560,13 +537,14 @@ function AuditorPageContent() {
         </div>
       )}
 
-
       {isBoothHoopingComplete && (
-        <BoothHoppingComplete navigateToSouvenir={() => handleNext('souvenir')} />
+        <BoothHoppingComplete
+          navigateToSouvenir={() => handleNext("souvenir")}
+        />
       )}
 
       {isCardMissing && (
-        <MissingCard onClose={() => handleNext('card-missing')} />
+        <MissingCard onClose={() => handleNext("card-missing")} />
       )}
 
       {isDoneSouvenirClaim && (
@@ -582,14 +560,15 @@ function AuditorPageContent() {
                   className="mx-auto"
                 />
               </div>
-              
+
               <h2 className="text-4xl font-bold mb-2">Success!</h2>
               <p className="text-xl mb-4">
-              Customer {customerData?.code} has finished claiming the souvenir.
+                Customer {customerData?.code} has finished claiming the
+                souvenir.
               </p>
-              
+
               <button
-                onClick={() => handleNext('done-claiming')}
+                onClick={() => handleNext("done-claiming")}
                 className="w-full bg-[#F78B1E] font-semibold text-lg py-3 rounded-lg"
               >
                 Close
@@ -598,7 +577,6 @@ function AuditorPageContent() {
           </div>
         </div>
       )}
-
     </main>
   );
 }
