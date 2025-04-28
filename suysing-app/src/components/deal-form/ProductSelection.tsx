@@ -161,7 +161,11 @@ interface ProductSelectionProps {
   customerPickupDetails: CustomerPickupDetails[];
   customerDeliveryDetails: CustomerDeliveryDetails[];
   subCodes: SubCode[];
-  onCustomerCodeChange?: (code: string, subcodeId : string, currentCartIndex?: number) => void;
+  onCustomerCodeChange?: (
+    code: string,
+    subcodeId: string,
+    currentCartIndex?: number
+  ) => void;
 }
 
 export default function ProductSelection({
@@ -226,7 +230,7 @@ export default function ProductSelection({
 
   useEffect(() => {
     // setCurrentCarts(carts)
-    getUsedSubcodes(carts)
+    getUsedSubcodes(carts);
     // check if cart index exists in carts
     if (currentCartIndex >= 0 && currentCartIndex <= carts.length) {
       if (carts[currentCartIndex]) {
@@ -273,10 +277,14 @@ export default function ProductSelection({
   const getUsedSubcodes = (carts: Cart[]) => {
     // get subCodes in carts
     const usedSubCodes = carts
-        .filter(cart => typeof cart.customerSubCode === "string" && cart.customerSubCode.trim() !== "")
-        .map(cart => cart.customerSubCode as string)
-    setUsedSubCodes(usedSubCodes)
-  }
+      .filter(
+        (cart) =>
+          typeof cart.customerSubCode === "string" &&
+          cart.customerSubCode.trim() !== ""
+      )
+      .map((cart) => cart.customerSubCode as string);
+    setUsedSubCodes(usedSubCodes);
+  };
 
   const handleQuantityChange = (
     id: string,
@@ -402,18 +410,27 @@ export default function ProductSelection({
 
                   {isCustomerCodeOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-
                       {/* exclude used subcodes in displaying  of options*/}
                       {subCodes
-                        .filter(subCode =>  !usedSubCodes.includes(subCode.code) || subCode.code === customerSubCode)
+                        .filter(
+                          (subCode) =>
+                            !usedSubCodes.includes(subCode.code) ||
+                            subCode.code === customerSubCode
+                        )
                         .map((subCode, index) => (
                           <div
                             key={index}
                             className={`px-4 py-2 hover:bg-gray-100 cursor-pointer ${
-                              customerSubCode === subCode.code ? "bg-gray-100" : ""
+                              customerSubCode === subCode.code
+                                ? "bg-gray-100"
+                                : ""
                             }`}
                             onClick={() => {
-                              onCustomerCodeChange(subCode.code, subCode.id.toString(), currentCartIndex);
+                              onCustomerCodeChange(
+                                subCode.code,
+                                subCode.id.toString(),
+                                currentCartIndex
+                              );
                               setIsCustomerCodeOpen(false);
                             }}
                           >
@@ -421,7 +438,7 @@ export default function ProductSelection({
                               {subCode.code}
                             </span>
                           </div>
-                      ))}
+                        ))}
                     </div>
                   )}
                 </div>
@@ -531,7 +548,11 @@ export default function ProductSelection({
                     {isShippingDropdownOpen && (
                       <div className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
                         {customerDeliveryDetails
-                          .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
+                          .filter(
+                            (customerDelivery) =>
+                              customerDelivery.code === customerSubCode ||
+                              !customerDelivery.code
+                          )
                           .map((customerDelivery, index) => (
                             <div
                               key={index}
@@ -548,7 +569,7 @@ export default function ProductSelection({
                                 {customerDelivery.address}
                               </span>
                             </div>
-                        ))}
+                          ))}
                       </div>
                     )}
                   </div>
@@ -664,7 +685,7 @@ export default function ProductSelection({
         </div>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex relative max-h-[calc(100vh-8rem)] overflow-y-auto">
         <div className="flex-1">
           <div className="flex flex-col gap-2" ref={dealersContainerRef}>
             {filteredDealers.map((dealer) => (
@@ -767,7 +788,7 @@ export default function ProductSelection({
           </div>
         </div>
 
-        <div className="sticky top-0 h-fit flex flex-col text-xs bg-transparent">
+        <div className="sticky top-4 self-start flex flex-col text-xs gap-1 py-2 ml-2">
           {Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ").map((letter) => (
             <button
               key={letter}
