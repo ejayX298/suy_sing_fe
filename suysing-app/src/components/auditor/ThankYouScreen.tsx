@@ -18,22 +18,16 @@ export default function ThankYouScreen({ onContinue }: ThankYouScreenProps) {
             height={100}
           />
         </div>
-        <h2 className="text-[34px] font-bold text-center mb-2 text-[#343434]">
-          Thank you for voting!
+        <h2 className="text-[34px] max-w-lg font-bold text-center mb-2 text-[#343434]">
+          Thank you for voting! Please return the tablet to the Suy Sing
+          representative
         </h2>
-        <p className="text-center text-[#343434] text-[14px] mb-6">
-          You may claim your Suki Day Souvenir at the
-          <br />
-          <span className="font-bold">
-            Tent Lobby from 2:30pm until 7:00pm.
-          </span>
-        </p>
 
         <button
           onClick={onContinue}
           className="w-full py-3 bg-[#F78B1E] rounded-lg text-lg text-[#343434] font-semibold"
         >
-          Continue
+          Close
         </button>
       </div>
     </div>
