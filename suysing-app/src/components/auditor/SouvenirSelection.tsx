@@ -66,8 +66,8 @@ export default function SouvenirSelection({
         </p>
       </div>
 
-      <div className="w-full  pb-4 mx-auto max-w-2xl">
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-8">
+      <div className="w-full  pb-4 mx-auto max-w-xl">
+        <div className="grid grid-cols-2 gap-2 mb-8">
           {SOUVENIRS.map((souvenir) => (
             <div
               key={souvenir.id}
