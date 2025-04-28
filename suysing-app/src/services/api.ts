@@ -37,13 +37,19 @@ export const customerQr = {
           if (!stored_hash_code) {
             localStorage.setItem("customer_info", JSON.stringify(mapResponse));
             localStorage.setItem("hash_code", hash_code);
-            localStorage.setItem(`customer_info_${mapResponse.code}`, JSON.stringify(mapResponse));
+            localStorage.setItem(
+              `customer_info_${mapResponse.code}`,
+              JSON.stringify(mapResponse)
+            );
             window.location.href = `/my-qr/?cc=${hash_code}`;
           }
 
           localStorage.setItem("customer_info", JSON.stringify(mapResponse));
           localStorage.setItem("hash_code", hash_code);
-          localStorage.setItem(`customer_info_${mapResponse.code}`, JSON.stringify(mapResponse));
+          localStorage.setItem(
+            `customer_info_${mapResponse.code}`,
+            JSON.stringify(mapResponse)
+          );
 
           // Reload page on updating of hash code for refreshing of bottom navigation urls
           if (stored_hash_code != hash_code) {
@@ -525,20 +531,28 @@ export const auditorService = {
     try {
       const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
+      let audit_info: string = "";
+
+      if (typeof window !== "undefined") {
+        audit_info = localStorage.getItem("audit_info") || "";
+      }
+
+      const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
+      const customer_id = auditInforParsed?.id || "";
+
       const response = await httpClient(api_key).get(
-        `/customer/souvenir/list/?is_auditor=1`,
+        `/customer/souvenir/list/?is_auditor=1&customer_id=${customer_id}`,
         {}
       );
 
       const response_data = response?.data?.data || [];
 
-      const mapResponse = response_data.souvenirs.map(
-        (souvenir: { id: string; code: string; name: string }) => ({
-          id: souvenir.id,
-          name: souvenir.name,
-          image: "/images/souvenir/" + souvenir.code + ".png",
-        })
-      );
+      const mapResponse = response_data.souvenirs.map((souvenir: any) => ({
+        id: souvenir.id,
+        name: souvenir.name,
+        code: souvenir.code,
+        color: souvenir.color,
+      }));
 
       return {
         success: true,
@@ -712,7 +726,7 @@ export const boothVisitService = {
         {
           customer_id: customer_id,
           booth_codes: JSON.stringify(post_data),
-          input_type : input_type
+          input_type: input_type,
         }
       );
 
@@ -725,7 +739,6 @@ export const boothVisitService = {
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {
-
         if (error?.status == 400) {
           if (error?.response?.data?.message == "double_zone_cap_reached") {
             return {
@@ -733,7 +746,6 @@ export const boothVisitService = {
               is_double_cap_reached: true,
               results: [],
             };
-            
           }
         }
 
@@ -852,25 +864,31 @@ export const dealCartService = {
     try {
       const customer_info = localStorage.getItem("customer_info");
       const customerInfoParsed = customer_info ? JSON.parse(customer_info) : [];
-      const session_id = customerInfoParsed?.session_id || ''
-      const customer_id = customerInfoParsed?.id || ''
+      const session_id = customerInfoParsed?.session_id || "";
+      const customer_id = customerInfoParsed?.id || "";
 
-      const mapBoothProducts = post_data?.selectedProducts?.map((boothProduct: { id: string; quantity: string; }) => ({
-        booth_product_id: boothProduct.id,
-        order_qty: boothProduct.quantity
-      })) || [];
-    
-      const response = await httpClient(session_id).post(`/customer/deal/cart/create/`, {
-        customer_id : customer_id,
-        email : post_data?.email || "",
-        customer_code : post_data?.customerCode || "",
-        customer_sub_code_id : post_data?.customerSubCodeId || "",
-        transaction_type : post_data?.transactionType || "",
-        remarks : post_data?.remarks || "",
-        address : post_data?.shipToAddress || "",
-        branch : post_data?.branch || "",
-        products : JSON.stringify(mapBoothProducts)
-      });
+      const mapBoothProducts =
+        post_data?.selectedProducts?.map(
+          (boothProduct: { id: string; quantity: string }) => ({
+            booth_product_id: boothProduct.id,
+            order_qty: boothProduct.quantity,
+          })
+        ) || [];
+
+      const response = await httpClient(session_id).post(
+        `/customer/deal/cart/create/`,
+        {
+          customer_id: customer_id,
+          email: post_data?.email || "",
+          customer_code: post_data?.customerCode || "",
+          customer_sub_code_id: post_data?.customerSubCodeId || "",
+          transaction_type: post_data?.transactionType || "",
+          remarks: post_data?.remarks || "",
+          address: post_data?.shipToAddress || "",
+          branch: post_data?.branch || "",
+          products: JSON.stringify(mapBoothProducts),
+        }
+      );
 
       const response_data = response?.data?.data || [];
 
