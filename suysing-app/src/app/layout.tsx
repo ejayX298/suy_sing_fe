@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import BottomNavigation from "@/components/BottomNavigation";
 import Image from "next/image";
 import { BoothsProvider } from "@/context/BoothsContext";
+import { NavigationWrapper } from "@/components/NavigationWrapper";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -37,7 +37,7 @@ export default function RootLayout({
         <BoothsProvider>
           <Suspense fallback={<p>Loading...</p>}>
             {children}
-            <BottomNavigation />
+            <NavigationWrapper />
           </Suspense>
         </BoothsProvider>
       </body>
