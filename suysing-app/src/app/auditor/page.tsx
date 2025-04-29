@@ -155,7 +155,7 @@ function AuditorPageContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentStep, showManualCodeModal, auditorAccess]);
 
-  const handleScan = useCallback(
+  const handleScan = useCallback( 
     async (data: string, input_type: string = "manual") => {
       const customerCode = data.trim();
       let customerRecord;
@@ -208,8 +208,8 @@ function AuditorPageContent() {
           setCurrentStep("booth-status");
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [customerData?.totalBoothVisited, customerData?.totalBooths]
   );
 

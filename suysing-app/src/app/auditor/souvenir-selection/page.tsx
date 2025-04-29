@@ -123,6 +123,7 @@ export default function SouvenirSelectionPage() {
     } else {
       router.push(`/unauthorized`);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const showMessage = (status: string, message: string) => {
