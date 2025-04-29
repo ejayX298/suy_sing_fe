@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 interface DeliveryFormProps {
   customerCode: string;
@@ -38,6 +38,7 @@ export default function DeliveryForm({
   transactionTypes,
   customerDeliveryDetails,
 }: DeliveryFormProps) {
+  const [showInfo, setShowInfo] = useState(false);
   return (
     <div className="bg-white rounded-md border-2 border-gray-400 shadow-sm overflow-hidden max-w-2xl mx-auto">
       <div className="px-6 mt-6">
@@ -59,7 +60,7 @@ export default function DeliveryForm({
             className="w-full px-3 py-3 border border-gray-400 rounded-md focus:outline-none text-black "
             readOnly
           />
-           <input
+          <input
             type="text"
             id="customerSubCode"
             name="customerSubCode"
@@ -69,14 +70,19 @@ export default function DeliveryForm({
           />
         </div>
 
-        <div>
-          <label
-            htmlFor="email"
-            className="block text-sm  text-black mb-2"
-          >
-            Email Address (optional)
-          </label>
-           <input
+        <div className="relative">
+          <div className="flex items-center gap-1">
+            <label htmlFor="email" className="block text-sm  text-black mb-2">
+              Email Address (optional)
+            </label>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="inline-flex items-center justify-center ml-1 mb-1 bg-[#0920B0] text-[#B6E056] rounded-full w-3 h-3"
+            >
+              <span className="font-bold text-xs leading-none">i</span>
+            </button>
+          </div>
+          <input
             type="email"
             id="email"
             name="email"
@@ -84,6 +90,13 @@ export default function DeliveryForm({
             onChange={onInputChange}
             className="w-full px-3  py-4 border border-gray-400 rounded-md focus:outline-none text-black"
           />
+          {showInfo && (
+            <div className="absolute left-0 top-8 z-10 bg-white border-2 border-[#F78B1E] rounded-lg p-4 shadow-lg w-[17rem]">
+              <p className="text-sm text-start">
+                A copy of your order summary will be sent to your email.
+              </p>
+            </div>
+          )}
         </div>
 
         <div>
@@ -136,7 +149,11 @@ export default function DeliveryForm({
               className="w-full px-3 py-4 border border-gray-400 rounded-md focus:outline-none text-black appearance-none"
             >
               {customerDeliveryDetails
-                .filter(customerDelivery => customerDelivery.code === customerSubCode || !customerDelivery.code)
+                .filter(
+                  (customerDelivery) =>
+                    customerDelivery.code === customerSubCode ||
+                    !customerDelivery.code
+                )
                 .map((customerDelivery, index) => (
                   <option key={index} value={customerDelivery.id}>
                     {customerDelivery.address}
