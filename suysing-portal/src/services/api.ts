@@ -43,6 +43,7 @@ interface ApiCustomer {
   pretty_claim_status?: string;
   item_claimed?: string;
   time_claimed?: string;
+  released_by?: string;
   time_submitted?: string;
   store_name?: string;
   booth_vote_history?: BoothVoteHistory[];
@@ -1047,6 +1048,7 @@ export const souvenirClaimData = {
           status: customer.pretty_claim_status,
           item: customer.item_claimed,
           timeClaimed: customer.time_claimed,
+          released_by: customer.released_by,
         })
       );
 
