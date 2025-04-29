@@ -52,6 +52,7 @@ export interface Claim {
   status: string;
   item: string;
   timeClaimed: string;
+  released_by: string;
 }
 
 export interface Souvenir {
