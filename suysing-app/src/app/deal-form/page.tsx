@@ -181,8 +181,8 @@ export default function DealFormPage() {
         let default_branch = "";
         let default_sub_code = customerParams?.code || ""; // use customer code as default sub code
         let default_sub_code_id = "";
-        let initial_transaction_type = ""
-        let initial_pickup_branch_code = ""
+        let initial_transaction_type = "";
+        let initial_pickup_branch_code = "";
 
         // get the first sub code
         if (subCodes.length > 0) {
@@ -197,9 +197,16 @@ export default function DealFormPage() {
             prev.includes("Pick up") ? prev : [...prev, "Pick up"]
           );
           // for initital value of dropdown after changing of transaction type and also for sub codes defaults
-          default_branch = pickUpResults.find(pickUpResult => pickUpResult.branch_code === initial_pickup_branch_code)?.id || "";
+          default_branch =
+            pickUpResults.find(
+              (pickUpResult) =>
+                pickUpResult.branch_code === initial_pickup_branch_code
+            )?.id || "";
           if (subCodes.length <= 0) {
-            default_branch = pickUpResults.find(pickUpResult => pickUpResult.branch_code === "TAG")?.id || ""; // use Tag as default branch if sub codes is empty
+            default_branch =
+              pickUpResults.find(
+                (pickUpResult) => pickUpResult.branch_code === "TAG"
+              )?.id || ""; // use Tag as default branch if sub codes is empty
           }
         }
 
@@ -208,19 +215,23 @@ export default function DealFormPage() {
             prev.includes("Delivery") ? prev : [...prev, "Delivery"]
           );
           // for initital value of dropdown after changing of transaction type and also for sub codes defaults
-          default_ship_to_addreess = deliveryResults.find(deliveryResult => deliveryResult.code === default_sub_code)?.id || "";
-          if(!default_ship_to_addreess){
+          default_ship_to_addreess =
+            deliveryResults.find(
+              (deliveryResult) => deliveryResult.code === default_sub_code
+            )?.id || "";
+          if (!default_ship_to_addreess) {
             // if no default sub code address get the first empty code in delivery array
-            default_ship_to_addreess = deliveryResults.find(deliveryResult => !deliveryResult.code)?.id || "";
+            default_ship_to_addreess =
+              deliveryResults.find((deliveryResult) => !deliveryResult.code)
+                ?.id || "";
           }
         }
 
-
         // for sub code defaults
-        if(initial_transaction_type != ""){
-          if(initial_transaction_type.toLowerCase() == "del"){
+        if (initial_transaction_type != "") {
+          if (initial_transaction_type.toLowerCase() == "del") {
             default_transaction_type = "Delivery";
-          }else{
+          } else {
             default_transaction_type = "Pick up";
           }
         }
@@ -275,8 +286,10 @@ export default function DealFormPage() {
         return false;
       }
     } catch {
-      setShowErrorMessageModal(true)
-      setErrorMessage(  "Unable to process your request. Please try again later.")
+      setShowErrorMessageModal(true);
+      setErrorMessage(
+        "Unable to process your request. Please try again later."
+      );
       // showMessage(
       //   "0",
       //   "Unable to process your request. Please try again later. "
@@ -313,11 +326,12 @@ export default function DealFormPage() {
     await getBoothProducts();
 
     // Check for active carts in localStorage
-    const storedCarts = localStorage.getItem(`dealformCarts-${customerInfoParsed?.code}`);
+    const storedCarts = localStorage.getItem(
+      `dealformCarts-${customerInfoParsed?.code}`
+    );
     if (storedCarts) {
       const parsedCarts = JSON.parse(storedCarts);
       if (parsedCarts.length > 0) {
-
         // If there are active carts, go to step 3 (ProductSelection)
         setCarts(parsedCarts);
         setStep(3);
@@ -382,7 +396,6 @@ export default function DealFormPage() {
   }, []);
 
   const handleCreateNewCart = (fromConfirmation = false) => {
-
     if (carts.length >= subCodes.length) {
       alert(`Maximum of ${subCodes.length} carts allowed.`);
       return;
@@ -404,30 +417,40 @@ export default function DealFormPage() {
     let default_ship_to_addreess = "";
     let default_branch = "";
     let next_sub_code_id = "";
-    let next_sub_code= "";
-    let next_transaction_type= "";
-    let next_pickup_branch_code= "";
+    let next_sub_code = "";
+    let next_transaction_type = "";
+    let next_pickup_branch_code = "";
 
     // get the first element in remainingSubCodes
-    if(remaininingSubcodes.length > 0){
+    if (remaininingSubcodes.length > 0) {
       next_sub_code_id = remaininingSubcodes[0].id.toString();
       next_sub_code = remaininingSubcodes[0].code;
       next_transaction_type = remaininingSubcodes[0].transaction_type;
       next_pickup_branch_code = remaininingSubcodes[0].pickup_branch_code || "";
     }
 
-    
-    if(next_transaction_type != ""){
-      if(next_transaction_type.toLowerCase() == "del"){
+    if (next_transaction_type != "") {
+      if (next_transaction_type.toLowerCase() == "del") {
         default_transaction_type = "Delivery";
-        default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => customerDeliveryDetail.code === next_sub_code)?.id || "";
-        if(!default_ship_to_addreess){
+        default_ship_to_addreess =
+          customerDeliveryDetails.find(
+            (customerDeliveryDetail) =>
+              customerDeliveryDetail.code === next_sub_code
+          )?.id || "";
+        if (!default_ship_to_addreess) {
           // if no default sub code address get the first empty code in delivery array
-          default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => !customerDeliveryDetail.code)?.id || "";
+          default_ship_to_addreess =
+            customerDeliveryDetails.find(
+              (customerDeliveryDetail) => !customerDeliveryDetail.code
+            )?.id || "";
         }
-      }else{
+      } else {
         default_transaction_type = "Pick up";
-        default_branch = customerPickupDetails.find(customerPickupDetail => customerPickupDetail.branch_code === next_pickup_branch_code)?.id || "";
+        default_branch =
+          customerPickupDetails.find(
+            (customerPickupDetail) =>
+              customerPickupDetail.branch_code === next_pickup_branch_code
+          )?.id || "";
       }
     }
 
@@ -448,7 +471,10 @@ export default function DealFormPage() {
         selectedProducts: selectedProducts,
         email: formData.email,
       };
-      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+      localStorage.setItem(
+        `dealformCarts-${formData.customerCode}`,
+        JSON.stringify(updatedCarts)
+      );
     }
 
     const newCartId = `CART${carts.length + 1}`;
@@ -471,7 +497,10 @@ export default function DealFormPage() {
     setCurrentCartIndex(carts.length);
 
     // Save updated carts to localStorage
-    localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCartsFinal));
+    localStorage.setItem(
+      `dealformCarts-${formData.customerCode}`,
+      JSON.stringify(updatedCartsFinal)
+    );
 
     // Reset form data for the new cart
     setFormData({
@@ -511,7 +540,10 @@ export default function DealFormPage() {
     if (newIndex >= 0 && newIndex < carts.length) {
       // Update carts state and save to localStorage first
       setCarts(updatedCarts);
-      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+      localStorage.setItem(
+        `dealformCarts-${formData.customerCode}`,
+        JSON.stringify(updatedCarts)
+      );
 
       // Get the selected cart's data
       const selectedCart = updatedCarts[newIndex];
@@ -537,42 +569,56 @@ export default function DealFormPage() {
     }
   };
 
+  const handleCustomerSubCodeChange = (
+    code: string,
+    subcodeId: string,
+    cartIndex?: number
+  ) => {
+    // get sub code base on subcodeId
+    const getSubCode = subCodes.find(
+      (subCode) => subcodeId === subCode.id.toString()
+    );
 
-  const handleCustomerSubCodeChange = (code: string, subcodeId : string, cartIndex?: number) => {
+    let default_transaction_type = "Pick up";
+    let default_ship_to_addreess = "";
+    let default_branch = "";
+    let next_sub_code_id = "";
+    let next_sub_code = "";
+    let next_transaction_type = "";
+    let next_pickup_branch_code = "";
 
-       // get sub code base on subcodeId
-       const getSubCode = subCodes.find(subCode => subcodeId === subCode.id.toString());
+    // get the first element in remainingSubCodes
+    if (getSubCode) {
+      next_sub_code_id = getSubCode.id.toString();
+      next_sub_code = getSubCode.code;
+      next_transaction_type = getSubCode.transaction_type;
+      next_pickup_branch_code = getSubCode.pickup_branch_code || "";
+    }
 
-        let default_transaction_type = "Pick up";
-        let default_ship_to_addreess = "";
-        let default_branch = "";
-        let next_sub_code_id = "";
-        let next_sub_code= "";
-        let next_transaction_type= "";
-        let next_pickup_branch_code= "";
-
-        // get the first element in remainingSubCodes
-        if(getSubCode){
-          next_sub_code_id = getSubCode.id.toString();
-          next_sub_code = getSubCode.code;
-          next_transaction_type = getSubCode.transaction_type;
-          next_pickup_branch_code = getSubCode.pickup_branch_code || "";
+    if (next_transaction_type != "") {
+      if (next_transaction_type.toLowerCase() == "del") {
+        default_transaction_type = "Delivery";
+        default_ship_to_addreess =
+          customerDeliveryDetails.find(
+            (customerDeliveryDetail) =>
+              customerDeliveryDetail.code === next_sub_code
+          )?.id || "";
+        if (!default_ship_to_addreess) {
+          // if no default sub code address get the first empty code in delivery array
+          default_ship_to_addreess =
+            customerDeliveryDetails.find(
+              (customerDeliveryDetail) => !customerDeliveryDetail.code
+            )?.id || "";
         }
-
-        
-        if(next_transaction_type != ""){
-          if(next_transaction_type.toLowerCase() == "del"){
-            default_transaction_type = "Delivery";
-            default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => customerDeliveryDetail.code === next_sub_code)?.id || "";
-            if(!default_ship_to_addreess){
-              // if no default sub code address get the first empty code in delivery array
-              default_ship_to_addreess = customerDeliveryDetails.find(customerDeliveryDetail => !customerDeliveryDetail.code)?.id || "";
-            }
-          }else{
-            default_transaction_type = "Pick up";
-            default_branch = customerPickupDetails.find(customerPickupDetail => customerPickupDetail.branch_code === next_pickup_branch_code)?.id || "";
-          }
-        }
+      } else {
+        default_transaction_type = "Pick up";
+        default_branch =
+          customerPickupDetails.find(
+            (customerPickupDetail) =>
+              customerPickupDetail.branch_code === next_pickup_branch_code
+          )?.id || "";
+      }
+    }
 
     if (cartIndex != undefined) {
       if (cartIndex >= 0 && cartIndex <= carts.length) {
@@ -589,10 +635,12 @@ export default function DealFormPage() {
         };
         setCarts(updatedCarts);
 
-            localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
-          }
-        }
-        
+        localStorage.setItem(
+          `dealformCarts-${formData.customerCode}`,
+          JSON.stringify(updatedCarts)
+        );
+      }
+    }
 
     setFormData({
       acceptTerms: formData.acceptTerms,
@@ -609,7 +657,7 @@ export default function DealFormPage() {
 
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
     // remove product quantity == 0
-    
+
     const updatedProducts = products;
 
     if (cartIndex >= 0 && cartIndex < carts.length) {
@@ -627,12 +675,12 @@ export default function DealFormPage() {
           const findUpdateProductIndex = updatedProducts.findIndex(
             (updatedProduct) => updatedProduct.id === findUpdatedProduct.id
           );
-          
+
           // remove product on updatedProducts array
           if (findUpdateProductIndex !== -1) {
-              updatedProducts.splice(findUpdateProductIndex, 1); // Removes 1 item at the found index      
+            updatedProducts.splice(findUpdateProductIndex, 1); // Removes 1 item at the found index
           }
-          
+
           return { ...cartProduct, quantity: findUpdatedProduct.quantity };
         } else {
           return { ...cartProduct };
@@ -657,10 +705,13 @@ export default function DealFormPage() {
       };
       setCarts(updatedCarts);
       setSelectedProducts(cleanedProducts);
-      
+
       console.log("Updated products for cart", cartIndex, products);
 
-      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+      localStorage.setItem(
+        `dealformCarts-${formData.customerCode}`,
+        JSON.stringify(updatedCarts)
+      );
     }
   };
 
@@ -685,38 +736,43 @@ export default function DealFormPage() {
 
   const handleTransactionTypeChange = (type: string) => {
     setFormData({ ...formData, transactionType: type });
-    updateCartDetails('transactionType', type);
+    updateCartDetails("transactionType", type);
   };
 
   const handleBranchChange = (branch: string) => {
-    setFormData({ ...formData, branch : branch, shipToAddress:"" });
+    setFormData({ ...formData, branch: branch, shipToAddress: "" });
 
-    updateCartDetails('branch', branch);
+    updateCartDetails("branch", branch);
     // updateCartDetails('shipToAddress', "");
   };
 
   const handleShipToAddressChange = (address: string) => {
-    setFormData({ ...formData, shipToAddress: address, branch : "", });
-    updateCartDetails('shipToAddress', address);
+    setFormData({ ...formData, shipToAddress: address, branch: "" });
+    updateCartDetails("shipToAddress", address);
     // updateCartDetails('branch', "");
   };
 
-  const isValidEmail = (email : string) => {
+  const isValidEmail = (email: string) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   };
 
-  const updateCartDetails = (cart_details_key : string, cart_details_value : string) => {
-    
+  const updateCartDetails = (
+    cart_details_key: string,
+    cart_details_value: string
+  ) => {
     const updatedCarts = [...carts];
     updatedCarts[currentCartIndex] = {
       ...updatedCarts[currentCartIndex],
-      [cart_details_key]: cart_details_value
+      [cart_details_key]: cart_details_value,
     };
 
     // Update carts state and save to localStorage first
     setCarts(updatedCarts);
-    localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
-  }
+    localStorage.setItem(
+      `dealformCarts-${formData.customerCode}`,
+      JSON.stringify(updatedCarts)
+    );
+  };
 
   const handleNext = () => {
     if (step === 1 && !formData.acceptTerms) {
@@ -731,7 +787,9 @@ export default function DealFormPage() {
 
     if (step === 1) {
       const customer_info = localStorage.getItem("customer_info");
-      const customerInfoParsed = customer_info ? JSON.parse(customer_info) : null;
+      const customerInfoParsed = customer_info
+        ? JSON.parse(customer_info)
+        : null;
 
       // Clear dealformCarts after accepting t and c
       localStorage.removeItem(`dealformCarts-${customerInfoParsed.code}`);
@@ -747,7 +805,7 @@ export default function DealFormPage() {
         return;
       }
 
-      if (formData.email != "" && !isValidEmail(formData.email)) {
+      if (formData.email && !isValidEmail(formData.email)) {
         alert("Please enter a valid email address.");
         return;
       }
@@ -769,7 +827,10 @@ export default function DealFormPage() {
       setCarts([firstCart]);
 
       // Save to localStorage
-      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify([firstCart]));
+      localStorage.setItem(
+        `dealformCarts-${formData.customerCode}`,
+        JSON.stringify([firstCart])
+      );
     }
 
     if (step < 4) {
@@ -807,11 +868,19 @@ export default function DealFormPage() {
           // added delay before opening new alert
           setTimeout(() => {
             // showMessage("0", "You already submmited this cart.");
-            setShowErrorMessageModal(true)
-            setErrorMessage( "You already submmited this cart.")
+            setShowErrorMessageModal(true);
+            setErrorMessage("You already submmited this cart.");
           }, 200);
           return;
         }
+      }
+
+      // Validate email if provided
+      if (formData.email && !isValidEmail(formData.email)) {
+        Swal.close();
+        setShowErrorMessageModal(true);
+        setErrorMessage("Please enter a valid email address.");
+        return;
       }
 
       const existingProducts =
@@ -832,7 +901,10 @@ export default function DealFormPage() {
       setCarts(updatedCarts);
 
       // Save to localStorage
-      localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
+      localStorage.setItem(
+        `dealformCarts-${formData.customerCode}`,
+        JSON.stringify(updatedCarts)
+      );
 
       const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
 
@@ -844,11 +916,16 @@ export default function DealFormPage() {
         };
 
         // remove submitted carts
-        const removedSubmittedCart = updatedCarts.filter((updatedCart) => !updatedCart.submitted);
+        const removedSubmittedCart = updatedCarts.filter(
+          (updatedCart) => !updatedCart.submitted
+        );
 
         setCarts(removedSubmittedCart);
         // Save to localStorage
-        localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(removedSubmittedCart));
+        localStorage.setItem(
+          `dealformCarts-${formData.customerCode}`,
+          JSON.stringify(removedSubmittedCart)
+        );
 
         existingProducts.forEach((product) => {
           if (product.quantity > 0) {
@@ -866,19 +943,17 @@ export default function DealFormPage() {
           }
         });
 
-
         const remainingUnsubmittedCarts = removedSubmittedCart.filter(
           (cart) => !cart.submitted
         );
 
         //close loader
         Swal.close();
-        console.log("remainingUnsubmittedCarts")
-        console.log(remainingUnsubmittedCarts)
+        console.log("remainingUnsubmittedCarts");
+        console.log(remainingUnsubmittedCarts);
         if (remainingUnsubmittedCarts.length > 0) {
-
-            // Get the first selected cart's data
-            const selectedCart = remainingUnsubmittedCarts[0];
+          // Get the first selected cart's data
+          const selectedCart = remainingUnsubmittedCarts[0];
 
           // Update form data with the selected cart's data
           setFormData({
@@ -899,18 +974,17 @@ export default function DealFormPage() {
           // Finally update the current cart index
           setCurrentCartIndex(0);
 
-
-            // Show cart submitted modal instead of message
-            setShowCartSubmittedModal(true);
-            return;
+          // Show cart submitted modal instead of message
+          setShowCartSubmittedModal(true);
+          return;
         }
 
         // If this was the last cart, show the final submission modal
         setShowSubmitModal(true);
         return;
-      }else{
-         //close loader
-          Swal.close();
+      } else {
+        //close loader
+        Swal.close();
       }
     } else {
       //close loader
@@ -998,7 +1072,7 @@ export default function DealFormPage() {
 
   return (
     <div className="flex flex-col max-w-2xl mx-auto min-h-screen">
-      <main className="flex-1 px-4 py-6 overflow-y-auto pb-16">    
+      <main className="flex-1 px-4 py-6 overflow-y-auto pb-16">
         {step === 4 || step === 5 ? (
           <div className="flex justify-center mb-6">
             <Image
@@ -1169,7 +1243,7 @@ export default function DealFormPage() {
               <p className="mb-6 text-[#343434] text-[20px]">{errorMessage}</p>
               <button
                 onClick={() => {
-                  setShowErrorMessageModal(false)
+                  setShowErrorMessageModal(false);
                 }}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
               >
@@ -1179,7 +1253,6 @@ export default function DealFormPage() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
