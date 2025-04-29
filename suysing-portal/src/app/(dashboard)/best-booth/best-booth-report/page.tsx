@@ -94,16 +94,17 @@ export default function BestBoothReportPage() {
   };
 
   useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        // set delay 2 seconds
-        const delaySetSearch = setTimeout(() => {
-          // it will get the latest value after two seconds of no keyboard activity
-          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+    if (searchQuery != initialRenderVal) {
+      // to avoid executing on initial render
+      // set delay 2 seconds
+      const delaySetSearch = setTimeout(() => {
+        // it will get the latest value after two seconds of no keyboard activity
+        setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+      }, 500);
 
-        //clears the timeout of the previous value of delaySetSearch
-        //clears the timeout on re render
-        return () => clearTimeout(delaySetSearch);
+      //clears the timeout of the previous value of delaySetSearch
+      //clears the timeout on re render
+      return () => clearTimeout(delaySetSearch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
@@ -133,11 +134,11 @@ export default function BestBoothReportPage() {
     if (sortConfig && sortConfig.field === field) {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
-    
-    let api_sort_field : string = field
 
-    if (direction == "desc"){
-      api_sort_field  = `-${api_sort_field}`
+    let api_sort_field: string = field;
+
+    if (direction == "desc") {
+      api_sort_field = `-${api_sort_field}`;
     }
 
     setfilterParams({ ...filterParams, sort_by: api_sort_field });
@@ -148,20 +149,20 @@ export default function BestBoothReportPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="py-4 flex justify-end gap-4 items-center">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:justify-end gap-2 w-full lg:w-auto mb-4">
           <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
-          <div className="relative">
+          <div className="relative flex-grow sm:flex-grow-0">
             <input
               type="text"
               value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search customer here..."
-              className="pl-4 py-2 border  w-64 focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full sm:w-72 pl-4 pr-10 py-2 border focus:outline-none border-gray-400"
             />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
+            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
         </div>
 
@@ -187,9 +188,9 @@ export default function BestBoothReportPage() {
                         <FaSortDown className="-mt-1" />
                       </span>
                     )}
-                  </span> 
+                  </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left cursor-pointer"
                   onClick={() => handleSort("full_name")}
                 >
@@ -207,9 +208,9 @@ export default function BestBoothReportPage() {
                         <FaSortDown className="-mt-1" />
                       </span>
                     )}
-                  </span> 
+                  </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left cursor-pointer"
                   onClick={() => handleSort("customer_type")}
                 >
@@ -227,15 +228,16 @@ export default function BestBoothReportPage() {
                         <FaSortDown className="-mt-1" />
                       </span>
                     )}
-                  </span> 
+                  </span>
                 </th>
-                <th 
+                <th
                   className="px-4 py-2 text-left cursor-pointer"
                   onClick={() => handleSort("last_voting_created_at")}
                 >
                   Time Submitted
                   <span className="ml-1 inline-block">
-                    {sortConfig && sortConfig.field === "last_voting_created_at" ? (
+                    {sortConfig &&
+                    sortConfig.field === "last_voting_created_at" ? (
                       sortConfig.direction === "asc" ? (
                         <FaSortUp />
                       ) : (
@@ -247,7 +249,7 @@ export default function BestBoothReportPage() {
                         <FaSortDown className="-mt-1" />
                       </span>
                     )}
-                  </span> 
+                  </span>
                 </th>
               </tr>
             </thead>
