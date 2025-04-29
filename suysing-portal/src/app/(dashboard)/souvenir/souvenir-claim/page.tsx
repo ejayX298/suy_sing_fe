@@ -16,8 +16,7 @@ type SortField =
   | "claim_status"
   | "customer_souvenir_name"
   | "customer_souvenir_time_submiited"
-  | "auditor_fname"
-  ;
+  | "auditor_fname";
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
@@ -93,16 +92,17 @@ export default function SouvenirClaimPage() {
   };
 
   useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        // set delay 2 seconds
-        const delaySetSearch = setTimeout(() => {
-          // it will get the latest value after two seconds of no keyboard activity
-          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+    if (searchQuery != initialRenderVal) {
+      // to avoid executing on initial render
+      // set delay 2 seconds
+      const delaySetSearch = setTimeout(() => {
+        // it will get the latest value after two seconds of no keyboard activity
+        setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+      }, 500);
 
-        //clears the timeout of the previous value of delaySetSearch
-        //clears the timeout on re render
-        return () => clearTimeout(delaySetSearch);
+      //clears the timeout of the previous value of delaySetSearch
+      //clears the timeout on re render
+      return () => clearTimeout(delaySetSearch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
@@ -188,18 +188,18 @@ export default function SouvenirClaimPage() {
     }
   };
 
-   // Handle sort
-   const handleSort = (field: SortField) => {
+  // Handle sort
+  const handleSort = (field: SortField) => {
     let direction: "asc" | "desc" = "asc";
 
     if (sortConfig && sortConfig.field === field) {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
-    
-    let api_sort_field : string = field
 
-    if (direction == "desc"){
-      api_sort_field  = `-${api_sort_field}`
+    let api_sort_field: string = field;
+
+    if (direction == "desc") {
+      api_sort_field = `-${api_sort_field}`;
     }
 
     setfilterParams({ ...filterParams, sort_by: api_sort_field });
@@ -242,18 +242,18 @@ export default function SouvenirClaimPage() {
   return (
     <div className="space-y-6">
       <div>
-        <div className="py-4 flex justify-end gap-4 items-center">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:justify-end gap-2 w-full lg:w-auto mb-4">
           <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
-          <div className="relative">
+          <div className="relative flex-grow sm:flex-grow-0">
             <input
               type="text"
               value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search customer here..."
-              className="pl-4 py-2 border w-64 focus:outline-none focus:ring focus:ring-blue-500"
+              className="w-full sm:w-72 pl-4 pr-10 py-2 border focus:outline-none border-gray-400"
             />
             <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
           </div>
@@ -263,7 +263,7 @@ export default function SouvenirClaimPage() {
           <table className="w-full border border-gray-400">
             <thead>
               <tr className="bg-blue-800 text-white">
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("code")}
                 >
@@ -283,7 +283,7 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("full_name")}
                 >
@@ -303,7 +303,7 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("customer_type")}
                 >
@@ -323,7 +323,7 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("claim_status")}
                 >
@@ -343,13 +343,14 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("customer_souvenir_name")}
                 >
                   Item
                   <span className="ml-1 inline-block">
-                    {sortConfig && sortConfig.field === "customer_souvenir_name" ? (
+                    {sortConfig &&
+                    sortConfig.field === "customer_souvenir_name" ? (
                       sortConfig.direction === "asc" ? (
                         <FaSortUp />
                       ) : (
@@ -363,13 +364,14 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("customer_souvenir_time_submiited")}
                 >
                   Time Claimed
                   <span className="ml-1 inline-block">
-                    {sortConfig && sortConfig.field === "customer_souvenir_time_submiited" ? (
+                    {sortConfig &&
+                    sortConfig.field === "customer_souvenir_time_submiited" ? (
                       sortConfig.direction === "asc" ? (
                         <FaSortUp />
                       ) : (
@@ -383,7 +385,7 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
-                <th 
+                <th
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("auditor_fname")}
                 >
