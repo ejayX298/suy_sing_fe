@@ -788,7 +788,7 @@ export default function ProductSelection({
           </div>
         </div>
 
-        <div className="sticky top-4 self-start flex flex-col text-xs gap-1 py-2 ml-2">
+        <div className="sticky top-6 self-start flex flex-col text-xs py-2 ml-2">
           {Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ").map((letter) => (
             <button
               key={letter}
