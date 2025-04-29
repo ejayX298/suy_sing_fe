@@ -512,7 +512,7 @@ export default function DealFormPage() {
       remarks: formData.remarks,
       customerSubCodeId: next_sub_code_id,
       customerSubCode: next_sub_code,
-      email: formData.email,
+      email: "",
     });
 
     setSelectedProducts([]);
