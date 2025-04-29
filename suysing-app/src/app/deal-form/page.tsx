@@ -35,7 +35,7 @@ interface Cart {
   submitted?: boolean;
   customerSubCodeId?: string;
   customerSubCode?: string;
-  email?: string; 
+  email?: string;
 }
 
 // interface CustomerData {
@@ -463,7 +463,7 @@ export default function DealFormPage() {
       shipToAddress: default_ship_to_addreess,
       remarks: "",
       selectedProducts: [],
-      email: formData.email,
+      email: "",
     };
     const updatedCartsFinal = [...updatedCarts, newCart];
 
@@ -500,6 +500,7 @@ export default function DealFormPage() {
       shipToAddress: formData.shipToAddress || "",
       remarks: formData.remarks || "",
       selectedProducts: selectedProducts || [],
+      email: formData.email || "",
     };
 
     // Calculate new index
@@ -573,40 +574,37 @@ export default function DealFormPage() {
           }
         }
 
-        if(cartIndex != undefined){
-          if (cartIndex >= 0 && cartIndex <= carts.length) {
+    if (cartIndex != undefined) {
+      if (cartIndex >= 0 && cartIndex <= carts.length) {
+        console.log("cart update triggered");
+        const updatedCarts = [...carts];
 
-            console.log('cart update triggered')
-            const updatedCarts = [...carts];
-            
-            updatedCarts[cartIndex] = {
-              ...updatedCarts[cartIndex],
-              branch: default_branch,
-              shipToAddress: default_ship_to_addreess,
-              customerSubCodeId: next_sub_code_id,
-              customerSubCode: next_sub_code,
-              transactionType : default_transaction_type
-            };
-            setCarts(updatedCarts);
+        updatedCarts[cartIndex] = {
+          ...updatedCarts[cartIndex],
+          branch: default_branch,
+          shipToAddress: default_ship_to_addreess,
+          customerSubCodeId: next_sub_code_id,
+          customerSubCode: next_sub_code,
+          transactionType: default_transaction_type,
+        };
+        setCarts(updatedCarts);
 
             localStorage.setItem(`dealformCarts-${formData.customerCode}`, JSON.stringify(updatedCarts));
           }
         }
         
 
-        setFormData({
-          acceptTerms: formData.acceptTerms,
-          customerCode: formData.customerCode,
-          transactionType: default_transaction_type,
-          branch: default_branch,
-          shipToAddress: default_ship_to_addreess,
-          remarks: formData.remarks,
-          customerSubCodeId: next_sub_code_id,
-          customerSubCode: next_sub_code,
-          email: formData.email,
-        });
-
-    
+    setFormData({
+      acceptTerms: formData.acceptTerms,
+      customerCode: formData.customerCode,
+      transactionType: default_transaction_type,
+      branch: default_branch,
+      shipToAddress: default_ship_to_addreess,
+      remarks: formData.remarks,
+      customerSubCodeId: next_sub_code_id,
+      customerSubCode: next_sub_code,
+      email: formData.email,
+    });
   };
 
   const handleUpdateCart = (cartIndex: number, products: Product[]) => {
@@ -753,11 +751,9 @@ export default function DealFormPage() {
         alert("Please enter a valid email address.");
         return;
       }
-
     }
-    
+
     if (step === 2 && carts.length === 0) {
-      
       const firstCart: Cart = {
         id: "CART1",
         customerCode: formData.customerCode,
@@ -831,6 +827,7 @@ export default function DealFormPage() {
         shipToAddress: formData.shipToAddress,
         remarks: formData.remarks,
         selectedProducts: existingProducts,
+        email: formData.email,
       };
       setCarts(updatedCarts);
 
@@ -883,24 +880,24 @@ export default function DealFormPage() {
             // Get the first selected cart's data
             const selectedCart = remainingUnsubmittedCarts[0];
 
-            // Update form data with the selected cart's data
-            setFormData({
-              acceptTerms: true,
-              customerCode: selectedCart.customerCode || "",
-              transactionType: selectedCart.transactionType || "Pick up",
-              branch: selectedCart.branch || "",
-              shipToAddress: selectedCart.shipToAddress || "",
-              remarks: selectedCart.remarks || "",
-              customerSubCodeId: selectedCart.customerSubCodeId || "",
-              customerSubCode: selectedCart.customerSubCode || "",
-              email: selectedCart.email || "",
-            });
+          // Update form data with the selected cart's data
+          setFormData({
+            acceptTerms: true,
+            customerCode: selectedCart.customerCode || "",
+            transactionType: selectedCart.transactionType || "Pick up",
+            branch: selectedCart.branch || "",
+            shipToAddress: selectedCart.shipToAddress || "",
+            remarks: selectedCart.remarks || "",
+            customerSubCodeId: selectedCart.customerSubCodeId || "",
+            customerSubCode: selectedCart.customerSubCode || "",
+            email: selectedCart.email || "",
+          });
 
-            // Update selected products with proper initialization
-            setSelectedProducts(selectedCart.selectedProducts || []);
+          // Update selected products with proper initialization
+          setSelectedProducts(selectedCart.selectedProducts || []);
 
-            // Finally update the current cart index
-            setCurrentCartIndex(0);
+          // Finally update the current cart index
+          setCurrentCartIndex(0);
 
 
             // Show cart submitted modal instead of message
@@ -1155,8 +1152,8 @@ export default function DealFormPage() {
       {/* Deal Submitted Modal */}
       <DealSubmitted isOpen={showSubmitModal} onClose={handleCloseModal} />
 
-       {/* Error Message Modal */}
-       {showErrorMessageModal && (
+      {/* Error Message Modal */}
+      {showErrorMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
           <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
             <div className="flex flex-col items-center text-center">
