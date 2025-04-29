@@ -30,6 +30,7 @@ function getSouvenirStyle(souvenir: Souvenir): {
   border: string;
   bg: string;
   shadow: string;
+  textColor: string;
 } {
   switch (souvenir.color) {
     case "red":
@@ -37,24 +38,28 @@ function getSouvenirStyle(souvenir: Souvenir): {
         border: "border-[#FD2929]",
         bg: "bg-[#FD2929]",
         shadow: "shadow-[0_0_5.1px_7px_#FD2929]",
+        textColor: "text-white",
       };
     case "green":
       return {
         border: "border-[#2F9E0E]",
         bg: "bg-[#2F9E0E]",
         shadow: "shadow-[0_0_5.1px_7px_rgba(157,233,134,0.35)]",
+        textColor: "text-white",
       };
     case "yellow":
       return {
-        border: "border-[#B9A71C]",
-        bg: "bg-[#B9A71C]",
+        border: "border-[#FFD65A]",
+        bg: "bg-[#FFD65A]",
         shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+        textColor: "text-[#343434]",
       };
     default:
       return {
         border: "border-[#B9A71C]",
         bg: "bg-[#B9A71C]",
         shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+        textColor: "text-white",
       };
   }
 }
@@ -101,7 +106,8 @@ export default function SouvenirSelection({
       <div className="w-full pb-4 mx-auto max-w-xl">
         <div className="grid grid-cols-2 gap-2 mb-8">
           {souvenirData.map((souvenir) => {
-            const { border, bg, shadow } = getSouvenirStyle(souvenir);
+            const { border, bg, shadow, textColor } =
+              getSouvenirStyle(souvenir);
             const isSelected = selectedSouvenir?.id === souvenir.id;
             return (
               <div
@@ -110,7 +116,7 @@ export default function SouvenirSelection({
               >
                 <button
                   className={`w-full flex flex-col box-border items-center rounded-t-lg py-4 transition-all duration-150 border-2 ${border} bg-white
-                    ${isSelected ? `border-[6px] ${shadow}` : ""}`}
+                    ${isSelected ? `border-[6px]  ${shadow}` : ""}`}
                   onClick={() => handleSouvenirSelect(souvenir)}
                 >
                   <div className="relative w-full flex justify-center items-center">
@@ -136,7 +142,7 @@ export default function SouvenirSelection({
                   </div>
                 </button>
                 <div
-                  className={`${bg} text-white py-2 text-center font-medium rounded-b-lg`}
+                  className={`${bg} ${textColor} py-2 text-center font-bold rounded-b-lg`}
                 >
                   {souvenir.name}
                 </div>
