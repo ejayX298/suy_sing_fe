@@ -15,7 +15,9 @@ type SortField =
   | "customer_type"
   | "claim_status"
   | "customer_souvenir_name"
-  | "customer_souvenir_time_submiited";
+  | "customer_souvenir_time_submiited"
+  | "auditor_fname"
+  ;
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
@@ -381,6 +383,27 @@ export default function SouvenirClaimPage() {
                     )}
                   </span>
                 </th>
+                <th 
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("auditor_fname")}
+                >
+                  Released by
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "auditor_fname" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+
                 <th className="px-4 py-2 text-center">Action</th>
               </tr>
             </thead>
@@ -418,6 +441,7 @@ export default function SouvenirClaimPage() {
                     </td>
                     <td className="px-4 py-3">{claim.item}</td>
                     <td className="px-4 py-3">{claim.timeClaimed}</td>
+                    <td className="px-4 py-3">{claim.released_by}</td>
                     <td className="px-4 py-3 text-center">
                       {claim.status != "Claimed" && (
                         <button

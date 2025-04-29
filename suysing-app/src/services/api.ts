@@ -215,13 +215,36 @@ export const auditorService = {
     try {
       const hash_code = code;
 
-      await httpClient(api_key).get(
+      const response = await httpClient(api_key).get(
         `/auditor/check_auditor/?ahc=${hash_code}&is_auditor=1`,
         {}
       );
 
+      
+      const response_data = response?.data?.data || [];
+
+      const mapResponse: {
+        id: string;
+        code: string;
+        fname: string;
+        mname: string;
+        lname: string;
+        full_name: string;
+        auditor_hash_code: string
+      } = {
+        id: response_data?.id,
+        code: response_data?.code,
+        fname: response_data?.fname,
+        mname: response_data?.mname,
+        lname: response_data?.lname,
+        full_name: `${response_data?.fname} ${response_data?.mname}  ${response_data?.lname} `,
+        auditor_hash_code: response_data?.auditor_hash_code,
+      };
+
+
       if (typeof window !== "undefined") {
-        localStorage.setItem("audit_hash_code", hash_code);
+        localStorage.setItem("audit_hash_code", mapResponse.auditor_hash_code);
+        localStorage.setItem("auditor_details", JSON.stringify(mapResponse));
       }
 
       return {
@@ -394,10 +417,18 @@ export const auditorService = {
 
   overrideBoothVisit: async (customer_id: number) => {
     const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+    let auditor_details: string = "";
+
+    if (typeof window !== "undefined") {
+        auditor_details = localStorage.getItem("auditor_details") || "";
+    }
+    
+    const auditorDetailsParsed = auditor_details ? JSON.parse(auditor_details) : [];
+    const auditor_id = auditorDetailsParsed?.id || "";
 
     try {
       const response = await httpClient(api_key).get(
-        `/customer/booth/override/?customer_id=${customer_id}&is_auditor=1`,
+        `/customer/booth/override/?customer_id=${customer_id}&is_auditor=1&auditor_id=${auditor_id}`,
         {}
       );
 
@@ -491,18 +522,24 @@ export const auditorService = {
     try {
       const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
       let audit_info: string = "";
+      let auditor_details: string = "";
 
       if (typeof window !== "undefined") {
         audit_info = localStorage.getItem("audit_info") || "";
+        auditor_details = localStorage.getItem("auditor_details") || "";
       }
 
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
+      const auditorDetailsParsed = auditor_details ? JSON.parse(auditor_details) : [];
+
       const customer_id = auditInforParsed?.id || "";
+      const auditor_id = auditorDetailsParsed?.id || "";
 
       await httpClient(api_key).post(
         `/customer/voting/booth/submit/?is_auditor=1`,
         {
           customer_id: customer_id,
+          auditor_id: auditor_id,
           booth_ids: JSON.stringify(post_data),
         }
       );
@@ -576,19 +613,25 @@ export const auditorService = {
     try {
       const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
       let audit_info: string = "";
+      let auditor_details: string = "";
 
       if (typeof window !== "undefined") {
         audit_info = localStorage.getItem("audit_info") || "";
+        auditor_details = localStorage.getItem("auditor_details") || "";
       }
 
       const auditInforParsed = audit_info ? JSON.parse(audit_info) : [];
+      const auditorDetailsParsed = auditor_details ? JSON.parse(auditor_details) : [];
+
       const customer_id = auditInforParsed?.id || "";
+      const auditor_id = auditorDetailsParsed?.id || "";
 
       await httpClient(api_key).post(
         `/customer/souvenir/submit/?is_auditor=1`,
         {
           customer_id: customer_id,
           souvenir_id: post_data?.souvenir_id || "",
+          auditor_id : auditor_id,
         }
       );
 
