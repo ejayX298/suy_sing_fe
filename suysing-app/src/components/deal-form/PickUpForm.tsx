@@ -74,7 +74,7 @@ export default function PickUpForm({
             </label>
             <button
               onClick={() => setShowInfo(!showInfo)}
-              className="inline-flex items-center justify-center ml-1 mb-1 bg-[#0920B0] text-[#B6E056] rounded-full w-3 h-3"
+              className="inline-flex items-center justify-center ml-1 mb-2 bg-[#0920B0] text-[#B6E056] rounded-full w-3 h-3"
             >
               <span className="font-bold text-xs leading-none">i</span>
             </button>
