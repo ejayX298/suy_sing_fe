@@ -38,7 +38,7 @@ export default function CustomerActivitiesPage() {
     page: 1,
     perpage: 10,
     query: "",
-    sort_by : ""
+    sort_by: "",
   });
   const [sortConfig, setSortConfig] = useState<{
     field: SortField;
@@ -67,7 +67,7 @@ export default function CustomerActivitiesPage() {
 
       setCurrentPage(customersData.current_page);
       setTotalPages(customersData.total_pages);
-      
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -110,16 +110,17 @@ export default function CustomerActivitiesPage() {
   };
 
   useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        // set delay 2 seconds
-        const delaySetSearch = setTimeout(() => {
-          // it will get the latest value after two seconds of no keyboard activity
-          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+    if (searchQuery != initialRenderVal) {
+      // to avoid executing on initial render
+      // set delay 2 seconds
+      const delaySetSearch = setTimeout(() => {
+        // it will get the latest value after two seconds of no keyboard activity
+        setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+      }, 500);
 
-        //clears the timeout of the previous value of delaySetSearch
-        //clears the timeout on re render
-        return () => clearTimeout(delaySetSearch);
+      //clears the timeout of the previous value of delaySetSearch
+      //clears the timeout on re render
+      return () => clearTimeout(delaySetSearch);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery]);
@@ -131,11 +132,11 @@ export default function CustomerActivitiesPage() {
     if (sortConfig && sortConfig.field === field) {
       direction = sortConfig.direction === "asc" ? "desc" : "asc";
     }
-    
-    let api_sort_field : string = field
 
-    if (direction == "desc"){
-      api_sort_field  = `-${api_sort_field}`
+    let api_sort_field: string = field;
+
+    if (direction == "desc") {
+      api_sort_field = `-${api_sort_field}`;
     }
 
     setfilterParams({ ...filterParams, sort_by: api_sort_field });
@@ -165,41 +166,41 @@ export default function CustomerActivitiesPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row justify-between items-start">
+      <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:justify-between lg:items-start">
         {/* Summary boxes */}
-        <div className="flex flex-wrap gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {/* Booth Hopping */}
-          <div className="border border-gray-400 p-4 w-[200px]">
+          <div className="border border-gray-400 p-4 w-full sm:w-[200px]">
             <h3 className="text-sm mb-2">Booth Hopping</h3>
             <p className="text-3xl font-bold">{summary.boothHopping}</p>
           </div>
 
           {/* Booth Voting */}
-          <div className="border border-gray-400 p-4 w-[200px]">
+          <div className="border border-gray-400 p-4 w-full sm:w-[200px]">
             <h3 className="text-sm mb-2">Booth Voting</h3>
             <p className="text-3xl font-bold">{summary.boothVoting}</p>
           </div>
 
           {/* Souvenir Claiming */}
-          <div className="border border-gray-400 p-4 w-[200px]">
+          <div className="border border-gray-400 p-4 w-full sm:w-[200px]">
             <h3 className="text-sm mb-2">Souvenir Claiming</h3>
             <p className="text-3xl font-bold">{summary.souvenirClaiming}</p>
           </div>
         </div>
 
         {/* Filter and Search */}
-        <div className="flex items-center gap-2 self-end">
-          <button className="inline-flex items-center px-3 py-2.5 bg-blue-800 text-white text-sm">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto">
+          <button className="inline-flex items-center justify-center px-3 py-2.5 bg-blue-800 text-white text-sm whitespace-nowrap">
             <FaFilter className="mr-2" /> Filter by
           </button>
 
-          <div className="relative">
+          <div className="relative flex-grow sm:flex-grow-0">
             <input
               type="text"
               value={searchQuery == initialRenderVal ? "" : searchQuery}
               onChange={handleSearchQuery}
               placeholder="Search customer here..."
-              className="pl-4 pr-10 py-2 border w-72 focus:outline-none border-gray-400"
+              className="w-full sm:w-72 pl-4 pr-10 py-2 border focus:outline-none border-gray-400"
             />
             <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
@@ -296,7 +297,8 @@ export default function CustomerActivitiesPage() {
               >
                 Souvenir Claiming
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "souvenir_claiming_status" ? (
+                  {sortConfig &&
+                  sortConfig.field === "souvenir_claiming_status" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
