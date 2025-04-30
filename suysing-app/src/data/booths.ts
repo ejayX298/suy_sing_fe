@@ -51,6 +51,7 @@ export const doubleZoneBoothCodes = [
   "EQUAL03",
   "FEDER01A",
   "NEWPO01",
+  "PLDTE01",
 ];
 
 export const regularZoneBooths: BoothZoneItem[] = [
@@ -96,6 +97,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/NEWPO01.png",
       boothCode: "NEWPO01",
       visited: false,
+      width: 90,
+      height: 90,
     },
 
     {
@@ -222,6 +225,16 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/EQUAL03.png",
       boothCode: "EQUAL03",
       visited: false,
+    },
+
+    {
+      id: "PLDTE01",
+      name: "PLDT",
+      image: "/images/booths/PLDTE01.png",
+      boothCode: "PLDTE01",
+      visited: false,
+      width: 100,
+      height: 100,
     },
 
     {
