@@ -441,7 +441,7 @@ function AuditorPageContent() {
             customerId={customerData?.id}
             isComplete={isBoothComplete}
             visitedCount={customerData?.totalBoothVisited || 0}
-            totalBooths={customerData?.totalBooths || 0}
+           // totalBooths={customerData?.totalBooths || 0}
             onViewUnvisited={() => setCurrentStep("booths-list")}
             onClose={() => {
               setCustomerData(null);
