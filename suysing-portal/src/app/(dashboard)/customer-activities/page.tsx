@@ -14,7 +14,7 @@ interface ActivitySummary {
 }
 
 type SortField =
-  | "full_name"
+  | "code"
   | "total_visited_c"
   | "booth_hopping_status"
   | "booth_voting_status"
@@ -213,11 +213,11 @@ export default function CustomerActivitiesPage() {
             <tr className="bg-blue-800 text-white">
               <th
                 className="table-header cursor-pointer"
-                onClick={() => handleSort("full_name")}
+                onClick={() => handleSort("code")}
               >
-                Customer Name
+                Customer Code
                 <span className="ml-1 inline-block">
-                  {sortConfig && sortConfig.field === "full_name" ? (
+                  {sortConfig && sortConfig.field === "code" ? (
                     sortConfig.direction === "asc" ? (
                       <FaSortUp />
                     ) : (
@@ -334,7 +334,7 @@ export default function CustomerActivitiesPage() {
                   className="border-b border-gray-400 hover:bg-gray-50"
                 >
                   <td className="table-cell">
-                    <div>{customer.name}</div>
+                    <div>{customer.code}</div>
                   </td>
                   <td className="table-cell">{customer.totalBoothVisited}</td>
                   <td
