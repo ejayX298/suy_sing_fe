@@ -25,7 +25,7 @@ export interface Booth {
 
 export default function Home() {
   const router = useRouter();
-  const { booths, setBooths, handleVisitBooth } = useBooths();
+  const { booths, setBooths } = useBooths();
 
   const [initialBoothsList, setInitialBoothsList] = useState<Booth[]>();
   const [totalVisitCount, setTotalVisitCount] = useState(0);
@@ -216,8 +216,8 @@ export default function Home() {
     const getBorderStyle = () => {
       if (booth.boothCode === latestVisitedBoothCode) {
         return customerData?.isDoneVisit
-          ? "border-[4px] border-red-500" 
-          : "border-[4px] border-red-500 animate-pulse"; 
+          ? "border-[4px] border-red-500"
+          : "border-[4px] border-red-500 animate-pulse";
       }
       if (booth.visited) {
         return "border-2 border-red-500";
@@ -226,8 +226,7 @@ export default function Home() {
     };
     return (
       <div key={booth.id} className="h-full">
-        <button
-          onClick={() => booth.id && handleVisitBooth(booth.id)}
+        <div
           className={`block w-full h-full relative bg-white border-blue-800 border-[3px] rounded
           ${aspectClass}
           ${overrideSizeClass}
@@ -263,7 +262,7 @@ export default function Home() {
               </div>
             )}
           </div>
-        </button>
+        </div>
       </div>
     );
   };
