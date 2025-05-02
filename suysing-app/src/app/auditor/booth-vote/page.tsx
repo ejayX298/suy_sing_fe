@@ -12,6 +12,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { auditorService } from "@/services/api";
 import Swal from "sweetalert2";
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function AuditorBoothVoteContent() {
   const router = useRouter();
   const [step, setStep] = useState<
@@ -109,6 +113,9 @@ function AuditorBoothVoteContent() {
   };
 
   const handleContinue = async () => {
+    if (step === "blue" || step === "orange" || step === "red") {
+      await delay(800);
+    }
     if (step === "intro") {
       setStep("blue");
     } else if (step === "blue") {
@@ -119,6 +126,7 @@ function AuditorBoothVoteContent() {
       setStep("summary");
     } else if (step === "summary") {
       const submitVoteResult = await handleSubmitBoothVoting();
+      console.log("Submit vote result:", submitVoteResult);
       if (submitVoteResult) {
         setStep("thankyou");
       }

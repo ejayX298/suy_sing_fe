@@ -14,6 +14,10 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { boothVisitService } from "@/services/api";
 import Image from "next/image";
 
+function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 function BestBoothContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -89,7 +93,9 @@ function BestBoothContent() {
     } catch {
       Swal.close(); // close the loader
       setShowErrorMessageModal(true);
-      setErrorMessage("Unable to process your request. Please try again later.");
+      setErrorMessage(
+        "Unable to process your request. Please try again later."
+      );
       // showMessage(
       //   "0",
       //   "Unable to process your request. Please try again later."
@@ -214,6 +220,9 @@ function BestBoothContent() {
   }, [customerData]);
 
   const handleContinue = async () => {
+    if (step === "blue" || step === "orange" || step === "red") {
+      await delay(800);
+    }
     if (step === "intro") {
       setStep("blue");
     } else if (step === "blue") {
@@ -246,10 +255,10 @@ function BestBoothContent() {
 
   const handleProceed = () => {
     if (!isDoneVisit) {
-      setShowErrorMessageModal(false)
+      setShowErrorMessageModal(false);
       router.push(`/?cc=${stored_hash_code}`);
-    }  else {
-      setShowErrorMessageModal(false)
+    } else {
+      setShowErrorMessageModal(false);
     }
   };
 
@@ -430,8 +439,8 @@ function BestBoothContent() {
         </div>
       )}
 
-       {/* Error Message Modal */}
-       {showErrorMessageModal && (
+      {/* Error Message Modal */}
+      {showErrorMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
           <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
             <div className="flex flex-col items-center text-center">
@@ -455,7 +464,6 @@ function BestBoothContent() {
           </div>
         </div>
       )}
-
     </div>
   );
 }
