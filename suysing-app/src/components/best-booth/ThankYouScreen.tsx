@@ -25,24 +25,27 @@ export default function ThankYouScreen({
       <div className="px-4 py-10 bg-white rounded-lg shadow-md border-2 border-[#F78B1E]">
         <div className="flex items-center justify-center ">
           <Image
-            src="/images/best-booth.svg"
+            src="/images/confetti.svg"
             alt="Confetti"
-            width={48}
-            height={48}
+            width={80}
+            height={80}
           />
         </div>
         <h2 className="text-[34px] font-bold text-center mb-2 text-[#343434]">
-          You have submitted your Best Booth votes.
+          Thank you for voting!
         </h2>
-        <p className="text-center text-[#343434] text-[14px] mb-6">
-          Claim your Souvenir at the Tent Lobby from 2:30pm -7:00pm.
+        <p className="text-center  text-[#343434] mb-6">
+          Claim your Souvenir at the <br />
+          <span className="font-bold">
+            Tent Lobby from 2:30pm -7:00pm.
+          </span>{" "}
         </p>
 
         <button
           onClick={handleContinue}
           className="w-full py-3 bg-[#F78B1E] rounded-lg text-lg text-[#343434] font-semibold"
         >
-          Continue
+          Proceed
         </button>
       </div>
     </div>
