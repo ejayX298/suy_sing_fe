@@ -360,7 +360,9 @@ export default function DealFormPage() {
     }
 
     // Check if terms were previously accepted
-    const acceptedTerms = localStorage.getItem("dealFormTermsAccepted");
+    const acceptedTerms = localStorage.getItem(
+      `dealFormTermsAccepted-${customerInfoParsed?.code}`
+    );
     if (acceptedTerms === "true") {
       setFormData((prev) => ({ ...prev, acceptTerms: true }));
       setStep(2);
@@ -728,7 +730,10 @@ export default function DealFormPage() {
     const { name, checked } = e.target;
     setFormData({ ...formData, [name]: checked });
     if (name === "acceptTerms" && checked) {
-      localStorage.setItem("dealFormTermsAccepted", "true");
+      localStorage.setItem(
+        `dealFormTermsAccepted-${formData.customerCode}`,
+        "true"
+      );
     }
   };
 
