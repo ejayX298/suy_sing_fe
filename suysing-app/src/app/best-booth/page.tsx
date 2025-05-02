@@ -221,7 +221,7 @@ function BestBoothContent() {
 
   const handleContinue = async () => {
     if (step === "blue" || step === "orange" || step === "red") {
-      await delay(800);
+      await delay(600);
     }
     if (step === "intro") {
       setStep("blue");
