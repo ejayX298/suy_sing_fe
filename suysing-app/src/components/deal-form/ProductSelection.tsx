@@ -292,7 +292,7 @@ export default function ProductSelection({
     dealerName: string = "",
     dealerId: string
   ) => {
-    if (newQuantity >= 0) {
+    if (newQuantity >= 0 && newQuantity <= 1000) {
       // get the selected dealer products
       const dealerSelectedProducts =
         dealers.find((dealer) => dealer.id == dealerId)?.products || [];
@@ -746,10 +746,14 @@ export default function ProductSelection({
                               <input
                                 type="number"
                                 min="0"
+                                max="1000"
                                 value={getActualQty(product.id)}
                                 onChange={(e) => {
-                                  const newValue =
-                                    parseInt(e.target.value) || 0;
+                                  const value = parseInt(e.target.value) || 0;
+                                  const newValue = Math.max(
+                                    0,
+                                    Math.min(value, 1000)
+                                  );
                                   handleQuantityChange(
                                     product.id,
                                     newValue,
@@ -768,7 +772,12 @@ export default function ProductSelection({
                                     dealer.id
                                   )
                                 }
-                                className="bg-[#F78B1E] text-white size-6 font-bold flex items-center justify-center rounded"
+                                className={`text-white size-6 font-bold flex items-center justify-center rounded ${
+                                  getActualQty(product.id) >= 1000
+                                    ? "bg-gray-400 cursor-not-allowed"
+                                    : "bg-[#F78B1E]"
+                                }`}
+                                disabled={getActualQty(product.id) >= 1000}
                               >
                                 +
                               </button>
