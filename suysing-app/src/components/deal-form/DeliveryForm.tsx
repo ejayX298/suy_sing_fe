@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface DeliveryFormProps {
   customerCode: string;
@@ -117,7 +117,7 @@ export default function DeliveryForm({
            </div>
 
           ) : (
-            
+
             <input
               type="text"
               id="customerSubCode"
