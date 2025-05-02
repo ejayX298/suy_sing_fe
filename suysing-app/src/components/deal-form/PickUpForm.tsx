@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface PickUpFormProps {
   customerCode: string;
@@ -37,7 +37,7 @@ export default function PickUpForm({
   customerCode,
   customerSubCode,
   customerSubCodeId,
-  email,
+  // email,
   transactionType,
   branch,
   remarks,
