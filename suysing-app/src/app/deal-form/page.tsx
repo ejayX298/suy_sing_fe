@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { useBooths } from "@/context/BoothsContext";
 import { dealCartService, boothVisitService } from "@/services/api";
 import CartSubmitted from "@/components/deal-form/CartSubmitted";
+import CartConfirmation from "@/components/deal-form/CartConfirmation";
 
 interface Product {
   id: string;
@@ -140,6 +141,7 @@ export default function DealFormPage() {
   }
 
   const [showCartSubmittedModal, setShowCartSubmittedModal] = useState(false);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
 
   const getCustomerRecord = async () => {
     try {
@@ -849,143 +851,136 @@ export default function DealFormPage() {
 
   // Handle form submission and booth visit tracking
   const handleComplete = async () => {
-    const confirmAction = await confirmMessage(
-      `Are you sure you want to submit this cart?`
-    );
+    setShowConfirmationModal(true);
+  };
 
-    // Inititalize and show loader
+  const handleConfirmSubmit = async () => {
+    setShowConfirmationModal(false);
     showLoader();
 
-    if (confirmAction.isConfirmed) {
-      const updatedCarts = [...carts];
+    const updatedCarts = [...carts];
 
-      // check if cart is already submmitted
-      if (updatedCarts[currentCartIndex]) {
-        if (updatedCarts[currentCartIndex].submitted) {
-          //close loader
-          Swal.close();
-
-          // added delay before opening new alert
-          setTimeout(() => {
-            // showMessage("0", "You already submmited this cart.");
-            setShowErrorMessageModal(true);
-            setErrorMessage("You already submmited this cart.");
-          }, 200);
-          return;
-        }
-      }
-
-      // Validate email if provided
-      if (formData.email && !isValidEmail(formData.email)) {
+    // check if cart is already submmitted
+    if (updatedCarts[currentCartIndex]) {
+      if (updatedCarts[currentCartIndex].submitted) {
+        //close loader
         Swal.close();
-        setShowErrorMessageModal(true);
-        setErrorMessage("Please enter a valid email address.");
+
+        // added delay before opening new alert
+        setTimeout(() => {
+          setShowErrorMessageModal(true);
+          setErrorMessage("You already submmited this cart.");
+        }, 200);
         return;
       }
+    }
 
-      const existingProducts =
-        updatedCarts[currentCartIndex]?.selectedProducts || [];
+    // Validate email if provided
+    if (formData.email && !isValidEmail(formData.email)) {
+      Swal.close();
+      setShowErrorMessageModal(true);
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
 
+    const existingProducts =
+      updatedCarts[currentCartIndex]?.selectedProducts || [];
+
+    updatedCarts[currentCartIndex] = {
+      ...updatedCarts[currentCartIndex],
+      customerCode: formData.customerCode,
+      customerSubCodeId: formData.customerSubCodeId,
+      customerSubCode: formData.customerSubCode,
+      transactionType: formData.transactionType,
+      branch: formData.branch,
+      shipToAddress: formData.shipToAddress,
+      remarks: formData.remarks,
+      selectedProducts: existingProducts,
+      email: formData.email,
+    };
+    setCarts(updatedCarts);
+
+    // Save to localStorage
+    localStorage.setItem(
+      `dealformCarts-${formData.customerCode}`,
+      JSON.stringify(updatedCarts)
+    );
+
+    const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
+
+    if (submitCart) {
+      // tag the cart as submiited if api response is sucessfull
       updatedCarts[currentCartIndex] = {
         ...updatedCarts[currentCartIndex],
-        customerCode: formData.customerCode,
-        customerSubCodeId: formData.customerSubCodeId,
-        customerSubCode: formData.customerSubCode,
-        transactionType: formData.transactionType,
-        branch: formData.branch,
-        shipToAddress: formData.shipToAddress,
-        remarks: formData.remarks,
-        selectedProducts: existingProducts,
-        email: formData.email,
+        submitted: true,
       };
-      setCarts(updatedCarts);
 
+      // remove submitted carts
+      const removedSubmittedCart = updatedCarts.filter(
+        (updatedCart) => !updatedCart.submitted
+      );
+
+      setCarts(removedSubmittedCart);
       // Save to localStorage
       localStorage.setItem(
         `dealformCarts-${formData.customerCode}`,
-        JSON.stringify(updatedCarts)
+        JSON.stringify(removedSubmittedCart)
       );
 
-      const submitCart = await createDealCart(updatedCarts[currentCartIndex]);
+      existingProducts.forEach((product) => {
+        if (product.quantity > 0) {
+          const productCode = product.itemCode.toLowerCase();
+          const matchingBooth = booths.find(
+            (booth) =>
+              (booth.name && booth.name.toLowerCase().includes(productCode)) ||
+              (booth.id && booth.id.toLowerCase().includes(productCode))
+          );
 
-      if (submitCart) {
-        // tag the cart as submiited if api response is sucessfull
-        updatedCarts[currentCartIndex] = {
-          ...updatedCarts[currentCartIndex],
-          submitted: true,
-        };
-
-        // remove submitted carts
-        const removedSubmittedCart = updatedCarts.filter(
-          (updatedCart) => !updatedCart.submitted
-        );
-
-        setCarts(removedSubmittedCart);
-        // Save to localStorage
-        localStorage.setItem(
-          `dealformCarts-${formData.customerCode}`,
-          JSON.stringify(removedSubmittedCart)
-        );
-
-        existingProducts.forEach((product) => {
-          if (product.quantity > 0) {
-            const productCode = product.itemCode.toLowerCase();
-            const matchingBooth = booths.find(
-              (booth) =>
-                (booth.name &&
-                  booth.name.toLowerCase().includes(productCode)) ||
-                (booth.id && booth.id.toLowerCase().includes(productCode))
-            );
-
-            if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
-              handleVisitBooth(matchingBooth.id);
-            }
+          if (matchingBooth && matchingBooth.id && !matchingBooth.visited) {
+            handleVisitBooth(matchingBooth.id);
           }
+        }
+      });
+
+      const remainingUnsubmittedCarts = removedSubmittedCart.filter(
+        (cart) => !cart.submitted
+      );
+
+      //close loader
+      Swal.close();
+      console.log("remainingUnsubmittedCarts");
+      console.log(remainingUnsubmittedCarts);
+      if (remainingUnsubmittedCarts.length > 0) {
+        // Get the first selected cart's data
+        const selectedCart = remainingUnsubmittedCarts[0];
+
+        // Update form data with the selected cart's data
+        setFormData({
+          acceptTerms: true,
+          customerCode: selectedCart.customerCode || "",
+          transactionType: selectedCart.transactionType || "Pick up",
+          branch: selectedCart.branch || "",
+          shipToAddress: selectedCart.shipToAddress || "",
+          remarks: selectedCart.remarks || "",
+          customerSubCodeId: selectedCart.customerSubCodeId || "",
+          customerSubCode: selectedCart.customerSubCode || "",
+          email: selectedCart.email || "",
         });
 
-        const remainingUnsubmittedCarts = removedSubmittedCart.filter(
-          (cart) => !cart.submitted
-        );
+        // Update selected products with proper initialization
+        setSelectedProducts(selectedCart.selectedProducts || []);
 
-        //close loader
-        Swal.close();
-        console.log("remainingUnsubmittedCarts");
-        console.log(remainingUnsubmittedCarts);
-        if (remainingUnsubmittedCarts.length > 0) {
-          // Get the first selected cart's data
-          const selectedCart = remainingUnsubmittedCarts[0];
+        // Finally update the current cart index
+        setCurrentCartIndex(0);
 
-          // Update form data with the selected cart's data
-          setFormData({
-            acceptTerms: true,
-            customerCode: selectedCart.customerCode || "",
-            transactionType: selectedCart.transactionType || "Pick up",
-            branch: selectedCart.branch || "",
-            shipToAddress: selectedCart.shipToAddress || "",
-            remarks: selectedCart.remarks || "",
-            customerSubCodeId: selectedCart.customerSubCodeId || "",
-            customerSubCode: selectedCart.customerSubCode || "",
-            email: selectedCart.email || "",
-          });
-
-          // Update selected products with proper initialization
-          setSelectedProducts(selectedCart.selectedProducts || []);
-
-          // Finally update the current cart index
-          setCurrentCartIndex(0);
-
-          // Show cart submitted modal instead of message
-          setShowCartSubmittedModal(true);
-          return;
-        }
-
-        // If this was the last cart, show the final submission modal
-        setShowSubmitModal(true);
+        // Show cart submitted modal instead of message
+        setShowCartSubmittedModal(true);
         return;
-      } else {
-        //close loader
-        Swal.close();
       }
+
+      // If this was the last cart, show the final submission modal
+      setShowSubmitModal(true);
+      return;
     } else {
       //close loader
       Swal.close();
@@ -1020,38 +1015,6 @@ export default function DealFormPage() {
     setCurrentCartIndex(0);
     setStep(1);
     router.push(`/?cc=${stored_hash_code}`);
-  };
-
-  // const showMessage = (status: string, message: string) => {
-  //   let iconType: "success" | "error";
-  //   let titleType: "Success" | "Oops!";
-
-  //   if (status == "1") {
-  //     iconType = "success";
-  //     titleType = "Success";
-  //   } else {
-  //     iconType = "error";
-  //     titleType = "Oops!";
-  //   }
-
-  //   Swal.fire({
-  //     title: titleType,
-  //     text: message,
-  //     icon: iconType,
-  //     confirmButtonColor: "#F78B1E",
-  //   });
-  // };
-
-  const confirmMessage = async (message: string) => {
-    const result = await Swal.fire({
-      title: "Confirm",
-      text: message,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonColor: "#F78B1E",
-    });
-
-    return result;
   };
 
   const showLoader = () => {
@@ -1216,6 +1179,13 @@ export default function DealFormPage() {
           )}
         </div>
       </main>
+
+      {/* Cart Confirmation Modal */}
+      <CartConfirmation
+        isOpen={showConfirmationModal}
+        onConfirm={handleConfirmSubmit}
+        onCancel={() => setShowConfirmationModal(false)}
+      />
 
       {/* Cart Submitted Modal */}
       <CartSubmitted
