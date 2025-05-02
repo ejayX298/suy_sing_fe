@@ -573,6 +573,67 @@ export default function DealFormPage() {
     }
   };
 
+
+  const handleInitialCustomerSubCodeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const changedSubcodeId = e.target.value
+    let default_transaction_type = "Pick up"; // use Pick up as default transaction type if sub codes is empty
+    let default_ship_to_addreess = "";
+    let default_branch = "";
+    let default_sub_code = formData.customerCode || ""; // use customer code as default sub code
+    let default_sub_code_id = "";
+    let initial_transaction_type = "";
+    let initial_pickup_branch_code = "";
+
+    // get sub code base on subcodeId
+    const getSubCode = subCodes.find(
+      (subCode) => changedSubcodeId === subCode.id.toString()
+    );
+
+    
+    if(getSubCode){
+      default_sub_code_id = getSubCode?.id.toString()
+      default_sub_code = getSubCode?.code || ""
+      initial_transaction_type = getSubCode?.transaction_type || "Pick up";
+      initial_pickup_branch_code = getSubCode.pickup_branch_code || "";
+    }    
+
+    if (initial_transaction_type != "") {
+      if (initial_transaction_type.toLowerCase() == "del") {
+        default_transaction_type = "Delivery";
+        default_ship_to_addreess =
+          customerDeliveryDetails.find(
+            (customerDeliveryDetail) =>
+              customerDeliveryDetail.code === default_sub_code
+          )?.id || "";
+
+        if (!default_ship_to_addreess) {
+          // if no default sub code address get the first empty code in delivery array
+          default_ship_to_addreess =
+            customerDeliveryDetails.find(
+              (customerDeliveryDetail) => !customerDeliveryDetail.code
+            )?.id || "";
+        }
+      } else {
+        default_transaction_type = "Pick up";
+        default_branch =
+          customerPickupDetails.find(
+            (customerPickupDetail) =>
+              customerPickupDetail.branch_code === initial_pickup_branch_code
+          )?.id || "";
+      }
+    }
+
+    setFormData({
+      ...formData,
+      transactionType: default_transaction_type,
+      customerSubCodeId: default_sub_code_id,
+      customerSubCode: default_sub_code,
+      shipToAddress: default_ship_to_addreess,
+      branch: default_branch,
+    });
+  };
+  
+
   const handleCustomerSubCodeChange = (
     code: string,
     subcodeId: string,
@@ -1085,6 +1146,7 @@ export default function DealFormPage() {
               <PickUpForm
                 customerCode={formData.customerCode}
                 customerSubCode={formData.customerSubCode}
+                customerSubCodeId={formData.customerSubCodeId}
                 email={formData.email}
                 transactionType={formData.transactionType}
                 branch={formData.branch}
@@ -1094,6 +1156,8 @@ export default function DealFormPage() {
                 onNext={handleNext}
                 transactionTypes={transactionTypes}
                 customerPickupDetails={customerPickupDetails}
+                subCodes={subCodes}
+                onCustomerCodeChange={handleInitialCustomerSubCodeChange}
               />
             )}
 
@@ -1101,6 +1165,7 @@ export default function DealFormPage() {
             <DeliveryForm
               customerCode={formData.customerCode}
               customerSubCode={formData.customerSubCode}
+              customerSubCodeId={formData.customerSubCodeId}
               email={formData.email}
               transactionType={formData.transactionType}
               shipToAddress={formData.shipToAddress}
@@ -1110,6 +1175,8 @@ export default function DealFormPage() {
               onNext={handleNext}
               transactionTypes={transactionTypes}
               customerDeliveryDetails={customerDeliveryDetails}
+              subCodes={subCodes}
+              onCustomerCodeChange={handleInitialCustomerSubCodeChange}
             />
           )}
           {step === 3 && (
