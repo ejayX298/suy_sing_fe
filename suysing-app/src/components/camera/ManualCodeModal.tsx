@@ -44,7 +44,7 @@ export default function ManualCodeModal({
             className="w-full flex flex-col items-center"
           >
             <AuthCode
-              allowedCharacters="alphanumeric"
+              allowedCharacters="numeric"
               onChange={onChange}
               length={4}
               containerClassName="flex space-x-2 mb-6"
