@@ -8,27 +8,27 @@ export default function BottomNavigation() {
   const pathname = usePathname();
   const [hashCode, setHashCode] = useState("");
 
-  let stored_hash_code: string = ""
-  if (typeof window !== 'undefined') {
-    stored_hash_code = localStorage.getItem('hash_code') || "";
+  let stored_hash_code: string = "";
+  if (typeof window !== "undefined") {
+    stored_hash_code = localStorage.getItem("hash_code") || "";
   }
 
-  const concatUrl = (urlString : string) =>{
-    return `${urlString}/?cc=${hashCode}`
-  }
+  const concatUrl = (urlString: string) => {
+    return `${urlString}/?cc=${hashCode}`;
+  };
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      stored_hash_code = localStorage.getItem('hash_code') || "";
+      stored_hash_code = localStorage.getItem("hash_code") || "";
       setHashCode(stored_hash_code);
     }
   }, []);
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
-      <Link
-        href={concatUrl("/")}
+      <div
+        //href={concatUrl("/")}
         className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
           pathname === "/" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -45,7 +45,7 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Booths</span>
-      </Link>
+      </div>
 
       <Link
         href={concatUrl("/deal-form")}
@@ -68,7 +68,10 @@ export default function BottomNavigation() {
         <span className="text-sm">Deal Form</span>
       </Link>
 
-      <Link href={concatUrl("/camera")} className="flex flex-col items-center -mt-7">
+      <div
+        //href={concatUrl("/camera")}
+        className="flex flex-col items-center -mt-7"
+      >
         <div className="bg-[#0920B0] rounded-full p-3 ">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -91,10 +94,10 @@ export default function BottomNavigation() {
             />
           </svg>
         </div>
-      </Link>
+      </div>
 
-      <Link
-        href={concatUrl("/best-booth")}
+      <div
+        //href={concatUrl("/best-booth")}
         className={`flex flex-col items-center h-full justify-center px-1 gap-1 ${
           pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -112,10 +115,10 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Best Booth</span>
-      </Link>
+      </div>
 
-      <Link
-        href={concatUrl("/my-qr")}
+      <div
+        //href={concatUrl("/my-qr")}
         className={`flex flex-col items-center h-full justify-center  px-1 gap-1 ${
           pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -133,7 +136,7 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Account</span>
-      </Link>
+      </div>
     </nav>
   );
 }
