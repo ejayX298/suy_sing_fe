@@ -68,8 +68,8 @@ export default function BottomNavigation() {
         <span className="text-sm">Deal Form</span>
       </Link>
 
-      <div
-        //href={concatUrl("/camera")}
+      <Link
+        href={concatUrl("/camera")}
         className="flex flex-col items-center -mt-7"
       >
         <div className="bg-[#0920B0] rounded-full p-3 ">
@@ -94,7 +94,7 @@ export default function BottomNavigation() {
             />
           </svg>
         </div>
-      </div>
+      </Link>
 
       <div
         //href={concatUrl("/best-booth")}
