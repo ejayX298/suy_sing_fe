@@ -268,7 +268,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen overflow-hidden">
+    <div className="flex flex-col min-h-screen overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/images/bg-mobile.webp')" }}>
       <main className="flex-1 py-2 px-4 overflow-hidden">
         {/* Booths Progress Section */}
         <BoothsProgress
@@ -297,8 +297,9 @@ export default function Home() {
               }}
               contentStyle={{ minHeight: "1100px", padding: "20px 0 200px 0" }}
             >
-              <div className="relative w-full min-w-[1300px] h-full flex items-center justify-center">
-                <div className="flex w-full h-[1240px] justify-center">
+              <div className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-cover bg-center bg-no-repeat p-8" style={{ backgroundImage: "url('/images/bg-booth.webp')" }}>
+                <div className="w-full border-[3px] border-black rounded-lg p-4">
+                  <div className="flex w-full h-[1240px] justify-center">
                   {/* Tent Area*/}
                   <div className="border-[3px] border-blue-800 rounded bg-white w-[550px] h-[1240px] flex flex-col self-center mr-32 overflow-y-auto">
                     <div className="bg-gray-400 w-full p-4 flex flex-col items-center justify-center mb-4">
@@ -486,7 +487,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="flex-1 h-full flex flex-col">
-                    <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                    <div className="px-6 py-2">
                       <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
                         <div className="flex w-full justify-center gap-40">
                           {[...Array(9)].map((_, tableIndex) => (
@@ -687,7 +688,7 @@ export default function Home() {
                     <div className="flex justify-center w-full mt-4">
                       <div className="flex gap-[60px] w-full">
                         {/* First booth */}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div>
                               <RenderBooth
@@ -728,7 +729,7 @@ export default function Home() {
                         </div>
 
                         {/* Second booth */}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5 ">
                             <div className="">
                               <RenderBooth
@@ -770,7 +771,7 @@ export default function Home() {
                         </div>
 
                         {/* Third booth */}
-                        {/* <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        {/* <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="">
                               <RenderBooth
@@ -811,7 +812,7 @@ export default function Home() {
                         </div> */}
 
                         {/* Fourth booth - Nestle (single) */}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -820,7 +821,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -830,7 +831,7 @@ export default function Home() {
                           </div>
                         </div>
 
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -841,7 +842,7 @@ export default function Home() {
                         </div>
 
                         {/* Sixth booth  */}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className="col-span-2">
                               <RenderBooth
@@ -861,7 +862,7 @@ export default function Home() {
                         </div>
 
                         {/* Seventh booth*/}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px]">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -872,7 +873,7 @@ export default function Home() {
                         </div>
 
                         {/* Eighth booth*/}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px]">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -883,7 +884,7 @@ export default function Home() {
                         </div>
 
                         {/* Ninth booth*/}
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
                             <div className=" col-span-2">
                               <RenderBooth
@@ -922,7 +923,7 @@ export default function Home() {
                     {/* Bottom Section */}
                     <div className="flex justify-center mb-5 mt-4 w-full">
                       <div className="flex gap-[60px] w-full">
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -931,7 +932,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -940,7 +941,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -949,7 +950,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -958,7 +959,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -967,7 +968,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -976,7 +977,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -985,7 +986,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -994,7 +995,7 @@ export default function Home() {
                             />
                           </div>
                         </div>
-                        <div className="bg-black/10 backdrop-blur-sm px-4 py-2">
+                        <div className="px-4 py-2">
                           <div className="w-[164px] h-[251px] bg-white  rounded">
                             <RenderBooth
                               booth={remapBooth.find(
@@ -1036,6 +1037,7 @@ export default function Home() {
                         <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </div>
               </div>

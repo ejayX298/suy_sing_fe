@@ -57,7 +57,7 @@ export default function BoothsProgress({
 
         <div className="relative w-[17rem] h-28">
           <Image
-            src="/images/epic-journey1.png"
+            src="/images/new-logo.webp"
             alt="Epic Journey"
             fill
             style={{ objectFit: "contain" }}
