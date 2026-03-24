@@ -24,8 +24,15 @@ export default function DoubleZoneDisplay({
     return totalVisitedDoubleZone;
   };
   return (
-    <div className="px-6 py-4">
-      <div className="border-2 border-dashed border-red-500 px-6 py-4 rounded-md mb-4">
+    <div className="px-4 py-4">
+      <div
+        className="px-4 py-4 rounded-md mb-4"
+        style={{
+          boxShadow:
+            "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
+          border: "3px solid #FFA643",
+        }}
+      >
         <div className="flex justify-center mb-2 relative">
           <div className="bg-[#B6E056] -mt-9 text-[#0920B0] border-[#0920B0] border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
             Double Zone
@@ -54,8 +61,9 @@ export default function DoubleZoneDisplay({
           </div>
         </div>
 
-        <div className="flex justify-center gap-4 mb-4">
-          {[...Array(5)].map((_, i) => (
+        {/* 3 rows x 7 columns */}
+        <div className="flex justify-center gap-2 mb-2">
+          {[...Array(7)].map((_, i) => (
             <DoubleZoneCard
               key={`double-row1-${i}`}
               boothIndex={i}
@@ -64,31 +72,21 @@ export default function DoubleZoneDisplay({
           ))}
         </div>
 
-        <div className="flex justify-center gap-4 mb-4">
-          {[...Array(5)].map((_, i) => (
+        <div className="flex justify-center gap-2 mb-2">
+          {[...Array(7)].map((_, i) => (
             <DoubleZoneCard
               key={`double-row2-${i}`}
-              boothIndex={i + 5}
+              boothIndex={i + 7}
               boothData={boothData}
             />
           ))}
         </div>
 
-        <div className="flex justify-center gap-4 mb-4">
-          {[...Array(5)].map((_, i) => (
+        <div className="flex justify-center gap-2">
+          {[...Array(6)].map((_, i) => (
             <DoubleZoneCard
               key={`double-row3-${i}`}
-              boothIndex={i + 10}
-              boothData={boothData}
-            />
-          ))}
-        </div>
-
-        <div className="flex justify-center gap-4">
-          {[...Array(5)].map((_, i) => (
-            <DoubleZoneCard
-              key={`double-row4-${i}`}
-              boothIndex={i + 15}
+              boothIndex={i + 14}
               boothData={boothData}
             />
           ))}
@@ -109,7 +107,7 @@ function DoubleZoneCard(
     <div
       className={`border-2 ${
         booth ? "border-red-500" : "border-blue-800"
-      } aspect-square w-[60px] h-[60px] flex items-center justify-center relative bg-white`}
+      } aspect-square w-[50px] h-[50px] flex items-center justify-center relative bg-white`}
     >
       {booth && (
         <div className="w-full h-full flex items-center justify-center p-1">
