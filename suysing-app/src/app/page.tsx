@@ -305,10 +305,10 @@ export default function Home() {
                 className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
-                <div className="w-full border border-black rounded-xl p-4">
+                <div className="w-full border border-black rounded-xl p-4 overflow-hidden">
                   <div className="flex w-full h-[1240px] justify-center ml-10">
                     {/* Tent Area */}
-                    <div className="w-[550px] h-[1240px] flex flex-col self-center mr-32 overflow-y-auto">
+                    <div className="w-[550px] h-[1240px] flex flex-col self-center mr-14 overflow-y-auto">
                       {/* Row 1: Header + Double Zone */}
                       <div className="bg-white py-4">
                         <div
@@ -338,7 +338,12 @@ export default function Home() {
                         <div className="flex-1 border-t-2 border-[#C5C5C580]" />
                         <div className="flex items-center gap-1 px-2 text-[#C5C5C580]">
                           <span className="text-xs font-bold">↓↑</span>
-                          <span className="text-xs font-bold" style={{ writingMode: "vertical-rl" }}>LINKWAY</span>
+                          <span
+                            className="text-xs font-bold"
+                            style={{ writingMode: "vertical-rl" }}
+                          >
+                            LINKWAY
+                          </span>
                         </div>
                       </div>
 
@@ -501,29 +506,37 @@ export default function Home() {
                         <div className="flex-1 border-t-2 border-[#C5C5C580]" />
                         <div className="flex items-center gap-1 px-2 text-[#C5C5C580]">
                           <span className="text-xs font-bold">↓↑</span>
-                          <span className="text-xs font-bold" style={{ writingMode: "vertical-rl" }}>LINKWAY</span>
+                          <span
+                            className="text-xs font-bold"
+                            style={{ writingMode: "vertical-rl" }}
+                          >
+                            LINKWAY
+                          </span>
                         </div>
                       </div>
 
                       {/* Row 5: 3 cols - last 2 double size */}
                       <div className="bg-white py-5 mb-4">
                         <div className="px-6">
-                          <div className="grid gap-2 mb-2" style={{ gridTemplateColumns: "1fr 2fr 2fr" }}>
-                            <div className="h-[51px]">
+                          <div
+                            className="grid gap-2 mb-2"
+                            style={{ gridTemplateColumns: "1fr 1fr 2fr" }}
+                          >
+                            <div className="h-[88px] w-[97px] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PHILI11",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="h-[88px] w-[97px]] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "FIBER02",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="h-[88px] w-[206px] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "EMPER01",
@@ -531,22 +544,25 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="grid gap-2" style={{ gridTemplateColumns: "1fr 2fr 2fr" }}>
-                            <div className="h-[51px]">
+                          <div
+                            className="grid gap-2"
+                            style={{ gridTemplateColumns: "1fr 1fr 2fr" }}
+                          >
+                            <div className="h-[88px] w-[97px] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MAGIS01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="h-[88px] w-[100px] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "ECOSS04",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="h-[88px] w-[206px] overflow-hidden">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PERFE02",
@@ -564,8 +580,12 @@ export default function Home() {
                           style={{ boxShadow: "4px 4px 0px 0px black" }}
                         >
                           <div className="text-center">
-                            <h3 className="text-xl font-bold text-gray-800">SSCC BOOTH</h3>
-                            <h3 className="text-xl font-bold text-gray-800">(CENTER)</h3>
+                            <h3 className="text-xl font-bold text-gray-800">
+                              SSCC BOOTH
+                            </h3>
+                            <h3 className="text-xl font-bold text-gray-800">
+                              (CENTER)
+                            </h3>
                           </div>
                         </div>
                       </div>
@@ -577,8 +597,8 @@ export default function Home() {
                         </h2>
                       </div>
                     </div>
-                    <div className="flex-1 h-full flex flex-col">
-                      <div className="px-6 py-2 bg-white">
+                    <div className="flex-1 min-w-0 h-full flex flex-col">
+                      <div className="px-6 py-2 bg-white mr-10">
                         <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
                           <div className="flex w-full justify-center gap-40">
                             {[...Array(9)].map((_, tableIndex) => (
@@ -729,7 +749,7 @@ export default function Home() {
                           </div>
 
                           <div className="flex gap-0.5">
-                            <div className="w-[80px] h-[80px] ">
+                            <div className="w-[90px] h-[80px] ">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MONHE01",
