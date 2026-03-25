@@ -301,34 +301,36 @@ export default function Home() {
               contentStyle={{ minHeight: "1100px", padding: "20px 0 200px 0" }}
             >
               <div
-                className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-auto bg-center bg-repeat p-8"
+                className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
-                <div className="w-full border-[3px] border-black rounded-lg p-4">
+                <div className="w-full border-[3px] border-black rounded-xl p-4">
                   <div className="flex w-full h-[1240px] justify-center">
                     {/* Tent Area */}
-                    <div className="border-[3px] border-gray-300 rounded bg-white w-[550px] h-[1240px] flex flex-col self-center mr-32 overflow-y-auto">
+                    <div className=" w-[550px] h-[1240px] flex flex-col self-center ml-10 mr-32 overflow-y-auto">
                       {/* Header: Gaming Hub & Customer Lounge */}
-                      <div
-                        className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
-                        style={{ boxShadow: "0 8px 6px -6px black" }}
-                      >
-                        <Image
-                          src="/images/dice.svg"
-                          alt="Dice"
-                          width={40}
-                          height={40}
-                        />
-                        <h1 className="text-lg font-bold text-gray-800">
-                          GAMING HUB & CUSTOMER LOUNGE
-                        </h1>
-                      </div>
+                      <div className="bg-white py-4 ">
+                        <div
+                          className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
+                          style={{ boxShadow: "0 8px 6px -6px black" }}
+                        >
+                          <Image
+                            src="/images/dice.svg"
+                            alt="Dice"
+                            width={40}
+                            height={40}
+                          />
+                          <h1 className="text-lg font-bold text-gray-800">
+                            GAMING HUB & CUSTOMER LOUNGE
+                          </h1>
+                        </div>
 
-                      {/* Double Zone Section */}
-                      <DoubleZoneDisplay
-                        boothData={doubleZoneBooths}
-                        totalVisitCount={totalVisitCount}
-                      />
+                        {/* Double Zone Section */}
+                        <DoubleZoneDisplay
+                          boothData={doubleZoneBooths}
+                          totalVisitCount={totalVisitCount}
+                        />
+                      </div>
 
                       {/* LINKWAY Divider */}
                       <div className="flex w-full">
