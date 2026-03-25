@@ -12,7 +12,7 @@ export default function DoubleZoneDisplay({
   totalVisitCount: number;
   boothData: any;
 }) {
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo] = useState(false);
 
   const getTotalVisited = () => {
     let totalVisitedDoubleZone = totalVisitCount;
@@ -24,7 +24,7 @@ export default function DoubleZoneDisplay({
     return totalVisitedDoubleZone;
   };
   return (
-    <div className="px-4 py-4">
+    <div className="px-4 pt-6 pb-4">
       <div
         className="px-4 py-4 rounded-md mb-4"
         style={{
@@ -34,14 +34,14 @@ export default function DoubleZoneDisplay({
         }}
       >
         <div className="flex justify-center mb-2 relative">
-          <div className="bg-[#B6E056] -mt-9 text-[#0920B0] border-[#0920B0] border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
+          <div className="bg-[#B6E056] -mt-9 border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
             Double Zone
-            <button
+         {/*    <button
               onClick={() => setShowInfo(!showInfo)}
               className="inline-flex items-center justify-center ml-1 bg-[#0920B0] text-[#B6E056] rounded-full w-4 h-4"
             >
               <span className="font-bold text-xs leading-none">i</span>
-            </button>
+            </button> */}
           </div>
           {showInfo && (
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 bg-white border-2 border-[#F78B1E] rounded-lg p-4 shadow-lg w-80">
@@ -53,7 +53,7 @@ export default function DoubleZoneDisplay({
           )}
         </div>
 
-        <div className="text-sm text-blue-800 mb-4 text-center max-w-xs mx-auto">
+        <div className="text-sm  mb-4 text-center max-w-xs mx-auto">
           Locate the Double Zone Booths in the Tent and scan any 20 booths
           within this area.
           <div className="font-bold mt-1">
@@ -83,7 +83,7 @@ export default function DoubleZoneDisplay({
         </div>
 
         <div className="flex justify-center gap-2">
-          {[...Array(6)].map((_, i) => (
+          {[...Array(7)].map((_, i) => (
             <DoubleZoneCard
               key={`double-row3-${i}`}
               boothIndex={i + 14}
@@ -98,15 +98,15 @@ export default function DoubleZoneDisplay({
 
 function DoubleZoneCard(
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  { boothIndex, boothData }: { boothIndex: number; boothData: any }
+  { boothIndex, boothData }: { boothIndex: number; boothData: any },
 ) {
   // const { doubleZoneBooths } = useBooths();
   const booth = boothData[boothIndex];
 
   return (
     <div
-      className={`border-2 ${
-        booth ? "border-red-500" : "border-blue-800"
+      className={`border ${
+        booth ? "border-red-500" : "border-[#0F1030]"
       } aspect-square w-[50px] h-[50px] flex items-center justify-center relative bg-white`}
     >
       {booth && (
