@@ -28,13 +28,12 @@ export default function DoubleZoneDisplay({
       <div
         className="px-4 py-4 rounded-md mb-4"
         style={{
-          boxShadow:
-            "rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset",
+          boxShadow: "0px 0px 12.8px 9px #FFA643CC",
           border: "3px solid #FFA643",
         }}
       >
         <div className="flex justify-center mb-2 relative">
-          <div className="bg-[#B6E056] -mt-9 border rounded-full py-2 px-4 font-bold text-sm flex items-center justify-center">
+          <div className="bg-[#B6E056] -mt-9 border rounded-md py-2 px-6 font-bold text-sm flex items-center justify-center">
             Double Zone
          {/*    <button
               onClick={() => setShowInfo(!showInfo)}

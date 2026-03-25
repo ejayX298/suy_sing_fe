@@ -305,12 +305,12 @@ export default function Home() {
                 className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
-                <div className="w-full border border-black rounded-xl p-4 overflow-hidden">
-                  <div className="flex w-full h-[1240px] justify-center ml-10">
+                <div className="w-full border border-black rounded-xl  overflow-hidden">
+                  <div className="flex w-full h-[1240px] justify-center">
                     {/* Tent Area */}
                     <div className="w-[550px] h-[1240px] flex flex-col self-center mr-14 overflow-y-auto">
                       {/* Row 1: Header + Double Zone */}
-                      <div className="bg-white py-4">
+                      <div className="bg-white pt-14 pb-4">
                         <div
                           className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
                           style={{ boxShadow: "4px 4px 0px 0px black" }}
@@ -598,7 +598,7 @@ export default function Home() {
                       </div>
                     </div>
                     <div className="flex-1 min-w-0 h-full flex flex-col">
-                      <div className="px-6 py-2 bg-white mr-10">
+                      <div className="px-6 py-20 bg-white mr-10">
                         <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
                           <div className="flex w-full justify-center gap-40">
                             {[...Array(9)].map((_, tableIndex) => (
