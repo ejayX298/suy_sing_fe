@@ -233,7 +233,7 @@ export default function Home() {
              ${getBorderStyle()}
           ${isSuySing}
         `}
-          style={{ boxShadow: "0 8px 6px -6px black" }}
+          style={{ boxShadow: "4px 4px 0px 0px black" }}
         >
           <div
             className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center 
@@ -305,7 +305,7 @@ export default function Home() {
                 className="relative w-full min-w-[1300px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
-                <div className="w-full border-[3px] border-black rounded-xl p-4">
+                <div className="w-full border border-black rounded-xl p-4">
                   <div className="flex w-full h-[1240px] justify-center ml-10">
                     {/* Tent Area */}
                     <div className="w-[550px] h-[1240px] flex flex-col self-center mr-32 overflow-y-auto">
@@ -313,7 +313,7 @@ export default function Home() {
                       <div className="bg-white py-4">
                         <div
                           className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
-                          style={{ boxShadow: "0 8px 6px -6px black" }}
+                          style={{ boxShadow: "4px 4px 0px 0px black" }}
                         >
                           <Image
                             src="/images/dice.svg"
@@ -560,8 +560,8 @@ export default function Home() {
                       {/* Row 6: SSCC BOOTH (CENTER) */}
                       <div className="bg-white py-5 flex-1 flex flex-col items-center justify-center">
                         <div
-                          className="w-[280px] h-[130px] border-[3px] border-gray-300 rounded flex items-center justify-center bg-white"
-                          style={{ boxShadow: "0 8px 6px -6px black" }}
+                          className="w-[280px] h-[130px] border border-black rounded flex items-center justify-center bg-white"
+                          style={{ boxShadow: "4px 4px 0px 0px black" }}
                         >
                           <div className="text-center">
                             <h3 className="text-xl font-bold text-gray-800">SSCC BOOTH</h3>
