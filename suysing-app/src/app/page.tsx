@@ -233,10 +233,13 @@ export default function Home() {
              ${getBorderStyle()}
           ${isSuySing}
         `}
-          style={{ boxShadow: "4px 4px 0px 0px black" }}
+          style={{
+            boxShadow:
+              "0px 3.92px 6.46px 3.92px #00000059, 2.94px 3.92px 0px 0px #0F1030",
+          }}
         >
           <div
-            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center 
+            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center
               ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
           >
             <Image
@@ -306,59 +309,47 @@ export default function Home() {
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
                 <div className="w-full border border-black rounded-xl  overflow-hidden">
-                  <div className="flex w-full h-[1240px] justify-center">
+                  <div className="flex w-full h-[1300px] justify-center">
                     {/* Tent Area */}
-                    <div className="w-[550px] h-[1240px] flex flex-col self-center mr-14 overflow-y-auto">
+                    <div className="w-[650px] h-[1300px] flex flex-col self-center mr-10 overflow-y-auto">
                       {/* Row 1: Header + Double Zone */}
-                      <div className="bg-white pt-14 pb-4">
-                        <div
-                          className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
-                          style={{ boxShadow: "4px 4px 0px 0px black" }}
-                        >
-                          <Image
-                            src="/images/dice.svg"
-                            alt="Dice"
-                            width={40}
-                            height={40}
-                          />
-                          <h1 className="text-lg font-bold text-gray-800">
-                            GAMING HUB & CUSTOMER LOUNGE
-                          </h1>
-                        </div>
-
-                        {/* Double Zone Section */}
-                        <DoubleZoneDisplay
-                          boothData={doubleZoneBooths}
-                          totalVisitCount={totalVisitCount}
-                        />
-                      </div>
-
-                      {/* LINKWAY Divider */}
-                      <div className="flex w-full items-center py-2">
-                        <div className="flex-1 border-t-2 border-[#C5C5C580]" />
-                        <div className="flex items-center gap-1 px-2 text-[#C5C5C580]">
-                          <span className="text-xs font-bold">↓↑</span>
-                          <span
-                            className="text-xs font-bold"
-                            style={{ writingMode: "vertical-rl" }}
+                      <div className="bg-white pt-14 pb-4 mb-4">
+                        <div className="pl-18 pr-6">
+                          <div
+                            className="bg-gray-200 w-full p-4 flex items-center justify-center gap-3"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
                           >
-                            LINKWAY
-                          </span>
+                            <Image
+                              src="/images/dice.svg"
+                              alt="Dice"
+                              width={40}
+                              height={40}
+                            />
+                            <h1 className="text-lg font-bold text-gray-800">
+                              GAMING HUB & CUSTOMER LOUNGE
+                            </h1>
+                          </div>
+
+                          {/* Double Zone Section */}
+                          <DoubleZoneDisplay
+                            boothData={doubleZoneBooths}
+                            totalVisitCount={totalVisitCount}
+                          />
                         </div>
                       </div>
 
                       {/* Row 2: First 2 booths */}
                       <div className="bg-white py-5 mb-4">
-                        <div className="px-6">
-                          <div className="flex gap-2 justify-start">
-                            <div className="w-[100px] h-[51px]">
+                        <div className="pl-18 pr-6">
+                          <div className="flex gap-4 justify-start">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "RHEIN01",
                                 )}
                               />
                             </div>
-                            <div className="w-[100px] h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "VALIA04",
@@ -371,30 +362,30 @@ export default function Home() {
 
                       {/* Row 3: 4x2 = 8 booths */}
                       <div className="bg-white py-5 mb-4">
-                        <div className="px-6">
-                          <div className="grid grid-cols-4 gap-2 mb-2">
-                            <div className="h-[51px]">
+                        <div className="pl-18 pr-6">
+                          <div className="flex gap-4 mb-4">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SCPGA01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PERFE01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PHILU01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "UNICA01",
@@ -402,29 +393,29 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="grid grid-cols-4 gap-2">
-                            <div className="h-[51px]">
+                          <div className="flex gap-4">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "LESLI01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SEANL01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MONDI01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "LAMOI01",
@@ -436,31 +427,31 @@ export default function Home() {
                       </div>
 
                       {/* Row 4: 4x2 = 8 booths */}
-                      <div className="bg-white py-5">
-                        <div className="px-6">
-                          <div className="grid grid-cols-4 gap-2 mb-2">
-                            <div className="h-[51px]">
+                      <div className="bg-white py-5 mb-4">
+                        <div className="pl-18 pr-6">
+                          <div className="flex gap-4 mb-4">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "JEVER01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "LTHFO01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "UNIEL01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SUYEN02",
@@ -468,29 +459,29 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="grid grid-cols-4 gap-2">
-                            <div className="h-[51px]">
+                          <div className="flex gap-4">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "FEDER04",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MEADJ01",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "SWEET05",
                                 )}
                               />
                             </div>
-                            <div className="h-[51px]">
+                            <div className="w-[96px] h-[57px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "LORIN01",
@@ -501,42 +492,25 @@ export default function Home() {
                         </div>
                       </div>
 
-                      {/* LINKWAY Divider */}
-                      <div className="flex w-full items-center py-2">
-                        <div className="flex-1 border-t-2 border-[#C5C5C580]" />
-                        <div className="flex items-center gap-1 px-2 text-[#C5C5C580]">
-                          <span className="text-xs font-bold">↓↑</span>
-                          <span
-                            className="text-xs font-bold"
-                            style={{ writingMode: "vertical-rl" }}
-                          >
-                            LINKWAY
-                          </span>
-                        </div>
-                      </div>
-
                       {/* Row 5: 3 cols - last 2 double size */}
                       <div className="bg-white py-5 mb-4">
-                        <div className="px-6">
-                          <div
-                            className="grid gap-2 mb-2"
-                            style={{ gridTemplateColumns: "1fr 1fr 2fr" }}
-                          >
-                            <div className="h-[88px] w-[97px] overflow-hidden">
+                        <div className="pl-18 pr-6">
+                          <div className="flex gap-4 mb-4">
+                            <div className="h-[88px] w-[96px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PHILI11",
                                 )}
                               />
                             </div>
-                            <div className="h-[88px] w-[97px]] overflow-hidden">
+                            <div className="h-[88px] w-[96px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "FIBER02",
                                 )}
                               />
                             </div>
-                            <div className="h-[88px] w-[206px] overflow-hidden">
+                            <div className="h-[88px] w-[206px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "EMPER01",
@@ -544,25 +518,22 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div
-                            className="grid gap-2"
-                            style={{ gridTemplateColumns: "1fr 1fr 2fr" }}
-                          >
-                            <div className="h-[88px] w-[97px] overflow-hidden">
+                          <div className="flex gap-4">
+                            <div className="h-[88px] w-[96px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "MAGIS01",
                                 )}
                               />
                             </div>
-                            <div className="h-[88px] w-[100px] overflow-hidden">
+                            <div className="h-[88px] w-[96px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "ECOSS04",
                                 )}
                               />
                             </div>
-                            <div className="h-[88px] w-[206px] overflow-hidden">
+                            <div className="h-[88px] w-[206px]">
                               <RenderBooth
                                 booth={remapBooth.find(
                                   (b) => b.boothCode === "PERFE02",
@@ -588,212 +559,214 @@ export default function Home() {
                             </h3>
                           </div>
                         </div>
+                        <div className="mt-8">
+                          <h2 className="text-2xl font-bold text-[#0F1030]">
+                            TENT AREA
+                          </h2>
+                        </div>
                       </div>
 
                       {/* TENT AREA label */}
-                      <div className="w-full py-3 flex items-center justify-center">
-                        <h2 className="text-2xl font-bold text-[#C5C5C580]">
-                          TENT AREA
-                        </h2>
-                      </div>
                     </div>
                     <div className="flex-1 min-w-0 h-full flex flex-col">
-                      <div className="px-6 py-20 bg-white mr-10">
-                        <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
-                          <div className="flex w-full justify-center gap-40">
-                            {[...Array(9)].map((_, tableIndex) => (
-                              <div
-                                key={`dining-table-${tableIndex}`}
-                                className="relative"
-                              >
-                                <div className="w-[70px] h-[150px] bg-transparent border border-gray-300 relative">
-                                  {[...Array(4)].map((_, chairIndex) => (
-                                    <div
-                                      key={`left-chair-${tableIndex}-${chairIndex}`}
-                                      className="absolute -left-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                      style={{
-                                        top: `${chairIndex * 30 + 5}px`,
-                                      }}
-                                    ></div>
-                                  ))}
+                      <div className="px-6 pt-20 pb-2 bg-white">
+                        <div className="mr-10">
+                          <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
+                            <div className="flex w-full justify-center gap-40">
+                              {[...Array(9)].map((_, tableIndex) => (
+                                <div
+                                  key={`dining-table-${tableIndex}`}
+                                  className="relative"
+                                >
+                                  <div className="w-[70px] h-[150px] bg-transparent border border-gray-300 relative">
+                                    {[...Array(4)].map((_, chairIndex) => (
+                                      <div
+                                        key={`left-chair-${tableIndex}-${chairIndex}`}
+                                        className="absolute -left-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
+                                        style={{
+                                          top: `${chairIndex * 30 + 5}px`,
+                                        }}
+                                      ></div>
+                                    ))}
 
-                                  {[...Array(4)].map((_, chairIndex) => (
-                                    <div
-                                      key={`right-chair-${tableIndex}-${chairIndex}`}
-                                      className="absolute -right-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                      style={{
-                                        top: `${chairIndex * 30 + 5}px`,
-                                      }}
-                                    ></div>
-                                  ))}
+                                    {[...Array(4)].map((_, chairIndex) => (
+                                      <div
+                                        key={`right-chair-${tableIndex}-${chairIndex}`}
+                                        className="absolute -right-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
+                                        style={{
+                                          top: `${chairIndex * 30 + 5}px`,
+                                        }}
+                                      ></div>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
-                          </div>
-                          <div className="text-white font-bold text-3xl mt-6">
-                            DINING AREA
-                          </div>
-                        </div>
-
-                        {/* Top Row */}
-                        <div className="flex mb-2 justify-start w-full mt-12 ">
-                          <div className="flex gap-0.5">
-                            <div className="w-[163px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "ECOSS04",
-                                )}
-                              />
+                              ))}
                             </div>
-                            <div className=" w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "WELLM01",
-                                )}
-                              />
-                            </div>
-
-                            {/* 4th-5th combined */}
-                            <div className="w-[163px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "FOODS01",
-                                )}
-                              />
-                            </div>
-
-                            {/* 6th-8th are single */}
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "RFMCO01",
-                                )}
-                              />
-                            </div>
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "MEGAP01",
-                                )}
-                              />
-                            </div>
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "REPUB03",
-                                )}
-                              />
+                            <div className="text-white font-bold text-3xl mt-6">
+                              DINING AREA
                             </div>
                           </div>
 
-                          {/* DINING ENT label */}
-                          <div className="flex flex-col items-center mx-2 -mt-5">
-                            <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                              DINING ENTRANCE
-                            </div>
-                            <div className="flex justify-center">
-                              <Image
-                                src="/images/booths/arrow-up.svg"
-                                alt="Arrow Up"
-                                width={60}
-                                height={60}
-                              />
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-center mx-2 -mt-10 ">
-                            <h1 className="text-4xl text-[#FFFFFF80] font-bold mb-1">
-                              MAIN HALL
-                            </h1>
-
-                            <div className="flex gap-0.5">
-                              <div className="w-[249px] h-[80px]">
+                          {/* Top Row */}
+                          <div className="flex mb-2 justify-start w-full mt-12 ">
+                            <div className="flex gap-4">
+                              <div className="w-[163px] h-[80px] ">
                                 <RenderBooth
                                   booth={remapBooth.find(
-                                    (b) => b.boothCode === "ACSCH01",
+                                    (b) => b.boothCode === "ECOSS04",
+                                  )}
+                                />
+                              </div>
+                              <div className=" w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "WELLM01",
                                   )}
                                 />
                               </div>
 
-                              {/* 12th is single */}
+                              {/* 4th-5th combined */}
+                              <div className="w-[163px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "FOODS01",
+                                  )}
+                                />
+                              </div>
+
+                              {/* 6th-8th are single */}
                               <div className="w-[80px] h-[80px] ">
                                 <RenderBooth
                                   booth={remapBooth.find(
-                                    (b) => b.boothCode === "REGEN01",
+                                    (b) => b.boothCode === "RFMCO01",
+                                  )}
+                                />
+                              </div>
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "MEGAP01",
+                                  )}
+                                />
+                              </div>
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "REPUB03",
+                                  )}
+                                />
+                              </div>
+                            </div>
+
+                            {/* DINING ENT label */}
+                            <div className="flex flex-col items-center mx-2 -mt-5">
+                              <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                                DINING ENTRANCE
+                              </div>
+                              <div className="flex justify-center">
+                                <Image
+                                  src="/images/booths/arrow-up.svg"
+                                  alt="Arrow Up"
+                                  width={60}
+                                  height={60}
+                                />
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-center mx-2 -mt-10 ">
+                              <h1 className="text-4xl text-[#FFFFFF80] font-bold mb-1">
+                                MAIN HALL
+                              </h1>
+
+                              <div className="flex gap-4">
+                                <div className="w-[249px] h-[80px]">
+                                  <RenderBooth
+                                    booth={remapBooth.find(
+                                      (b) => b.boothCode === "ACSCH01",
+                                    )}
+                                  />
+                                </div>
+
+                                {/* 12th is single */}
+                                <div className="w-[80px] h-[80px] ">
+                                  <RenderBooth
+                                    booth={remapBooth.find(
+                                      (b) => b.boothCode === "REGEN01",
+                                    )}
+                                  />
+                                </div>
+
+                                {/* combined */}
+                                <div className="w-[163px] h-[80px]">
+                                  <RenderBooth
+                                    booth={remapBooth.find(
+                                      (b) => b.boothCode === "FIRST05",
+                                    )}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            {/* DINING ENT label */}
+                            <div className="flex flex-col items-center mx-2 -mt-5">
+                              <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
+                                DINING ENTRANCE
+                              </div>
+                              <div className="flex justify-center">
+                                <Image
+                                  src="/images/booths/arrow-up.svg"
+                                  alt="Arrow Up"
+                                  width={60}
+                                  height={60}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="flex gap-4">
+                              <div className="w-[90px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "MONHE01",
+                                  )}
+                                />
+                              </div>
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "GENTL01",
                                   )}
                                 />
                               </div>
 
-                              {/* combined */}
+                              {/*two squares */}
                               <div className="w-[163px] h-[80px]">
                                 <RenderBooth
                                   booth={remapBooth.find(
-                                    (b) => b.boothCode === "FIRST05",
+                                    (b) => b.boothCode === "FEDER01",
                                   )}
                                 />
                               </div>
-                            </div>
-                          </div>
-                          {/* DINING ENT label */}
-                          <div className="flex flex-col items-center mx-2 -mt-5">
-                            <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                              DINING ENTRANCE
-                            </div>
-                            <div className="flex justify-center">
-                              <Image
-                                src="/images/booths/arrow-up.svg"
-                                alt="Arrow Up"
-                                width={60}
-                                height={60}
-                              />
-                            </div>
-                          </div>
 
-                          <div className="flex gap-0.5">
-                            <div className="w-[90px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "MONHE01",
-                                )}
-                              />
-                            </div>
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "GENTL01",
-                                )}
-                              />
-                            </div>
-
-                            {/*two squares */}
-                            <div className="w-[163px] h-[80px]">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "FEDER01",
-                                )}
-                              />
-                            </div>
-
-                            {/* single grid */}
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "PHILI11",
-                                )}
-                              />
-                            </div>
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "FLYAC01",
-                                )}
-                              />
-                            </div>
-                            <div className="w-[80px] h-[80px] ">
-                              <RenderBooth
-                                booth={remapBooth.find(
-                                  (b) => b.boothCode === "GINEB01",
-                                )}
-                              />
+                              {/* single grid */}
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "PHILI11",
+                                  )}
+                                />
+                              </div>
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "FLYAC01",
+                                  )}
+                                />
+                              </div>
+                              <div className="w-[80px] h-[80px] ">
+                                <RenderBooth
+                                  booth={remapBooth.find(
+                                    (b) => b.boothCode === "GINEB01",
+                                  )}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -804,7 +777,7 @@ export default function Home() {
                         <div className="flex gap-[60px] w-full ">
                           {/* First booth */}
                           <div className="px-4 py-2 bg-white ">
-                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
+                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-4">
                               <div>
                                 <RenderBooth
                                   booth={remapBooth.find(
@@ -845,7 +818,7 @@ export default function Home() {
 
                           {/* Second booth */}
                           <div className="px-4 py-2 bg-white">
-                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5 ">
+                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-4 ">
                               <div className="">
                                 <RenderBooth
                                   booth={remapBooth.find(
@@ -887,7 +860,7 @@ export default function Home() {
 
                           {/* Third booth */}
                           {/* <div className="px-4 py-2 bg-white">
-                          <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
+                          <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-4">
                             <div className="">
                               <RenderBooth
                                 booth={remapBooth.find(
@@ -958,7 +931,7 @@ export default function Home() {
 
                           {/* Sixth booth  */}
                           <div className="px-4 py-2 bg-white">
-                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
+                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-4">
                               <div className="col-span-2">
                                 <RenderBooth
                                   booth={remapBooth.find(
@@ -1000,7 +973,7 @@ export default function Home() {
 
                           {/* Ninth booth*/}
                           <div className="px-4 py-2 bg-white">
-                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-0.5">
+                            <div className="w-[164px] h-[251px] grid grid-cols-2 grid-rows-3 gap-4">
                               <div className=" col-span-2">
                                 <RenderBooth
                                   booth={remapBooth.find(

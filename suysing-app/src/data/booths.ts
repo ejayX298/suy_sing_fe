@@ -125,8 +125,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/FIBER02.png",
       boothCode: "FIBER02",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 60,
+      height: 60,
     },
 
     {
@@ -291,8 +291,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/PHILI11.png",
       boothCode: "PHILI11",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 60,
+      height: 60,
     },
 
     {

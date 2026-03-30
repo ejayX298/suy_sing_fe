@@ -24,7 +24,7 @@ export default function DoubleZoneDisplay({
     return totalVisitedDoubleZone;
   };
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className=" pt-10 pb-4">
       <div
         className="px-4 py-4 rounded-md mb-4"
         style={{
