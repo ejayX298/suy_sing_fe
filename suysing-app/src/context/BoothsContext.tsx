@@ -23,6 +23,8 @@ export interface Booth {
   overrideAspect?: boolean;
   overrideSize?: boolean;
   isSuySing?: boolean;
+  activeGradientColor?: string;
+  activeAccentColor?: string;
 }
 
 interface BoothsContextType {

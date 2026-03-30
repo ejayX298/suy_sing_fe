@@ -107,8 +107,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/COSME01.png",
       boothCode: "COSME01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 70,
+      height: 70,
     },
 
     {
@@ -452,8 +452,10 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/NUTRI07.png",
       boothCode: "NUTRI07",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 150,
+      height: 150,
+      activeGradientColor: "#6DF0A4",
+      activeAccentColor: "#047835",
     },
 
     {
@@ -462,9 +464,12 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/PMFTC01.png",
       boothCode: "PMFTC01",
       visited: false,
-      width: 120,
-      height: 120,
+      width: 80,
+      height: 80,
       overrideSize: true,
+      activeGradientColor: "#8579FF",
+      activeAccentColor: "#302979",
+     
     },
 
     {
@@ -711,8 +716,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/GENTL02.png",
       boothCode: "GENTL02",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 70,
+      height: 70,
     },
     {
       id: "GOLDL02",

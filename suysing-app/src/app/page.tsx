@@ -9,6 +9,7 @@ import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 import { boothVisitService } from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
+import { getActiveBoothStyle } from "@/lib/booth-styles";
 
 export interface Booth {
   id?: string;
@@ -21,6 +22,8 @@ export interface Booth {
   height?: number;
   isDoubleZone?: boolean;
   doubleZonePosition?: number;
+  activeGradientColor?: string;
+  activeAccentColor?: string;
 }
 
 export default function Home() {
@@ -212,8 +215,11 @@ export default function Home() {
       : "";
     const isSuySing = booth.isSuySing ? "border-none" : "";
 
-    // border style
+    const activeStyle = getActiveBoothStyle(booth, booth.visited);
+
+    // border style (only used when no custom active style)
     const getBorderStyle = () => {
+      if (activeStyle) return "";
       if (booth.boothCode === latestVisitedBoothCode) {
         return customerData?.isDoneVisit
           ? "border-[4px] border-red-500"
@@ -233,14 +239,25 @@ export default function Home() {
              ${getBorderStyle()}
           ${isSuySing}
         `}
-          style={{
-            boxShadow:
-              "0px 3.92px 6.46px 3.92px #00000059, 2.94px 3.92px 0px 0px #0F1030",
-          }}
+          style={
+            activeStyle || {
+              boxShadow:
+                "0px 3.92px 6.46px 3.92px #00000059, 2.94px 3.92px 0px 0px #0F1030",
+            }
+          }
         >
           <div
-            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center
-              ${booth.visited ? "bg-white border-none" : "bg-gray-300"}`}
+            className={`w-full h-full flex -webkit-flex justify-center -webkit-justify-center items-center -webkit-items-center rounded
+              ${booth.visited ? "border-none" : "bg-gray-300"}`}
+            style={
+              activeStyle
+                ? {
+                    background: `linear-gradient(180deg, #FFFFFF 0%, ${booth.activeGradientColor} 100%)`,
+                  }
+                : booth.visited
+                  ? { backgroundColor: "white" }
+                  : undefined
+            }
           >
             <Image
               src={booth.image || "/images/placeholder.png"}
@@ -253,7 +270,7 @@ export default function Home() {
               className="object-contain"
             />
 
-            {booth.visited && (
+            {booth.visited && !activeStyle && (
               <div className="absolute inset-0 flex items-center justify-center">
                 <div>
                   <Image
