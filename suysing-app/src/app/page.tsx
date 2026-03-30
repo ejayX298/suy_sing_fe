@@ -589,41 +589,46 @@ export default function Home() {
                       {/* TENT AREA label */}
                     </div>
                     <div className="flex-1 min-w-0 h-full flex flex-col">
-                      <div className="px-6 pt-20 pb-2 bg-white">
+                      <div className="px-6 pt-28 pb-2 bg-white">
                         <div className="mr-10">
-                          <div className="border-2 border-blue-800 bg-slate-600 mb-6 py-10 px-4 w-full h-[300px] flex flex-col items-center justify-between">
-                            <div className="flex w-full justify-center gap-40">
-                              {[...Array(9)].map((_, tableIndex) => (
-                                <div
-                                  key={`dining-table-${tableIndex}`}
-                                  className="relative"
-                                >
-                                  <div className="w-[70px] h-[150px] bg-transparent border border-gray-300 relative">
-                                    {[...Array(4)].map((_, chairIndex) => (
-                                      <div
-                                        key={`left-chair-${tableIndex}-${chairIndex}`}
-                                        className="absolute -left-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                        style={{
-                                          top: `${chairIndex * 30 + 5}px`,
-                                        }}
-                                      ></div>
-                                    ))}
-
-                                    {[...Array(4)].map((_, chairIndex) => (
-                                      <div
-                                        key={`right-chair-${tableIndex}-${chairIndex}`}
-                                        className="absolute -right-[12px] mt-3 w-[12px] h-[24px] border border-gray-300"
-                                        style={{
-                                          top: `${chairIndex * 30 + 5}px`,
-                                        }}
-                                      ></div>
-                                    ))}
-                                  </div>
-                                </div>
+                          <div
+                            className="mb-6 w-full flex flex-col items-center"
+                            style={{
+                              background: "linear-gradient(180deg, rgba(255, 255, 255, 0.5) -59.28%, rgba(255, 255, 255, 0.15) 100%)",
+                              border: "1px solid #0F1030",
+                              boxShadow: "3px 4px 0px #0F1030, 0px 4px 6px 4px rgba(0, 0, 0, 0.35)",
+                              borderRadius: "8px",
+                              padding: "20px 16px 12px",
+                            }}
+                          >
+                            {/* Row 1 */}
+                            <div className="flex w-full justify-center gap-16 mt-10 mb-14">
+                              {[...Array(12)].map((_, i) => (
+                                <Image
+                                  key={`dining-row1-${i}`}
+                                  src="/images/chair-table.svg"
+                                  alt=""
+                                  width={95}
+                                  height={112}
+                                />
                               ))}
                             </div>
-                            <div className="text-white font-bold text-3xl mt-6">
-                              DINING AREA
+                            {/* Row 2 */}
+                            <div className="flex w-full justify-center gap-16">
+                              {[...Array(12)].map((_, i) => (
+                                <Image
+                                  key={`dining-row2-${i}`}
+                                  src="/images/chair-table.svg"
+                                  alt=""
+                                  width={95}
+                                  height={112}
+                                />
+                              ))}
+                            </div>
+                            {/* Label */}
+                            <div className="flex items-center gap-2 mt-20 mb-4">
+                              <Image src="/images/dining-area.svg" alt="" width={54} height={37} />
+                              <span className="text-[#0F1030] font-bold text-xl tracking-wide">DINNING AREA</span>
                             </div>
                           </div>
 
