@@ -311,7 +311,7 @@ export default function Home() {
                 <div className="w-full border border-black rounded-xl  overflow-hidden">
                   <div className="flex w-full h-[1300px] justify-center">
                     {/* Tent Area */}
-                    <div className="w-[650px] h-[1300px] flex flex-col self-center mr-10 overflow-y-auto">
+                    <div className="w-[650px] h-[1300px] flex flex-col self-center mr-14  relative">
                       {/* Row 1: Header + Double Zone */}
                       <div className="bg-white pt-14 pb-4 mb-4">
                         <div className="pl-18 pr-6">
@@ -564,6 +564,26 @@ export default function Home() {
                             TENT AREA
                           </h2>
                         </div>
+                      </div>
+
+                      {/* LINKWAY labels */}
+                      <div className="absolute right-[-40px] top-[500px] flex flex-col items-center gap-1 text-black">
+                        <span
+                          className="text-md font-bold tracking-widest"
+                          style={{ writingMode: "vertical-rl" }}
+                        >
+                          LINKWAY
+                        </span>
+                        <span className="text-md font-bold">↓↑</span>
+                      </div>
+                      <div className="absolute right-[-48px] bottom-[100px] flex flex-col items-center gap-1 text-black">
+                        <span
+                          className="text-md font-bold tracking-widest"
+                          style={{ writingMode: "vertical-rl" }}
+                        >
+                          LINKWAY
+                        </span>
+                        <span className="text-md font-bold">↓↑</span>
                       </div>
 
                       {/* TENT AREA label */}
