@@ -1255,7 +1255,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "SECUR01",
       name: "BANKO",
-      image: "/images/booths/SECUR01.jpg",
+      image: "/images/booths/SECUR01.png",
       boothCode: "SECUR01",
       visited: false,
       width: 100,
