@@ -322,13 +322,13 @@ export default function Home() {
               contentStyle={{ minHeight: "1100px", padding: "20px 0 200px 0" }}
             >
               <div
-                className="relative w-full min-w-[1600px] h-full flex items-center justify-center bg-auto bg-center  p-8"
+                className="relative w-full min-w-[1680px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
                 <div className="w-full border border-black rounded-xl  overflow-hidden">
-                  <div className="flex w-full h-[1600px] justify-center">
+                  <div className="flex w-full h-[1680px] justify-center">
                     {/* Tent Area */}
-                    <div className="w-[650px] h-[1600px] flex flex-col self-center mr-14  relative">
+                    <div className="w-[650px] h-[1680px] flex flex-col self-center mr-14  relative">
                       {/* Row 1: Header + Double Zone */}
                       <div className="bg-white pt-14 pb-4 mb-4">
                         <div className="pl-18 pr-6">
@@ -584,29 +584,29 @@ export default function Home() {
                       </div>
 
                       {/* LINKWAY labels */}
-                      <div className="absolute right-[-40px] top-[500px] flex flex-col items-center gap-1 text-black">
+                      <div className="absolute right-[-40px] top-[450px] flex flex-col items-center gap-1 text-black">
                         <span
-                          className="text-md font-bold tracking-widest"
+                          className="text-2xl font-bold tracking-widest"
                           style={{ writingMode: "vertical-rl" }}
                         >
                           LINKWAY
                         </span>
-                        <span className="text-md font-bold">↓↑</span>
+                        <span className="text-md font-bold rotate-90">↓↑</span>
                       </div>
-                      <div className="absolute right-[-48px] bottom-[100px] flex flex-col items-center gap-1 text-black">
+                      <div className="absolute right-[-48px] bottom-[400px]  flex flex-col items-center gap-1 text-black">
                         <span
-                          className="text-md font-bold tracking-widest"
+                          className="text-2xl font-bold tracking-widest"
                           style={{ writingMode: "vertical-rl" }}
                         >
                           LINKWAY
                         </span>
-                        <span className="text-md font-bold">↓↑</span>
+                        <span className="text-md font-bold rotate-90">↓↑</span>
                       </div>
 
                       {/* TENT AREA label */}
                     </div>
                     <div className="flex-1 min-w-0 h-full flex flex-col">
-                      <div className="px-10 pt-28 pb-2 bg-white">
+                      <div className="px-12 pt-28 pb-2 bg-white">
                         <div className="mr-10">
                           <div
                             className="mb-6 w-full flex flex-col items-center"
@@ -1138,8 +1138,8 @@ export default function Home() {
                       </div>
 
                       {/* Entrance/Exit, CRs Section */}
-                      <div className="flex flex-col items-center w-full mt-5">
-                        <div className="flex justify-center items-center gap-4">
+                      <div className="flex flex-col items-center w-full mt-10 bg-white">
+                        <div className="flex justify-center items-center gap-10 mt-5">
                           {/* Entrance/Exit 1 */}
                           <div
                             className="bg-[#FF9933] w-[206px] h-[88px] flex flex-col items-center justify-center text-sm font-bold rounded"
@@ -1156,7 +1156,7 @@ export default function Home() {
 
                           {/* Men's CR */}
                           <div
-                            className="bg-white w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
+                            className="bg-white border-black border-2 -mt-2 w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
                             style={{ boxShadow: "4px 4px 0px 0px black" }}
                           >
                             <Image
@@ -1165,7 +1165,9 @@ export default function Home() {
                               width={17}
                               height={40}
                             />
-                            <span className="text-sm font-bold mt-1">MEN&apos;S CR</span>
+                            <span className="text-sm font-bold mt-1">
+                              MEN&apos;S CR
+                            </span>
                           </div>
 
                           {/* Entrance/Exit 2 */}
@@ -1184,7 +1186,7 @@ export default function Home() {
 
                           {/* Women's CR */}
                           <div
-                            className="bg-white w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
+                            className="bg-white -mt-2 border-black border-2 w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
                             style={{ boxShadow: "4px 4px 0px 0px black" }}
                           >
                             <Image
@@ -1193,7 +1195,9 @@ export default function Home() {
                               width={24}
                               height={39}
                             />
-                            <span className="text-sm font-bold mt-1">WOMEN&apos;S CR</span>
+                            <span className="text-sm font-bold mt-1">
+                              WOMEN&apos;S CR
+                            </span>
                           </div>
 
                           {/* Entrance/Exit 3 */}
@@ -1212,7 +1216,7 @@ export default function Home() {
                         </div>
 
                         {/* MAIN HALL label */}
-                        <h1 className="text-4xl text-[#0F1030] font-bold mt-4">
+                        <h1 className="text-4xl text-[#0F1030] font-bold mt-8 mb-9">
                           MAIN HALL
                         </h1>
                       </div>
