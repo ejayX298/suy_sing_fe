@@ -148,8 +148,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/GENTL01.png",
       boothCode: "GENTL01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 70,
+      height: 70,
     },
     {
       id: "GINEB01",
@@ -157,8 +157,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/GINEB01.png",
       boothCode: "GINEB01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 90,
+      height: 90,
     },
 
     {
@@ -356,8 +356,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/ACSCH01.png",
       boothCode: "ACSCH01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 150,
+      height: 150,
     },
 
     {
@@ -426,8 +426,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/FOODS01.png",
       boothCode: "FOODS01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 200,
+      height: 200,
       overrideSize: true,
     },
 
@@ -437,8 +437,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/JNTLC01.png",
       boothCode: "JNTLC01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 220,
+      height: 220,
     },
 
     {
@@ -513,8 +513,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/COLGA01.png",
       boothCode: "COLGA01",
       visited: false,
-      width: 130,
-      height: 130,
+      width: 170,
+      height: 170,
     },
 
     {
@@ -543,8 +543,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/MONDE03.png",
       boothCode: "MONDE03",
       visited: false,
-      width: 130,
-      height: 130,
+      width: 180,
+      height: 180,
     },
 
     {
@@ -553,8 +553,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/NESTL01.png",
       boothCode: "NESTL01",
       visited: false,
-      width: 150,
-      height: 150,
+      width: 250,
+      height: 250,
     },
 
     {
@@ -583,8 +583,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/PROCT06.png",
       boothCode: "PROCT06",
       visited: false,
-      width: 120,
-      height: 120,
+      width: 170,
+      height: 170,
     },
 
     {
@@ -606,6 +606,15 @@ export const getInitialBooths = (): Booth[] => {
       width: 140,
       height: 140,
     },
+    {
+      id: "UNILE01",
+      name: "Unilever",
+      image: "/images/booths/UNILE01.png",
+      boothCode: "UNILE01",
+      visited: false,
+      width: 140,
+      height: 140,
+    },
 
     {
       id: "UNIVE01",
@@ -613,8 +622,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/UNIVE01.png",
       boothCode: "UNIVE01",
       visited: false,
-      width: 120,
-      height: 120,
+      width: 200,
+      height: 200,
     },
 
     {
@@ -1026,7 +1035,7 @@ export const getInitialBooths = (): Booth[] => {
     {
       id: "SYMPL01",
       name: "symply gorgeous",
-      image: "/images/booths/SYMPL01.jpg",
+      image: "/images/booths/SYMPL01.png",
       boothCode: "SYMPL01",
       visited: false,
       width: 100,
@@ -1112,8 +1121,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/WLFOO01.png",
       boothCode: "WLFOO01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 60,
+      height: 60,
     },
 
     {
@@ -1177,6 +1186,15 @@ export const getInitialBooths = (): Booth[] => {
       width: 60,
       height: 60,
     },
+     {
+      id: "GOLDR01",
+      name: "mogu mogu",
+      image: "/images/booths/GOLDR01.png",
+      boothCode: "GOLDR01",
+      visited: false,
+      width: 100,
+      height: 100,
+    },
 
      {
       id: "MEGAS01",
@@ -1186,6 +1204,42 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+    },
+     {
+      id: "THECO01",
+      name: "THECOOFT",
+      image: "/images/booths/THECO01.png",
+      boothCode: "THECO01",
+      visited: false,
+      width: 90,
+      height: 90,
+    },
+     {
+      id: "WELLM01",
+      name: "WELLMOFT",
+      image: "/images/booths/WELLM01.png",
+      boothCode: "WELLM01",
+      visited: false,
+      width: 70,
+      height: 70,
+    },
+    {
+      id: "REBIS01",
+      name: "REBISOFT",
+      image: "/images/booths/REBIS01.png",
+      boothCode: "REBIS01",
+      visited: false,
+      width: 70,
+      height: 70,
+    },
+    {
+      id: "COCA07",
+      name: "Coca cola",
+      image: "/images/booths/COCA07.png",
+      boothCode: "COCA07",
+      visited: false,
+      width: 150,
+      height: 150,
     },
 
     //new DOUBLE ZONE LOGOS
@@ -1291,7 +1345,7 @@ export const getInitialBooths = (): Booth[] => {
      {
       id: "NEWZE01",
       name: "BANKO",
-      image: "/images/booths/NEWZE01.jpg",
+      image: "/images/booths/NEWZE01.png",
       boothCode: "NEWZE01",
       visited: false,
       width: 100,
@@ -1309,7 +1363,7 @@ export const getInitialBooths = (): Booth[] => {
       {
       id: "SWEDI01",
       name: "BANKO",
-      image: "/images/booths/SWEDI01.jpg",
+      image: "/images/booths/SWEDI01.png",
       boothCode: "SWEDI01",
       visited: false,
       width: 100,
