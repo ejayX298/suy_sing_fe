@@ -9,10 +9,10 @@ export interface ColorBooth{
 
 export const blueBooths: ColorBooth[] = [
   {
-    id: "UNILE01",
+    id: "UNILE02",
     name: "Unilever",
-    image: "/images/booths/UNILE01.png",
-    boothCode: "UNILE01",
+    image: "/images/booths/UNILE02.png",
+    boothCode: "UNILE02",
     width: 100,
     height: 100,
   },
@@ -457,7 +457,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "UNICA01",
     name: "Unicare",
-    image: "/images/booths/UNICA01.png",
+    image: "/images/booths/UNICA01.jpg",
     boothCode: "UNICA01",
     width: 100,
     height: 100,
@@ -601,7 +601,7 @@ export const redBooths: ColorBooth[] = [
   {
     id: "JEVER01",
     name: "Jeverly",
-    image: "/images/booths/JEVER01.png",
+    image: "/images/booths/JEVER01.jpg",
     boothCode: "JEVER01",
     width: 100,
     height: 100,
@@ -727,3 +727,23 @@ export const redBooths: ColorBooth[] = [
     height: 100,
   },
 ];
+
+
+export const greenBooths: ColorBooth[] = [
+    {
+      id: "GYMBO01",
+      name: "gymbo",
+      image: "/images/booths/GYMBO01.png",
+      boothCode: "GYMBO01",
+      width: 100,
+      height: 100,
+    },
+     {
+      id: "MEGAS01",
+      name: "MEGASOFT",
+      image: "/images/booths/MEGAS01.png",
+      boothCode: "MEGAS01",
+      width: 100,
+      height: 100,
+    }
+]
