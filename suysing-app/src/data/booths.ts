@@ -104,6 +104,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+      activeAccentColor: "#2B3694",
+      activeGradientColor: "#7583FB",
     },
 
     {
@@ -140,6 +142,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+       activeAccentColor: "#39B54A",
+      activeGradientColor: "#5DEA71",
     },
 
     {
@@ -159,6 +163,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 90,
       height: 90,
+      activeAccentColor: "#FEF900",
+      activeGradientColor: "#FFFD8B",
     },
 
     {
@@ -193,6 +199,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#017431",
+      activeGradientColor: "#6BF8A6",
     },
 
     {
@@ -212,6 +220,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#ED1C24",
+      activeGradientColor: "#FF7B80",
     },
 
     {
@@ -280,6 +290,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#ED1C24",
+      activeGradientColor: "#FF6B70",
     },
 
     {
@@ -300,6 +312,9 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+       activeGradientColor: "#4AE996",
+      activeAccentColor: "#009949",
+      
     },
 
     {
@@ -320,6 +335,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#E91976",
+      activeGradientColor: "#FF9DC9",
     },
 
     {
@@ -330,6 +347,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#BFD92A",
+      activeGradientColor: "#F2FFA6",
     },
 
     {
@@ -340,6 +359,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#0D6AA8",
+      activeGradientColor: "#44A9ED",
     },
 
     {
@@ -350,6 +371,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#E22726",
+      activeGradientColor: "#F34847",
     },
 
     {
@@ -360,6 +383,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 150,
       height: 150,
+      activeAccentColor: "#00A1E1",
+      activeGradientColor: "#4ECDFF",
     },
 
     {
@@ -370,6 +395,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#ED1C24",
+      activeGradientColor: "#FF7075",
     },
 
     {
@@ -401,6 +428,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 120,
       height: 120,
+      activeAccentColor: "#EC232C",
+      activeGradientColor: "#FF7177",
     },
     {
       id: "FEDER01A",
@@ -410,6 +439,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+      activeAccentColor: "#027CC9",
+      activeGradientColor: "#2EA6F3",
     },
 
     {
@@ -418,8 +449,10 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/FIRST05.png",
       boothCode: "FIRST05",
       visited: false,
-      width: 70,
-      height: 70,
+      width: 120,
+      height: 120,
+      activeAccentColor: "#C01E2E",
+      activeGradientColor: "#FF8692",
     },
 
     {
@@ -441,6 +474,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 220,
       height: 220,
+      activeAccentColor: "#FFB222",
+      activeGradientColor: "#FFCE73",
     },
 
     {
@@ -477,6 +512,9 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 100,
       height: 100,
+      activeAccentColor: "#005BAB",
+      activeGradientColor: "#1888EB",
+      
     },
 
     {
@@ -1125,6 +1163,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 60,
       height: 60,
+      activeAccentColor: "#E4332D",
+      activeGradientColor: "#FF6863",
     },
 
     {
@@ -1196,8 +1236,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 80,
       height: 80,
-      activeAccentColor: "#94E8FF",
-      activeGradientColor: "#01B3E3",
+      activeAccentColor: "#01B3E3",
+      activeGradientColor: "#94E8FF",
     },
 
      {
@@ -1226,6 +1266,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+      activeAccentColor: "#0D6AA8",
+      activeGradientColor: "#44A9ED",
     },
     {
       id: "REBIS01",
@@ -1235,6 +1277,9 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 70,
       height: 70,
+      activeAccentColor: "#EF3F29",
+      activeGradientColor: "#FFA599",
+      
     },
     {
       id: "COCA07",
