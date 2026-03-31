@@ -659,7 +659,7 @@ export default function Home() {
                           </div>
 
                           {/* Top Row */}
-                          <div className="flex mb-2 justify-start w-full mt-12 ">
+                          <div className="flex mb-2 justify-start w-full mt-34 ">
                             <div className="flex gap-4">
                               <div className="w-[96px] h-[88px] ">
                                 <RenderBooth
@@ -717,16 +717,16 @@ export default function Home() {
                             </div>
 
                             {/* DINING ENT label */}
-                            <div className="flex flex-col items-center mx-2 -mt-5">
-                              <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                                DINING ENTRANCE
+                            <div className="flex flex-col items-center mx-2 -mt-10">
+                              <div className="text-black w-[170px] h-[30px] flex items-center justify-center text-2xl font-bold mb-1">
+                                DINNING AREA
                               </div>
                               <div className="flex justify-center">
                                 <Image
-                                  src="/images/booths/arrow-up.svg"
+                                  src="/images/diningArea-arrow.svg"
                                   alt="Arrow Up"
-                                  width={60}
-                                  height={60}
+                                  width={75}
+                                  height={75}
                                 />
                               </div>
                             </div>
@@ -784,16 +784,16 @@ export default function Home() {
                               </div>
                             </div>
                             {/* DINING ENT label */}
-                            <div className="flex flex-col items-center mx-2 -mt-5">
-                              <div className="text-white w-[170px] h-[30px] flex items-center justify-center text-lg font-bold mb-1">
-                                DINING ENTRANCE
+                            <div className="flex flex-col items-center mx-2 -mt-10">
+                              <div className="text-black w-[170px] h-[30px] flex items-center justify-center text-2xl font-bold mb-1">
+                                DINING AREA
                               </div>
                               <div className="flex justify-center">
                                 <Image
-                                  src="/images/booths/arrow-up.svg"
+                                  src="/images/diningArea-arrow.svg"
                                   alt="Arrow Up"
-                                  width={60}
-                                  height={60}
+                                  width={75}
+                                  height={75}
                                 />
                               </div>
                             </div>
@@ -978,7 +978,7 @@ export default function Home() {
                             </div>
                           </div>
 
-                          <div className="px-4 py-3 bg-white">
+                          <div className="ml-10 px-4 py-3 bg-white">
                             <div className="w-[302px] h-[269px] ">
                               <RenderBooth
                                 booth={remapBooth.find(
@@ -989,7 +989,7 @@ export default function Home() {
                           </div>
 
                           {/* Sixth booth  */}
-                          <div className="px-4 py-3 bg-white">
+                          <div className="ml-10 px-4 py-3 bg-white">
                             <div className="w-[206px] h-[269px] bg-white rounded">
                               <RenderBooth
                                 booth={remapBooth.find(
@@ -1021,7 +1021,7 @@ export default function Home() {
                           </div>
 
                           {/* Ninth booth*/}
-                          <div className="px-4 py-3  bg-white">
+                          <div className="ml-10 px-4 py-3  bg-white">
                             <div className="w-[206px] h-[269px] grid grid-cols-2 grid-rows-3 gap-4">
                               <div className="">
                                 <RenderBooth
@@ -1089,7 +1089,7 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="px-4 py-3 bg-white">
+                          <div className="ml-10 px-4 py-3 bg-white">
                             <div className="w-[302px] h-[269px] ">
                               <RenderBooth
                                 booth={remapBooth.find(
@@ -1098,7 +1098,7 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="px-4 py-3 bg-white">
+                          <div className="ml-10 px-4 py-3 bg-white">
                             <div className="w-[206px] h-[269px]">
                               <RenderBooth
                                 booth={remapBooth.find(
@@ -1125,7 +1125,7 @@ export default function Home() {
                               />
                             </div>
                           </div>
-                          <div className="px-4 py-3 bg-white">
+                          <div className="ml-10 px-4 py-3 bg-white">
                             <div className="w-[206px] h-[269px] ">
                               <RenderBooth
                                 booth={remapBooth.find(

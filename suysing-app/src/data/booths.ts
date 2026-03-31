@@ -406,8 +406,8 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/FEDER01A.png",
       boothCode: "FEDER01A",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 70,
+      height: 70,
     },
 
     {
