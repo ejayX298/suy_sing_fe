@@ -256,8 +256,10 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/MEGAP01.png",
       boothCode: "MEGAP01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 90,
+      height: 90,
+      activeAccentColor: "#02730D",
+      activeGradientColor: "#9AFFA4",
     },
 
     {
