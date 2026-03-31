@@ -322,13 +322,13 @@ export default function Home() {
               contentStyle={{ minHeight: "1100px", padding: "20px 0 200px 0" }}
             >
               <div
-                className="relative w-full min-w-[1500px] h-full flex items-center justify-center bg-auto bg-center  p-8"
+                className="relative w-full min-w-[1600px] h-full flex items-center justify-center bg-auto bg-center  p-8"
                 style={{ backgroundImage: "url('/images/bg-booth.webp')" }}
               >
                 <div className="w-full border border-black rounded-xl  overflow-hidden">
-                  <div className="flex w-full h-[1500px] justify-center">
+                  <div className="flex w-full h-[1600px] justify-center">
                     {/* Tent Area */}
-                    <div className="w-[650px] h-[1500px] flex flex-col self-center mr-14  relative">
+                    <div className="w-[650px] h-[1600px] flex flex-col self-center mr-14  relative">
                       {/* Row 1: Header + Double Zone */}
                       <div className="bg-white pt-14 pb-4 mb-4">
                         <div className="pl-18 pr-6">
@@ -444,7 +444,7 @@ export default function Home() {
                       </div>
 
                       {/* Row 4: 4x2 = 8 booths */}
-                      <div className="bg-white py-5 mb-4">
+                      <div className="bg-white py-10 mb-4">
                         <div className="pl-18 pr-6">
                           <div className="flex gap-4 mb-4">
                             <div className="w-[96px] h-[57px]">
@@ -510,7 +510,7 @@ export default function Home() {
                       </div>
 
                       {/* Row 5: 3 cols - last 2 double size */}
-                      <div className="bg-white py-5 mb-4">
+                      <div className="bg-white py-10 mb-4">
                         <div className="pl-18 pr-6">
                           <div className="flex gap-4 mb-4">
                             <div className="h-[88px] w-[96px]">
@@ -1138,34 +1138,83 @@ export default function Home() {
                       </div>
 
                       {/* Entrance/Exit, CRs Section */}
-                      <div className="flex justify-center pr-56 gap-[275px] w-full mt-5">
-                        <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                          <Image
-                            src="/images/booths/arrow.svg"
-                            alt="Entrance/Exit"
-                            width={49}
-                            height={24}
-                          />
-                          <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
+                      <div className="flex flex-col items-center w-full mt-5">
+                        <div className="flex justify-center items-center gap-4">
+                          {/* Entrance/Exit 1 */}
+                          <div
+                            className="bg-[#FF9933] w-[206px] h-[88px] flex flex-col items-center justify-center text-sm font-bold rounded"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
+                          >
+                            <Image
+                              src="/images/arrow.svg"
+                              alt="Entrance/Exit"
+                              width={49}
+                              height={24}
+                            />
+                            <span className="mt-1">ENTRANCE/EXIT</span>
+                          </div>
+
+                          {/* Men's CR */}
+                          <div
+                            className="bg-white w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
+                          >
+                            <Image
+                              src="/men-cr.svg"
+                              alt="Men's CR"
+                              width={17}
+                              height={40}
+                            />
+                            <span className="text-sm font-bold mt-1">MEN&apos;S CR</span>
+                          </div>
+
+                          {/* Entrance/Exit 2 */}
+                          <div
+                            className="bg-[#FF9933] w-[206px] h-[88px] flex flex-col items-center justify-center text-sm font-bold rounded"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
+                          >
+                            <Image
+                              src="/images/arrow.svg"
+                              alt="Entrance/Exit"
+                              width={49}
+                              height={24}
+                            />
+                            <span className="mt-1">ENTRANCE/EXIT</span>
+                          </div>
+
+                          {/* Women's CR */}
+                          <div
+                            className="bg-white w-[328px] h-[113px] flex flex-col items-center justify-center rounded"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
+                          >
+                            <Image
+                              src="/women-cr.svg"
+                              alt="Women's CR"
+                              width={24}
+                              height={39}
+                            />
+                            <span className="text-sm font-bold mt-1">WOMEN&apos;S CR</span>
+                          </div>
+
+                          {/* Entrance/Exit 3 */}
+                          <div
+                            className="bg-[#FF9933] w-[206px] h-[88px] flex flex-col items-center justify-center text-sm font-bold rounded"
+                            style={{ boxShadow: "4px 4px 0px 0px black" }}
+                          >
+                            <Image
+                              src="/images/arrow.svg"
+                              alt="Entrance/Exit"
+                              width={49}
+                              height={24}
+                            />
+                            <span className="mt-1">ENTRANCE/EXIT</span>
+                          </div>
                         </div>
-                        <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                          <Image
-                            src="/images/booths/arrow.svg"
-                            alt="Entrance/Exit"
-                            width={49}
-                            height={24}
-                          />
-                          <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
-                        </div>
-                        <div className="bg-[#FF9933] w-[250px] h-14 flex items-center justify-center text-sm font-bold border border-black rounded">
-                          <Image
-                            src="/images/booths/arrow.svg"
-                            alt="Entrance/Exit"
-                            width={49}
-                            height={24}
-                          />
-                          <span className="ml-2">BOOTH ENTRANCE / EXIT</span>
-                        </div>
+
+                        {/* MAIN HALL label */}
+                        <h1 className="text-4xl text-[#0F1030] font-bold mt-4">
+                          MAIN HALL
+                        </h1>
                       </div>
                     </div>
                   </div>
