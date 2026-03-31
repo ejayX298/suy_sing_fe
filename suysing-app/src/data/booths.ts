@@ -1192,8 +1192,10 @@ export const getInitialBooths = (): Booth[] => {
       image: "/images/booths/GOLDR01.png",
       boothCode: "GOLDR01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 80,
+      height: 80,
+      activeAccentColor: "#94E8FF",
+      activeGradientColor: "#01B3E3",
     },
 
      {
