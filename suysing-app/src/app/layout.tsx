@@ -26,7 +26,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans relative `}>
         <div className="absolute inset-0 -z-10 w-full h-full">
           <Image
-            src="/images/background-image.png"
+            src="/images/bg-mobile.webp"
             alt="Background"
             fill
             priority
