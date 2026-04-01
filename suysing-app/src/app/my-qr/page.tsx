@@ -17,30 +17,59 @@ interface Schedule {
   schedule: ScheduleItem[];
 }
 
-// Schedule for Red and Green customer types
-const scheduleRedGreen: Schedule[] = [
+const boothHoppingDetails = [
+  "Main Hall:",
+  "Trade Booths",
+  "",
+  "Tent:",
+  "Suy Sing Booth",
+  "More Trade Booths",
+  "Store Booster Pavilion",
+  "Gaming Hub & Lounge",
+];
+
+// Schedule for Red customer type
+const scheduleRed: Schedule[] = [
   {
     schedule: [
-      { time: "07:00 AM", activity: "Registration" },
-      { time: "08:00 AM", activity: "Opening Ceremony" },
       {
-        time: "08:30 AM",
-        activity: "Booth Hopping:",
-        details: [
-          "Main Hall: Trade Booths",
-          "Tent:",
-          "• Suy Sing Booths",
-          "• Gaming Hub",
-          "• More Trade Booths",
-          "• Store Booster Pavilion",
-          "Suki Day Deals",
-        ],
+        time: "07:00 AM",
+        activity: "Self Registration\n(Suki Day Deals)",
+      },
+      { time: "8:00 AM", activity: "Opening Ceremony" },
+      {
+        time: "8:30 AM",
+        activity: "Digital Booth Hopping",
+        details: boothHoppingDetails,
       },
       { time: "11:30 AM", activity: "Buffet Lunch" },
       { time: "12:00 PM", activity: "Suki Day Show" },
-      { time: "02:30 PM", activity: "Souvenir Redemption" },
-      { time: "03:30 PM", activity: "Mini Show at Lobby Area" },
-      { time: "07:00 PM (Sharp)", activity: "Event Closing" },
+      { time: "1:00 PM", activity: "Souvenir Redemption\nat the Tent" },
+      { time: "3:30 PM", activity: "Mini Show at the Lobby" },
+      { time: "7:00 PM", activity: "Event Closing" },
+    ],
+  },
+];
+
+// Schedule for Green customer type
+const scheduleGreen: Schedule[] = [
+  {
+    schedule: [
+      {
+        time: "07:00 AM",
+        activity: "Self Registration\n(Suki Day Deals)",
+      },
+      { time: "8:00 AM", activity: "Opening Ceremony" },
+      {
+        time: "8:30 AM",
+        activity: "Digital Booth Hopping",
+        details: boothHoppingDetails,
+      },
+      { time: "11:30 AM", activity: "Buffet Lunch" },
+      { time: "12:00 PM", activity: "Suki Day Show" },
+      { time: "2:30 PM", activity: "Souvenir Redemption\nat the Tent" },
+      { time: "3:30 PM", activity: "Mini Show at the Lobby" },
+      { time: "7:00 PM", activity: "Event Closing" },
     ],
   },
 ];
@@ -49,23 +78,19 @@ const scheduleRedGreen: Schedule[] = [
 const scheduleYellow: Schedule[] = [
   {
     schedule: [
-      { time: "01:30 PM", activity: "Registration" },
       {
-        time: "", // Empty time for multi-line activity alignment
-        activity: "Booth Hopping:",
-        details: [
-          "Main Hall: Trade Booths",
-          "Tent:",
-          "• Suy Sing Booths",
-          "• Gaming Hub",
-          "• More Trade Booths",
-          "• Store Solution Pavilion",
-          "Suki Day Deals",
-        ],
+        time: "1:30 PM",
+        activity: "Self Registration\n(Suki Day Deals)",
       },
-      { time: "02:30 PM", activity: "Souvenir Redemption" },
-      { time: "03:30 PM", activity: "Mini Show at Lobby Area" },
-      { time: "07:00 PM (Sharp)", activity: "Event Closing" },
+      {
+        time: "1:30 PM",
+        activity: "Digital Booth Hopping",
+        details: boothHoppingDetails,
+      },
+      { time: "2:00 PM", activity: "Food Hall at the Tent" },
+      { time: "2:30 PM", activity: "Souvenir Redemption\nat the Tent" },
+      { time: "3:30 PM", activity: "Mini Show at the Lobby" },
+      { time: "7:00 PM", activity: "Event Closing" },
     ],
   },
 ];
@@ -104,6 +129,11 @@ export default function MyQrPage() {
 
   useEffect(() => {
     if (customer_hash_code) {
+      const accountVerified = localStorage.getItem("account_verified");
+      if (accountVerified !== customer_hash_code) {
+        router.push(`/verify?cc=${customer_hash_code}`);
+        return;
+      }
       fetchData();
     } else {
       router.push(`/unauthorized`);
@@ -133,99 +163,113 @@ export default function MyQrPage() {
   }
 
   // Determine which schedule to display
-  const scheduleToDisplay =
-    customerData?.customer_type === "yellow"
-      ? scheduleYellow
-      : scheduleRedGreen;
+  const getSchedule = () => {
+    switch (customerData?.customer_type) {
+      case "yellow":
+        return scheduleYellow;
+      case "green":
+        return scheduleGreen;
+      default:
+        return scheduleRed;
+    }
+  };
+  const scheduleToDisplay = getSchedule();
+
+  const colorGroup = customerData?.customer_type
+    ? customerData.customer_type.charAt(0).toUpperCase() +
+      customerData.customer_type.slice(1)
+    : "";
 
   return (
-    <div className="flex min-h-screen flex-col py-10 items-center w-full mb-10">
-      {/* Epic Journey Image */}
-      <div className="relative w-full h-32 mb-2 sm:h-56">
-        <Image
-          src="/images/epic-journey2.png"
-          alt="Epic Journey to Success - Suy Sing Suki 2025"
-          fill
-          style={{ objectFit: "contain" }}
-          priority
-        />
+    <div className="flex min-h-screen flex-col items-center w-full pb-24 bg-white">
+      {/* Header Banner */}
+      <div className="w-full max-w-md px-4 mt-6">
+        <div className="relative w-full aspect-[16/7] rounded-2xl overflow-hidden">
+          <Image
+            src="/images/account-header.png"
+            alt="Suy Sing 80 to Infinity"
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
       </div>
 
-      <div className="w-full max-w-md px-4 mt-4">
-        {/* Customer Info Card */}
-        <div className="bg-white rounded-md border-2 border-gray-500 p-6 mb-2">
-          <div className="grid grid-cols-2 gap-2">
+      {/* Customer Name & Code */}
+      <div className="text-center mt-4 mb-10">
+        <h1 className="text-2xl font-bold ">
+          {customerData?.full_name || ""}
+        </h1>
+        <p className="text-[#686868] text-2xl  mt-1">
+          Customer Code:{" "}
+          <span className="font-bold">{customerData?.code || ""}</span>
+        </p>
+      </div>
+
+      <div className="w-full max-w-md px-4">
+        {/* Color Group / Table No / Raffle No */}
+        <div className="bg-white mb-12">
+          <div className="grid grid-cols-3 justify-around  border-b">
             <div>
-              <p className="text-gray-600 font-medium">Customer Code:</p>
-              <p className="font-bold text-gray-800">
-                {customerData?.code || "DCRUZ001"}
-              </p>
+              <p className=" text-[#0F1030]">Color Group:</p>
+              <p className="font-bold  mt-1">{colorGroup}</p>
             </div>
             <div>
-              <p className="text-gray-600 font-medium">Customer Name:</p>
-              <p className="font-bold text-gray-800">
-                {customerData?.full_name || "Juan Dela Cruz"}
-              </p>
+              <p className=" text-[#0F1030]">Table No.:</p>
+              <p className="font-bold  mt-1">—</p>
+            </div>
+            <div>
+              <p className=" text-[#0F1030]">Raffle No.:</p>
+              <p className="font-bold  mt-1">—</p>
             </div>
           </div>
         </div>
 
         {/* Schedule of Activities Card */}
-        <div className="bg-white rounded-md border-2 border-gray-500 overflow-hidden mb-10">
-          <div className="px-4 py-3 border-b border-gray-500">
-            <h2 className="text-lg font-bold ">Schedule of Activities</h2>
+        <div className="bg-white border  rounded-xl overflow-hidden mb-10">
+          <div className="px-4 py-3 border-b ">
+            <h2 className="text-lg font-bold">Schedule of Activities</h2>
           </div>
 
           {scheduleToDisplay.map((day, dayIndex) => (
             <div key={dayIndex}>
               {day.event && (
-                <div className="px-4 py-2 bg-gray-100 border-b border-gray-500">
+                <div className="px-4 py-2 bg-gray-50 border-b ">
                   <p className="font-bold text-gray-700">{day.event}</p>
                 </div>
               )}
               {day.schedule.map((item, itemIndex) => (
                 <div
                   key={itemIndex}
-                  className={`grid grid-cols-2 border-b border-gray-500 ${
-                    item.activity === "Booth Hopping:"
-                      ? "items-start"
-                      : "items-center"
+                  className={`grid grid-cols-[120px_1fr] border-b  ${
+                    item.details ? "items-start" : "items-center"
                   }`}
                 >
                   <div className="px-4 py-3">
-                    <p className="text-sm">{item.time}</p>
+                    <p className="">{item.time}</p>
                   </div>
                   <div className="px-4 py-3">
-                    <p className="font-bold text-sm">{item.activity}</p>
+                    <p className="font-bold  whitespace-pre-line">
+                      {item.activity}
+                    </p>
 
                     {item.details && (
-                      <ul className="mt-1 text-sm ">
+                      <div className="mt-1 ">
                         {item.details.map((detail, detailIndex) => (
-                          <li
+                          <p
                             key={detailIndex}
                             className={
-                              detail === "Tent:"
-                                ? "font-bold mt-1"
-                                : detail === "Suki Day Deals"
+                              detail === "Main Hall:" || detail === "Tent:"
                                 ? "font-bold mt-2"
-                                : detail.startsWith("•")
-                                ? "mt-1"
-                                : ""
+                                : detail === ""
+                                  ? "h-1"
+                                  : ""
                             }
                           >
-                            {detail === "Tent:" && (
-                              <Image
-                                src="/images/new.svg"
-                                alt="New"
-                                width={24}
-                                height={12}
-                                className="inline-block -ml-7 mr-1 relative -top-0.5"
-                              />
-                            )}
                             {detail}
-                          </li>
+                          </p>
                         ))}
-                      </ul>
+                      </div>
                     )}
                   </div>
                 </div>
