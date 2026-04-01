@@ -2,6 +2,34 @@ import httpClient from "./base/httpClient";
 import axios from "axios";
 
 export const customerQr = {
+  getCustomerForVerification: async (code: string) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+
+    try {
+      const response = await httpClient(api_key).get(
+        `/customer/details/?chc=${code}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || response?.data || null;
+
+      console.log("Verification API response:", response_data);
+
+      if (!response_data) {
+        return { success: false, mobile_no: "", first_name: "" };
+      }
+
+      return {
+        success: true,
+        mobile_no: response_data?.mobile || response_data?.mobile_no || "",
+        first_name: response_data?.first_name || response_data?.fname || "",
+      };
+    } catch (error) {
+      console.error("Verification API error:", error);
+      return { success: false, mobile_no: "", first_name: "" };
+    }
+  },
+
   getCustomer: async (code: string) => {
     const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
@@ -41,7 +69,13 @@ export const customerQr = {
               `customer_info_${mapResponse.code}`,
               JSON.stringify(mapResponse)
             );
-            window.location.href = `/my-qr/?cc=${hash_code}`;
+
+            const accountVerified = localStorage.getItem("account_verified");
+            if (accountVerified !== hash_code) {
+              window.location.href = `/verify?cc=${hash_code}`;
+            } else {
+              window.location.href = `/my-qr/?cc=${hash_code}`;
+            }
           }
 
           localStorage.setItem("customer_info", JSON.stringify(mapResponse));
@@ -53,7 +87,12 @@ export const customerQr = {
 
           // Reload page on updating of hash code for refreshing of bottom navigation urls
           if (stored_hash_code != hash_code) {
-            window.location.href = `/my-qr/?cc=${hash_code}`;
+            const accountVerified = localStorage.getItem("account_verified");
+            if (accountVerified !== hash_code) {
+              window.location.href = `/verify?cc=${hash_code}`;
+            } else {
+              window.location.href = `/my-qr/?cc=${hash_code}`;
+            }
           }
         }
       }
