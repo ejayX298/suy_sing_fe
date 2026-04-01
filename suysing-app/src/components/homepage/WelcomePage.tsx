@@ -40,7 +40,7 @@ export default function WelcomePage({ customer_data, onContinue, onClose }: Welc
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-none" onClick={onClose} />
-      <div className="relative w-[90%] max-w-md p-6 bg-white border-[3px] border-[#F78B1E] rounded-lg shadow-md">
+      <div className="relative w-[90%] max-w-md p-6 bg-white border-[2px] border-[#0F1030] rounded-lg shadow-md">
         <div className="flex items-center justify-center mb-4">
           <Image src="/images/confettii.svg" alt="Confetti" width={100} height={100} />
         </div>
