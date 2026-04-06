@@ -515,7 +515,7 @@ export default function CameraPage() {
 
         {/* Manual Code Entry Link */}
         <div className="mt-6 w-full">
-          <div className="bg-white rounded-lg p-3 border border-[#F78B1E] text-center">
+          <div className="bg-white rounded-lg p-3 border border-black text-center">
             <span className="text-[#4E4E4E]">QR Code not working? </span>
             <button
               onClick={openManualCodeModal}
@@ -546,7 +546,7 @@ export default function CameraPage() {
       {/* Success Modal for Double zone */}
       {showSuccessModalDouble && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-black">
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
@@ -576,7 +576,7 @@ export default function CameraPage() {
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-black">
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
@@ -612,7 +612,7 @@ export default function CameraPage() {
       {/* Double Zone Completion Modal */}
       {showDoubleZoneCompletionModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-black">
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
@@ -644,7 +644,7 @@ export default function CameraPage() {
       {/* Error Message Modal */}
       {showErrorMessageModal && (
         <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
-          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-[#F78B1E]">
+          <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border border-black">
             <div className="flex flex-col items-center text-center">
               <div className="mb-4">
                 <Image
