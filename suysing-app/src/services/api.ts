@@ -186,10 +186,19 @@ export const bestBooth = {
         })
       );
 
+      const mapGreenBooths = (response_data.green_booths || []).map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
+
       const mapResponse = {
         blue_booths: mapBlueBooths || [],
         orange_booths: mapOrangeBooths || [],
         red_booths: mapRedBooths || [],
+        green_booths: mapGreenBooths || [],
       };
 
       return {
@@ -203,6 +212,7 @@ export const bestBooth = {
           blue_booths: [],
           orange_booths: [],
           red_booths: [],
+          green_booths: [],
         },
       };
       if (axios.isAxiosError(error)) {
@@ -529,10 +539,19 @@ export const auditorService = {
         })
       );
 
+      const mapGreenBooths = (response_data.green_booths || []).map(
+        (booth: { code: string }) => ({
+          boothCode: booth.code,
+          image: "/images/booths/" + booth.code + ".png",
+          ...booth,
+        })
+      );
+
       const mapResponse = {
         blue_booths: mapBlueBooths || [],
         orange_booths: mapOrangeBooths || [],
         red_booths: mapRedBooths || [],
+        green_booths: mapGreenBooths || [],
       };
 
       return {
@@ -546,6 +565,7 @@ export const auditorService = {
           blue_booths: [],
           orange_booths: [],
           red_booths: [],
+          green_booths: [],
         },
       };
       if (axios.isAxiosError(error)) {

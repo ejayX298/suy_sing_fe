@@ -11,7 +11,7 @@ interface VoteSummaryProps {
 }
 
 export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
-  const { blueBoothVote, orangeBoothVote, redBoothVote } = useBestBooth();
+  const { blueBoothVote, orangeBoothVote, redBoothVote, greenBoothVote } = useBestBooth();
 
   const handleCancel = () => {
     onCancel();
@@ -28,7 +28,7 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
       );
 
     return (
-      <div className={`rounded-lg overflow-hidden border-2 ${color}`}>
+      <div className={`rounded-lg overflow-hidden border-3 ${color}`}>
         <div className="bg-white w-full flex justify-center items-center h-[119px] sm:h-32">
           <Image
             src={vote.image}
@@ -53,7 +53,7 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
           Review your votes before submitting
         </p>
 
-        <div className="grid grid-cols-3 gap-4 mb-6 text-sm">
+        <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
           <div>
             <p className="font-bold mb-2 text-center">Blue Booth</p>
             {renderBoothVote(blueBoothVote, "border-blue-600")}
@@ -65,6 +65,10 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
           <div>
             <p className="font-bold mb-2 text-center">Red Booth</p>
             {renderBoothVote(redBoothVote, "border-red-600")}
+          </div>
+          <div>
+            <p className="font-bold mb-2 text-center">Green Booth</p>
+            {renderBoothVote(greenBoothVote, "border-green-500")}
           </div>
         </div>
 

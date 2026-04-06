@@ -7,9 +7,11 @@ interface BestBoothContextType {
   blueBoothVote: ColorBooth | null;
   orangeBoothVote: ColorBooth | null;
   redBoothVote: ColorBooth | null;
+  greenBoothVote: ColorBooth | null;
   setBlueBoothVote: (booth: ColorBooth | null) => void;
   setOrangeBoothVote: (booth: ColorBooth | null) => void;
   setRedBoothVote: (booth: ColorBooth | null) => void;
+  setGreenBoothVote: (booth: ColorBooth | null) => void;
   resetVotes: () => void;
 }
 
@@ -25,11 +27,13 @@ export const BestBoothProvider: React.FC<{ children: ReactNode }> = ({
     null
   );
   const [redBoothVote, setRedBoothVote] = useState<ColorBooth | null>(null);
+  const [greenBoothVote, setGreenBoothVote] = useState<ColorBooth | null>(null);
 
   const resetVotes = () => {
     setBlueBoothVote(null);
     setOrangeBoothVote(null);
     setRedBoothVote(null);
+    setGreenBoothVote(null);
   };
 
   return (
@@ -38,9 +42,11 @@ export const BestBoothProvider: React.FC<{ children: ReactNode }> = ({
         blueBoothVote,
         orangeBoothVote,
         redBoothVote,
+        greenBoothVote,
         setBlueBoothVote,
         setOrangeBoothVote,
         setRedBoothVote,
+        setGreenBoothVote,
         resetVotes,
       }}
     >
