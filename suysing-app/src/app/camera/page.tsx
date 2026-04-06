@@ -14,7 +14,7 @@ export default function CameraPage() {
   const router = useRouter();
   const webcamRef = useRef<Webcam>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
- //const manualCodeModalRef = useRef<HTMLDivElement>(null);
+  //const manualCodeModalRef = useRef<HTMLDivElement>(null);
   const [scanning, setScanning] = useState(true);
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -23,8 +23,7 @@ export default function CameraPage() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [showDoubleZoneCompletionModal, setShowDoubleZoneCompletionModal] =
     useState(false);
-  const [doubleZoneCapReached, setDoubleZoneCapReached] =
-    useState(false);
+  const [doubleZoneCapReached, setDoubleZoneCapReached] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [showManualCodeModal, setShowManualCodeModal] = useState(false);
   const [manualCode, setManualCode] = useState("");
@@ -92,31 +91,31 @@ export default function CameraPage() {
 
   const processQRCode = React.useCallback(
     async (data: string) => {
-      const boothVisitResult = await submitBoothVisit(data.trim(), 'scan');
+      const boothVisitResult = await submitBoothVisit(data.trim(), "scan");
 
       if (boothVisitResult.success) {
         if (customerData?.totalBoothVisited === 0) {
           if (boothVisitResult.is_double_zone === 1) {
             setIsFirstDoubleZone(true);
             setSuccessMessage(
-              `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+              `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`,
             );
             setShowSuccessModal(true);
           } else {
             setIsFirstBooth(true);
             setSuccessMessage(
-              `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
+              `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`,
             );
             setShowSuccessModal(true);
           }
         } else if (boothVisitResult.is_double_zone === 1) {
           setSuccessMessage(
-            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`,
           );
           setShowSuccessModal(true);
         } else {
           setSuccessMessage(
-            `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`
+            `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`,
           );
           setShowSuccessModal(true);
         }
@@ -126,7 +125,7 @@ export default function CameraPage() {
       getCustomerRecord();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [customerData?.totalBoothVisited]
+    [customerData?.totalBoothVisited],
   );
 
   const captureAndScanQRCode = useCallback(() => {
@@ -154,7 +153,7 @@ export default function CameraPage() {
             imageData.height,
             {
               inversionAttempts: "dontInvert",
-            }
+            },
           );
 
           if (qrCode) {
@@ -184,19 +183,19 @@ export default function CameraPage() {
     if (isFirstBooth) {
       setIsFirstBooth(false);
       setSuccessMessage(
-        "Great Job! You've stamped your first booth. Visit and scan all the other booths to complete this section."
+        "Great Job! You've stamped your first booth. Visit and scan all the other booths to complete this section.",
       );
       setShowSuccessModal(true);
     } else if (isFirstDoubleZone) {
       setIsFirstDoubleZone(false);
       setShowSuccessModalDouble(true);
       setSuccessMessage("Each booth visited will be counted as double.");
-    } else if (doubleZoneCapReached){
+    } else if (doubleZoneCapReached) {
       setShowSuccessModal(false);
       setShowSuccessModalDouble(false);
       setDoubleZoneCapReached(false);
-      setShowDoubleZoneCompletionModal(true)
-    }  else {
+      setShowDoubleZoneCompletionModal(true);
+    } else {
       setShowSuccessModal(false);
       setShowSuccessModalDouble(false);
       router.push(`/?cc=${customer_hash_code}`);
@@ -213,7 +212,7 @@ export default function CameraPage() {
     setManualCode("");
   };
 
-/*   const handleCloseModal = (e: React.MouseEvent) => {
+  /*   const handleCloseModal = (e: React.MouseEvent) => {
     if (
       manualCodeModalRef.current &&
       !manualCodeModalRef.current.contains(e.target as Node)
@@ -230,31 +229,34 @@ export default function CameraPage() {
     }
 
     // call api for booth visit
-    const boothVisitResult = await submitBoothVisit(manualCode.trim(), 'manual');
+    const boothVisitResult = await submitBoothVisit(
+      manualCode.trim(),
+      "manual",
+    );
 
     if (boothVisitResult.success) {
       if (customerData?.totalBoothVisited === 0) {
         if (boothVisitResult.is_double_zone === 1) {
           setIsFirstDoubleZone(true);
           setSuccessMessage(
-            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+            `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`,
           );
           setShowSuccessModal(true);
         } else {
           setIsFirstBooth(true);
           setSuccessMessage(
-            `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`
+            `Nice! You've stamped ${boothVisitResult?.booth_name} booth.`,
           );
           setShowSuccessModal(true);
         }
       } else if (boothVisitResult.is_double_zone === 1) {
         setSuccessMessage(
-          `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`
+          `Double points! You've stamped ${boothVisitResult?.booth_name} booth and earned 2 points.`,
         );
         setShowSuccessModal(true);
       } else {
         setSuccessMessage(
-          `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`
+          `Nice! You've stamped the ${boothVisitResult?.booth_name} booth.`,
         );
         setShowSuccessModal(true);
       }
@@ -278,22 +280,20 @@ export default function CameraPage() {
     const post_data = [data];
     try {
       const submitBoothVisitResult = await boothVisitService.submitBoothVisit(
-        post_data, input_type=input_type
+        post_data,
+        (input_type = input_type),
       );
 
       if (submitBoothVisitResult.success) {
         Swal.close(); // close the loading alert
-        
+
         // Check if double zone cap reached
-        if(submitBoothVisitResult.is_double_cap_reached){
-
-            setShowDoubleZoneCompletionModal(true)
-            return {
-              success: false,
-            };
-
-        }else{
-
+        if (submitBoothVisitResult.is_double_cap_reached) {
+          setShowDoubleZoneCompletionModal(true);
+          return {
+            success: false,
+          };
+        } else {
           let booth_name = "";
           let is_double_zone = 0;
           let is_double_zone_cap_reached = 0;
@@ -302,9 +302,10 @@ export default function CameraPage() {
             booth_name = submitBoothVisitResult?.results[0].booth?.name || "";
             is_double_zone =
               submitBoothVisitResult?.results[0].booth?.is_double_zone || "";
-            is_double_zone_cap_reached = submitBoothVisitResult?.results[0]?.double_zone_cap_reached || 0;
-            if(is_double_zone_cap_reached == 1){
-              setDoubleZoneCapReached(true)
+            is_double_zone_cap_reached =
+              submitBoothVisitResult?.results[0]?.double_zone_cap_reached || 0;
+            if (is_double_zone_cap_reached == 1) {
+              setDoubleZoneCapReached(true);
             }
           }
 
@@ -314,15 +315,12 @@ export default function CameraPage() {
             is_double_zone: is_double_zone,
             double_zone_cap_reached: is_double_zone_cap_reached,
           };
-          
         }
-
-        
       } else {
         Swal.close(); // close the loading alert
         setShowManualCodeModal(false);
         setShowErrorMessageModal(true);
-        setErrorMessage(submitBoothVisitResult.message)
+        setErrorMessage(submitBoothVisitResult.message);
         // showMessage("0", submitBoothVisitResult.message);
 
         return {
@@ -333,7 +331,9 @@ export default function CameraPage() {
       Swal.close(); // close the loading alert
       setShowManualCodeModal(false);
       setShowErrorMessageModal(true);
-      setErrorMessage("Unable to process your request. Please try again later.")
+      setErrorMessage(
+        "Unable to process your request. Please try again later.",
+      );
       // showMessage(
       //   "0",
       //   "Unable to process your request. Please try again later."
@@ -474,19 +474,19 @@ export default function CameraPage() {
                   setError(`Could not access camera: ${error}`);
                 } else if (error.name === "NotAllowedError") {
                   setError(
-                    "Camera permission was denied. Please allow access in browser settings."
+                    "Camera permission was denied. Please allow access in browser settings.",
                   );
                 } else if (error.name === "NotFoundError") {
                   setError(
-                    "No camera found on this device, or the preferred camera is unavailable."
+                    "No camera found on this device, or the preferred camera is unavailable.",
                   );
                 } else if (error.name === "NotReadableError") {
                   setError(
-                    "Camera is already in use by another application or browser tab."
+                    "Camera is already in use by another application or browser tab.",
                   );
                 } else {
                   setError(
-                    `Could not access camera: ${error.message || error.name}`
+                    `Could not access camera: ${error.message || error.name}`,
                   );
                 }
                 setHasPermission(false);
@@ -531,7 +531,7 @@ export default function CameraPage() {
       <ManualCodeModal
         isOpen={showManualCodeModal}
         onClose={closeManualCodeModal}
-        onSubmit={handleManualCodeSubmit}     
+        onSubmit={handleManualCodeSubmit}
         onChange={setManualCode}
       />
 
@@ -564,9 +564,9 @@ export default function CameraPage() {
               </p>
               <button
                 onClick={handleProceed}
-                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
               >
-                Proceed
+               Close
               </button>
             </div>
           </div>
@@ -587,8 +587,11 @@ export default function CameraPage() {
                 />
               </div>
               <p className="mb-6 text-[#343434] text-[20px]">
-                <span className="font-bold">Congratulations! </span>You&apos;ve
-                completed your Booth Hopping Card. Click Best Booth to vote now!
+                <span className="font-bold">
+                  Congratulations! <br />{" "}
+                </span>
+                You&apos;ve completed your Booth Hopping Card. Click Best Booth
+                to vote now!
               </p>
               <button
                 onClick={() => {
@@ -597,7 +600,7 @@ export default function CameraPage() {
                   setShowSuccessModalDouble(false);
                   router.push(`/best-booth?cc=${customer_hash_code}`);
                 }}
-                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
               >
                 Vote for Best Booth
               </button>
@@ -620,7 +623,7 @@ export default function CameraPage() {
                 />
               </div>
               <p className="mb-6 text-[#343434] text-[20px]">
-                <span className="font-bold">Congratulations! </span>You have
+                <span className="font-bold">Congratulations! <br/> </span>You have
                 completed the Double Zone. Visit the other regular booths to
                 complete your Booth Hopping Card.
               </p>
@@ -629,7 +632,7 @@ export default function CameraPage() {
                   setShowDoubleZoneCompletionModal(false);
                   handleProceed();
                 }}
-                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
               >
                 Close
               </button>
