@@ -441,7 +441,7 @@ function BestBoothContent() {
       {isRender && isDoneVisit && (
         <div className="flex-1 pb-16">
           {showVotedMessage ? (
-            <div className="fixed mx-auto max-w-[22rem] inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+            <div className="fixed mx-auto max-w-[22rem] inset-0 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border-2 border-[#F78B1E]">
                 <div className="flex flex-col items-center text-center">
                   <div className="mb-4">
