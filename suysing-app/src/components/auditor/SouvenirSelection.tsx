@@ -29,7 +29,6 @@ interface SouvenirSelectionProps {
 function getSouvenirStyle(souvenir: Souvenir): {
   border: string;
   bg: string;
-  shadow: string;
   textColor: string;
 } {
   switch (souvenir.color) {
@@ -37,28 +36,28 @@ function getSouvenirStyle(souvenir: Souvenir): {
       return {
         border: "border-[#FD2929]",
         bg: "bg-[#FD2929]",
-        shadow: "shadow-[0_0_5.1px_7px_#FD2929]",
+
         textColor: "text-white",
       };
     case "green":
       return {
         border: "border-[#2F9E0E]",
         bg: "bg-[#2F9E0E]",
-        shadow: "shadow-[0_0_5.1px_7px_rgba(157,233,134,0.35)]",
+
         textColor: "text-white",
       };
     case "yellow":
       return {
         border: "border-[#FFD65A]",
         bg: "bg-[#FFD65A]",
-        shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+
         textColor: "text-[#343434]",
       };
     default:
       return {
         border: "border-[#B9A71C]",
         bg: "bg-[#B9A71C]",
-        shadow: "shadow-[0_0_5.1px_7px_rgba(185,167,28,0.35)]",
+
         textColor: "text-white",
       };
   }
@@ -71,7 +70,7 @@ export default function SouvenirSelection({
   onContinue,
 }: SouvenirSelectionProps) {
   const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(
-    null
+    null,
   );
 
   const handleSouvenirSelect = (souvenir: Souvenir) => {
@@ -97,17 +96,13 @@ export default function SouvenirSelection({
             className="mx-auto"
           />
         </div>
-        <h1 className="text-4xl font-bold text-white mb-1">Select Souvenir</h1>
-        <p className="text-white text-lg">
-          Select the souvenir you wish to give to the customer.
-        </p>
       </div>
 
-      <div className="w-full pb-4 mx-auto max-w-xl">
+      <div className="w-full pb-4 mx-auto max-w-xl text-center bg-white px-14 py-5 rounded-xl border border-black">
+        <h1 className="text-2xl font-bold  mb-4">Select Souvenir</h1>
         <div className="grid grid-cols-2 gap-2 mb-8">
           {souvenirData.map((souvenir) => {
-            const { border, bg, shadow, textColor } =
-              getSouvenirStyle(souvenir);
+            const { border } = getSouvenirStyle(souvenir);
             const isSelected = selectedSouvenir?.id === souvenir.id;
             return (
               <div
@@ -115,8 +110,8 @@ export default function SouvenirSelection({
                 className="relative rounded-lg overflow-hidden"
               >
                 <button
-                  className={`w-full flex flex-col box-border items-center rounded-t-lg py-4 transition-all duration-150 border-2 ${border} bg-white
-                    ${isSelected ? `border-[6px]  ${shadow}` : ""}`}
+                  className={`w-full flex flex-col box-border items-center rounded-lg py-4 transition-all duration-150 border-2 ${border} bg-white
+                    ${isSelected ? `border-[6px]` : ""}`}
                   onClick={() => handleSouvenirSelect(souvenir)}
                 >
                   <div className="relative w-full flex justify-center items-center">
@@ -127,25 +122,9 @@ export default function SouvenirSelection({
                       height={120}
                       className="mb-2 object-contain h-32"
                     />
-                    {isSelected && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        <Image
-                          src="/images/check-souvenir.svg"
-                          alt="Selected"
-                          width={75}
-                          height={75}
-                          className="z-10"
-                          priority
-                        />
-                      </span>
-                    )}
                   </div>
                 </button>
-                <div
-                  className={`${bg} ${textColor} py-2 text-center font-bold rounded-b-lg`}
-                >
-                  {souvenir.name}
-                </div>
+                <div>{souvenir.name}</div>
               </div>
             );
           })}
@@ -160,7 +139,7 @@ export default function SouvenirSelection({
           </button>
           <button
             onClick={handleProceed}
-            className={`w-full rounded-lg py-3 text-lg font-semibold ${
+            className={`w-full text-white rounded-lg py-3 text-lg font-semibold ${
               selectedSouvenir ? "bg-[#F78B1E]" : "bg-gray-400"
             }`}
             disabled={!selectedSouvenir}
