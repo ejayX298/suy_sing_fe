@@ -29,7 +29,7 @@ export default function SuccessModal({ onClose }: SuccessModalProps) {
           
           <button
             onClick={onClose}
-            className="w-full bg-[#F78B1E] font-semibold text-lg py-3 rounded-lg"
+            className="w-full bg-[#F78B1E] text-white font-semibold text-lg py-3 rounded-lg"
           >
             Close
           </button>
