@@ -7,7 +7,7 @@ import { ColorBooth } from "@/data/colorBooths";
 
 interface BoothGridProps {
   booths: ColorBooth[];
-  color: "blue" | "orange" | "red";
+  color: "blue" | "orange" | "red" | "green";
   onVote?: () => void;
 }
 
@@ -16,9 +16,11 @@ export default function BoothGrid({ booths, color, onVote }: BoothGridProps) {
     blueBoothVote,
     orangeBoothVote,
     redBoothVote,
+    greenBoothVote,
     setBlueBoothVote,
     setOrangeBoothVote,
     setRedBoothVote,
+    setGreenBoothVote,
   } = useBestBooth();
 
   const selectedBooth =
@@ -26,24 +28,23 @@ export default function BoothGrid({ booths, color, onVote }: BoothGridProps) {
       ? blueBoothVote
       : color === "orange"
       ? orangeBoothVote
+      : color === "green"
+      ? greenBoothVote
       : redBoothVote;
 
   const handleVote = (booth: ColorBooth) => {
+    const isDeselect = selectedBooth?.id === booth.id;
     if (color === "blue") {
-      setBlueBoothVote(selectedBooth?.id === booth.id ? null : booth);
-      if (selectedBooth?.id !== booth.id && onVote) {
-        onVote();
-      }
+      setBlueBoothVote(isDeselect ? null : booth);
     } else if (color === "orange") {
-      setOrangeBoothVote(selectedBooth?.id === booth.id ? null : booth);
-      if (selectedBooth?.id !== booth.id && onVote) {
-        onVote();
-      }
+      setOrangeBoothVote(isDeselect ? null : booth);
+    } else if (color === "green") {
+      setGreenBoothVote(isDeselect ? null : booth);
     } else {
-      setRedBoothVote(selectedBooth?.id === booth.id ? null : booth);
-      if (selectedBooth?.id !== booth.id && onVote) {
-        onVote();
-      }
+      setRedBoothVote(isDeselect ? null : booth);
+    }
+    if (!isDeselect && onVote) {
+      onVote();
     }
   };
 

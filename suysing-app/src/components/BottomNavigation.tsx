@@ -27,8 +27,8 @@ export default function BottomNavigation() {
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
-      <div
-        //href={concatUrl("/")}
+      <Link
+        href={concatUrl("/")}
         className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
           pathname === "/" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -45,7 +45,7 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Booths</span>
-      </div>
+      </Link>
 
       <Link
         href={concatUrl("/deal-form")}
@@ -96,8 +96,8 @@ export default function BottomNavigation() {
         </div>
       </Link>
 
-      <div
-        //href={concatUrl("/best-booth")}
+      <Link
+        href={concatUrl("/best-booth")}
         className={`flex flex-col items-center h-full justify-center px-1 gap-1 ${
           pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -115,10 +115,10 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Best Booth</span>
-      </div>
+      </Link>
 
-      <div
-        //href={concatUrl("/my-qr")}
+      <Link
+        href={concatUrl("/my-qr")}
         className={`flex flex-col items-center h-full justify-center  px-1 gap-1 ${
           pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
         }`}
@@ -136,7 +136,7 @@ export default function BottomNavigation() {
           />
         </div>
         <span className="text-sm">Account</span>
-      </div>
+      </Link>
     </nav>
   );
 }

@@ -29,14 +29,15 @@ function BestBoothContent() {
   }
 
   const [step, setStep] = useState<
-    "intro" | "blue" | "orange" | "red" | "summary" | "thankyou"
+    "intro" | "blue" | "orange" | "red" | "green" | "summary" | "thankyou"
   >("intro");
-  const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
+  const { blueBoothVote, orangeBoothVote, redBoothVote, greenBoothVote, resetVotes } =
     useBestBooth();
 
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
   const [redBooths, setRedBooths] = useState([]);
+  const [greenBooths, setGreenBooths] = useState([]);
   const [isRender, setIsRender] = useState(false);
   const [customerData, setCustomerData] = useState<{
     id: number;
@@ -60,6 +61,7 @@ function BestBoothContent() {
         setBlueBooths(getBooth.results.blue_booths);
         setOrangeBooths(getBooth.results.orange_booths);
         setRedBooths(getBooth.results.red_booths);
+        setGreenBooths(getBooth.results.green_booths);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -74,8 +76,9 @@ function BestBoothContent() {
     const blue_booth_id = blueBoothVote?.id || "";
     const orange_booth_id = orangeBoothVote?.id || "";
     const red_booth_id = redBoothVote?.id || "";
+    const green_booth_id = greenBoothVote?.id || "";
 
-    const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
+    const post_data = [blue_booth_id, orange_booth_id, red_booth_id, green_booth_id];
 
     try {
       const submitVote = await bestBooth.submitBoothVoting(post_data);
@@ -220,7 +223,7 @@ function BestBoothContent() {
   }, [customerData]);
 
   const handleContinue = async () => {
-    if (step === "blue" || step === "orange" || step === "red") {
+    if (step === "blue" || step === "orange" || step === "red" || step === "green") {
       await delay(600);
     }
     if (step === "intro") {
@@ -230,6 +233,8 @@ function BestBoothContent() {
     } else if (step === "orange") {
       setStep("red");
     } else if (step === "red") {
+      setStep("green");
+    } else if (step === "green") {
       setStep("summary");
     } else if (step === "summary") {
       const submitVoteResult = await handleSubmitBoothVoting();
@@ -248,8 +253,10 @@ function BestBoothContent() {
       setStep("blue");
     } else if (step === "red") {
       setStep("orange");
-    } else if (step === "summary") {
+    } else if (step === "green") {
       setStep("red");
+    } else if (step === "summary") {
+      setStep("green");
     }
   };
 
@@ -272,7 +279,9 @@ function BestBoothContent() {
         ? "Blue Booth"
         : step === "orange"
         ? "Orange Booth"
-        : "Red Booth";
+        : step === "red"
+        ? "Red Booth"
+        : "Green Booth";
 
     return (
       <div className="px-4 py-3 text-white">
@@ -382,6 +391,32 @@ function BestBoothContent() {
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
+                Next
+              </button>
+            </div>
+          </>
+        );
+      case "green":
+        return (
+          <>
+            {getStepHeader()}
+            <BoothGrid booths={greenBooths} color="green" onVote={handleContinue} />
+            <div className="px-4 pb-4 flex gap-4">
+              <button
+                onClick={handleBack}
+                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleContinue}
+                disabled={!greenBoothVote}
+                className={`w-full py-1 rounded-lg text-lg font-medium ${
+                  greenBoothVote
+                    ? "bg-[#F78B1E] text-[#252740]"
+                    : "bg-gray-300 text-gray-500"
+                }`}
+              >
                 Submit
               </button>
             </div>
@@ -406,7 +441,7 @@ function BestBoothContent() {
       {isRender && isDoneVisit && (
         <div className="flex-1 pb-16">
           {showVotedMessage ? (
-            <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
+            <div className="fixed mx-auto max-w-[22rem] inset-0 flex items-center justify-center backdrop-blur-sm bg-opacity-50 z-50">
               <div className="bg-white rounded-lg px-6 py-8 max-w-sm w-full border-2 border-[#F78B1E]">
                 <div className="flex flex-col items-center text-center">
                   <div className="mb-4">
@@ -419,16 +454,16 @@ function BestBoothContent() {
                   </div>
                   <p className="text-gray-600 mb-6">
                     <span className="text-lg font-bold">
-                      You&apos;ve already submitted your Best Booth votes.
+                      You&apos;ve already submitted your Best Booth votes. <br/>
                     </span>
                     Claim your Suki Day Souvenir at the Tent Lobby from 2:30pm
                     until 7:00pm.
                   </p>
                   <button
                     onClick={() => router.push(`/?cc=${stored_hash_code}`)}
-                    className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                    className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
                   >
-                    Proceed
+                  Close
                   </button>
                 </div>
               </div>

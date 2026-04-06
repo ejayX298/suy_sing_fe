@@ -19,14 +19,15 @@ function delay(ms: number) {
 function AuditorBoothVoteContent() {
   const router = useRouter();
   const [step, setStep] = useState<
-    "intro" | "blue" | "orange" | "red" | "summary" | "thankyou"
+    "intro" | "blue" | "orange" | "red" | "green" | "summary" | "thankyou"
   >("intro");
-  const { blueBoothVote, orangeBoothVote, redBoothVote, resetVotes } =
+  const { blueBoothVote, orangeBoothVote, redBoothVote, greenBoothVote, resetVotes } =
     useBestBooth();
 
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
   const [redBooths, setRedBooths] = useState([]);
+  const [greenBooths, setGreenBooths] = useState([]);
   const [auditData, setAuditData] = useState<{
     total_booth_visited: number;
     total_booths: number;
@@ -70,6 +71,7 @@ function AuditorBoothVoteContent() {
         setBlueBooths(getBooth.results.blue_booths);
         setOrangeBooths(getBooth.results.orange_booths);
         setRedBooths(getBooth.results.red_booths);
+        setGreenBooths(getBooth.results.green_booths);
         Swal.close(); // close the loader
       }
     } catch (error) {
@@ -86,8 +88,9 @@ function AuditorBoothVoteContent() {
     const blue_booth_id = blueBoothVote?.id || "";
     const orange_booth_id = orangeBoothVote?.id || "";
     const red_booth_id = redBoothVote?.id || "";
+    const green_booth_id = greenBoothVote?.id || "";
 
-    const post_data = [blue_booth_id, orange_booth_id, red_booth_id];
+    const post_data = [blue_booth_id, orange_booth_id, red_booth_id, green_booth_id];
 
     try {
       const submitVote = await auditorService.submitBoothVoting(post_data);
@@ -113,7 +116,7 @@ function AuditorBoothVoteContent() {
   };
 
   const handleContinue = async () => {
-    if (step === "blue" || step === "orange" || step === "red") {
+    if (step === "blue" || step === "orange" || step === "red" || step === "green") {
       await delay(600);
     }
     if (step === "intro") {
@@ -123,6 +126,8 @@ function AuditorBoothVoteContent() {
     } else if (step === "orange") {
       setStep("red");
     } else if (step === "red") {
+      setStep("green");
+    } else if (step === "green") {
       setStep("summary");
     } else if (step === "summary") {
       const submitVoteResult = await handleSubmitBoothVoting();
@@ -142,8 +147,10 @@ function AuditorBoothVoteContent() {
       setStep("blue");
     } else if (step === "red") {
       setStep("orange");
-    } else if (step === "summary") {
+    } else if (step === "green") {
       setStep("red");
+    } else if (step === "summary") {
+      setStep("green");
     }
   };
 
@@ -207,7 +214,9 @@ function AuditorBoothVoteContent() {
         ? "Blue Booth"
         : step === "orange"
         ? "Orange Booth"
-        : "Red Booth";
+        : step === "red"
+        ? "Red Booth"
+        : "Green Booth";
 
     return (
       <div className="px-4 py-3 text-white">
@@ -313,6 +322,32 @@ function AuditorBoothVoteContent() {
                 disabled={!redBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   redBoothVote
+                    ? "bg-[#F78B1E] text-[#252740]"
+                    : "bg-gray-300 text-gray-500"
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          </>
+        );
+      case "green":
+        return (
+          <>
+            {getStepHeader()}
+            <BoothGrid booths={greenBooths} color="green" onVote={handleContinue} />
+            <div className="px-4 pb-4 flex gap-4">
+              <button
+                onClick={handleBack}
+                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+              >
+                Back
+              </button>
+              <button
+                onClick={handleContinue}
+                disabled={!greenBoothVote}
+                className={`w-full py-1 rounded-lg text-lg font-medium ${
+                  greenBoothVote
                     ? "bg-[#F78B1E] text-[#252740]"
                     : "bg-gray-300 text-gray-500"
                 }`}
