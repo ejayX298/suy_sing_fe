@@ -90,14 +90,14 @@ export default function SouvenirSelection({
       <div className="pb-6 text-center">
         <div className="mb-2">
           <Image
-            src="/images/epic-journey.png"
+            src="/images/new-logo.webp"
             alt="Suy Sing Logo"
             width={150}
             height={50}
             className="mx-auto"
           />
         </div>
-        <h1 className="text-4xl font-bold text-white mb-1">Select Souvenir</h1>
+        <h1 className="text-4xl font-bold text-white mb-1">Select Souvenirasdasds</h1>
         <p className="text-white text-lg">
           Select the souvenir you wish to give to the customer.
         </p>

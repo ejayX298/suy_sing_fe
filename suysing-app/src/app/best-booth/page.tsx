@@ -446,7 +446,7 @@ function BestBoothContent() {
                 <div className="flex flex-col items-center text-center">
                   <div className="mb-4">
                     <Image
-                      src="/images/best-booth.svg"
+                      src="/images/submitted.svg"
                       alt="Success"
                       width={100}
                       height={100}
