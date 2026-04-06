@@ -15,7 +15,7 @@ export default function BoothHoppingComplete({
           <div className="mb-6">
                 <div className="mx-auto mb-4">
                 <Image
-                  src="/images/souvenir/success-icon.svg"
+                  src="/images/trophy.svg"
                   alt="Success"
                   width={100}
                   height={100}
@@ -24,7 +24,7 @@ export default function BoothHoppingComplete({
                 </div>
                 <h2 className="text-3xl font-bold">Booth Hopping Complete</h2>
                 <p className="mt-2">
-                  Click Next to select souvenir
+                  Click &apos;Next&apos; to select souvenir
                 </p>
           </div>
         

@@ -97,7 +97,7 @@ export default function SouvenirSelection({
             className="mx-auto"
           />
         </div>
-        <h1 className="text-4xl font-bold text-white mb-1">Select Souvenirasdasds</h1>
+        <h1 className="text-4xl font-bold text-white mb-1">Select Souvenir</h1>
         <p className="text-white text-lg">
           Select the souvenir you wish to give to the customer.
         </p>
