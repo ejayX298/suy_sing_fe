@@ -19,17 +19,17 @@ export default function TermsAndConditions({
         </h3>
         <ol className="list-decimal pl-6 space-y-3 mb-6 font-light text-black">
           <li>
-            Suki Day deals are available from May 4, 8:30am until May 5, 3:00pm
-            only.
+            Suki Day deals are available from April 26, 7:00am until April 27,
+            3:00pm only.
           </li>
           <li>
-            Submitted orders are considered final and may not be edited. Please
-            create and submit a new cart for any additional orders. An order
-            summary will be sent to your email upon submission.
+            Your orders are automatically saved and may be edited any time until
+            the cut-off period. All items left on cart by April 27, 3:00pm are
+            considered your final orders.
           </li>
           <li>
-            This serves as your proposed order. Fulfillment of order is subject
-            to allocation and overall availability per branch.
+            This serves as your proposed order. Fulfillment is subject to
+            allocation and overall availability per branch.
           </li>
           <li>Discounts may vary per warehouse.</li>
           <li>Contact your Account Officer for more details.</li>
@@ -44,7 +44,7 @@ export default function TermsAndConditions({
             className="h-5 w-5 text-orange-500 border-gray-300 rounded focus:ring-orange-500"
           />
           <label htmlFor="acceptTerms" className="ml-2 text-sm text-black">
-            I accept the Terms and Conditions
+            I accept the <span className="font-bold">Terms and Conditions</span>
           </label>
         </div>
       </div>
