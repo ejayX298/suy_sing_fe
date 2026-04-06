@@ -211,12 +211,14 @@ export const getInitialBooths = (): Booth[] => {
 
     {
       id: "INTER04",
-      name: "Bioderm",
+      name: "DR. WONGS",
       image: "/images/booths/INTER04.png",
       boothCode: "INTER04",
       visited: false,
       width: 100,
       height: 100,
+       activeAccentColor: "#0F5D44",
+      activeGradientColor: "#26A87E",
     },
     {
       id: "LIWAY01",
@@ -288,6 +290,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 90,
       height: 90,
+        activeAccentColor: "#E92424",
+      activeGradientColor: "#FF4B4B",
     },
 
     {
@@ -1322,6 +1326,8 @@ export const getInitialBooths = (): Booth[] => {
       visited: false,
       width: 90,
       height: 90,
+       activeAccentColor: "#2FA847",
+      activeGradientColor: "#33D352",
     },
      {
       id: "WELLM01",
