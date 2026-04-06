@@ -1105,7 +1105,7 @@ export default function DealFormPage() {
         {step === 4 || step === 5 ? (
           <div className="flex justify-center mb-6">
             <Image
-              src="/images/epic-journey.png"
+              src="/images/new-logo.webp"
               alt="Epic Journey to Success"
               width={150}
               height={150}

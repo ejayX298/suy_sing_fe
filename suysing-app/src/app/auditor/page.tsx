@@ -376,7 +376,7 @@ function AuditorPageContent() {
       <div className="w-full max-w-md sm:max-w-4xl">
         <div className="mb-8 text-center">
           <Image
-            src="/images/epic-journey1.png"
+            src="/images/new-logo.webp"
             alt="Epic Journey"
             width={300}
             height={100}

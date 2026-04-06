@@ -28,7 +28,7 @@ export default function BoothStatus({
     try {
       const customerResult = await auditorService.checkCustomerRecordbyId(
         "",
-        customer_id
+        customer_id,
       );
 
       if (customerResult.success) {
@@ -46,9 +46,8 @@ export default function BoothStatus({
   const callOverride = async () => {
     showLoader(); // call the loader
     try {
-      const customerResult = await auditorService.overrideBoothVisit(
-        customerId
-      );
+      const customerResult =
+        await auditorService.overrideBoothVisit(customerId);
 
       if (customerResult.success) {
         Swal.close(); // close the loader
@@ -77,7 +76,7 @@ export default function BoothStatus({
 
   const handleOverride = async () => {
     const confirmAction = await confirmMessage(
-      `Are you sure you want to override the booth visit of this customer?`
+      `Are you sure you want to override the booth visit of this customer?`,
     );
 
     if (confirmAction.isConfirmed) {
@@ -139,7 +138,7 @@ export default function BoothStatus({
   };
 
   return (
-    <div className="rounded-lg border-2 mx-auto max-w-xl border-[#F78B1E] bg-white p-6 shadow-lg text-center">
+    <div className="rounded-lg border-2 mx-auto max-w-xl border-black bg-white p-6 shadow-lg text-center">
       <div className="mb-8">
         {isComplete ? (
           <>
@@ -157,7 +156,7 @@ export default function BoothStatus({
           <>
             <div className="mx-auto mb-4">
               <Image
-                src="/images/booth.svg"
+                src="/images/booth1.svg"
                 alt="Incomplete"
                 width={100}
                 height={100}
@@ -168,7 +167,9 @@ export default function BoothStatus({
               Incomplete <span className="sm:block">Booth Hopping</span>
             </h2>
             <p className="mt-5 text-xl">
-              This customer has visited <span className="font-bold">{visitedCount}</span> booths.
+              This customer has visited{" "}
+              <span className="font-bold">{visitedCount}</span> booths. Visit
+              the balance 100 booths to complete the Booth Hopping
             </p>
           </>
         )}
@@ -176,7 +177,7 @@ export default function BoothStatus({
 
       <button
         onClick={onViewUnvisited}
-        className="w-full rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
+        className="w-full rounded-lg text-white font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
       >
         View Unvisited Booth
       </button>
@@ -185,13 +186,13 @@ export default function BoothStatus({
         <>
           <button
             onClick={handleOverride}
-            className="w-full mt-3 rounded-lg font-semibold bg-[#FF3A3A] px-4 py-3  hover:bg-orange-500"
+            className="w-full mt-3 rounded-lg text-white font-semibold bg-[#FF3A3A] px-4 py-3  hover:bg-orange-500"
           >
             Override
           </button>
           <button
             onClick={onClose}
-            className="w-full mt-3 rounded-lg border border-[#F78B1E] px-4 py-3 text-[#F78B1E] font-semibold hover:bg-gray-100"
+            className="w-full mt-3 rounded-lg border border-black px-4 py-3 text-[#F78B1E] font-semibold hover:bg-gray-100"
           >
             Close
           </button>

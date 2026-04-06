@@ -43,7 +43,7 @@ export default function DoubleZonePage() {
             </div>
             <div className="relative w-64 h-14 md:h-16">
               <Image
-                src="/images/epic-journey.png"
+                src="/images/new-logo.webp"
                 alt="Double Zone"
                 fill
                 style={{ objectFit: "contain" }}
