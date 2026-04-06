@@ -354,13 +354,13 @@ export const getInitialBooths = (): Booth[] => {
     },
 
     {
-      id: "SKINT01",
+      id: "SBRAN01",
       name: "Keratin",
-      image: "/images/booths/SKINT01.png",
-      boothCode: "SKINT01",
+      image: "/images/booths/SBRAN01.png",
+      boothCode: "SBRAN01",
       visited: false,
-      width: 100,
-      height: 100,
+      width: 80,
+      height: 80,
       activeAccentColor: "#BFD92A",
       activeGradientColor: "#F2FFA6",
     },
@@ -950,6 +950,8 @@ export const getInitialBooths = (): Booth[] => {
       width: 90,
       height: 90,
       overrideAspect: true,
+        activeAccentColor: "#E02927",
+      activeGradientColor: "#F85A58",
     },
 
     {
@@ -1193,6 +1195,8 @@ export const getInitialBooths = (): Booth[] => {
       width: 80,
       height: 80,
       overrideAspect: true,
+       activeAccentColor: "#F0545A",
+      activeGradientColor: "#FF9498",
     },
 
     {
