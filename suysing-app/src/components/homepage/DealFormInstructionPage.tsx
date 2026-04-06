@@ -30,7 +30,7 @@ export default function DealFormInstructionPage({
 
           <p className="text-center mb-6 text-sm">
             <span className="font-bold">Click on Deal Form </span>to avail
-            exclusive Suki Day Deals! Available today 8:30am until 3:00pm
+            exclusive Suki Day Deals! Available today 7:00am until 3:00pm
             tomorrow
           </p>
 
