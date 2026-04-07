@@ -387,20 +387,6 @@ export default function Confirmation({
       <div className="bg-white border-2 border-[#7D7D7D] rounded-sm overflow-hidden p-3">
         <div className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm text-black mb-2">
-              Email Address (optional)
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email || ""}
-              onChange={onInputChange}
-              className="w-full px-3 py-2 border border-gray-400 rounded-md focus:outline-none text-black"
-            />
-          </div>
-
-          <div>
             <label htmlFor="remarks" className="block text-sm text-black mb-2">
               Remarks
             </label>
