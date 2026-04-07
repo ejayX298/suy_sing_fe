@@ -1660,6 +1660,48 @@ export const souvenirAvailabilityDataOriginal = {
 };
 
 export const dealFormsApiService = {
+  exportDealCarts: async (token: string) => {
+    try {
+      const response = await httpClient(token).get(
+        "/admin/deal-forms/export-deal-carts/",
+        {
+          responseType: "blob",
+        }
+      );
+
+      const disposition =
+        response?.headers?.["content-disposition"] ||
+        response?.headers?.["Content-Disposition"] ||
+        "";
+      const filenameMatch =
+        disposition.match(/filename\*=UTF-8''([^;]+)/) ||
+        disposition.match(/filename="?([^\";]+)"?/);
+      const rawFilename = filenameMatch?.[1] || "";
+      const filename = rawFilename
+        ? decodeURIComponent(rawFilename)
+        : "deal-carts-export";
+
+      return {
+        success: true,
+        blob: response?.data,
+        filename,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || "Error! Please try again later",
+        };
+      }
+      return {
+        success: false,
+        message: "Unable to process your request. Please try again later.",
+      };
+    }
+  },
+
   getBooths: async (token: string, filterParams: FilterParams) => {
     try {
       const { page, perpage, query, sort_by } = filterParams;

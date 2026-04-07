@@ -18,6 +18,7 @@ export default function DealFormsPage() {
   const initialRenderVal = "__default_val__";
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
@@ -123,6 +124,34 @@ export default function DealFormsPage() {
     router.push(`/deal-forms/${vendorId}`);
   };
 
+  const handleExport = async () => {
+    if (isExporting) return;
+    if (!token) {
+      alert("Authentication token is missing");
+      return;
+    }
+
+    setIsExporting(true);
+    try {
+      const result = await dealFormsApiService.exportDealCarts(token);
+      if (!result?.success || !result?.blob) {
+        alert(result?.message || "Export failed. Please try again later.");
+        return;
+      }
+
+      const url = window.URL.createObjectURL(result.blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = result.filename || "deal-carts-export";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div className="">
@@ -132,6 +161,15 @@ export default function DealFormsPage() {
               <FaFilter className="mr-2" /> Filter by
             </button> */}
           </div>
+
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={isExporting}
+            className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isExporting ? "Exporting..." : "Export"}
+          </button>
 
           <div className="relative">
             <input
