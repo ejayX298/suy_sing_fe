@@ -8,7 +8,7 @@ import VoteSummary from "@/components/best-booth/VoteSummary";
 import ThankYouScreen from "@/components/best-booth/ThankYouScreen";
 import IntroScreen from "@/components/best-booth/IntroScreen";
 import BoothsProgress from "@/components/BoothsProgress";
-import { bestBooth } from "@/services/api";
+import { bestBooth, customerQr } from "@/services/api";
 import Swal from "sweetalert2";
 import { useSearchParams, useRouter } from "next/navigation";
 import { boothVisitService } from "@/services/api";
@@ -48,6 +48,7 @@ function BestBoothContent() {
     totalBoothVisited?: number;
     totalBooths?: number;
   } | null>(null);
+  const [customerType, setCustomerType] = useState("");
   const [isDoneVisit, setIsDoneVisit] = useState(false);
   const [showVotedMessage, setShowVotedMessage] = useState(false);
   const [showErrorMessageModal, setShowErrorMessageModal] = useState(false);
@@ -135,6 +136,14 @@ function BestBoothContent() {
     }
   };
 
+  const getCustomerDetails = async () => {
+    if (!customer_hash_code) return;
+    const customerResult = await customerQr.getCustomerDetails(customer_hash_code);
+    if (customerResult.success) {
+      setCustomerType(customerResult.results?.customer_type || "");
+    }
+  };
+
   // const showMessage = (status: string, message: string) => {
   //   let iconType: "success" | "error";
   //   let titleType: "Success" | "Oops!";
@@ -196,6 +205,7 @@ function BestBoothContent() {
     if (customer_hash_code && stored_hash_code) {
       if (customer_hash_code == stored_hash_code) {
         getCustomerRecord();
+        getCustomerDetails();
         setIsRender(true);
         fetchData();
       } else {
@@ -263,7 +273,7 @@ function BestBoothContent() {
   const handleProceed = () => {
     if (!isDoneVisit) {
       setShowErrorMessageModal(false);
-      router.push(`/?cc=${stored_hash_code}`);
+      router.push(`/my-qr?cc=${stored_hash_code}`);
     } else {
       setShowErrorMessageModal(false);
     }
@@ -456,11 +466,12 @@ function BestBoothContent() {
                     <span className="text-lg font-bold">
                       You&apos;ve already submitted your Best Booth votes. <br/>
                     </span>
-                    Claim your Suki Day Souvenir at the Tent Lobby from 2:30pm
-                    until 7:00pm.
+                    {customerType.toLowerCase() === "red"
+                      ? "You have completed your Booth Hopping. Claim your souvenir at the Tent Lobby from 1:00pm-7:00pm."
+                      : "You have completed your Booth Hopping. Claim your souvenir at the Tent Lobby from 2:30pm-7:00pm."}
                   </p>
                   <button
-                    onClick={() => router.push(`/?cc=${stored_hash_code}`)}
+                    onClick={() => router.push(`/my-qr?cc=${stored_hash_code}`)}
                     className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
                   >
                   Close

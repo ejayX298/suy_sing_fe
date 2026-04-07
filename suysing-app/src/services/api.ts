@@ -2,6 +2,28 @@ import httpClient from "./base/httpClient";
 import axios from "axios";
 
 export const customerQr = {
+  getCustomerDetails: async (code: string) => {
+    const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+
+    try {
+      const response = await httpClient(api_key).get(
+        `/customer/details/?chc=${code}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || null;
+
+      return {
+        success: true,
+        results: response_data,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        results: null,
+      };
+    }
+  },
   getCustomerForVerification: async (code: string) => {
     const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
 
