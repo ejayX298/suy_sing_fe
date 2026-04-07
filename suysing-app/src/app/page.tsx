@@ -7,9 +7,10 @@ import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { boothVisitService } from "@/services/api";
+import { boothVisitService, notifications } from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getActiveBoothStyle } from "@/lib/booth-styles";
+import NotificationModal from "@/components/notifications/NotificationModal";
 
 export interface Booth {
   id?: string;
@@ -48,6 +49,9 @@ export default function Home() {
   const [isRender, setIsRender] = useState(false);
   const [latestVisitedBoothCode, setLatestVisitedBoothCode] =
     useState<string>("");
+  const [notificationItems, setNotificationItems] = useState<any[]>([]);
+  const [currentNotificationIndex, setCurrentNotificationIndex] = useState(0);
+  const [showNotificationModal, setShowNotificationModal] = useState(false);
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -114,6 +118,30 @@ export default function Home() {
     setTotalVisitCount((prevTotalVisitCount) => {
       return prevTotalVisitCount + 1; // Increment by 1 based on the previous value
     });
+  };
+
+  const normalizeNotifications = (results: any) => {
+    if (Array.isArray(results)) return results;
+    if (Array.isArray(results?.notifications)) return results.notifications;
+    if (Array.isArray(results?.data)) return results.data;
+    return [];
+  };
+
+  const getNotificationId = (item: any) =>
+    Number(item?.id || item?.notification_id || item?.notificationId || 0);
+
+  const fetchNotifications = async () => {
+    if (!customer_hash_code) return;
+    const notificationResult =
+      await notifications.getByHashCode(customer_hash_code);
+    if (notificationResult.success) {
+      const items = normalizeNotifications(notificationResult.results);
+      if (items.length > 0) {
+        setNotificationItems(items);
+        setCurrentNotificationIndex(0);
+        setShowNotificationModal(true);
+      }
+    }
   };
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -198,6 +226,19 @@ export default function Home() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBoothsList]);
+
+  useEffect(() => {
+    if (!isRender) return;
+    fetchNotifications();
+    const intervalId = window.setInterval(() => {
+      fetchNotifications();
+    }, 60000);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isRender]);
 
   if (!isRender) {
     return null;
@@ -286,6 +327,39 @@ export default function Home() {
         </div>
       </div>
     );
+  };
+
+  const currentNotification = notificationItems[currentNotificationIndex];
+  const getNotificationTitle = (item: any) =>
+    item?.title ||
+    item?.subject ||
+    item?.header ||
+    (customerData?.code ? `Hello, ${customerData.code}` : "Notification");
+  const getNotificationMessage = (item: any) =>
+    item?.message ||
+    item?.body ||
+    item?.content ||
+    item?.description ||
+    item?.text ||
+    "";
+  const getNotificationButtonLabel = (item: any) =>
+    item?.button_label || item?.buttonLabel || "Next";
+
+  const handleNextNotification = () => {
+    const currentId = getNotificationId(currentNotification);
+    if (currentId && customer_hash_code) {
+      notifications.markAsRead(currentId, customer_hash_code);
+    }
+    const nextIndex = currentNotificationIndex + 1;
+    if (nextIndex < notificationItems.length) {
+      setCurrentNotificationIndex(nextIndex);
+    } else {
+      setShowNotificationModal(false);
+    }
+  };
+
+  const handleCloseNotification = () => {
+    setShowNotificationModal(false);
   };
 
   return (
@@ -1228,6 +1302,14 @@ export default function Home() {
           </TransformWrapper>
         </div>
       </main>
+      <NotificationModal
+        isOpen={showNotificationModal && !!currentNotification}
+        title={getNotificationTitle(currentNotification)}
+        message={getNotificationMessage(currentNotification)}
+        buttonLabel={getNotificationButtonLabel(currentNotification)}
+        onNext={handleNextNotification}
+        onClose={handleCloseNotification}
+      />
     </div>
   );
 }

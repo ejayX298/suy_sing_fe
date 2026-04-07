@@ -143,6 +143,82 @@ export const customerQr = {
   },
 };
 
+export const notifications = {
+  getByHashCode: async (hashCode: string) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+
+      const response = await httpClient(api_key).get(
+        `/customer/notification/get_notifications_by_hash_code/?chc=${hashCode}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || response?.data || [];
+
+      return {
+        success: true,
+        results: response_data,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          results: [],
+        };
+      } else {
+        return {
+          success: false,
+          results: [],
+        };
+      }
+    }
+  },
+  markAsRead: async (notificationId: number, hashCode: string) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+      const response = await httpClient(api_key).post(
+        `/customer/notification/mark-as-read/`,
+        {
+          notification_id: notificationId,
+          chc: hashCode,
+        }
+      );
+
+      return {
+        success: true,
+        results: response?.data?.data || response?.data || null,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return { success: false, results: null };
+      }
+      return { success: false, results: null };
+    }
+  },
+  markAllAsRead: async (notificationIds: number[], hashCode: string) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+      const response = await httpClient(api_key).post(
+        `/customer/notification/mark-all-as-read`,
+        {
+          notification_ids: notificationIds,
+          customer_magic_link: `cc=${hashCode}`,
+        }
+      );
+
+      return {
+        success: true,
+        results: response?.data?.data || response?.data || null,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return { success: false, results: null };
+      }
+      return { success: false, results: null };
+    }
+  },
+};
+
 export const bestBooth = {
   getBoothList: async () => {
     try {
