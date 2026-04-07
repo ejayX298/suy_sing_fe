@@ -7,7 +7,7 @@ import DoubleZoneDisplay from "@/components/DoubleZoneDisplay";
 import { useBooths, Booth as BoothType } from "@/context/BoothsContext";
 import { getInitialBooths } from "@/data/booths";
 import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
-import { boothVisitService, notifications } from "@/services/api";
+import { boothVisitService, customerQr, notifications } from "@/services/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getActiveBoothStyle } from "@/lib/booth-styles";
 import NotificationModal from "@/components/notifications/NotificationModal";
@@ -52,6 +52,8 @@ export default function Home() {
   const [notificationItems, setNotificationItems] = useState<any[]>([]);
   const [currentNotificationIndex, setCurrentNotificationIndex] = useState(0);
   const [showNotificationModal, setShowNotificationModal] = useState(false);
+  const [showBoothCompleteModal, setShowBoothCompleteModal] = useState(false);
+  const [customerType, setCustomerType] = useState("");
 
   const searchParams = useSearchParams();
   const customer_hash_code = searchParams.get("cc");
@@ -84,6 +86,14 @@ export default function Home() {
       }
     } catch {
       return false;
+    }
+  };
+
+  const getCustomerDetails = async () => {
+    if (!customer_hash_code) return;
+    const customerResult = await customerQr.getCustomerDetails(customer_hash_code);
+    if (customerResult.success) {
+      setCustomerType(customerResult.results?.customer_type || "");
     }
   };
 
@@ -222,10 +232,17 @@ export default function Home() {
 
     if (initialBoothsList.length > 0) {
       getCustomerRecord();
+      getCustomerDetails();
       get_visited_booth_list(); // Call with updated state
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialBoothsList]);
+
+  useEffect(() => {
+    if (customerData?.isDoneVisit === 1) {
+      setShowBoothCompleteModal(true);
+    }
+  }, [customerData?.isDoneVisit]);
 
   useEffect(() => {
     if (!isRender) return;
@@ -361,6 +378,16 @@ export default function Home() {
   const handleCloseNotification = () => {
     setShowNotificationModal(false);
   };
+
+  const handleBoothCompleteProceed = () => {
+    setShowBoothCompleteModal(false);
+    router.push(`/my-qr?cc=${stored_hash_code}`);
+  };
+
+  const boothCompleteMessage =
+    customerType.toLowerCase() === "red"
+      ? "You have completed your Booth Hopping. Claim your souvenir at the Tent Lobby from 1:00pm-7:00pm."
+      : "You have completed your Booth Hopping. Claim your souvenir at the Tent Lobby from 2:30pm-7:00pm.";
 
   return (
     <div
@@ -1310,6 +1337,31 @@ export default function Home() {
         onNext={handleNextNotification}
         onClose={handleCloseNotification}
       />
+      {showBoothCompleteModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-[60]">
+          <div className="absolute inset-0 bg-black/20" aria-hidden="true" />
+          <div className="relative w-[90%] max-w-md p-6 bg-white border-[2px] border-[#0F1030] rounded-lg shadow-md">
+            <div className="flex items-center justify-center mb-4">
+              <Image
+                src="/images/submitted.svg"
+                alt="Booth Hopping Complete"
+                width={90}
+                height={90}
+              />
+            </div>
+            <h2 className="text-2xl font-bold text-center mb-2">
+              Booth Hopping Complete
+            </h2>
+            <p className="text-center mb-6 text-lg">{boothCompleteMessage}</p>
+            <button
+              onClick={handleBoothCompleteProceed}
+              className="w-full py-3 bg-[#F78B1E] text-white rounded-lg text-lg font-medium hover:bg-[#E67D0E] transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
