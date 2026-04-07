@@ -142,7 +142,7 @@ export default function DealFormsPage() {
       const url = window.URL.createObjectURL(result.blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = result.filename || "deal-carts-export";
+      link.download = result.filename || "deal-carts-export.zip";
       document.body.appendChild(link);
       link.click();
       link.remove();

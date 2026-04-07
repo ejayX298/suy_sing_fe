@@ -1662,12 +1662,36 @@ export const souvenirAvailabilityDataOriginal = {
 export const dealFormsApiService = {
   exportDealCarts: async (token: string) => {
     try {
-      const response = await httpClient(token).get(
+      const axiosInstance = axios.create({
+        baseURL: process.env.NEXT_PUBLIC_API_URL,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const response = await axiosInstance.get(
         "/admin/deal-forms/export-deal-carts/",
         {
           responseType: "blob",
         }
       );
+
+      const contentType = response?.headers?.["content-type"] || "";
+      if (!contentType.includes("application/zip")) {
+        try {
+          const text = await response?.data?.text?.();
+          const parsed = text ? JSON.parse(text) : null;
+          return {
+            success: false,
+            message: parsed?.message || "Export failed. Please try again later.",
+          };
+        } catch (error) {
+          return {
+            success: false,
+            message: "Export failed. Please try again later.",
+          };
+        }
+      }
 
       const disposition =
         response?.headers?.["content-disposition"] ||
@@ -1677,9 +1701,12 @@ export const dealFormsApiService = {
         disposition.match(/filename\*=UTF-8''([^;]+)/) ||
         disposition.match(/filename="?([^\";]+)"?/);
       const rawFilename = filenameMatch?.[1] || "";
-      const filename = rawFilename
+      let filename = rawFilename
         ? decodeURIComponent(rawFilename)
-        : "deal-carts-export";
+        : "deal-carts-export.zip";
+      if (!/\.[a-zA-Z0-9]+$/.test(filename)) {
+        filename = `${filename}.zip`;
+      }
 
       return {
         success: true,
