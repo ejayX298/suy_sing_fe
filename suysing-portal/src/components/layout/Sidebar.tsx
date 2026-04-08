@@ -177,6 +177,12 @@ export default function Sidebar() {
             isActive={pathname === "/deal-forms"}
             onClick={() => setIsMobileMenuOpen(false)}
           />
+          <SidebarLink
+            href="/deal-ordered"
+            text="Deals Ordered"
+            isActive={pathname === "/deal-ordered"}
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
         </nav>
       </aside>
 

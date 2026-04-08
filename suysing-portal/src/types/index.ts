@@ -75,3 +75,22 @@ export interface Vendor {
   vendorCode: string;
   vendorName: string;
 }
+
+
+export interface DealOrderedCustomer {
+  id: string;
+  customerCode: string;
+  customerName: string;
+  customerType: string;
+  orderedQty: string;
+  dateOrdered: string;
+}
+
+ export interface DealOrderedBoothProducts {
+  id: number;
+  vendorCode: string;
+  vendorName: string;
+  itemCode: string;
+  itemDescription: string;
+  quantity: string;
+}

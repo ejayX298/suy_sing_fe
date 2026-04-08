@@ -1976,3 +1976,139 @@ export const dealFormsApiService = {
     }
   },
 };
+
+
+export const dealOrderedApiService = {
+  getDealOrdered: async (token: string, filterParams: FilterParams) => {
+    try {
+      const { page, perpage, query, sort_by } = filterParams;
+
+      const response = await httpClient(token).get(
+        `/admin/deal-orders/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+
+      const total_pages = response_data?.pagination?.total_pages || 0;
+      const current_page = response_data?.pagination?.current_page || 1;
+      interface DealOrderedCustomer {
+        id: number;
+        customer_code: string;
+        customer_name: string;
+        customer_type: string;
+        ordered_qty: string;
+        date_ordered: string;
+      }
+
+      const mapResponse = response_data.deal_orders.map((deal_order: DealOrderedCustomer) => ({
+        id: deal_order.id,
+        customerCode: deal_order.customer_code,
+        customerName: deal_order.customer_name,
+        customerType: deal_order.customer_type,
+        orderedQty: deal_order.ordered_qty,
+        dateOrdered: deal_order.date_ordered,
+      }));
+
+      return {
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
+    } catch (error) {
+      const default_err_response = {
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        return default_err_response;
+      } else {
+        return default_err_response;
+      }
+    }
+  },
+
+  getDealOrderDetails: async (
+    deal_order_id: number,
+    token: string,
+    filterParams: FilterParams
+  ) => {
+    try {
+      const { page, perpage, query, sort_by } = filterParams;
+
+      const response = await httpClient(token).get(
+        `/admin/deal-orders/${deal_order_id}/details/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+      const total_pages = response_data?.pagination?.total_pages || 0;
+      const current_page = response_data?.pagination?.current_page || 1;
+
+      interface ApiDealBoothProduct {
+        id: number;
+        booth_code: string;
+        booth_name: string;
+        product_item_code: string;
+        description: string;
+        quantity: string;
+      }
+
+      interface MappedDealBoothProduct {
+        id: number;
+        vendorCode: string;
+        vendorName: string;
+        itemCode: string;
+        itemDescription: string;
+        quantity: string;
+      }
+
+      const mapDealsOrdered = response_data?.deal_cart_details.map(
+        (deal_cart_product: ApiDealBoothProduct): MappedDealBoothProduct => ({
+          id: deal_cart_product.id,
+          vendorCode: deal_cart_product.booth_code,
+          vendorName: deal_cart_product.booth_name,
+          itemCode: deal_cart_product.product_item_code,
+          itemDescription: deal_cart_product.description,
+          quantity: deal_cart_product.quantity,
+        })
+      );
+
+      const mapResponse = {
+        customer_info: {
+          id: response_data.id,
+          customerCode: response_data.customer_code,
+          customerName: response_data.customer_name,
+          customerType: response_data.customer_type,
+          dateOrdered: response_data.date_ordered,
+        },
+        deal_ordered_list: mapDealsOrdered,
+      };
+
+      return {
+        success: true,
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
+    } catch (error) {
+      const default_err_response = {
+        success: false,
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        return default_err_response;
+      } else {
+        return default_err_response;
+      }
+    }
+  },
+
+};
