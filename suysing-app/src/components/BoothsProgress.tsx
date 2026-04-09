@@ -35,23 +35,23 @@ export default function BoothsProgress({
 
   return (
     <Link href={concatUrl("/booths-visited")}>
-      <div className=" flex flex-row items-center text-center justify-between gap-2 ">
-        <div className="bg-white px-1 py-2  min-w-52 min-h-28 max-w-52 sm:max-w-none sm:mx-0">
-          <h2 className="text-[17px] md:text-lg font-bold text-[#4E4E4E] flex items-center justify-center">
+      <div className=" flex flex-row items-center  justify-between gap-2 ">
+        <div className="bg-white border border-[#0F1030] rounded-xl px-4 py-2  min-w-52 min-h-28 max-w-52 sm:max-w-none sm:mx-0">
+          <h2 className="text-[14px] md:text-lg font-bold text-[#0F1030] flex justify-start">
             <Image
-              src="/images/check-icon.svg"
+              src="/images/booths-logo.svg"
               alt="Check Icon"
-              width={24}
-              height={24}
+              width={14}
+              height={14}
               className="mr-2"
             />
             Booths Visited
           </h2>
-          <div className="flex flex-col items-center">
-            <span className="font-bold text-[#4E4E4E] text-[34px]">
+          <div className="flex flex-col ">
+            <span className="font-bold text-[#0F1030] text-[34px]">
               {visited} / {total}
             </span>
-            <span className="text-[10px] text-[#4E4E4E] ml-2">{viewList}</span>
+            <span className="text-[12px] text-[#0F1030]">{viewList}</span>
           </div>
         </div>
 
