@@ -35,6 +35,8 @@ export default function DashboardLayout({
         return "Souvenir Availability";
       case pathname === "/deal-forms":
         return "Deal Forms";
+      case pathname === "/deal-ordered":
+        return "Deals Ordered";
       default:
         return "Dashboard";
     }
