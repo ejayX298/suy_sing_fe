@@ -26,7 +26,7 @@ export default function BottomNavigation() {
   }, []);
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white text-[#696969] border-t border-gray-200 flex justify-evenly items-stretch h-16">
+    <nav className="fixed bottom-0 left-0 right-0 bg-[#E98414] text-white border-t border-gray-200 flex justify-evenly items-stretch h-16">
       <Link
         href={concatUrl("/")}
         className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
@@ -55,7 +55,7 @@ export default function BottomNavigation() {
       >
         <div className="relative w-[16px] h-[24px]">
           <Image
-            src="/images/deal-form.png"
+            src="/images/deal-form1.svg"
             alt="Deal Form"
             fill
             style={{
@@ -104,7 +104,7 @@ export default function BottomNavigation() {
       >
         <div className="relative w-[22px] h-[24px]">
           <Image
-            src="/images/best-booth.svg"
+            src="/images/best-booth2.svg"
             alt="Best Booth"
             fill
             style={{
@@ -125,7 +125,7 @@ export default function BottomNavigation() {
       >
         <div className="relative w-[19px] h-[24px]">
           <Image
-            src="/images/account.png"
+            src="/images/account.svg"
             alt="Account"
             fill
             style={{
