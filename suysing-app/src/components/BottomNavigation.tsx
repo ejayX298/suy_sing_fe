@@ -30,17 +30,17 @@ export default function BottomNavigation() {
       <Link
         href={concatUrl("/")}
         className={`flex flex-col items-center h-full justify-center px-3 gap-1 ${
-          pathname === "/" ? "bg-[#0920B0] text-white" : ""
+          pathname === "/" ? "bg-[#0920B0] text-white" : "text-white/60"
         }`}
       >
         <div className="relative w-[21px] h-[24px]">
           <Image
-            src="/images/booths.png"
+            src="/images/booths.svg"
             alt="Booths"
             fill
             style={{
               objectFit: "contain",
-              filter: pathname === "/" ? "brightness(0) invert(1)" : "none",
+              filter: pathname === "/" ? "brightness(0) invert(1)" : "brightness(0) invert(1) opacity(0.6)",
             }}
           />
         </div>
@@ -50,7 +50,7 @@ export default function BottomNavigation() {
       <Link
         href={concatUrl("/deal-form")}
         className={`flex flex-col items-center h-full justify-center  px-2  gap-1 ${
-          pathname === "/deal-form" ? "bg-[#0920B0] text-white" : ""
+          pathname === "/deal-form" ? "bg-[#0920B0] text-white" : "text-white/60"
         }`}
       >
         <div className="relative w-[16px] h-[24px]">
@@ -61,7 +61,7 @@ export default function BottomNavigation() {
             style={{
               objectFit: "contain",
               filter:
-                pathname === "/deal-form" ? "brightness(0) invert(1)" : "none",
+                pathname === "/deal-form" ? "brightness(0) invert(1)" : "brightness(0) invert(1) opacity(0.6)",
             }}
           />
         </div>
@@ -70,12 +70,12 @@ export default function BottomNavigation() {
 
       <Link
         href={concatUrl("/camera")}
-        className="flex flex-col items-center -mt-7"
+        className="flex flex-col items-center justify-center"
       >
-        <div className="bg-[#0920B0] rounded-full p-3 ">
+        <div className="bg-[#0920B0] rounded-full p-3">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="size-10 text-white"
+            className="size-7 text-white"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -99,7 +99,7 @@ export default function BottomNavigation() {
       <Link
         href={concatUrl("/best-booth")}
         className={`flex flex-col items-center h-full justify-center px-1 gap-1 ${
-          pathname === "/best-booth" ? "bg-[#0920B0] text-white" : ""
+          pathname === "/best-booth" ? "bg-[#0920B0] text-white" : "text-white/60"
         }`}
       >
         <div className="relative w-[22px] h-[24px]">
@@ -110,7 +110,7 @@ export default function BottomNavigation() {
             style={{
               objectFit: "contain",
               filter:
-                pathname === "/best-booth" ? "brightness(0) invert(1)" : "none",
+                pathname === "/best-booth" ? "brightness(0) invert(1)" : "brightness(0) invert(1) opacity(0.6)",
             }}
           />
         </div>
@@ -120,7 +120,7 @@ export default function BottomNavigation() {
       <Link
         href={concatUrl("/my-qr")}
         className={`flex flex-col items-center h-full justify-center  px-1 gap-1 ${
-          pathname === "/my-qr" ? "bg-[#0920B0] text-white" : ""
+          pathname === "/my-qr" ? "bg-[#0920B0] text-white" : "text-white/60"
         }`}
       >
         <div className="relative w-[19px] h-[24px]">
@@ -131,7 +131,7 @@ export default function BottomNavigation() {
             style={{
               objectFit: "contain",
               filter:
-                pathname === "/my-qr" ? "brightness(0) invert(1)" : "none",
+                pathname === "/my-qr" ? "brightness(0) invert(1)" : "brightness(0) invert(1) opacity(0.6)",
             }}
           />
         </div>
