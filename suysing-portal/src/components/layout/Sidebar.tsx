@@ -183,6 +183,12 @@ export default function Sidebar() {
             isActive={pathname === "/deal-ordered"}
             onClick={() => setIsMobileMenuOpen(false)}
           />
+          <SidebarLink
+            href="/notification"
+            text="Notification"
+            isActive={pathname === "/notification"}
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
         </nav>
       </aside>
 
