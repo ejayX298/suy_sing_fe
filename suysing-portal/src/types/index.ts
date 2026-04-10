@@ -86,11 +86,22 @@ export interface DealOrderedCustomer {
   dateOrdered: string;
 }
 
- export interface DealOrderedBoothProducts {
+export interface DealOrderedBoothProducts {
   id: number;
   vendorCode: string;
   vendorName: string;
   itemCode: string;
   itemDescription: string;
   quantity: string;
+}
+
+export interface NotificationInt {
+  id: number;
+  title: string;
+  message: string;
+  send_to: string;
+  color_code: string;
+  customer_codes: string;
+  scheduled_at?: string;
+  scheduled_at_local_time? : string | null;
 }

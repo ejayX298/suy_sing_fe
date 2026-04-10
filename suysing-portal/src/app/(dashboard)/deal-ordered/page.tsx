@@ -17,7 +17,7 @@ type SortField =
   | "ordered_qty"
   | "date_ordered"  ;
 
-export default function DealFormsPage() {
+export default function DealOrderedPage() {
   const { token } = useAuth();
   const router = useRouter();
   const initialRenderVal = "__default_val__";

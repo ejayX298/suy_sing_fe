@@ -92,6 +92,16 @@ interface BoothProductData {
   booth_product_discount: number;
 }
 
+interface NotificationPostData {
+  id?: number;
+  title: string;
+  message: string;
+  send_to: string;
+  customer_codes: string;
+  color_code: string;
+  scheduled_at: string | null;
+}
+
 // Mock authentication service
 export const authService = {
   login: async (username: string, password: string) => {
@@ -2110,5 +2120,159 @@ export const dealOrderedApiService = {
       }
     }
   },
+
+};
+
+
+export const notificationService = {
+  getNotifications: async (token: string, filterParams: FilterParams) => {
+    try {
+      const { page, perpage, query, sort_by } = filterParams;
+
+      const response = await httpClient(token).get(
+        `/admin/notification/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+      const total_pages = response_data?.total_pages || 0;
+      const current_page = response_data?.current_page || 1;
+      interface Notification {
+        id: number;
+        title: string;
+        message: string;
+        send_to: string;
+        color_code: string;
+        customer_codes: string;
+        scheduled_at_local_time : string;
+      }
+
+      const mapResponse = response_data?.data.map((notification: Notification) => ({
+        id: notification.id,
+        title: notification.title,
+        message: notification.message,
+        send_to: notification.send_to,
+        customer_codes: notification.customer_codes,
+        color_code: notification.color_code,
+        scheduled_at_local_time : notification.scheduled_at_local_time
+      }));
+
+      return {
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
+    } catch (error) {
+      const default_err_response = {
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        return default_err_response;
+      } else {
+        return default_err_response;
+      }
+    }
+  },
+
+  addNotification: async (token: string, post_data: NotificationPostData) => {
+    const {
+      id,
+      title,
+      message,
+      send_to,
+      customer_codes,
+      color_code,
+      scheduled_at
+    } = post_data;
+
+    try {
+      const response = await httpClient(token).post(
+        "/admin/notification/add/",
+        {
+          id: id,
+          title: title,
+          message: message,
+          send_to: send_to,
+          customer_codes: customer_codes,
+          color_code: color_code,
+          scheduled_at: scheduled_at,
+        }
+      );
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data: response?.data?.data || [],
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || "Error! Please try again later",
+        };
+      } else {
+        return {
+          success: false,
+          message: "Unable to process your request. Please try again later.",
+        };
+      }
+    }
+  },
+
+  updateNotification: async (token: string, post_data: NotificationPostData) => {
+    const {
+      id,
+      title,
+      message,
+      send_to,
+      customer_codes,
+      color_code,
+      scheduled_at
+    } = post_data;
+
+    try {
+      const response = await httpClient(token).put(
+        "/admin/notification/update/",
+        {
+          notification_id: id,
+          title: title,
+          message: message,
+          send_to: send_to,
+          customer_codes: customer_codes,
+          color_code: color_code,
+          scheduled_at: scheduled_at,
+        }
+      );
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data: response?.data?.data || [],
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || "Error! Please try again later",
+        };
+      } else {
+        return {
+          success: false,
+          message: "Unable to process your request. Please try again later.",
+        };
+      }
+    }
+  },
+
 
 };
