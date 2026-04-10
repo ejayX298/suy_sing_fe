@@ -46,7 +46,9 @@ export const doubleZoneBoothCodes = [
   "SWEDI01",
   "SYMPL01",
   "UNILE02",
-  "UNIVE10"
+  "UNIVE10",
+  "GLOBE01",
+  "RAMES01"
 ];
 
 export const regularZoneBooths: BoothZoneItem[] = [
@@ -1311,6 +1313,26 @@ export const getInitialBooths = (): Booth[] => {
       height: 80,
       activeAccentColor: "#01B3E3",
       activeGradientColor: "#94E8FF",
+    },
+    {
+      id: "GLOBE01",
+      name: "mogu mogu",
+      image: "/images/booths/GLOBE01.png",
+      boothCode: "GLOBE01",
+      visited: false,
+      width: 80,
+      height: 80,
+      
+    },
+     {
+      id: "RAMES01",
+      name: "mogu mogu",
+      image: "/images/booths/RAMES01.png",
+      boothCode: "RAMES01",
+      visited: false,
+      width: 80,
+      height: 80,
+      
     },
 
      {
