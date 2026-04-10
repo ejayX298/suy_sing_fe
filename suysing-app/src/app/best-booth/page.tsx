@@ -502,9 +502,9 @@ function BestBoothContent() {
               <p className="mb-6 text-[#343434] text-[20px]">{errorMessage}</p>
               <button
                 onClick={handleProceed}
-                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-black font-semibold rounded-md"
+                className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
               >
-                Okay
+               Close
               </button>
             </div>
           </div>
