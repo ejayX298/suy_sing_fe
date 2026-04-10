@@ -31,7 +31,7 @@ export default function BoothZone({ title, booths, progress }: BoothZoneProps) {
             .filter((booth) => !booth.visited)
             .map((booth) => (
               <BoothItem
-                key={booth.name}
+                key={booth.boothCode}
                 boothCode={booth.boothCode}
                 name={booth.name}
                 image={booth.image}
