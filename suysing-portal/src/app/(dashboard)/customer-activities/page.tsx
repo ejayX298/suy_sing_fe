@@ -14,6 +14,7 @@ interface ActivitySummary {
 }
 
 type SortField =
+  | "fname"
   | "code"
   | "total_visited_c"
   | "booth_hopping_status"
@@ -213,6 +214,26 @@ export default function CustomerActivitiesPage() {
             <tr className="bg-blue-800 text-white">
               <th
                 className="table-header cursor-pointer"
+                onClick={() => handleSort("fname")}
+              >
+                Customer Name
+                <span className="ml-1 inline-block">
+                  {sortConfig && sortConfig.field === "fname" ? (
+                    sortConfig.direction === "asc" ? (
+                      <FaSortUp />
+                    ) : (
+                      <FaSortDown />
+                    )
+                  ) : (
+                    <span className="inline-flex flex-col">
+                      <FaSortUp className="-mb-1" />
+                      <FaSortDown className="-mt-1" />
+                    </span>
+                  )}
+                </span>
+              </th>
+              <th
+                className="table-header cursor-pointer"
                 onClick={() => handleSort("code")}
               >
                 Customer Code
@@ -333,6 +354,9 @@ export default function CustomerActivitiesPage() {
                   key={customer.id}
                   className="border-b border-gray-400 hover:bg-gray-50"
                 >
+                  <td className="table-cell">
+                    <div>{customer.name}</div>
+                  </td>
                   <td className="table-cell">
                     <div>{customer.code}</div>
                   </td>

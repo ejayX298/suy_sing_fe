@@ -92,13 +92,15 @@ export default function BestBoothWinnerTallyPage() {
     setSearchQuery(search_val);
   };
 
-  const handleSetActiveTab = (booth_name: "Blue Booth" | "Orange Booth" | "Red Booth") => {
+  const handleSetActiveTab = (booth_name: "Blue Booth" | "Orange Booth" | "Red Booth" | "Green Booth") => {
     let booth_value = "blue";
 
     if (booth_name == "Red Booth") {
       booth_value = "red";
     } else if (booth_name == "Orange Booth") {
       booth_value = "orange";
+    } else if (booth_name == "Green Booth") {
+      booth_value = "green";
     }
     setActiveTab(booth_name);
     setfilterParams({ ...filterParams, page: 1, color_code: booth_value });
@@ -183,6 +185,16 @@ export default function BestBoothWinnerTallyPage() {
               onClick={() => handleSetActiveTab("Red Booth")}
             >
               Red Booth
+            </button>
+            <button
+              className={`px-4 py-3 font-medium text-sm ${
+                activeTab === "Green Booth"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => handleSetActiveTab("Green Booth")}
+            >
+              Green Booth
             </button>
           </div>
           <div className="py-4 flex justify-end gap-4 items-center">

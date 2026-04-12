@@ -52,6 +52,7 @@ interface ApiCustomer {
     current_page: number;
     booths: ApiBoothVisit[];
   };
+  counter_group?: string;
 }
 
 interface ApiBoothVisit {
@@ -100,6 +101,16 @@ interface NotificationPostData {
   customer_codes: string;
   color_code: string;
   scheduled_at: string | null;
+}
+
+interface CustomerClaimHistory {
+  id: string;
+  reference_no: string;
+  released_by: string;
+  item_claimed: string;
+  time_claimed: string;
+  counter_group: string;
+  pretty_claim_status: string;
 }
 
 // Mock authentication service
@@ -1059,6 +1070,7 @@ export const souvenirClaimData = {
           item: customer.item_claimed,
           timeClaimed: customer.time_claimed,
           released_by: customer.released_by,
+          counter_group: customer.counter_group,
         })
       );
 
@@ -1215,6 +1227,68 @@ export const souvenirClaimData = {
       },
     ];
   },
+
+  getCustomerById: async (
+    id: number,
+    token: string,
+    filterParams: FilterParams
+  ) => {
+    try {
+      const { page, perpage, query, sort_by } = filterParams;
+      const response = await httpClient(token).get(
+        `/admin/souvenir/get-customer-claim-history/?customer_id=${id}&page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
+        {}
+      );
+
+      const response_data = response?.data?.data || [];
+     
+      const total_pages =
+        response_data?.customer?.souvenir_claim_history?.total_pages || 0;
+      const current_page =
+        response_data?.customer?.souvenir_claim_history?.current_page || 1;
+
+      const mapClaimHistory = response_data?.customer?.souvenir_claim_history.map(
+        (customer: CustomerClaimHistory) => ({
+          id: customer.id,
+          reference_no: customer.reference_no,
+          released_by: customer.released_by,
+          item_claimed: customer.item_claimed,
+          time_claimed: customer.time_claimed,
+          counter_group: customer.counter_group,
+          pretty_claim_status: customer.pretty_claim_status,
+        })
+      );
+
+      const mapResponse = {
+        id: response_data.customer.id,
+        code: response_data.customer.code,
+        name: response_data.customer.full_name,
+        type: response_data.customer.customer_type,
+        pretty_claim_status: response_data.customer.pretty_claim_status,
+        customerSouvenirClaimHistory: mapClaimHistory,
+      };
+
+      return {
+        total_pages: total_pages,
+        current_page: current_page,
+        results: mapResponse,
+      };
+    } catch (error) {
+      const default_err_response = {
+        total_pages: 0,
+        current_page: 1,
+        results: [],
+      };
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+        return default_err_response;
+      } else {
+        return default_err_response;
+      }
+    }
+
+  },
+
 };
 
 export const souvenirAvailabilityData = {
