@@ -8,6 +8,7 @@ import { Claim } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
 import { MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 type SortField =
   | "code"
@@ -20,6 +21,7 @@ type SortField =
 
 export default function SouvenirClaimPage() {
   const { token } = useAuth();
+  const router = useRouter();
   const initialRenderVal = "__default_val__";
 
   const [isLoading, setIsLoading] = useState(true);
@@ -33,7 +35,7 @@ export default function SouvenirClaimPage() {
     page: 1,
     perpage: 10,
     query: "",
-    sort_by: "",
+    sort_by: "-id",
   });
 
   const [sortConfig, setSortConfig] = useState<{
@@ -110,8 +112,10 @@ export default function SouvenirClaimPage() {
   // Status color mapping
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "Claimed":
+      case "Successful":
         return "bg-[#2EE84A] text-black";
+      case "Unsuccessful":
+        return "bg-[#e8372e] text-black";
       case "Pending":
         return "bg-[#FFE944] text-black";
       case "On hold":
@@ -139,6 +143,10 @@ export default function SouvenirClaimPage() {
     setSelectedCustomer(claim);
     setCustomerStatus(claim.status || "Pending");
     setShowEditModal(true);
+  };
+
+  const handleViewCustomer = (customerId: number) => {
+    router.push(`/souvenir/souvenir-claim/${customerId}`);
   };
 
   const handleEditCustomerStatus = async () => {
@@ -389,7 +397,7 @@ export default function SouvenirClaimPage() {
                   className="table-header cursor-pointer"
                   onClick={() => handleSort("auditor_fname")}
                 >
-                  Released by
+                  Auditor
                   <span className="ml-1 inline-block">
                     {sortConfig && sortConfig.field === "auditor_fname" ? (
                       sortConfig.direction === "asc" ? (
@@ -406,7 +414,28 @@ export default function SouvenirClaimPage() {
                   </span>
                 </th>
 
-                <th className="px-4 py-2 text-center">Action</th>
+                <th
+                  className="table-header cursor-pointer"
+                  onClick={() => handleSort("auditor_fname")}
+                >
+                  Counter Group
+                  <span className="ml-1 inline-block">
+                    {sortConfig && sortConfig.field === "auditor_fname" ? (
+                      sortConfig.direction === "asc" ? (
+                        <FaSortUp />
+                      ) : (
+                        <FaSortDown />
+                      )
+                    ) : (
+                      <span className="inline-flex flex-col">
+                        <FaSortUp className="-mb-1" />
+                        <FaSortDown className="-mt-1" />
+                      </span>
+                    )}
+                  </span>
+                </th>
+
+                {/* <th className="px-4 py-2 text-center">Action</th> */}
               </tr>
             </thead>
             <tbody>
@@ -424,7 +453,12 @@ export default function SouvenirClaimPage() {
                 </tr>
               ) : (
                 currentItems.map((claim) => (
-                  <tr key={claim.id} className="border-b hover:bg-gray-50">
+                  <tr 
+                    key={claim.id} 
+                    className="border-b hover:bg-gray-50 cursor-pointer"
+                    onClick={() => handleViewCustomer(claim.id)}
+                  >
+
                     <td className="px-4 py-3">{claim.code}</td>
                     <td className="px-4 py-3">{claim.name}</td>
                     <td
@@ -444,7 +478,8 @@ export default function SouvenirClaimPage() {
                     <td className="px-4 py-3">{claim.item}</td>
                     <td className="px-4 py-3">{claim.timeClaimed}</td>
                     <td className="px-4 py-3">{claim.released_by}</td>
-                    <td className="px-4 py-3 text-center">
+                    <td className="px-4 py-3">{claim.counter_group}</td>
+                    {/* <td className="px-4 py-3 text-center">
                       {claim.status != "Claimed" && (
                         <button
                           className="text-blue-600 hover:text-blue-800"
@@ -453,7 +488,7 @@ export default function SouvenirClaimPage() {
                           <MdModeEditOutline />
                         </button>
                       )}
-                    </td>
+                    </td> */}
                   </tr>
                 ))
               )}

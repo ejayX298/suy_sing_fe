@@ -72,6 +72,8 @@ export default function CustomerBoothReportDetail() {
         return "bg-orange-500 text-white";
       case "Red Booth":
         return "bg-red-600 text-white";
+      case "Green Booth":
+        return "bg-green-600 text-white";
       default:
         return "bg-gray-200 text-gray-800";
     }

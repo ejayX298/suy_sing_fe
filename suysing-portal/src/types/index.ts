@@ -20,6 +20,7 @@ export interface Customer {
   name: string;
   type: string;
   store?: string;
+  pretty_claim_status?: string;
   timeSubmitted?: string;
   totalVisited?: number;
   totalBoothVisited?: number | string;
@@ -28,6 +29,8 @@ export interface Customer {
   boothHopping?: boolean | string;
   boothVoting?: boolean | string;
   souvenirClaiming?: boolean | string;
+  customerSouvenirClaimHistory?: CustomerClaimHistory[];
+  
 }
 
 // Booth types
@@ -53,6 +56,7 @@ export interface Claim {
   item: string;
   timeClaimed: string;
   released_by: string;
+  counter_group: string;
 }
 
 export interface Souvenir {
@@ -104,4 +108,14 @@ export interface NotificationInt {
   customer_codes: string;
   scheduled_at?: string;
   scheduled_at_local_time? : string | null;
+}
+
+export interface CustomerClaimHistory {
+  id: string;
+  reference_no: string;
+  released_by: string;
+  item_claimed: string;
+  time_claimed: string;
+  counter_group: string;
+  pretty_claim_status: string;
 }
