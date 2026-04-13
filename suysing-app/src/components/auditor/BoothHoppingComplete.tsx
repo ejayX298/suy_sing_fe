@@ -30,7 +30,7 @@ export default function BoothHoppingComplete({
         
           <button
             onClick={navigateToSouvenir}
-            className="w-full rounded-lg font-semibold bg-[#F78B1E] px-4 py-3  hover:bg-orange-500"
+            className="w-full rounded-lg text-white font-semibold bg-[#F78B1E] px-4 py-2  hover:bg-orange-500"
           >
           Next
           </button>
