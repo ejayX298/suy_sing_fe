@@ -264,9 +264,9 @@ function AuditorBoothVoteContent() {
               <button
                 onClick={handleContinue}
                 disabled={!blueBoothVote}
-                className={`w-full py-3 rounded-lg text-lg font-medium ${
+                className={`w-full py-2 rounded-lg font-medium ${
                   blueBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -296,7 +296,7 @@ function AuditorBoothVoteContent() {
                 disabled={!orangeBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   orangeBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -322,7 +322,7 @@ function AuditorBoothVoteContent() {
                 disabled={!redBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   redBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -348,7 +348,7 @@ function AuditorBoothVoteContent() {
                 disabled={!greenBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   greenBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >

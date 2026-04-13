@@ -46,9 +46,9 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="px-4 py-10 bg-white w-full max-w-sm mb-16 rounded-lg shadow-md border-2 border-[#F78B1E]">
         <div className="flex items-center justify-center mb-2">
-          <Image src="/images/star.svg" alt="Star" width={60} height={60} />
+          <Image src="/images/vote-summary.svg" alt="Star" width={60} height={60} />
         </div>
-        <h2 className="text-[34px] font-bold text-center">Summary of Votes</h2>
+        <h2 className="text-[20px] font-bold text-center">Summary of Votes</h2>
         <p className="text-center mb-4 text-sm">
           Review your votes before submitting
         </p>
@@ -74,15 +74,15 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
 
         <button
           onClick={onSubmit}
-          className="w-full py-3 bg-[#F78B1E] rounded-lg text-lg font-medium"
+          className="w-full py-2 bg-[#F78B1E] rounded-lg text-white font-medium"
         >
           Submit
         </button>
         <button
           onClick={handleCancel}
-          className="w-full py-3 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium mt-2"
+          className="w-full py-2 bg-[#FFEBD4] border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg font-medium mt-2"
         >
-        Back
+        Cancel
         </button>
       </div>
     </div>
