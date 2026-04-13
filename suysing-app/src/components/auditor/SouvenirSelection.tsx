@@ -133,13 +133,13 @@ export default function SouvenirSelection({
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={onCancel}
-            className="w-full rounded-lg bg-white py-3 text-lg font-semibold text-[#F78B1E] border-2 border-[#F78B1E]"
+            className="w-full rounded-lg bg-white py-2  font-semibold text-[#F78B1E] border-2 border-[#F78B1E]"
           >
             Cancel
           </button>
           <button
             onClick={handleProceed}
-            className={`w-full text-white rounded-lg py-3 text-lg font-semibold ${
+            className={`w-full text-white rounded-lg py-2  font-semibold ${
               selectedSouvenir ? "bg-[#F78B1E]" : "bg-gray-400"
             }`}
             disabled={!selectedSouvenir}
