@@ -33,8 +33,8 @@ export default function VoteSummary({ onSubmit, onCancel }: VoteSummaryProps) {
           <Image
             src={vote.image}
             alt={vote.boothCode}
-            width={80}
-            height={50}
+            width={100}
+            height={70}
             className="object-contain sm:w-32"
           />
         </div>

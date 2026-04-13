@@ -224,15 +224,6 @@ function AuditorBoothVoteContent() {
       return null;
     }
 
-    const colorText =
-      step === "intro" || step === "blue"
-        ? "Blue Booth"
-        : step === "orange"
-          ? "Orange Booth"
-          : step === "red"
-            ? "Red Booth"
-            : "Green Booth";
-
     return (
       <div className="px-4 py-3 text-white">
         <BoothsProgress
@@ -240,12 +231,6 @@ function AuditorBoothVoteContent() {
           total={auditData?.total_booths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
-
-        <h1 className="text-[20px] font-bold text-center mt-4 mb-6 leading-10">
-          Vote for your best
-          <br />
-          {colorText}
-        </h1>
       </div>
     );
   };
@@ -355,7 +340,7 @@ function AuditorBoothVoteContent() {
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
-                Submit
+                Next
               </button>
             </div>
           </>

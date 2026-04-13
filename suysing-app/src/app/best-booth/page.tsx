@@ -31,8 +31,13 @@ function BestBoothContent() {
   const [step, setStep] = useState<
     "intro" | "blue" | "orange" | "red" | "green" | "summary" | "thankyou"
   >("intro");
-  const { blueBoothVote, orangeBoothVote, redBoothVote, greenBoothVote, resetVotes } =
-    useBestBooth();
+  const {
+    blueBoothVote,
+    orangeBoothVote,
+    redBoothVote,
+    greenBoothVote,
+    resetVotes,
+  } = useBestBooth();
 
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
@@ -79,7 +84,12 @@ function BestBoothContent() {
     const red_booth_id = redBoothVote?.id || "";
     const green_booth_id = greenBoothVote?.id || "";
 
-    const post_data = [blue_booth_id, orange_booth_id, red_booth_id, green_booth_id];
+    const post_data = [
+      blue_booth_id,
+      orange_booth_id,
+      red_booth_id,
+      green_booth_id,
+    ];
 
     try {
       const submitVote = await bestBooth.submitBoothVoting(post_data);
@@ -98,7 +108,7 @@ function BestBoothContent() {
       Swal.close(); // close the loader
       setShowErrorMessageModal(true);
       setErrorMessage(
-        "Unable to process your request. Please try again later."
+        "Unable to process your request. Please try again later.",
       );
       // showMessage(
       //   "0",
@@ -138,7 +148,8 @@ function BestBoothContent() {
 
   const getCustomerDetails = async () => {
     if (!customer_hash_code) return;
-    const customerResult = await customerQr.getCustomerDetails(customer_hash_code);
+    const customerResult =
+      await customerQr.getCustomerDetails(customer_hash_code);
     if (customerResult.success) {
       setCustomerType(customerResult.results?.customer_type || "");
     }
@@ -233,7 +244,12 @@ function BestBoothContent() {
   }, [customerData]);
 
   const handleContinue = async () => {
-    if (step === "blue" || step === "orange" || step === "red" || step === "green") {
+    if (
+      step === "blue" ||
+      step === "orange" ||
+      step === "red" ||
+      step === "green"
+    ) {
       await delay(600);
     }
     if (step === "intro") {
@@ -266,7 +282,7 @@ function BestBoothContent() {
     } else if (step === "green") {
       setStep("red");
     } else if (step === "summary") {
-      setStep("green");
+      setStep("intro");
     }
   };
 
@@ -284,15 +300,6 @@ function BestBoothContent() {
       return null;
     }
 
-    const colorText =
-      step === "intro" || step === "blue"
-        ? "Blue Booth"
-        : step === "orange"
-        ? "Orange Booth"
-        : step === "red"
-        ? "Red Booth"
-        : "Green Booth";
-
     return (
       <div className="px-4 py-3 text-white">
         <BoothsProgress
@@ -300,12 +307,6 @@ function BestBoothContent() {
           total={customerData?.totalBooths || 0}
           viewList="Tap to view the list of visited and unvisited booths."
         />
-
-        <h1 className="text-[34px] font-bold text-center mt-4 mb-6 leading-10">
-          Vote for your best
-          <br />
-          {colorText}
-        </h1>
       </div>
     );
   };
@@ -317,11 +318,7 @@ function BestBoothContent() {
           <>
             {getStepHeader()}
             <div className="relative">
-              <BoothGrid
-                booths={blueBooths}
-                color="blue"
-                onVote={handleContinue}
-              />
+              <BoothGrid booths={blueBooths} color="blue" />
               <IntroScreen onContinue={handleContinue} />
             </div>
           </>
@@ -330,18 +327,14 @@ function BestBoothContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid
-              booths={blueBooths}
-              color="blue"
-              onVote={handleContinue}
-            />
+            <BoothGrid booths={blueBooths} color="blue" />
             <div className="px-4 pb-4">
               <button
                 onClick={handleContinue}
                 disabled={!blueBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   blueBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -354,24 +347,20 @@ function BestBoothContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid
-              booths={orangeBooths}
-              color="orange"
-              onVote={handleContinue}
-            />
+            <BoothGrid booths={orangeBooths} color="orange" />
             <div className="px-2 pb-4 flex gap-4 ">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
                 disabled={!orangeBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   orangeBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -384,20 +373,20 @@ function BestBoothContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={redBooths} color="red" onVote={handleContinue} />
+            <BoothGrid booths={redBooths} color="red" />
             <div className="px-4 pb-4 flex gap-4">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
                 disabled={!redBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   redBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
@@ -410,24 +399,24 @@ function BestBoothContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={greenBooths} color="green" onVote={handleContinue} />
+            <BoothGrid booths={greenBooths} color="green" />
             <div className="px-4 pb-4 flex gap-4">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
                 disabled={!greenBoothVote}
                 className={`w-full py-1 rounded-lg text-lg font-medium ${
                   greenBoothVote
-                    ? "bg-[#F78B1E] text-[#252740]"
+                    ? "bg-[#F78B1E] text-white"
                     : "bg-gray-300 text-gray-500"
                 }`}
               >
-                Submit
+                Next
               </button>
             </div>
           </>
@@ -464,7 +453,8 @@ function BestBoothContent() {
                   </div>
                   <p className="text-gray-600 mb-6">
                     <span className="text-lg font-bold">
-                      You&apos;ve already submitted your Best Booth votes. <br/>
+                      You&apos;ve already submitted your Best Booth votes.{" "}
+                      <br />
                     </span>
                     {customerType.toLowerCase() === "red"
                       ? "You have completed your Booth Hopping. Claim your souvenir at the Tent Lobby from 1:00pm-7:00pm."
@@ -474,7 +464,7 @@ function BestBoothContent() {
                     onClick={() => router.push(`/my-qr?cc=${stored_hash_code}`)}
                     className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
                   >
-                  Close
+                    Close
                   </button>
                 </div>
               </div>
@@ -504,7 +494,7 @@ function BestBoothContent() {
                 onClick={handleProceed}
                 className="w-full py-3 bg-[#F78B1E] hover:bg-orange-600 text-white font-semibold rounded-md"
               >
-               Close
+                Close
               </button>
             </div>
           </div>
