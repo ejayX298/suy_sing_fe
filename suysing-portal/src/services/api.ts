@@ -23,11 +23,14 @@ interface UpdateCustomerStatusData {
 interface updateSouvenirStatusData {
   souvenir_id: number;
   souvenir_qty: number;
+  color_code?: string;
+  name?: string;
 }
 
 interface addSouvenirData {
   name: string;
   totalQuantity: number;
+  color_code: string;
 }
 
 interface ApiCustomer {
@@ -84,6 +87,7 @@ interface ApiSouvenir {
   qty: number;
   claimed: number;
   remaining: number;
+  color_code: string;
 }
 
 interface BoothProductData {
@@ -1294,10 +1298,10 @@ export const souvenirClaimData = {
 export const souvenirAvailabilityData = {
   getSouvenirs: async (token: string, filterParams: FilterParams) => {
     try {
-      const { page, perpage, query, sort_by } = filterParams;
+      const { page, perpage, query, sort_by, color_code } = filterParams;
 
       const response = await httpClient(token).get(
-        `/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}`,
+        `/admin/souvenir/list/?page=${page}&perpage=${perpage}&query=${query}&sort_by=${sort_by}&color_code=${color_code}`,
         {}
       );
 
@@ -1312,6 +1316,7 @@ export const souvenirAvailabilityData = {
           totalQuantity: souvenir.qty,
           claimed: souvenir.claimed,
           remaining: souvenir.remaining,
+          color_code: souvenir.color_code,
         })
       );
 
@@ -1341,10 +1346,11 @@ export const souvenirAvailabilityData = {
   },
 
   addSouvenir: async (token: string, post_data: addSouvenirData) => {
-    const { name, totalQuantity } = post_data;
+    const { color_code, name, totalQuantity } = post_data;
 
     try {
       const response = await httpClient(token).post("/admin/souvenir/add/", {
+        color_code: color_code,
         name: name,
         qty: totalQuantity,
       });
@@ -1372,14 +1378,53 @@ export const souvenirAvailabilityData = {
     }
   },
 
+  updateSouvenirDetails: async (
+    token: string,
+    post_data: updateSouvenirStatusData
+  ) => {
+    const { color_code, name, souvenir_id, souvenir_qty } = post_data;
+
+    try {
+      const response = await httpClient(token).put("/admin/souvenir/update_details/", {
+        souvenir_id: souvenir_id,
+        name: name,
+        color_code: color_code,
+        qty: souvenir_qty,
+      });
+
+      return {
+        success: true,
+        message: response?.data?.message,
+        data: response?.data?.data || [],
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        validateTokenResponse(error);
+
+        const errResp = error.response;
+        return {
+          success: false,
+          message: errResp?.data?.message || "Error! Please try again later",
+        };
+      } else {
+        return {
+          success: false,
+          message: "Unable to process your request. Please try again later.",
+        };
+      }
+    }
+  },
+
+
   updateSouvenir: async (
     token: string,
     post_data: updateSouvenirStatusData
   ) => {
-    const { souvenir_id, souvenir_qty } = post_data;
+    const { color_code, souvenir_id, souvenir_qty } = post_data;
 
     try {
-      const response = await httpClient(token).put("/admin/souvenir/update/", {
+      const response = await httpClient(token).put("/admin/souvenir/update_details/", {
+        color_code: color_code,
         souvenir_id: souvenir_id,
         qty: souvenir_qty,
       });
@@ -2083,6 +2128,7 @@ export const dealOrderedApiService = {
         customer_type: string;
         ordered_qty: string;
         date_ordered: string;
+        date_ordered_pretty: string;
       }
 
       const mapResponse = response_data.deal_orders.map((deal_order: DealOrderedCustomer) => ({
@@ -2091,7 +2137,7 @@ export const dealOrderedApiService = {
         customerName: deal_order.customer_name,
         customerType: deal_order.customer_type,
         orderedQty: deal_order.ordered_qty,
-        dateOrdered: deal_order.date_ordered,
+        dateOrdered: deal_order.date_ordered_pretty,
       }));
 
       return {
@@ -2167,7 +2213,7 @@ export const dealOrderedApiService = {
           customerCode: response_data.customer_code,
           customerName: response_data.customer_name,
           customerType: response_data.customer_type,
-          dateOrdered: response_data.date_ordered,
+          dateOrdered: response_data.date_ordered_pretty,
         },
         deal_ordered_list: mapDealsOrdered,
       };

@@ -65,6 +65,7 @@ export interface Souvenir {
   totalQuantity: number;
   claimed: number;
   remaining: number;
+  color_code: string;
 }
 
 export interface Product {

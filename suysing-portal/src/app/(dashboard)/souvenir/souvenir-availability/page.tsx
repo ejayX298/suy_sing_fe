@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown, FaFilter } from "react-icons/fa";
 import { MdModeEditOutline } from "react-icons/md";
 import { IoTrashOutline } from "react-icons/io5";
 import { souvenirAvailabilityData } from "@/services/api";
@@ -25,6 +25,8 @@ export default function SouvenirAvailabilityPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [newSouvenirName, setNewSouvenirName] = useState("");
   const [newSouvenirQuantity, setNewSouvenirQuantity] = useState("");
+  const [newSouvenirFor, setNewSouvenirFor] = useState("yellow");
+  const [activeTab, setActiveTab] = useState("yellow");
   const [selectedSouvenir, setSelectedSouvenir] = useState<Souvenir | null>(
     null
   );
@@ -33,6 +35,7 @@ export default function SouvenirAvailabilityPage() {
     perpage: 10,
     query: "",
     sort_by: "",
+    color_code : "yellow"
   });
 
   const [sortConfig, setSortConfig] = useState<{
@@ -131,7 +134,7 @@ export default function SouvenirAvailabilityPage() {
 
   const handleAddSouvenir = async () => {
     // Validate inputs
-    if (!newSouvenirName.trim() || !newSouvenirQuantity.trim()) {
+    if (!newSouvenirFor.trim() || !newSouvenirName.trim() || !newSouvenirQuantity.trim()) {
       alert("Please fill in all fields");
       return;
     }
@@ -166,6 +169,7 @@ export default function SouvenirAvailabilityPage() {
     if (confirmAction.isConfirmed) {
       // Add souvenir
       const newSouvenir = {
+        color_code : newSouvenirFor,
         name: newSouvenirName,
         totalQuantity: quantity,
       };
@@ -190,6 +194,7 @@ export default function SouvenirAvailabilityPage() {
       }
 
       // Reset form and close modal
+      setNewSouvenirFor("yellow");
       setNewSouvenirName("");
       setNewSouvenirQuantity("");
       setShowAddModal(false);
@@ -232,11 +237,13 @@ export default function SouvenirAvailabilityPage() {
       try {
         // Update souvenir
         const updatedSouvenir = {
+          color_code: newSouvenirFor,
           souvenir_id: selectedSouvenir.id,
+          name : selectedSouvenir.name,
           souvenir_qty: quantity,
         };
 
-        const souvenirsData = await souvenirAvailabilityData.updateSouvenir(
+        const souvenirsData = await souvenirAvailabilityData.updateSouvenirDetails(
           token,
           updatedSouvenir
         );
@@ -255,6 +262,7 @@ export default function SouvenirAvailabilityPage() {
       }
 
       // setSouvenirs(updatedSouvenirs);
+      setNewSouvenirFor("yellow")
       setShowEditModal(false);
       setSelectedSouvenir(null);
       setNewSouvenirQuantity("");
@@ -262,6 +270,7 @@ export default function SouvenirAvailabilityPage() {
   };
 
   const openEditModal = (souvenir: Souvenir) => {
+    setNewSouvenirFor(souvenir.color_code)
     setSelectedSouvenir(souvenir);
     setNewSouvenirQuantity(souvenir.totalQuantity.toString());
     setShowEditModal(true);
@@ -337,32 +346,77 @@ export default function SouvenirAvailabilityPage() {
     }
   };
 
+
+  const handleSetActiveTab = (tab_active: "yellow" | "red" | "green") => {
+    let tab = "yellow";
+
+    if (tab_active == "yellow") {
+      tab = "yellow";
+    } else if (tab_active == "green") {
+      tab = "green";
+    } else if (tab_active == "red") {
+      tab = "red";
+    }
+    setActiveTab(tab);
+    setfilterParams({ ...filterParams, page: 1, color_code: tab });
+  };
+
   return (
     <div className="space-y-6">
       <div className="">
-        <div className="py-4 flex justify-end gap-4 items-center border-b">
-          <div className="flex items-center space-x-2">
-            {/* <button
-              className="inline-flex items-center px-3 py-3 bg-blue-800 text-white text-sm"
+          <div className="flex justify-between items-center mb-6">
+          <div className="flex border-b border-gray-400 space-x-1">
+            <button
+              className={`px-4 py-3 font-medium text-sm ${
+                activeTab === "yellow"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => handleSetActiveTab("yellow")}
+            >
+              Yellow Customers
+            </button>
+            <button
+              className={`px-4 py-3 font-medium text-sm ${
+                activeTab === "green"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => handleSetActiveTab("green")}
+            >
+              Green Customers
+            </button>
+            <button
+              className={`px-4 py-3 font-medium text-sm ${
+                activeTab === "red"
+                  ? "text-blue-600 border-b-2 border-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+              }`}
+              onClick={() => handleSetActiveTab("red")}
+            >
+              Red Customers
+            </button>
+          </div>
+          <div className="flex justify-end items-center">
+            <button 
+              className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm"
               onClick={() => setShowAddModal(true)}
             >
-              <FaPlus className="mr-2" /> Change Souvenir
-            </button> */}
-            {/* <button className="inline-flex items-center px-3 py-3 border bg-blue-800 text-white text-sm">
-              <FaFilter className="mr-2" /> Filter by
-            </button> */}
-          </div>
-
-          <div className="relative">
-            <input
-              type="text"
-              value={searchQuery == initialRenderVal ? "" : searchQuery}
-              onChange={handleSearchQuery}
-              placeholder="Search souvenir here..."
-              className="pl-4 py-2 border w-64 focus:outline-none border-gray-400 focus:ring focus:ring-blue-500"
-            />
-            <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
-          </div>
+              {/* <FaFilter className="" /> */}
+              Add Souvenir
+            </button>
+          
+            <div className="relative">
+              <input
+                type="text"
+                value={searchQuery == initialRenderVal ? "" : searchQuery}
+                onChange={handleSearchQuery}
+                placeholder="Search souvenir here..."
+                className="pl-4 py-2 border w-64 focus:outline-none border-gray-400 focus:ring focus:ring-blue-500"
+              />
+              <FaSearch className="absolute right-3 top-1/2 transform -translate-y-1/2 text-blue-800" />
+            </div>
+        </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -508,10 +562,41 @@ export default function SouvenirAvailabilityPage() {
       {showAddModal && (
         <div className="fixed inset-0 bg-black/20 backdrop-blur-xs flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-2xl">
+
             <div className="px-6 py-4">
               <h2 className="text-[34px] font-bold">Add Souvenir</h2>
             </div>
             <div className="border-t border-gray-400 px-6 py-5 space-y-5">
+              
+              {/* Souvenir For */}
+              <div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 mt-4">
+                      Souvenir For
+                    </label>
+                  </div>
+                        
+                  <div className="mt-2 mb-4 flex flex-row gap-6 items-center">
+                    {[
+                      { label: "Yellow", value: "yellow" },
+                      { label: "Green", value: "green" },
+                      { label: "Red", value: "red" }
+                    ].map((item) => (
+                      <div key={item.value} className="flex flex-row gap-2 items-center">
+                        <input
+                          type="radio"
+                          name="souvenirFor" // same name for grouping
+                          value={item.value}
+                          checked={newSouvenirFor === item.value}
+                          onChange={(e) => setNewSouvenirFor(e.target.value)}
+                        />
+                        <label className="text-gray-700">{item.label}</label>
+                      </div>
+                    ))}
+                  </div>
+              </div>
+              {/* Send For */}
+              
               <div>
                 <label className="block text-gray-700 mb-2">
                   Souvenir Name
@@ -536,6 +621,7 @@ export default function SouvenirAvailabilityPage() {
                 <button
                   className="px-6 py-2 border border-blue-700 text-blue-700"
                   onClick={() => {
+                    setNewSouvenirFor("yellow");
                     setShowAddModal(false);
                     setNewSouvenirName("");
                     setNewSouvenirQuantity("");
@@ -563,6 +649,36 @@ export default function SouvenirAvailabilityPage() {
               <h2 className="text-[34px] font-bold">Edit Souvenir</h2>
             </div>
             <div className="border-t border-gray-400 px-6 py-5 space-y-5">
+
+              {/* Souvenir For */}
+              <div>
+                  <div>
+                    <label className="block text-gray-700 mb-2 mt-4">
+                      Souvenir For
+                    </label>
+                  </div>
+                        
+                  <div className="mt-2 mb-4 flex flex-row gap-6 items-center">
+                    {[
+                      { label: "Yellow", value: "yellow" },
+                      { label: "Green", value: "green" },
+                      { label: "Red", value: "red" }
+                    ].map((item) => (
+                      <div key={item.value} className="flex flex-row gap-2 items-center">
+                        <input
+                          type="radio"
+                          name="souvenirFor" // same name for grouping
+                          value={item.value}
+                          checked={newSouvenirFor === item.value}
+                          onChange={(e) => setNewSouvenirFor(e.target.value)}
+                        />
+                        <label className="text-gray-700">{item.label}</label>
+                      </div>
+                    ))}
+                  </div>
+              </div>
+              {/* Send For */}
+
               <div>
                 <label className="block 0 mb-2">Souvenir Name</label>
                 <input
@@ -585,6 +701,7 @@ export default function SouvenirAvailabilityPage() {
                 <button
                   className="px-6 py-2 border border-blue-700 text-blue-700"
                   onClick={() => {
+                    setNewSouvenirFor("yellow");
                     setShowEditModal(false);
                     setSelectedSouvenir(null);
                     setNewSouvenirQuantity("");
