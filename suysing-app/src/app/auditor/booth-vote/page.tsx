@@ -21,8 +21,13 @@ function AuditorBoothVoteContent() {
   const [step, setStep] = useState<
     "intro" | "blue" | "orange" | "red" | "green" | "summary" | "thankyou"
   >("intro");
-  const { blueBoothVote, orangeBoothVote, redBoothVote, greenBoothVote, resetVotes } =
-    useBestBooth();
+  const {
+    blueBoothVote,
+    orangeBoothVote,
+    redBoothVote,
+    greenBoothVote,
+    resetVotes,
+  } = useBestBooth();
 
   const [blueBooths, setBlueBooths] = useState([]);
   const [orangeBooths, setOrangeBooths] = useState([]);
@@ -49,7 +54,7 @@ function AuditorBoothVoteContent() {
       const customer_id = auditInforParsed?.id || 0;
       const customerResult = await auditorService.checkCustomerRecordbyId(
         "",
-        customer_id
+        customer_id,
       );
       if (customerResult.success) {
         setAuditData(customerResult.results);
@@ -90,7 +95,12 @@ function AuditorBoothVoteContent() {
     const red_booth_id = redBoothVote?.id || "";
     const green_booth_id = greenBoothVote?.id || "";
 
-    const post_data = [blue_booth_id, orange_booth_id, red_booth_id, green_booth_id];
+    const post_data = [
+      blue_booth_id,
+      orange_booth_id,
+      red_booth_id,
+      green_booth_id,
+    ];
 
     try {
       const submitVote = await auditorService.submitBoothVoting(post_data);
@@ -107,7 +117,7 @@ function AuditorBoothVoteContent() {
       Swal.close(); // close the loader
       showMessage(
         "0",
-        "Unable to process your request. Please try again later."
+        "Unable to process your request. Please try again later.",
       );
       return false;
     } finally {
@@ -116,7 +126,12 @@ function AuditorBoothVoteContent() {
   };
 
   const handleContinue = async () => {
-    if (step === "blue" || step === "orange" || step === "red" || step === "green") {
+    if (
+      step === "blue" ||
+      step === "orange" ||
+      step === "red" ||
+      step === "green"
+    ) {
       await delay(600);
     }
     if (step === "intro") {
@@ -150,7 +165,7 @@ function AuditorBoothVoteContent() {
     } else if (step === "green") {
       setStep("red");
     } else if (step === "summary") {
-      setStep("green");
+      setStep("intro");
     }
   };
 
@@ -213,10 +228,10 @@ function AuditorBoothVoteContent() {
       step === "intro" || step === "blue"
         ? "Blue Booth"
         : step === "orange"
-        ? "Orange Booth"
-        : step === "red"
-        ? "Red Booth"
-        : "Green Booth";
+          ? "Orange Booth"
+          : step === "red"
+            ? "Red Booth"
+            : "Green Booth";
 
     return (
       <div className="px-4 py-3 text-white">
@@ -226,7 +241,7 @@ function AuditorBoothVoteContent() {
           viewList="Tap to view the list of visited and unvisited booths."
         />
 
-        <h1 className="text-[34px] font-bold text-center mt-4 mb-6 leading-10">
+        <h1 className="text-[20px] font-bold text-center mt-4 mb-6 leading-10">
           Vote for your best
           <br />
           {colorText}
@@ -242,11 +257,7 @@ function AuditorBoothVoteContent() {
           <>
             {getStepHeader()}
             <div className="relative">
-              <BoothGrid
-                booths={blueBooths}
-                color="blue"
-                onVote={handleContinue}
-              />
+              <BoothGrid booths={blueBooths} color="blue" />
               <IntroScreen onContinue={handleContinue} />
             </div>
           </>
@@ -255,11 +266,7 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid
-              booths={blueBooths}
-              color="blue"
-              onVote={handleContinue}
-            />
+            <BoothGrid booths={blueBooths} color="blue" />
             <div className="px-4 pb-4">
               <button
                 onClick={handleContinue}
@@ -279,17 +286,13 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid
-              booths={orangeBooths}
-              color="orange"
-              onVote={handleContinue}
-            />
+            <BoothGrid booths={orangeBooths} color="orange" />
             <div className="px-2 pb-4 flex gap-4 ">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
@@ -309,13 +312,13 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={redBooths} color="red" onVote={handleContinue} />
+            <BoothGrid booths={redBooths} color="red" />
             <div className="px-4 pb-4 flex gap-4">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
@@ -335,13 +338,13 @@ function AuditorBoothVoteContent() {
         return (
           <>
             {getStepHeader()}
-            <BoothGrid booths={greenBooths} color="green" onVote={handleContinue} />
+            <BoothGrid booths={greenBooths} color="green" />
             <div className="px-4 pb-4 flex gap-4">
               <button
                 onClick={handleBack}
-                className="w-full py-1 bg-white border-2 border-[#F78B1E] text-[#F78B1E] rounded-lg text-lg font-medium"
+                className="w-full py-1  border border-[#F78B1E] text-[#F78B1E] bg-[#FFEBD4] rounded-lg text-lg font-medium"
               >
-                Back
+                Go Back
               </button>
               <button
                 onClick={handleContinue}
