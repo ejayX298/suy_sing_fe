@@ -2128,6 +2128,7 @@ export const dealOrderedApiService = {
         customer_type: string;
         ordered_qty: string;
         date_ordered: string;
+        date_ordered_pretty: string;
       }
 
       const mapResponse = response_data.deal_orders.map((deal_order: DealOrderedCustomer) => ({
@@ -2136,7 +2137,7 @@ export const dealOrderedApiService = {
         customerName: deal_order.customer_name,
         customerType: deal_order.customer_type,
         orderedQty: deal_order.ordered_qty,
-        dateOrdered: deal_order.date_ordered,
+        dateOrdered: deal_order.date_ordered_pretty,
       }));
 
       return {
@@ -2212,7 +2213,7 @@ export const dealOrderedApiService = {
           customerCode: response_data.customer_code,
           customerName: response_data.customer_name,
           customerType: response_data.customer_type,
-          dateOrdered: response_data.date_ordered,
+          dateOrdered: response_data.date_ordered_pretty,
         },
         deal_ordered_list: mapDealsOrdered,
       };
