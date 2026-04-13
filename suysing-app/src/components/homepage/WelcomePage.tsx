@@ -54,7 +54,7 @@ export default function WelcomePage({ customer_data, onContinue, onClose }: Welc
 
         <button
           onClick={onContinue}
-          className="w-full py-3 bg-[#F78B1E] text-[#252740] rounded-lg text-lg font-medium hover:bg-[#E67D0E] transition-colors"
+          className="w-full py-2 bg-[#F78B1E] text-white rounded-lg font-medium hover:bg-[#E67D0E] transition-colors"
         >
           Next
         </button>
