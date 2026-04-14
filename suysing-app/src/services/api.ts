@@ -17,7 +17,7 @@ export const customerQr = {
         success: true,
         results: response_data,
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
         results: null,
@@ -166,6 +166,42 @@ export const customerQr = {
 };
 
 export const notifications = {
+  getAllByHashCode: async (hashCode: string) => {
+    try {
+      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
+
+      // Validate hash code format
+      if (!hashCode || !/^[a-f0-9]{64,}$/.test(hashCode)) {
+        return {
+          success: false,
+          results: [],
+        };
+      }
+
+      const response = await httpClient(api_key).get(
+        `/customer/notification/get_all_notifications_by_hash_code/?chc=${hashCode}`
+      );
+
+      const response_data = response?.data?.data || response?.data || [];
+
+      return {
+        success: true,
+        results: response_data,
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        return {
+          success: false,
+          results: [],
+        };
+      } else {
+        return {
+          success: false,
+          results: [],
+        };
+      }
+    }
+  },
   getByHashCode: async (hashCode: string) => {
     try {
       const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
@@ -198,7 +234,17 @@ export const notifications = {
   markAsRead: async (notificationId: number, hashCode: string) => {
     try {
       const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
-      const response = await httpClient(api_key).post(
+
+      // Validate inputs
+      if (!api_key || !hashCode || !notificationId) {
+        return { success: false, results: null };
+      }
+      // Validate hash code format
+      if (!/^[a-f0-9]{64,}$/.test(hashCode)) {
+        return { success: false, results: null };
+      }
+
+      const response = await httpClient({ api_key, is_json: true }).post(
         `/customer/notification/mark-as-read/`,
         {
           notification_id: notificationId,
@@ -210,34 +256,26 @@ export const notifications = {
         success: true,
         results: response?.data?.data || response?.data || null,
       };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
         return { success: false, results: null };
       }
       return { success: false, results: null };
     }
   },
   markAllAsRead: async (notificationIds: number[], hashCode: string) => {
-    try {
-      const api_key = process.env.NEXT_PUBLIC_API_KEY || "";
-      const response = await httpClient(api_key).post(
-        `/customer/notification/mark-all-as-read`,
-        {
-          notification_ids: notificationIds,
-          customer_magic_link: `cc=${hashCode}`,
-        }
-      );
+    // Workaround: mark-all-as-read endpoint has a backend bug
+    // Call markAsRead individually for each notification
+    const results = await Promise.all(
+      notificationIds.map((id) => notifications.markAsRead(id, hashCode))
+    );
 
-      return {
-        success: true,
-        results: response?.data?.data || response?.data || null,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        return { success: false, results: null };
-      }
-      return { success: false, results: null };
-    }
+    const allSuccess = results.every((r) => r.success);
+
+    return {
+      success: allSuccess,
+      results: null,
+    };
   },
 };
 
