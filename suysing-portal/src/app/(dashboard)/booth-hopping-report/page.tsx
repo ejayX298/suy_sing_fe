@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 
 type SortField =
   | "code"
-  | "full_name"
+  | "fname"
   | "customer_type"
   | "total_booth_visited_c";
 
@@ -192,11 +192,11 @@ export default function BoothHoppingReportPage() {
                 </th>
                 <th
                   className="table-header cursor-pointer"
-                  onClick={() => handleSort("full_name")}
+                  onClick={() => handleSort("fname")}
                 >
                   Customer Name
                   <span className="ml-1 inline-block">
-                    {sortConfig && sortConfig.field === "full_name" ? (
+                    {sortConfig && sortConfig.field === "fname" ? (
                       sortConfig.direction === "asc" ? (
                         <FaSortUp />
                       ) : (
