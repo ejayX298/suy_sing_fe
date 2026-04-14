@@ -4,7 +4,10 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Image from "next/image";
 import { BoothsProvider } from "@/context/BoothsContext";
+import { CustomerProvider } from "@/context/CustomerContext";
 import { NavigationWrapper } from "@/components/NavigationWrapper";
+import NotificationBellClient from "@/components/notifications/NotificationBellClient";
+import GlobalNotificationModal from "@/components/notifications/GlobalNotificationModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,13 +37,21 @@ export default function RootLayout({
             className="object-cover"
           />
         </div>
-        <BoothsProvider>
-          <Suspense fallback={<p>Loading...</p>}>
-            {children}
-            <NavigationWrapper />
-          </Suspense>
-        </BoothsProvider>
+        <CustomerProvider>
+          <BoothsProvider>
+            <Suspense fallback={<p>Loading...</p>}>
+              <NotificationBellWrapper />
+              <GlobalNotificationModal />
+              {children}
+              <NavigationWrapper />
+            </Suspense>
+          </BoothsProvider>
+        </CustomerProvider>
       </body>
     </html>
   );
+}
+
+function NotificationBellWrapper() {
+  return <NotificationBellClient />;
 }
