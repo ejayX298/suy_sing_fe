@@ -19,10 +19,10 @@ export default function VerifyPage() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    if (!customer_hash_code) {
-      router.push("/unauthorized");
-      return;
-    }
+    // if (!customer_hash_code) {
+    //   router.push("/unauthorized");
+    //   return;
+    // }
 
     const verified = localStorage.getItem("account_verified");
     const storedHash = localStorage.getItem("hash_code");
