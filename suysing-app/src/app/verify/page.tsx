@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { customerQr } from "@/services/api";
-import { resourceUsage } from "process";
 
 export default function VerifyPage() {
   const router = useRouter();
