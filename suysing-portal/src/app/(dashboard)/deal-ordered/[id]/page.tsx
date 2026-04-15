@@ -2,27 +2,26 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { FaSearch, FaPen, FaTrash, FaPlus, FaSortUp, FaSortDown } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
-import { Product, Vendor, DealOrderedCustomer, DealOrderedBoothProducts } from "@/types";
+import { Product, DealOrderedCustomer, DealOrderedBoothProducts } from "@/types";
 import Swal from "sweetalert2";
 import { dealOrderedApiService, dealFormsApiService } from "@/services/api";
 import { useAuth } from "@/lib/hooks/useAuth";
 
-type SortField =
-  | "item_code"
-  | "name"
-  | "discount_as_double";
+// type SortField =
+//   | "item_code"
+//   | "name"
+//   | "discount_as_double";
 
 export default function VendorDetailPage() {
   const { token } = useAuth();
   const params = useParams();
   const router = useRouter();
   const dealOrderId = params.id as string;
-  const initialRenderVal = "__default_val__";
+  // const initialRenderVal = "__default_val__";
 
   const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
+  // const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
   const [currentDealOrder, setCurrentDealOrder] = useState<
@@ -36,10 +35,10 @@ export default function VendorDetailPage() {
     sort_by: "-id",
   });
 
-  const [sortConfig, setSortConfig] = useState<{
-    field: SortField;
-    direction: "asc" | "desc";
-  } | null>(null);
+  // const [sortConfig, setSortConfig] = useState<{
+  //   field: SortField;
+  //   direction: "asc" | "desc";
+  // } | null>(null);
 
   // Modal states
   const [showAddModal, setShowAddModal] = useState(false);
@@ -96,22 +95,22 @@ export default function VendorDetailPage() {
   };
 
   // Handle search query
-  const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const searchValue = e.target.value;
-    setSearchQuery(searchValue);
-  };
+  // const handleSearchQuery = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const searchValue = e.target.value;
+  //   setSearchQuery(searchValue);
+  // };
 
   // Debounce search input
-  useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        const delaySearch = setTimeout(() => {
-          setFilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+  // useEffect(() => {
+  //   if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+  //       const delaySearch = setTimeout(() => {
+  //         setFilterParams({ ...filterParams, page: 1, query: searchQuery });
+  //       }, 500);
 
-        return () => clearTimeout(delaySearch);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+  //       return () => clearTimeout(delaySearch);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchQuery]);
 
   // Handle add product
   const handleAddProduct = async () => {
@@ -241,58 +240,16 @@ export default function VendorDetailPage() {
     setNewProductDiscount("");
   };
 
-  // Handle delete product
-  const handleDeleteProduct = async (product: Product) => {
-    const result = await Swal.fire({
-      title: "Delete product?",
-      text: "Are you sure you want to delete this product? Once deleted, all associated data will be permanently removed and cannot be recovered.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Yes, Delete Product",
-      cancelButtonText: "Cancel",
-      confirmButtonColor: "#193cb8",
-    });
-
-    if (result.isConfirmed) {
-      // Delete product
-      const deleteProduct = {
-        booth_product_id: parseInt(product?.id),
-      };
-
-      if (!token) {
-        showMessage("0", "Authentication token is missing");
-        return;
-      }
-
-      try {
-        const boothProductDataResult =
-          await dealFormsApiService.deleteBoothProduct(token, deleteProduct);
-
-        if (boothProductDataResult.success) {
-          // Show success message
-          setSuccessMessage("Product Deleted Successfully");
-          setShowSuccessModal(true);
-
-          // Refresh data
-          fetchData();
-        } else {
-          showMessage("0", boothProductDataResult.message);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        showMessage("0", "Error deleting this product.");
-      }
-    }
-  };
+ 
 
   // Open edit modal
-  const openEditModal = (product: Product) => {
-    setSelectedProduct(product);
-    setNewProductCode(product.productCode);
-    setNewProductName(product.productName);
-    setNewProductDiscount(product.discount);
-    setShowEditModal(true);
-  };
+  // const openEditModal = (product: Product) => {
+  //   setSelectedProduct(product);
+  //   setNewProductCode(product.productCode);
+  //   setNewProductName(product.productName);
+  //   setNewProductDiscount(product.discount);
+  //   setShowEditModal(true);
+  // };
 
   // Handle back to list
   const handleBackToList = () => {
@@ -300,23 +257,23 @@ export default function VendorDetailPage() {
   };
 
   // Handle sort
-  const handleSort = (field: SortField) => {
-  let direction: "asc" | "desc" = "asc";
+//   const handleSort = (field: SortField) => {
+//   let direction: "asc" | "desc" = "asc";
 
-  if (sortConfig && sortConfig.field === field) {
-    direction = sortConfig.direction === "asc" ? "desc" : "asc";
-  }
+//   if (sortConfig && sortConfig.field === field) {
+//     direction = sortConfig.direction === "asc" ? "desc" : "asc";
+//   }
   
-  let api_sort_field : string = field
+//   let api_sort_field : string = field
 
-  if (direction == "desc"){
-    api_sort_field  = `-${api_sort_field}`
-  }
+//   if (direction == "desc"){
+//     api_sort_field  = `-${api_sort_field}`
+//   }
 
-  setFilterParams({ ...filterParams, sort_by: api_sort_field });
+//   setFilterParams({ ...filterParams, sort_by: api_sort_field });
 
-  setSortConfig({ field, direction });
-};
+//   setSortConfig({ field, direction });
+// };
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {

@@ -1815,10 +1815,22 @@ export const dealFormsApiService = {
             message: parsed?.message || "Export failed. Please try again later.",
           };
         } catch (error) {
-          return {
-            success: false,
-            message: "Export failed. Please try again later.",
-          };
+          
+          if (axios.isAxiosError(error)) {
+            validateTokenResponse(error);
+
+            return {
+              success: false,
+              message: "Export failed. Please try again later. ",
+            };
+          } else {
+             return {
+                success: false,
+                message: "Export failed. Please try again later. ",
+              };
+          }
+
+         
         }
       }
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { FaSearch, FaEye, FaSortUp, FaSortDown, FaBell } from "react-icons/fa";
+import { FaSearch, FaSortUp, FaSortDown, FaBell } from "react-icons/fa";
 import Pagination from "@/components/ui/Pagination";
 import { NotificationInt } from "@/types";
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 import { notificationService } from "@/services/api";
 import { useAuth } from "@/lib/hooks/useAuth";
 import Swal from "sweetalert2";
@@ -18,13 +18,13 @@ type SortField =
 
 export default function NotificationPage() {
   const { token } = useAuth();
-  const router = useRouter();
+  // const router = useRouter();
   const initialRenderVal = "__default_val__";
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
+  // const [isExporting, setIsExporting] = useState(false);
   const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(5);
@@ -49,7 +49,7 @@ export default function NotificationPage() {
   const [newTitle, setNewTitle] = useState("");
   const [newMessage, setNewMessage] = useState("");
   const [newTime, setNewTime] = useState("");
-  const [sendImmediately, setSendImmediately] = useState(true)
+  // const [sendImmediately, setSendImmediately] = useState(true)
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
   const fetchData = async () => {
@@ -154,13 +154,11 @@ export default function NotificationPage() {
     );
 
     if (confirmAction.isConfirmed) {
-      let color_code = ''
       let send_to = newSendTo
-      
       // Handle color code
+      const color_code = send_to.includes("color_code_") ? send_to.split("color_code_")[1] : '';
+
       if (send_to.includes("color_code_")) {
-        // get the color code from send_to string
-        color_code = send_to.split("color_code_")[1];
         send_to = "color_code"
       }
 
@@ -221,13 +219,12 @@ export default function NotificationPage() {
     );
 
     if (confirmAction.isConfirmed) {
-        let color_code = ''
         let send_to = newSendTo
-        
+
         // Handle color code
+        const color_code = send_to.includes("color_code_") ? send_to.split("color_code_")[1] : '';
+
         if (send_to.includes("color_code_")) {
-          // get the color code from send_to string
-          color_code = send_to.split("color_code_")[1];
           send_to = "color_code"
         }
 
@@ -313,13 +310,13 @@ export default function NotificationPage() {
         const workbook = XLSX.read(data, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[][];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as (string | number | boolean | null | undefined)[][];
 
         // Extract customer codes from the first column (skip header row)
         const customerCodes = jsonData
           .slice(1) // Skip first row (header)
           .map((row) => row[0])
-          .filter((cell) => cell && typeof cell === "string" && cell.trim())
+          .filter((cell): cell is string => cell != null && typeof cell === "string" && cell.trim() !== "")
           .map((code) => code.trim().toUpperCase())
           .filter((code, index, self) => self.indexOf(code) === index);
 
@@ -386,13 +383,13 @@ export default function NotificationPage() {
         const workbook = XLSX.read(data, { type: "binary" });
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as any[][];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 }) as (string | number | boolean | null | undefined)[][];
 
         // Extract customer codes from the first column (skip header row)
         const customerCodes = jsonData
           .slice(1) // Skip first row (header)
           .map((row) => row[0])
-          .filter((cell) => cell && typeof cell === "string" && cell.trim())
+          .filter((cell): cell is string => cell != null && typeof cell === "string" && cell.trim() !== "")
           .map((code) => code.trim().toUpperCase())
           .filter((code, index, self) => self.indexOf(code) === index);
 
@@ -434,12 +431,12 @@ export default function NotificationPage() {
 
   // Open edit modal
   const openEditModal = (notification: NotificationInt) => {
-      
+
       let send_to = notification.send_to
       // handle color code
-      let color_code = notification.color_code
+      const color_code = notification.color_code
       const colors = ["red", "green", "yellow"];
-      
+
       // Handle color code -- check if color_code exists in colors
       if (send_to == 'color_code'){
           if (colors.includes(color_code)) {
@@ -447,7 +444,7 @@ export default function NotificationPage() {
             send_to = "color_code_"+color_code
           }
       }
-    
+
       setSelectedNotification(notification);
       setNewTitle(notification.title);
       setNewMessage(notification.message);

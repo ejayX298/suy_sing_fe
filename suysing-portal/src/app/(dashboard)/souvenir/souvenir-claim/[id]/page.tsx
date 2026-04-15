@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { FaArrowLeft, FaSearch, FaSortUp, FaSortDown } from "react-icons/fa";
+import { FaArrowLeft} from "react-icons/fa";
 import { souvenirClaimData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 //import QRCode from "react-qr-code";
@@ -17,10 +17,10 @@ type SortField =
 
 export default function CustomerClaimDetailsPage() {
   const { token } = useAuth();
-  const initialRenderVal = "__default_val__";
+  // const initialRenderVal = "__default_val__";
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState(initialRenderVal);
+  // const [searchQuery, setSearchQuery] = useState(initialRenderVal);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [filteredClaimHistory, setFilteredClaimHistory] = useState<CustomerClaimHistory[]>([]);
@@ -92,25 +92,25 @@ export default function CustomerClaimDetailsPage() {
     setfilterParams({ ...filterParams, page: pageNumber });
   };
 
-  const handleSearchQuery = (query: React.ChangeEvent<HTMLInputElement>) => {
-    const search_val = query.target.value;
-    setSearchQuery(search_val);
-  };
+  // const handleSearchQuery = (query: React.ChangeEvent<HTMLInputElement>) => {
+  //   const search_val = query.target.value;
+  //   setSearchQuery(search_val);
+  // };
 
-  useEffect(() => {
-    if(searchQuery != initialRenderVal){ // to avoid executing on initial render
-        // set delay 2 seconds
-        const delaySetSearch = setTimeout(() => {
-          // it will get the latest value after two seconds of no keyboard activity
-          setfilterParams({ ...filterParams, page: 1, query: searchQuery });
-        }, 500);
+  // useEffect(() => {
+  //   if(searchQuery != initialRenderVal){ // to avoid executing on initial render
+  //       // set delay 2 seconds
+  //       const delaySetSearch = setTimeout(() => {
+  //         // it will get the latest value after two seconds of no keyboard activity
+  //         setfilterParams({ ...filterParams, page: 1, query: searchQuery });
+  //       }, 500);
 
-        //clears the timeout of the previous value of delaySetSearch
-        //clears the timeout on re render
-        return () => clearTimeout(delaySetSearch);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery]);
+  //       //clears the timeout of the previous value of delaySetSearch
+  //       //clears the timeout on re render
+  //       return () => clearTimeout(delaySetSearch);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [searchQuery]);
 
   // Customer type color mapping
   const getCustomerTypeColor = (type: string) => {

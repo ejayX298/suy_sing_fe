@@ -6,7 +6,6 @@ import { souvenirClaimData } from "@/services/api";
 import Pagination from "@/components/ui/Pagination";
 import { Claim } from "@/types";
 import { useAuth } from "@/lib/hooks/useAuth";
-import { MdModeEditOutline } from "react-icons/md";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
 
@@ -139,11 +138,11 @@ export default function SouvenirClaimPage() {
     }
   };
 
-  const openEditModal = (claim: Claim) => {
-    setSelectedCustomer(claim);
-    setCustomerStatus(claim.status || "Pending");
-    setShowEditModal(true);
-  };
+  // const openEditModal = (claim: Claim) => {
+  //   setSelectedCustomer(claim);
+  //   setCustomerStatus(claim.status || "Pending");
+  //   setShowEditModal(true);
+  // };
 
   const handleViewCustomer = (customerId: number) => {
     router.push(`/souvenir/souvenir-claim/${customerId}`);
