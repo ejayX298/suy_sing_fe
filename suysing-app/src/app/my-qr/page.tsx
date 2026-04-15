@@ -119,11 +119,16 @@ export default function MyQrPage() {
         setCustomerData(customerResult.results);
         setCustomerFound(true);
       } else {
-        router.push(`/unauthorized`);
+        // debug log
+        console.log('unauthorized1')
+        console.log(customerResult)
+        router.push(`/unauthorized1`);
       }
     } catch (error) {
+        // debug log
+      console.log('unauthorized2')
       console.error("Error fetching data:", error);
-      router.push(`/unauthorized`);
+      router.push(`/unauthorized2`);
     }
   };
 
@@ -136,7 +141,10 @@ export default function MyQrPage() {
       }
       fetchData();
     } else {
-      router.push(`/unauthorized`);
+      // debug log
+      console.log('unauthorized3')
+      console.log(customer_hash_code)
+      router.push(`/unauthorized3`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

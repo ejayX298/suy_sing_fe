@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { customerQr } from "@/services/api";
+import { resourceUsage } from "process";
 
 export default function VerifyPage() {
   const router = useRouter();
@@ -38,7 +39,10 @@ export default function VerifyPage() {
       if (result.success && result.mobile_no) {
         setMobileNo(result.mobile_no);
       } else {
-        router.push("/unauthorized");
+        // debug log
+        console.log('unauthorized4')
+        console.log(result)
+        router.push("/unauthorized4");
       }
       setLoading(false);
     };
