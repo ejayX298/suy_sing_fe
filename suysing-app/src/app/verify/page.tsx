@@ -19,10 +19,10 @@ export default function VerifyPage() {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
-    // if (!customer_hash_code) {
-    //   router.push("/unauthorized");
-    //   return;
-    // }
+    if (!customer_hash_code) {
+      router.push("/unauthorized");
+      return;
+    }
 
     const verified = localStorage.getItem("account_verified");
     const storedHash = localStorage.getItem("hash_code");
@@ -38,10 +38,7 @@ export default function VerifyPage() {
       if (result.success && result.mobile_no) {
         setMobileNo(result.mobile_no);
       } else {
-        // debug log
-        console.log('unauthorized4')
-        console.log(result)
-        router.push("/unauthorized4");
+        router.push("/unauthorized");
       }
       setLoading(false);
     };
